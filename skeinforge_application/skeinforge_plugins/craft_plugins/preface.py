@@ -195,6 +195,12 @@ class PrefaceSkein:
 			self.distanceFeedRate.addGcodeFromLoop(loop, rotatedLoopLayer.z)
 		self.distanceFeedRate.addLine('(</layer>)')
 
+
+	def addShutdownToOutput(self):
+		"Add shutdown gcode to the output."
+		self.distanceFeedRate.addLine('(</crafting>)') # GCode formatted comment
+		self.addFromUpperLowerFile(self.repository.nameOfEndFile.value) # Add an end file if it exists.
+
 	def getCraftedGcode( self, repository, gcodeText ):
 		"""Parse gcode text and store the bevel gcode."""
 		self.repository = repository
@@ -207,6 +213,7 @@ class PrefaceSkein:
 		for rotatedLoopLayerIndex, rotatedLoopLayer in enumerate(self.svgReader.rotatedLoopLayers):
 			settings.printProgressByNumber(rotatedLoopLayerIndex, len(self.svgReader.rotatedLoopLayers), 'preface')
 			self.addPreface( rotatedLoopLayer )
+		self.addShutdownToOutput()
 		return self.distanceFeedRate.output.getvalue()
 
 
