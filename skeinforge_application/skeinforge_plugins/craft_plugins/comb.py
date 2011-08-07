@@ -126,7 +126,7 @@ class CombRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.comb.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Comb', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Comb')
-		self.activateComb = settings.BooleanSetting().getFromValue('Activate Comb if you cant stop the extruder stringing by retraction \nit will avoid moving over loops so the strings will be there \nbut not visible anymore. \nComb bends the extruder travel paths around holes in the slices, to avoid stringing.  \nso any start up ooze will be inside the shape.', self, True )
+		self.activateComb = settings.BooleanSetting().getFromValue('Activate Comb if you cant stop the extruder stringing', self, True )
 		self.executeTitle = 'Comb'
 
 	def execute(self):
