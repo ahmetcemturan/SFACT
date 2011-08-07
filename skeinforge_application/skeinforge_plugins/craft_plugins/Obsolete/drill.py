@@ -202,9 +202,9 @@ class DrillSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> drill </procedureName>)')
 				return
-			elif firstWord == '(<layerThickness>':
+			elif firstWord == '(<extrusionHeight>':
 				self.halfLayerThickness = 0.5 * float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
+			elif firstWord == '(<extrusionWidth>':
 				self.maximumDistance = 0.1 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 

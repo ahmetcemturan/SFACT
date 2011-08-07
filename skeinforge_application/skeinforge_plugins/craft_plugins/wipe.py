@@ -228,7 +228,7 @@ class WipeSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> wipe </procedureName>)')
 				return
-			elif firstWord == '(<perimeterWidth>':
+			elif firstWord == '(<extrusionWidth>':
 				self.absolutePerimeterWidth = abs(float(splitLine[1]))
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])

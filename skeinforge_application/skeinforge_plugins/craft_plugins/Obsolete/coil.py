@@ -99,7 +99,7 @@ class CoilSkein:
 		self.lineIndex = 0
 		self.lines = None
 		self.oldLocationComplex = complex()
-		self.perimeterWidth = 0.6
+		self.extrusionWidth = 0.6
 		self.shutdownLines = []
 
 	def addCoilLayer( self, boundaryLayers, radius, z ):
@@ -120,9 +120,9 @@ class CoilSkein:
 
 	def addCoilLayers(self):
 		"""Add the coil layers."""
-		numberOfLayersFloat = round( self.perimeterWidth / self.layerThickness )
+		numberOfLayersFloat = round( self.extrusionWidth / self.extrusionHeight )
 		numberOfLayers = int( numberOfLayersFloat )
-		halfLayerThickness = 0.5 * self.layerThickness
+		halfLayerThickness = 0.5 * self.extrusionHeight
 		startOutset = self.repository.minimumToolDistance.value + halfLayerThickness
 		startZ = self.boundaryLayers[0].z + halfLayerThickness
 		zRange = self.boundaryLayers[-1].z - self.boundaryLayers[0].z
@@ -134,7 +134,7 @@ class CoilSkein:
 			boundaryLayers = self.boundaryLayers
 			if layerIndex % 2 == 1:
 				boundaryLayers = self.boundaryReverseLayers
-			radius = startOutset + layerIndex * self.layerThickness
+			radius = startOutset + layerIndex * self.extrusionHeight
 			z = startZ + layerIndex * zIncrement
 			self.addCoilLayer( boundaryLayers, radius, z )
 
@@ -222,11 +222,11 @@ class CoilSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> coil </procedureName>)')
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.halfPerimeterWidth = 0.5 * self.perimeterWidth
+			elif firstWord == '(<extrusionHeight>':
+				self.extrusionHeight = float(splitLine[1])
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
+				self.halfPerimeterWidth = 0.5 * self.extrusionWidth
 			self.distanceFeedRate.addLine(line)
 
 	def parseUntilLayer(self):

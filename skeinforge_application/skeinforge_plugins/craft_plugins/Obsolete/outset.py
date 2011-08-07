@@ -129,7 +129,7 @@ class OutsetSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedLine('procedureName', 'outset')
 				return
-			elif firstWord == '(<perimeterWidth>':
+			elif firstWord == '(<extrusionWidth>':
 				self.absoluteHalfPerimeterWidth = 0.5 * abs(float(splitLine[1]))
 			self.distanceFeedRate.addLine(line)
 

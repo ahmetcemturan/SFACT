@@ -243,7 +243,7 @@ class VectorwriteSkein:
 
 	def getCarveLayerThickness(self):
 		"""Get the layer thickness."""
-		return self.layerThickness
+		return self.extrusionHeight
 
 	def getCarvedSVG(self, fileName, gcodeText, repository):
 		"""Parse gnu triangulated surface text and store the vectorwrite gcode."""
@@ -266,11 +266,11 @@ class VectorwriteSkein:
 		for threadLayer in self.threadLayers:
 			threadLayer.maximize(cornerMaximum)
 			threadLayer.minimize(cornerMinimum)
-		halfLayerThickness = 0.5 * self.layerThickness
+		halfLayerThickness = 0.5 * self.extrusionHeight
 		cornerMaximum.z += halfLayerThickness
 		cornerMinimum.z -= halfLayerThickness
 		svgWriter = SVGWriterVectorwrite(
-			True, cornerMaximum, cornerMinimum, self.decimalPlacesCarried, self.layerThickness, self.perimeterWidth)
+			True, cornerMaximum, cornerMinimum, self.decimalPlacesCarried, self.extrusionHeight, self.extrusionWidth)
 		return svgWriter.getReplacedSVGTemplate(fileName, 'vectorwrite', self.threadLayers)
 
 	def removeEmptyLayers(self):
@@ -297,12 +297,12 @@ class VectorwriteSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			if firstWord == '(<decimalPlacesCarried>':
 				self.decimalPlacesCarried = int(splitLine[1])
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<extrusionHeight>':
+				self.extrusionHeight = float(splitLine[1])
 			elif firstWord == '(<crafting>)':
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
 
 	def parseLine(self, line):
 		"""Parse a gcode line and add it to the outset skein."""

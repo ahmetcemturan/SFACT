@@ -214,7 +214,7 @@ class MultiplySkein:
 				self.distanceFeedRate.addLine(line)
 				self.lineIndex += 1
 				return
-			elif firstWord == '(<perimeterWidth>':
+			elif firstWord == '(<extrusionWidth>':
 				self.absolutePerimeterWidth = abs(float(splitLine[1]))
 			self.distanceFeedRate.addLine(line)
 

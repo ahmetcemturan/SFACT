@@ -147,14 +147,14 @@ class CleaveRepository:
 		self.addLayerTemplateToSVG = settings.BooleanSetting().getFromValue('Add Layer Template to SVG', self, True)
 		self.extraDecimalPlaces = settings.FloatSpin().getFromValue(0.0, 'Extra Decimal Places (float):', self, 3.0, 2.0)
 		self.importCoarseness = settings.FloatSpin().getFromValue( 0.5, 'Import Coarseness (ratio):', self, 2.0, 1.0 )
-		self.layerThickness = settings.FloatSpin().getFromValue( 0.1, 'Layer Thickness (mm):', self, 1.0, 0.4 )
+		self.extrusionHeight = settings.FloatSpin().getFromValue( 0.1, 'Layer Thickness (mm):', self, 1.0, 0.4 )
 		self.layersFrom = settings.IntSpin().getFromValue( 0, 'Layers From (index):', self, 20, 0 )
 		self.layersTo = settings.IntSpin().getSingleIncrementFromValue( 0, 'Layers To (index):', self, 912345678, 912345678 )
 		self.meshTypeLabel = settings.LabelDisplay().getFromName('Mesh Type: ', self, )
 		importLatentStringVar = settings.LatentStringVar()
 		self.correctMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Correct Mesh', self, True )
 		self.unprovenMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Unproven Mesh', self, False )
-		self.perimeterWidth = settings.FloatSpin().getFromValue( 0.4, 'Perimeter Width (mm):', self, 4.0, 2.0 )
+		self.extrusionWidth = settings.FloatSpin().getFromValue( 0.4, 'Perimeter Width (mm):', self, 4.0, 2.0 )
 		self.svgViewer = settings.StringSetting().getFromValue('SVG Viewer:', self, 'webbrowser')
 		settings.LabelSeparator().getFromRepository(self)
 		self.executeTitle = 'Cleave'
@@ -170,25 +170,25 @@ class CleaveSkein:
 	"""A class to cleave a carving."""
 	def getCarvedSVG( self, carving, fileName, repository ):
 		"""Parse gnu triangulated surface text and store the cleaved gcode."""
-		layerThickness = repository.layerThickness.value
-		perimeterWidth = repository.perimeterWidth.value
-		carving.setCarveLayerThickness( layerThickness )
-		importRadius = 0.5 * repository.importCoarseness.value * abs( perimeterWidth )
-		carving.setCarveImportRadius( max( importRadius, 0.01 * layerThickness ) )
+		extrusionHeight = repository.extrusionHeight.value
+		extrusionWidth = repository.extrusionWidth.value
+		carving.setCarveLayerThickness( extrusionHeight )
+		importRadius = 0.5 * repository.importCoarseness.value * abs( extrusionWidth )
+		carving.setCarveImportRadius( max( importRadius, 0.01 * extrusionHeight ) )
 		carving.setCarveIsCorrectMesh( repository.correctMesh.value )
 		rotatedLoopLayers = carving.getCarveRotatedBoundaryLayers()
 		if len( rotatedLoopLayers ) < 1:
 			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Thickness.')
 			return ''
-		layerThickness = carving.getCarveLayerThickness()
-		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerThickness)
+		extrusionHeight = carving.getCarveLayerThickness()
+		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, extrusionHeight)
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),
 			carving.getCarveCornerMinimum(),
 			decimalPlacesCarried,
 			carving.getCarveLayerThickness(),
-			perimeterWidth)
+			extrusionWidth)
 		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(repository, rotatedLoopLayers)
 		return svgWriter.getReplacedSVGTemplate( fileName, 'cleave', truncatedRotatedBoundaryLayers, carving.getFabmetheusXML())
 

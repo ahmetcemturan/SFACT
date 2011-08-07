@@ -904,7 +904,7 @@ class FillSkein:
 		self.lineIndex = 0
 		self.oldLocation = None
 		self.oldOrderedLocation = None
-		self.perimeterWidth = None
+		self.extrusionWidth = None
 		self.rotatedLayer = None
 		self.rotatedLayers = []
 		self.shutdownLineIndex = sys.maxint
@@ -1160,7 +1160,7 @@ class FillSkein:
 		for nestedRing in nestedRings:
 			planeRotatedLoop = euclidean.getPointsRoundZAxis(reverseRotation, nestedRing.boundary)
 			rotatedCarve.append(planeRotatedLoop)
-		outsetRadius = float(abs(layerDelta)) * self.layerThickness
+		outsetRadius = float(abs(layerDelta)) * self.extrusionHeight
 		rotatedCarve = intercircle.getInsetSeparateLoopsFromLoops(-outsetRadius, rotatedCarve)
 		surroundingCarves.append(rotatedCarve)
 
@@ -1211,15 +1211,15 @@ class FillSkein:
 			print('Here we GO !!!')
 			print('')
 		self.parseInitialization()
-		if self.perimeterWidth is None:
-			print('Warning, nothing will be done because self.perimeterWidth in getCraftedGcode in FillSkein was None.')
+		if self.extrusionWidth is None:
+			print('Warning, nothing will be done because self.extrusionWidth in getCraftedGcode in FillSkein was None.')
 			return ''
-		self.betweenWidth = self.perimeterWidth - 0.5 * self.infillWidth
+		self.betweenWidth = self.extrusionWidth - 0.5 * self.infillWidth
 #		self.fillInset = self.infillWidth - self.infillWidth * 0.23
 #               self.fillInset = self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
 		self.fillInset = ((self.infillWidth * (math.pi / 4)) / self.repository.infillPerimeterOverlap.value )
 #		self.fillInset = ((self.infillWidth / 2 + self.infillWidth) / 2) / self.repository.infillPerimeterOverlap.value
-#               (self.layerThickness - (clipRepository.clipOverPerimeterWidth.value * self.layerThickness * 0.7853)) * 2
+#               (self.extrusionHeight - (clipRepository.clipOverPerimeterWidth.value * self.extrusionHeight * 0.7853)) * 2
 #		self.fillInset = self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
 		self.infillSolidity = repository.infillSolidity.value
 		if self.isGridToBeExtruded():
@@ -1325,13 +1325,13 @@ class FillSkein:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
-			if firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
+			if firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
 				threadSequenceString = ' '.join( self.threadSequence )
 				self.distanceFeedRate.addTagBracketedLine('threadSequenceString', threadSequenceString )
-				self.infillWidth = self.repository.infillWidthRatio.value * self.perimeterWidth * ((self.perimeterWidth -(self.layerThickness -( math.pi * (self.layerThickness/4))))/self.perimeterWidth)
+				self.infillWidth = self.repository.infillWidthRatio.value * self.extrusionWidth * ((self.extrusionWidth -(self.extrusionHeight -( math.pi * (self.extrusionHeight/4))))/self.extrusionWidth)
 				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)
-				self.infillWidthOverThickness = self.perimeterWidth / self.layerThickness 
+				self.infillWidthOverThickness = self.extrusionWidth / self.extrusionHeight
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> fill </procedureName>)')
 			elif firstWord == '(<crafting>)':
@@ -1339,9 +1339,9 @@ class FillSkein:
 				return
 			elif firstWord == '(<bridgeWidthMultiplier>':
 				self.bridgeWidthMultiplier = float(splitLine[1])
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
-#				self.infillWidth = self.repository.infillWidthOverThickness.value * self.layerThickness
+			elif firstWord == '(<extrusionHeight>':
+				self.extrusionHeight = float(splitLine[1])
+#				self.infillWidth = self.repository.infillWidthOverThickness.value * self.extrusionHeight
 #				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)
 			self.distanceFeedRate.addLine(line)
  
@@ -1394,9 +1394,9 @@ class FillSkein:
 			self.gridXStepSize = self.gridRadius / math.sqrt(.75)
 			self.offsetMultiplier = 0.5 * self.gridXStepSize
 			circleInsetOverPerimeterWidth = repository.gridCircleSeparationOverPerimeterWidth.value + 0.5
-			self.gridMinimumCircleRadius = self.perimeterWidth
+			self.gridMinimumCircleRadius = self.extrusionWidth
 			self.gridInset = self.gridMinimumCircleRadius
-			self.gridCircleRadius = self.offsetMultiplier - circleInsetOverPerimeterWidth * self.perimeterWidth
+			self.gridCircleRadius = self.offsetMultiplier - circleInsetOverPerimeterWidth * self.extrusionWidth
 			if self.gridCircleRadius < self.gridMinimumCircleRadius:
 				print('')
 				print('!!! WARNING !!!')

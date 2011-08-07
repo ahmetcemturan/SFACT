@@ -249,12 +249,12 @@ def getAdditionalLoopLength(loop, point, pointIndex):
 	beforePoint = loop[(pointIndex + len(loop) - 1) % len(loop)]
 	return abs(point - beforePoint) + abs(point - afterPoint) - abs(afterPoint - beforePoint)
 
-def getBridgeDirection( belowLoops, layerLoops, layerThickness ):
+def getBridgeDirection( belowLoops, layerLoops, extrusionHeight ):
 	"""Get span direction for the majority of the overhanging extrusion perimeter, if any."""
 	if len( belowLoops ) < 1:
 		return None
 	belowOutsetLoops = []
-	overhangInset = 1.875 * layerThickness
+	overhangInset = 1.875 * extrusionHeight
 	slightlyGreaterThanOverhang = 1.1 * overhangInset
 	for loop in belowLoops:
 		centers = intercircle.getCentersFromLoopDirection( True, loop, slightlyGreaterThanOverhang )
@@ -267,15 +267,15 @@ def getBridgeDirection( belowLoops, layerLoops, layerThickness ):
 		for pointIndex in xrange(len(loop)):
 			previousIndex = ( pointIndex + len(loop) - 1 ) % len(loop)
 			bridgeRotation += getOverhangDirection( belowOutsetLoops, loop[ previousIndex ], loop[pointIndex] )
-	if abs( bridgeRotation ) < 0.75 * layerThickness:
+	if abs( bridgeRotation ) < 0.75 * extrusionHeight:
 		return None
 	else:
 		bridgeRotation /= abs( bridgeRotation )
 		return cmath.sqrt( bridgeRotation )
 
-def getBridgeLoops( layerThickness, loop ):
+def getBridgeLoops( extrusionHeight, loop ):
 	"""Get the inset bridge loops from the loop."""
-	halfWidth = 1.5 * layerThickness
+	halfWidth = 1.5 * extrusionHeight
 	slightlyGreaterThanHalfWidth = 1.1 * halfWidth
 	extrudateLoops = []
 	centers = intercircle.getCentersFromLoop( loop, slightlyGreaterThanHalfWidth )
@@ -651,13 +651,13 @@ def getWideAnglePointIndex(loop):
 def getZAddExtruderPathsBySolidCarving(rotatedLoopLayer, solidCarving, z):
 	"""Get next z and add extruder loops by solid carving."""
 	solidCarving.rotatedLoopLayers.append(rotatedLoopLayer)
-	nextZ = z + solidCarving.layerThickness
+	nextZ = z + solidCarving.extrusionHeight
 	if not solidCarving.infillInDirectionOfBridge:
 		return nextZ
 	allExtrudateLoops = []
 	for loop in rotatedLoopLayer.loops:
-		allExtrudateLoops += getBridgeLoops(solidCarving.layerThickness, loop)
-	rotatedLoopLayer.rotation = getBridgeDirection(solidCarving.belowLoops, allExtrudateLoops, solidCarving.layerThickness)
+		allExtrudateLoops += getBridgeLoops(solidCarving.extrusionHeight, loop)
+	rotatedLoopLayer.rotation = getBridgeDirection(solidCarving.belowLoops, allExtrudateLoops, solidCarving.extrusionHeight)
 	solidCarving.belowLoops = allExtrudateLoops
 	return nextZ
 
@@ -767,14 +767,14 @@ class TriangleMesh( group.Group ):
 
 	def getCarveLayerThickness(self):
 		"""Get the layer thickness."""
-		return self.layerThickness
+		return self.extrusionHeight
 
 	def getCarveRotatedBoundaryLayers(self):
 		"""Get the rotated boundary layers."""
 		if self.getMinimumZ() is None:
 			return []
-		halfHeight = 0.5 * self.layerThickness
-		self.zoneArrangement = ZoneArrangement(self.layerThickness, self.getTransformedVertexes())
+		halfHeight = 0.5 * self.extrusionHeight
+		self.zoneArrangement = ZoneArrangement(self.extrusionHeight, self.getTransformedVertexes())
 		layerTop = self.cornerMaximum.z - halfHeight * 0.5
 		z = self.cornerMinimum.z + halfHeight
 		while z < layerTop:
@@ -865,9 +865,9 @@ class TriangleMesh( group.Group ):
 		"""Set the infill in direction of bridge."""
 		self.infillInDirectionOfBridge = infillInDirectionOfBridge
 
-	def setCarveLayerThickness( self, layerThickness ):
+	def setCarveLayerThickness( self, extrusionHeight ):
 		"""Set the layer thickness."""
-		self.layerThickness = layerThickness
+		self.extrusionHeight = extrusionHeight
 
 	def setCarveImportRadius( self, importRadius ):
 		"""Set the import radius."""
@@ -886,9 +886,9 @@ class TriangleMesh( group.Group ):
 
 class ZoneArrangement:
 	"""A zone arrangement."""
-	def __init__(self, layerThickness, vertexes):
+	def __init__(self, extrusionHeight, vertexes):
 		"""Initialize the zone interval and the zZone table."""
-		self.zoneInterval = layerThickness / math.sqrt(len(vertexes)) / 1000.0
+		self.zoneInterval = extrusionHeight / math.sqrt(len(vertexes)) / 1000.0
 		self.zZoneSet = set()
 		for point in vertexes:
 			zoneIndexFloat = point.z / self.zoneInterval

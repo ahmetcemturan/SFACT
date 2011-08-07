@@ -68,7 +68,7 @@ def getSVGByLoopLayers(addLayerTemplateToSVG, carving, rotatedLoopLayers):
 	"""Get the svg text."""
 	if len(rotatedLoopLayers) < 1:
 		return ''
-	decimalPlacesCarried = max(0, 2 - int(math.floor(math.log10(carving.layerThickness))))
+	decimalPlacesCarried = max(0, 2 - int(math.floor(math.log10(carving.extrusionHeight))))
 	svgWriter = SVGWriter(
 		addLayerTemplateToSVG,
 		carving.getCarveCornerMaximum(),
@@ -81,7 +81,7 @@ def getTruncatedRotatedBoundaryLayers(repository, rotatedLoopLayers):
 	"""Get the truncated rotated boundary layers."""
 	return rotatedLoopLayers[repository.layersFrom.value : repository.layersTo.value]
 
-def setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, rotatedLoopLayers):
+def setSVGCarvingCorners(cornerMaximum, cornerMinimum, extrusionHeight, rotatedLoopLayers):
 	"""Parse SVG text and store the layers."""
 	for rotatedLoopLayer in rotatedLoopLayers:
 		for loop in rotatedLoopLayer.loops:
@@ -89,7 +89,7 @@ def setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, rotatedLo
 				pointVector3 = Vector3(point.real, point.imag, rotatedLoopLayer.z)
 				cornerMaximum.maximize(pointVector3)
 				cornerMinimum.minimize(pointVector3)
-	halfLayerThickness = 0.5 * layerThickness
+	halfLayerThickness = 0.5 * extrusionHeight
 	cornerMaximum.z += halfLayerThickness
 	cornerMinimum.z -= halfLayerThickness
 
@@ -101,15 +101,15 @@ class SVGWriter:
 			cornerMaximum,
 			cornerMinimum,
 			decimalPlacesCarried,
-			layerThickness,
-			perimeterWidth=None):
+			extrusionHeight,
+			extrusionWidth=None):
 		"""Initialize."""
 		self.addLayerTemplateToSVG = addLayerTemplateToSVG
 		self.cornerMaximum = cornerMaximum
 		self.cornerMinimum = cornerMinimum
 		self.decimalPlacesCarried = decimalPlacesCarried
-		self.layerThickness = layerThickness
-		self.perimeterWidth = perimeterWidth
+		self.extrusionHeight = extrusionHeight
+		self.extrusionWidth = extrusionWidth
 		self.textHeight = 22.5
 		self.unitScale = 3.7
 
@@ -194,7 +194,7 @@ class SVGWriter:
 		self.graphicsXMLElement = self.svgElement.getXMLElementByID('sliceElementTemplate')
 		self.graphicsXMLElement.attributeDictionary['id'] = 'z:'
 		self.addRotatedLoopLayersToOutput(rotatedLoopLayers)
-		self.setMetadataNoscriptElement('layerThickness', 'Layer Thickness: ', self.layerThickness)
+		self.setMetadataNoscriptElement('extrusionHeight', 'Layer Thickness: ', self.extrusionHeight)
 		self.setMetadataNoscriptElement('maxX', 'X: ', self.cornerMaximum.x)
 		self.setMetadataNoscriptElement('minX', 'X: ', self.cornerMinimum.x)
 		self.setMetadataNoscriptElement('maxY', 'Y: ', self.cornerMaximum.y)
@@ -208,8 +208,8 @@ class SVGWriter:
 		width = max(self.extent.x * self.unitScale, svgMinWidth)
 		svgElementDictionary['width'] = '%spx' % self.getRounded( width )
 		self.sliceDictionary['decimalPlacesCarried'] = str( self.decimalPlacesCarried )
-		if self.perimeterWidth is not None:
-			self.sliceDictionary['perimeterWidth'] = self.getRounded( self.perimeterWidth )
+		if self.extrusionWidth is not None:
+			self.sliceDictionary['extrusionWidth'] = self.getRounded( self.extrusionWidth )
 		self.sliceDictionary['yAxisPointingUpward'] = 'true'
 		self.sliceDictionary['procedureName'] = procedureName
 		self.setDimensionTexts('dimX', 'X: ' + self.getRounded(self.extent.x))

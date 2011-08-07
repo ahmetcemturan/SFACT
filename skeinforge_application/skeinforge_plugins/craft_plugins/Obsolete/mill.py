@@ -180,7 +180,7 @@ class MillSkein:
 		self.lineIndex = 0
 		self.lines = None
 		self.oldLocation = None
-		self.perimeterWidth = 0.6
+		self.extrusionWidth = 0.6
 
 	def addGcodeFromLoops(self, loops, z):
 		"""Add gcode from loops."""
@@ -332,13 +332,13 @@ class MillSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> mill </procedureName>)')
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.aroundWidth = 0.1 * self.perimeterWidth
-				self.halfPerimeterWidth = 0.5 * self.perimeterWidth
-				self.millWidth = self.perimeterWidth * self.repository.millWidthOverPerimeterWidth.value
-				self.loopInnerOutset = self.halfPerimeterWidth + self.perimeterWidth * self.repository.loopInnerOutsetOverPerimeterWidth.value
-				self.loopOuterOutset = self.halfPerimeterWidth + self.perimeterWidth * self.repository.loopOuterOutsetOverPerimeterWidth.value
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
+				self.aroundWidth = 0.1 * self.extrusionWidth
+				self.halfPerimeterWidth = 0.5 * self.extrusionWidth
+				self.millWidth = self.extrusionWidth * self.repository.millWidthOverPerimeterWidth.value
+				self.loopInnerOutset = self.halfPerimeterWidth + self.extrusionWidth * self.repository.loopInnerOutsetOverPerimeterWidth.value
+				self.loopOuterOutset = self.halfPerimeterWidth + self.extrusionWidth * self.repository.loopOuterOutsetOverPerimeterWidth.value
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):

@@ -17,11 +17,11 @@ lash	False
 limit	False
 multiply	False
 preface	False
-raft	True
+raft	False
 scale	False
 skin	False
 skirt	False
-speed	False
+speed	True
 stretch	False
 temperature	False
 wipe	False

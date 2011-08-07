@@ -4,9 +4,9 @@ WindowPosition	700+0
 Open File for Raft	
 Activate Raft	True
 Add Raft, Elevate Nozzle, Orbit:	True
-None	False
+None	True
 Empty Layers Only	False
-Everywhere	True
+Everywhere	False
 Exterior Only	False
 Add support if flatter than (degrees):	50.0
 Cross Hatch instead of Lines	False
@@ -20,10 +20,10 @@ Raft/Support extension in(mm):	2.0
 Name of Support End File:	support_end.gmc
 Name of Support Start File:	support_start.gmc
 Extra Nozzle clearance over Object(ratio):	0.0
-First Layer Main Feedrate (mm/s):	35.0
-First Layer Perimeter Feedrate (mm/s):	25.0
-First Layer Flow Rate Infill(scaler):	1.0
-First Layer Flow Rate Perimeter(scaler):	1.0
+First Layer Main Feedrate (mm/s):	25.0
+First Layer Perimeter Feedrate (mm/s):	15.0
+First Layer Flow Rate Infill(scaler):	1.05
+First Layer Flow Rate Perimeter(scaler):	1.05
 Interface Layers (integer):	0
 Interface Feed Rate Multiplier (ratio):	1.0
 Interface Flow Rate Multiplier (ratio):	1.0

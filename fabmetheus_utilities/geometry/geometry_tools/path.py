@@ -130,7 +130,7 @@ class SVGFabricationCarving:
 	def __init__(self, addLayerTemplate, xmlElement):
 		"""Add empty lists."""
 		self.addLayerTemplate = addLayerTemplate
-		self.layerThickness = 1.0
+		self.extrusionHeight = 1.0
 		self.rotatedLoopLayers = []
 		self.xmlElement = xmlElement
 
@@ -156,7 +156,7 @@ class SVGFabricationCarving:
 
 	def getCarveLayerThickness(self):
 		"""Get the layer thickness."""
-		return self.layerThickness
+		return self.extrusionHeight
 
 	def getCarveRotatedBoundaryLayers(self):
 		"""Get the rotated boundary layers."""
@@ -189,15 +189,15 @@ class SVGFabricationCarving:
 			return
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, -987654321.0)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, 987654321.0)
-		svg_writer.setSVGCarvingCorners(self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.rotatedLoopLayers)
+		svg_writer.setSVGCarvingCorners(self.cornerMaximum, self.cornerMinimum, self.extrusionHeight, self.rotatedLoopLayers)
 
 	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
 		"""Set the infill in direction of bridge."""
 		pass
 
-	def setCarveLayerThickness( self, layerThickness ):
+	def setCarveLayerThickness( self, extrusionHeight ):
 		"""Set the layer thickness."""
-		self.layerThickness = layerThickness
+		self.extrusionHeight = extrusionHeight
 
 	def setCarveImportRadius( self, importRadius ):
 		"""Set the import radius."""

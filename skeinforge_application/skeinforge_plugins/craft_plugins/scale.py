@@ -12,7 +12,7 @@ The default 'Activate Scale' checkbox is off.  When it is on, the functions desc
 ===XY Plane Scale===
 Default is 1.01.
 
-Defines the amount the xy plane of the carving will be scaled.  The xy coordinates will be scaled, but the perimeterWidth is not changed, so this can be changed without affecting other variables.
+Defines the amount the xy plane of the carving will be scaled.  The xy coordinates will be scaled, but the extrusionWidth is not changed, so this can be changed without affecting other variables.
 
 ===Z Axis Scale===
 Default is one.
@@ -123,21 +123,21 @@ class ScaleSkein:
 		xyPlaneScale = repository.xyPlaneScale.value
 		zAxisScale = repository.zAxisScale.value
 		decimalPlacesCarried = int(svgReader.sliceDictionary['decimalPlacesCarried'])
-		layerThickness = zAxisScale * float(svgReader.sliceDictionary['layerThickness'])
-		perimeterWidth = float(svgReader.sliceDictionary['perimeterWidth'])
+		extrusionHeight = zAxisScale * float(svgReader.sliceDictionary['extrusionHeight'])
+		extrusionWidth = float(svgReader.sliceDictionary['extrusionWidth'])
 		rotatedLoopLayers = svgReader.rotatedLoopLayers
 		for rotatedLoopLayer in rotatedLoopLayers:
 			setLoopLayerScale(rotatedLoopLayer, xyPlaneScale, zAxisScale)
 		cornerMaximum = Vector3(-912345678.0, -912345678.0, -912345678.0)
 		cornerMinimum = Vector3(912345678.0, 912345678.0, 912345678.0)
-		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, rotatedLoopLayers)
+		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, extrusionHeight, rotatedLoopLayers)
 		svgWriter = svg_writer.SVGWriter(
 			True,
 			cornerMaximum,
 			cornerMinimum,
 			decimalPlacesCarried,
-			layerThickness,
-			perimeterWidth)
+			extrusionHeight,
+			extrusionWidth)
 		commentElement = svg_writer.getCommentElement(svgReader.root)
 		procedureNameString = svgReader.sliceDictionary['procedureName'] + ',scale'
 		return svgWriter.getReplacedSVGTemplate(fileName, procedureNameString, rotatedLoopLayers, commentElement)

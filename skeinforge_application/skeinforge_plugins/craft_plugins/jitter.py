@@ -168,7 +168,7 @@ class JitterSkein:
 	def addTailoredLoopPath(self):
 		"""Add a clipped and jittered loop path."""
 		loop = getJitteredLoop(self.layerJitter, self.loopPath.path[: -1])
-		loop = euclidean.getAwayPoints(loop, 0.2 * self.perimeterWidth)
+		loop = euclidean.getAwayPoints(loop, 0.2 * self.extrusionWidth)
 		self.addGcodeFromThreadZ(loop + [loop[0]], self.loopPath.z)
 		self.loopPath = None
 
@@ -195,9 +195,9 @@ class JitterSkein:
 				return
 			elif firstWord == '(<operatingFeedRatePerSecond>':
 				self.operatingFeedRatePerMinute = 60.0 * float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.jitter = jitterRepository.jitterOverPerimeterWidth.value * self.perimeterWidth
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
+				self.jitter = jitterRepository.jitterOverPerimeterWidth.value * self.extrusionWidth
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)

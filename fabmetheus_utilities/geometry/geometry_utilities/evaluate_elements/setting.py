@@ -52,7 +52,7 @@ def getLayerThickness(xmlElement):
 	"""Get the layer thickness."""
 	if xmlElement is None:
 		return 0.4
-	return getCascadeFloatWithoutSelf(0.4, 'layerThickness', xmlElement)
+	return getCascadeFloatWithoutSelf(0.4, 'extrusionHeight', xmlElement)
 
 def getOverhangSpan(xmlElement):
 	"""Get the overhang span."""

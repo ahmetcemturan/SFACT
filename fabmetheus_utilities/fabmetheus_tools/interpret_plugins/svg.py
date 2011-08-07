@@ -42,7 +42,7 @@ class SVGCarving:
 	"""An svg carving."""
 	def __init__(self):
 		"""Add empty lists."""
-		self.layerThickness = 1.0
+		self.extrusionHeight = 1.0
 		self.maximumZ = - 987654321.0
 		self.minimumZ = 987654321.0
 		self.svgReader = SVGReader()
@@ -69,7 +69,7 @@ class SVGCarving:
 
 	def getCarveLayerThickness(self):
 		"""Get the layer thickness."""
-		return self.layerThickness
+		return self.extrusionHeight
 
 	def getCarveRotatedBoundaryLayers(self):
 		"""Get the rotated boundary layers."""
@@ -89,20 +89,20 @@ class SVGCarving:
 			return
 		self.fileName = fileName
 		self.svgReader.parseSVG(fileName, svgText)
-		self.layerThickness = euclidean.getFloatDefaultByDictionary(
-			self.layerThickness, self.svgReader.sliceDictionary, 'layerThickness')
+		self.extrusionHeight = euclidean.getFloatDefaultByDictionary(
+			self.extrusionHeight, self.svgReader.sliceDictionary, 'extrusionHeight')
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, self.maximumZ)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, self.minimumZ)
 		svg_writer.setSVGCarvingCorners(
-			self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.svgReader.rotatedLoopLayers)
+			self.cornerMaximum, self.cornerMinimum, self.extrusionHeight, self.svgReader.rotatedLoopLayers)
 
 	def setCarveInfillInDirectionOfBridge(self, infillInDirectionOfBridge):
 		"""Set the infill in direction of bridge."""
 		pass
 
-	def setCarveLayerThickness(self, layerThickness):
+	def setCarveLayerThickness(self, extrusionHeight):
 		"""Set the layer thickness."""
-		self.layerThickness = layerThickness
+		self.extrusionHeight = extrusionHeight
 
 	def setCarveImportRadius(self, importRadius):
 		"""Set the import radius."""

@@ -143,7 +143,7 @@ class ClipSkein:
             removeTable = {}
             euclidean.addLoopToPixelTable( self.loopPath.path, removeTable, self.layerPixelWidth )
             euclidean.removePixelTableFromPixelTable( removeTable, self.layerPixelTable )
-            self.loopPath.path = euclidean.getClippedSimplifiedLoopPath(self.clipLength, self.loopPath.path, self.perimeterWidth)
+            self.loopPath.path = euclidean.getClippedSimplifiedLoopPath(self.clipLength, self.loopPath.path, self.extrusionWidth)
             euclidean.addLoopToPixelTable( self.loopPath.path, self.layerPixelTable, self.layerPixelWidth )
         if self.oldWiddershins is None:
             self.addGcodeFromThreadZ( self.loopPath.path, self.loopPath.z )
@@ -264,12 +264,12 @@ class ClipSkein:
             if firstWord == '(</extruderInitialization>)':
                 self.distanceFeedRate.addLine('(<procedureName> clip </procedureName>)')
                 return
-            elif firstWord == '(<layerThickness>':
-                self.layerThickness = float(splitLine[1])
-            elif firstWord == '(<perimeterWidth>':
-                self.perimeterWidth = float(splitLine[1])
-                absolutePerimeterWidth = abs( self.perimeterWidth )
-                self.clipLength = (self.layerThickness - (clipRepository.clipOverPerimeterWidth.value * self.layerThickness * (math.pi/4)))*4
+            elif firstWord == '(<extrusionHeight>':
+                self.extrusionHeight = float(splitLine[1])
+            elif firstWord == '(<extrusionWidth>':
+                self.extrusionWidth = float(splitLine[1])
+                absolutePerimeterWidth = abs( self.extrusionWidth )
+                self.clipLength = (self.extrusionHeight - (clipRepository.clipOverPerimeterWidth.value * self.extrusionHeight * (math.pi/4)))*4
                 self.connectingStepLength = 0.5 * absolutePerimeterWidth
                 self.layerPixelWidth = 0.1 * absolutePerimeterWidth
                 self.maximumConnectionDistance = clipRepository.maximumConnectionDistanceOverPerimeterWidth.value * absolutePerimeterWidth

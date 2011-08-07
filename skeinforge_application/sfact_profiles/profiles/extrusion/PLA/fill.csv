@@ -6,9 +6,9 @@ Activate Fill:	True
 Infill Solidity (ratio):	0.35
 Extrusion Lines extra Spacing (Scaler):	1.0
 Infill Overlap over Perimeter (Scaler):	1.0
-Extra Shells on Alternating Solid Layer (layers):	1
-Extra Shells on Base (layers):	1
-Extra Shells on Sparse Layer (layers):	1
+Extra Shells on Alternating Solid Layer (layers):	2
+Extra Shells on Base (layers):	2
+Extra Shells on Sparse Layer (layers):	3
 Fully filled Layers (each top and bottom):	2
 Lower Left	True
 Nearest	False

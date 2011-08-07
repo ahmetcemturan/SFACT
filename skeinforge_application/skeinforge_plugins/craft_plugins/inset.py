@@ -365,12 +365,12 @@ class InsetSkein:
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedLine('procedureName', 'inset')
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.halfPerimeterWidth = 0.5 * self.perimeterWidth
-				self.overlapRemovalWidth = (self.halfPerimeterWidth + self.layerThickness/2) * ((math.pi/4) * self.repository.overlapRemovalWidthOverPerimeterWidth.value)
+			elif firstWord == '(<extrusionHeight>':
+				self.extrusionHeight = float(splitLine[1])
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
+				self.halfPerimeterWidth = 0.5 * self.extrusionWidth
+				self.overlapRemovalWidth = (self.halfPerimeterWidth + self.extrusionHeight/2) * ((math.pi/4) * self.repository.overlapRemovalWidthOverPerimeterWidth.value)
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):

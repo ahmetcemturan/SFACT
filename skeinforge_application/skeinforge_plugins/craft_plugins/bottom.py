@@ -118,25 +118,25 @@ class BottomSkein:
 			print('Warning, nothing will be done because the sliceDictionary could not be found getCraftedGcode in preface.')
 			return ''
 		decimalPlacesCarried = int(svgReader.sliceDictionary['decimalPlacesCarried'])
-		layerThickness = float(svgReader.sliceDictionary['layerThickness'])
-		perimeterWidth = float(svgReader.sliceDictionary['perimeterWidth'])
+		extrusionHeight = float(svgReader.sliceDictionary['extrusionHeight'])
+		extrusionWidth = float(svgReader.sliceDictionary['extrusionWidth'])
 		rotatedLoopLayers = svgReader.rotatedLoopLayers
 		zMinimum = 987654321.0
 		for rotatedLoopLayer in rotatedLoopLayers:
 			zMinimum = min(rotatedLoopLayer.z, zMinimum)
-		deltaZ = repository.altitude.value + repository.additionalHeightOverLayerThickness.value * layerThickness - zMinimum
+		deltaZ = repository.altitude.value + repository.additionalHeightOverLayerThickness.value * extrusionHeight - zMinimum
 		for rotatedLoopLayer in rotatedLoopLayers:
 			rotatedLoopLayer.z += deltaZ
 		cornerMaximum = Vector3(-912345678.0, -912345678.0, -912345678.0)
 		cornerMinimum = Vector3(912345678.0, 912345678.0, 912345678.0)
-		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, rotatedLoopLayers)
+		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, extrusionHeight, rotatedLoopLayers)
 		svgWriter = svg_writer.SVGWriter(
 			True,
 			cornerMaximum,
 			cornerMinimum,
 			decimalPlacesCarried,
-			layerThickness,
-			perimeterWidth)
+			extrusionHeight,
+			extrusionWidth)
 		commentElement = svg_writer.getCommentElement(svgReader.root)
 		procedureNameString = svgReader.sliceDictionary['procedureName'] + ',bottom'
 		return svgWriter.getReplacedSVGTemplate(fileName, procedureNameString, rotatedLoopLayers, commentElement)

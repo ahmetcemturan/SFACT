@@ -477,7 +477,7 @@ class SkeinisoSkein:
 			self.extruderActive = True
 		elif firstWord == 'M103':
 			self.extruderActive = False
-		elif firstWord == '(<layerThickness>':
+		elif firstWord == '(<extrusionHeight>':
 			self.thirdLayerThickness = 0.33333333333 * float(splitLine[1])
 		if firstWord == '(<nestedRing>)':
 			if self.layerTopZ > self.getLayerTop():

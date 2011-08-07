@@ -97,7 +97,7 @@ class LiftSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.extruderActive = False
 		self.layerStep = None
-		self.layerThickness = 0.3333333333
+		self.extrusionHeight = 0.3333333333
 		self.lineIndex = 0
 		self.maximumZ = - 912345678.0
 		self.oldLocation = None
@@ -117,7 +117,7 @@ class LiftSkein:
 		self.parseInitialization()
 		self.oldLocation = None
 		if self.layerStep is None:
-			self.layerStep = self.layerThickness
+			self.layerStep = self.extrusionHeight
 		self.cuttingLift = self.layerStep * liftRepository.cuttingLiftOverLayerStep.value
 		self.setMaximumZ()
 		self.travelZ = self.maximumZ + 0.5 * self.layerStep + liftRepository.clearanceAboveTop.value
@@ -148,8 +148,8 @@ class LiftSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedLine('procedureName', 'lift')
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<extrusionHeight>':
+				self.extrusionHeight = float(splitLine[1])
 			elif firstWord == '(<layerStep>':
 				self.layerStep = float(splitLine[1])
 			self.distanceFeedRate.addLine(line)

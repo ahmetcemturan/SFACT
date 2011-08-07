@@ -237,7 +237,7 @@ class StretchSkein:
 		self.lineIndex = 0
 		self.lines = None
 		self.oldLocation = None
-		self.perimeterWidth = 0.4
+		self.extrusionWidth = 0.4
 
 	def getCraftedGcode( self, gcodeText, stretchRepository ):
 		"""Parse gcode text and store the stretch gcode."""
@@ -354,14 +354,14 @@ class StretchSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> stretch </procedureName>)')
 				return
-			elif firstWord == '(<perimeterWidth>':
-				perimeterWidth = float(splitLine[1])
-				self.crossLimitDistance = self.perimeterWidth * self.stretchRepository.crossLimitDistanceOverPerimeterWidth.value
-				self.loopMaximumAbsoluteStretch = self.perimeterWidth * self.stretchRepository.loopStretchOverPerimeterWidth.value
-				self.pathAbsoluteStretch = self.perimeterWidth * self.stretchRepository.pathStretchOverPerimeterWidth.value
-				self.perimeterInsideAbsoluteStretch = self.perimeterWidth * self.stretchRepository.perimeterInsideStretchOverPerimeterWidth.value
-				self.perimeterOutsideAbsoluteStretch = self.perimeterWidth * self.stretchRepository.perimeterOutsideStretchOverPerimeterWidth.value
-				self.stretchFromDistance = self.stretchRepository.stretchFromDistanceOverPerimeterWidth.value * perimeterWidth
+			elif firstWord == '(<extrusionWidth>':
+				extrusionWidth = float(splitLine[1])
+				self.crossLimitDistance = self.extrusionWidth * self.stretchRepository.crossLimitDistanceOverPerimeterWidth.value
+				self.loopMaximumAbsoluteStretch = self.extrusionWidth * self.stretchRepository.loopStretchOverPerimeterWidth.value
+				self.pathAbsoluteStretch = self.extrusionWidth * self.stretchRepository.pathStretchOverPerimeterWidth.value
+				self.perimeterInsideAbsoluteStretch = self.extrusionWidth * self.stretchRepository.perimeterInsideStretchOverPerimeterWidth.value
+				self.perimeterOutsideAbsoluteStretch = self.extrusionWidth * self.stretchRepository.perimeterOutsideStretchOverPerimeterWidth.value
+				self.stretchFromDistance = self.stretchRepository.stretchFromDistanceOverPerimeterWidth.value * extrusionWidth
 				self.threadMaximumAbsoluteStretch = self.pathAbsoluteStretch
 				self.crossLimitDistanceFraction = 0.333333333 * self.crossLimitDistance
 				self.crossLimitDistanceRemainder = self.crossLimitDistance - self.crossLimitDistanceFraction

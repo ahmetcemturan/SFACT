@@ -76,7 +76,7 @@ def processXMLElementByDerivation(derivation, xmlElement):
 	targetChainMatrix = matrix.Matrix(xmlObject.getMatrixChainTetragrid())
 	minimumZ = boolean_geometry.getMinimumZ(xmlObject)
 	z = minimumZ + 0.5 * derivation.sheetThickness
-	zoneArrangement = triangle_mesh.ZoneArrangement(derivation.layerThickness, transformedVertexes)
+	zoneArrangement = triangle_mesh.ZoneArrangement(derivation.extrusionHeight, transformedVertexes)
 	oldVisibleString = targetXMLElement.attributeDictionary['visible']
 	targetXMLElement.attributeDictionary['visible'] = True
 	loops = boolean_geometry.getEmptyZLoops([xmlObject], derivation.importRadius, False, z, zoneArrangement)
@@ -110,7 +110,7 @@ class DisjoinDerivation:
 	def __init__(self, xmlElement):
 		"""Set defaults."""
 		self.importRadius = setting.getImportRadius(xmlElement)
-		self.layerThickness = setting.getLayerThickness(xmlElement)
+		self.extrusionHeight = setting.getLayerThickness(xmlElement)
 		self.sheetThickness = setting.getSheetThickness(xmlElement)
 		self.targetXMLElement = evaluate.getXMLElementByKey('target', xmlElement)
 

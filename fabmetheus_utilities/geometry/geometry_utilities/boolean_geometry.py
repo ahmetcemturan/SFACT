@@ -52,7 +52,7 @@ def getMinimumZ(geometryObject):
 	booleanGeometry = BooleanGeometry()
 	booleanGeometry.archivableObjects = geometryObject.archivableObjects
 	booleanGeometry.importRadius = setting.getImportRadius(geometryObject.xmlElement)
-	booleanGeometry.layerThickness = setting.getLayerThickness(geometryObject.xmlElement)
+	booleanGeometry.extrusionHeight = setting.getLayerThickness(geometryObject.xmlElement)
 	archivableMinimumZ = booleanGeometry.getMinimumZ()
 	geometryMinimumZ = geometryObject.getMinimumZ()
 	if archivableMinimumZ is None and geometryMinimumZ is None:
@@ -72,7 +72,7 @@ class BooleanGeometry:
 		self.belowLoops = []
 		self.infillInDirectionOfBridge = False
 		self.importRadius = 0.6
-		self.layerThickness = 0.4
+		self.extrusionHeight = 0.4
 		self.rotatedLoopLayers = []
 
 	def __repr__(self):
@@ -98,7 +98,7 @@ class BooleanGeometry:
 
 	def getCarveLayerThickness(self):
 		"""Get the layer thickness."""
-		return self.layerThickness
+		return self.extrusionHeight
 
 	def getCarveRotatedBoundaryLayers(self):
 		"""Get the rotated boundary layers."""
@@ -153,8 +153,8 @@ class BooleanGeometry:
 		for vertex in vertexes:
 			self.maximumZ = max(self.maximumZ, vertex.z)
 			self.minimumZ = min(self.minimumZ, vertex.z)
-		self.zoneArrangement = triangle_mesh.ZoneArrangement(self.layerThickness, vertexes)
-		self.halfHeight = 0.5 * self.layerThickness
+		self.zoneArrangement = triangle_mesh.ZoneArrangement(self.extrusionHeight, vertexes)
+		self.halfHeight = 0.5 * self.extrusionHeight
 		self.setActualMinimumZ()
 		return self.minimumZ
 
@@ -184,15 +184,15 @@ class BooleanGeometry:
 						increment = -increment
 				self.minimumZ = round(self.minimumZ, -int(round(math.log10(halfHeightOverMyriad) + 1.5)))
 				return
-			self.minimumZ += self.layerThickness
+			self.minimumZ += self.extrusionHeight
 
 	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
 		"""Set the infill in direction of bridge."""
 		self.infillInDirectionOfBridge = infillInDirectionOfBridge
 
-	def setCarveLayerThickness( self, layerThickness ):
+	def setCarveLayerThickness( self, extrusionHeight ):
 		"""Set the layer thickness."""
-		self.layerThickness = layerThickness
+		self.extrusionHeight = extrusionHeight
 
 	def setCarveImportRadius( self, importRadius ):
 		"""Set the import radius."""

@@ -375,10 +375,10 @@ class CombSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> comb </procedureName>)')
 				return
-			elif firstWord == '(<perimeterWidth>':
-				perimeterWidth = float(splitLine[1])
-				self.combInset = 0.7 * perimeterWidth
-				self.betweenInset = 0.4 * perimeterWidth
+			elif firstWord == '(<extrusionWidth>':
+				extrusionWidth = float(splitLine[1])
+				self.combInset = 0.7 * extrusionWidth
+				self.betweenInset = 0.4 * extrusionWidth
 				self.uTurnWidth = 0.5 * self.betweenInset
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])

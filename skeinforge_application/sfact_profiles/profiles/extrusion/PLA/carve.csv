@@ -2,10 +2,10 @@ Format is tab separated carve settings.
 _Name                          	Value
 WindowPosition	700+0
 Open File for Carve	
-Layer Height = Extrusion Thickness (mm):	0.4
-Extrusion Width (mm):	0.6
+Layer Height = Extrusion Thickness (mm):	0.32
+Extrusion Width (mm):	0.34
 Print from Layer No::	0
-Print up to Layer No:	912345678
+Print up to Layer No:	333333
 Infill in Direction of Bridge	True
 Correct Mesh	True
 Unproven Mesh	False

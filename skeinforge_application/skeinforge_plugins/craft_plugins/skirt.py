@@ -191,9 +191,9 @@ class SkirtSkein:
 
 	def createSkirtLoops(self):
 		"""Create the skirt loops."""
-		points = euclidean.getPointsByHorizontalDictionary(self.perimeterWidth, self.unifiedLoop.horizontalDictionary)
-		points += euclidean.getPointsByVerticalDictionary(self.perimeterWidth, self.unifiedLoop.verticalDictionary)
-		loops = triangle_mesh.getDescendingAreaOrientedLoops(points, points, 2.5 * self.perimeterWidth)
+		points = euclidean.getPointsByHorizontalDictionary(self.extrusionWidth, self.unifiedLoop.horizontalDictionary)
+		points += euclidean.getPointsByVerticalDictionary(self.extrusionWidth, self.unifiedLoop.verticalDictionary)
+		loops = triangle_mesh.getDescendingAreaOrientedLoops(points, points, 2.5 * self.extrusionWidth)
 		outerLoops = getOuterLoops(loops)
 		outsetLoops = intercircle.getInsetSeparateLoopsFromLoops(-self.skirtOutset, outerLoops)
 		self.outsetLoops = getOuterLoops(outsetLoops)
@@ -215,7 +215,7 @@ class SkirtSkein:
 	def getHorizontalXIntersectionsTable(self, loop):
 		"""Get the horizontal x intersections table from the loop."""
 		horizontalXIntersectionsTable = {}
-		euclidean.addXIntersectionsFromLoopForTable(loop, horizontalXIntersectionsTable, self.perimeterWidth)
+		euclidean.addXIntersectionsFromLoopForTable(loop, horizontalXIntersectionsTable, self.extrusionWidth)
 		return horizontalXIntersectionsTable
 
 	def parseBoundaries(self):
@@ -261,9 +261,9 @@ class SkirtSkein:
 			elif firstWord == '(<operatingFlowRate>':
 				self.oldFlowRateInput = float(splitLine[1])
 				self.skirtFlowRate = self.oldFlowRateInput
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.skirtOutset = (self.repository.gapOverPerimeterWidth.value + 0.5) * self.perimeterWidth
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
+				self.skirtOutset = (self.repository.gapOverPerimeterWidth.value + 0.5) * self.extrusionWidth
 				self.distanceFeedRate.addTagRoundedLine('skirtOutset', self.skirtOutset)
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])

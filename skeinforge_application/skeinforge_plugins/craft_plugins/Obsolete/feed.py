@@ -90,7 +90,7 @@ class FeedRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.feed.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName(fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Feed', self, '')
 		self.activateFeed = settings.BooleanSetting().getFromValue('Activate Feed:', self, True)
-		self.feedRatePerSecond = settings.FloatSpin().getFromValue(2.0, 'Feed Rate (mm/s):', self, 50.0, 16.0)
+		self.mainFeed = settings.FloatSpin().getFromValue(2.0, 'Feed Rate (mm/s):', self, 50.0, 16.0)
 		self.maximumZDrillFeedRatePerSecond = settings.FloatSpin().getFromValue(0.02, 'Maximum Z Drill Feed Rate (mm/s):', self, 0.5, 0.1)
 		self.travelFeedRatePerSecond = settings.FloatSpin().getFromValue(2.0, 'Travel Feed Rate (mm/s):', self, 50.0, 16.0)
 		self.executeTitle = 'Feed'
@@ -106,7 +106,7 @@ class FeedSkein:
 	"""A class to feed a skein of cuttings."""
 	def __init__(self):
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
-		self.feedRatePerSecond = 16.0
+		self.mainFeed = 16.0
 		self.isExtruderActive = False
 		self.lineIndex = 0
 		self.lines = None
@@ -116,7 +116,7 @@ class FeedSkein:
 	def getCraftedGcode(self, gcodeText, repository):
 		"""Parse gcode text and store the feed gcode."""
 		self.repository = repository
-		self.feedRatePerSecond = repository.feedRatePerSecond.value
+		self.mainFeed = repository.mainFeed.value
 		self.travelFeedRateMinute = 60.0 * self.repository.travelFeedRatePerSecond.value
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
@@ -128,7 +128,7 @@ class FeedSkein:
 		"""Get gcode line with feed rate."""
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.oldLocation = location
-		feedRateMinute = 60.0 * self.feedRatePerSecond
+		feedRateMinute = 60.0 * self.mainFeed
 		if not self.isExtruderActive:
 			feedRateMinute = self.travelFeedRateMinute
 		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line, splitLine)
@@ -143,10 +143,10 @@ class FeedSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> feed </procedureName>)')
 				return
-			elif firstWord == '(<perimeterWidth>':
+			elif firstWord == '(<extrusionWidth>':
 				self.absolutePerimeterWidth = abs(float(splitLine[1]))
 				self.distanceFeedRate.addTagBracketedLine('maximumZDrillFeedRatePerSecond', self.repository.maximumZDrillFeedRatePerSecond.value)
-				self.distanceFeedRate.addTagBracketedLine('operatingFeedRatePerSecond', self.feedRatePerSecond)
+				self.distanceFeedRate.addTagBracketedLine('operatingFeedRatePerSecond', self.mainFeed)
 				self.distanceFeedRate.addTagBracketedLine('travelFeedRatePerSecond', self.repository.travelFeedRatePerSecond.value)
 			self.distanceFeedRate.addLine(line)
 

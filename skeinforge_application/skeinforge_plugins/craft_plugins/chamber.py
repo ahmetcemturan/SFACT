@@ -168,7 +168,7 @@ class ChamberRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Chamber')
 		self.activateChamber = settings.BooleanSetting().getFromValue('Activate Chamber..if you want below functions to work', self, False )
 		settings.LabelSeparator().getFromRepository(self)
-		self.bedTemperature = settings.FloatSpin().getFromValue( 20.0, 'Heated PrintBed Temperature (Celcius):', self, 130.0, 60.0 )
+		self.BedHeaterTemperature = settings.FloatSpin().getFromValue( 20.0, 'Heated PrintBed Temperature (Celcius):', self, 130.0, 60.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		self.turnBedHeaterOffAtShutDown = settings.BooleanSetting().getFromValue('Turn print Bed Heater Off at Shut Down', self, True )
 		self.turnExtruderHeaterOffAtShutDown = settings.BooleanSetting().getFromValue('Turn Extruder Heater Off at Shut Down', self, True )
@@ -218,7 +218,7 @@ class ChamberSkein:
 		firstWord = splitLine[0]
 		if firstWord == '(<crafting>)':
 			self.distanceFeedRate.addLine(line)
-			self.distanceFeedRate.addParameter('M140', self.repository.bedTemperature.value ) # Set bed temperature.
+			self.distanceFeedRate.addParameter('M140', self.repository.BedHeaterTemperature.value ) # Set bed temperature.
 
 		elif firstWord == '(</crafting>)':
 				self.distanceFeedRate.addLine(line)

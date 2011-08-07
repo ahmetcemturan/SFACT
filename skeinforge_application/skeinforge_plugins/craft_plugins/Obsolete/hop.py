@@ -174,11 +174,11 @@ class HopSkein:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
-			if firstWord == '(<layerThickness>':
-				layerThickness = float(splitLine[1])
-				self.hopHeight = hopRepository.hopOverLayerThickness.value * layerThickness
+			if firstWord == '(<extrusionHeight>':
+				extrusionHeight = float(splitLine[1])
+				self.hopHeight = hopRepository.hopOverLayerThickness.value * extrusionHeight
 				self.hopDistance = self.hopHeight / self.minimumSlope
-				self.minimumDistance = 0.5 * layerThickness
+				self.minimumDistance = 0.5 * extrusionHeight
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> hop </procedureName>)')
 				return

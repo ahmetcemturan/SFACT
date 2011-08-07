@@ -166,7 +166,7 @@ class StatisticSkein:
 		self.extruderSpeed = None
 		self.extruderToggled = 0
 		self.feedRateMinute = 600.0
-		self.layerThickness = 0.4
+		self.extrusionHeight = 0.4
 		self.numberOfLines = 0
 		self.procedures = []
 		self.repository = repository
@@ -188,7 +188,7 @@ class StatisticSkein:
 		roundedLow = euclidean.getRoundedPoint( self.cornerMinimum )
 		roundedExtent = euclidean.getRoundedPoint( extent )
 		axisString =  " axis extrusion starts at "
-		crossSectionArea = 0.9 * self.absolutePerimeterWidth * self.layerThickness # 0.9 if from the typical fill density
+		crossSectionArea = 0.9 * self.absolutePerimeterWidth * self.extrusionHeight # 0.9 if from the typical fill density
 		if self.extrusionDiameter is not None:
 			crossSectionArea = math.pi / 4.0 * self.extrusionDiameter * self.extrusionDiameter
 		volumeExtruded = 0.001 * crossSectionArea * self.totalDistanceExtruded
@@ -223,7 +223,7 @@ class StatisticSkein:
 		self.addLine( "Cross section area is %s mm2." % euclidean.getThreeSignificantFigures( crossSectionArea ) )
 		if self.extrusionDiameter is not None:
 			self.addLine( "Extrusion diameter is %s mm." % euclidean.getThreeSignificantFigures( self.extrusionDiameter ) )
-		self.addLine('Extrusion fill density ratio is %s' % euclidean.getThreeSignificantFigures( crossSectionArea / self.absolutePerimeterWidth / self.layerThickness ) )
+		self.addLine('Extrusion fill density ratio is %s' % euclidean.getThreeSignificantFigures( crossSectionArea / self.absolutePerimeterWidth / self.extrusionHeight ) )
 		self.addLine(' ')
 		self.addLine('Material')
 		self.addLine( "Mass extruded is %s grams." % euclidean.getThreeSignificantFigures( 1000.0 * mass ) )
@@ -243,7 +243,7 @@ class StatisticSkein:
 			self.addLine(self.profileName)
 		self.addLine(' ')
 		self.addLine('Slice')
-		self.addLine( "Layer thickness is %s mm." % euclidean.getThreeSignificantFigures( self.layerThickness ) )
+		self.addLine( "Layer thickness is %s mm." % euclidean.getThreeSignificantFigures( self.extrusionHeight ) )
 		self.addLine( "Perimeter width is %s mm." % euclidean.getThreeSignificantFigures( self.absolutePerimeterWidth ) )
 		self.addLine(' ')
 		return self.output.getvalue()
@@ -322,12 +322,12 @@ class StatisticSkein:
 			self.extruderSet( False )
 		elif firstWord == 'M103':
 			self.extruderSet( False )
-		elif firstWord == '(<layerThickness>':
-			self.layerThickness = float(splitLine[1])
-			self.extrusionDiameter = self.repository.extrusionDiameterOverThickness.value * self.layerThickness
+		elif firstWord == '(<extrusionHeight>':
+			self.extrusionHeight = float(splitLine[1])
+			self.extrusionDiameter = self.repository.extrusionDiameterOverThickness.value * self.extrusionHeight
 		elif firstWord == '(<operatingFeedRatePerSecond>':
 			self.operatingFeedRatePerSecond = float(splitLine[1])
-		elif firstWord == '(<perimeterWidth>':
+		elif firstWord == '(<extrusionWidth>':
 			self.absolutePerimeterWidth = abs(float(splitLine[1]))
 		elif firstWord == '(<procedureName>':
 			self.procedures.append(splitLine[1])

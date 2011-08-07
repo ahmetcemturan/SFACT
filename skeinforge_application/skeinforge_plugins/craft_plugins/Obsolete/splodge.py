@@ -170,7 +170,7 @@ class SplodgeSkein:
 		self.setRotations()
 		self.splodgeRepository = splodgeRepository
 		self.parseInitialization( splodgeRepository )
-		self.boundingRectangle = gcodec.BoundingRectangle().getFromGcodeLines( self.lines[self.lineIndex :], 0.5 * self.perimeterWidth )
+		self.boundingRectangle = gcodec.BoundingRectangle().getFromGcodeLines( self.lines[self.lineIndex :], 0.5 * self.extrusionWidth )
 		self.initialSplodgeFeedRateMinute = 60.0 * splodgeRepository.initialSplodgeFeedRate.value
 		self.initialStartupDistance = splodgeRepository.initialSplodgeQuantityLength.value * splodgeRepository.initialSplodgeFeedRate.value / self.operatingFeedRatePerSecond
 		self.operatingSplodgeFeedRateMinute = 60.0 * splodgeRepository.operatingSplodgeFeedRate.value
@@ -234,8 +234,8 @@ class SplodgeSkein:
 		relativeStartComplex *= startupDistance / abs( relativeStartComplex )
 		startComplex = self.getStartInsideBoundingRectangle( locationComplex, relativeStartComplex )
 		feedRateMultiplier = feedRateMinute / self.operatingFeedRatePerSecond / 60.0
-		splodgeLayerThickness = self.layerThickness / math.sqrt( feedRateMultiplier )
-		extraLayerThickness = splodgeLayerThickness - self.layerThickness
+		splodgeLayerThickness = self.extrusionHeight / math.sqrt( feedRateMultiplier )
+		extraLayerThickness = splodgeLayerThickness - self.extrusionHeight
 		lift = extraLayerThickness * liftOverExtraThickness
 		startLine = self.distanceFeedRate.getLinearGcodeMovementWithFeedRate( self.feedRateMinute, startComplex, location.z + lift )
 		self.addLineUnlessIdenticalReactivate( startLine )
@@ -279,13 +279,13 @@ class SplodgeSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.addLineUnlessIdenticalReactivate('(<procedureName> splodge </procedureName>)')
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<extrusionHeight>':
+				self.extrusionHeight = float(splitLine[1])
 			elif firstWord == '(<operatingFeedRatePerSecond>':
 				self.operatingFeedRatePerSecond = float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.minimumQuantityLength = 0.1 * self.perimeterWidth
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
+				self.minimumQuantityLength = 0.1 * self.extrusionWidth
 			self.addLineUnlessIdenticalReactivate(line)
 
 	def parseLine(self, line):

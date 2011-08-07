@@ -438,8 +438,8 @@ class OozebaneSkein:
 			elif firstWord == '(<operatingFeedRatePerSecond>':
 				self.operatingFeedRateMinute = 60.0 * float(splitLine[1])
 				self.feedRateMinute = self.operatingFeedRateMinute
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
 				self.setExtrusionWidth( oozebaneRepository )
 			self.distanceFeedRate.addLine(line)
 
@@ -533,7 +533,7 @@ class OozebaneSkein:
 
 	def setExtrusionWidth( self, oozebaneRepository ):
 		"""Set the extrusion width."""
-		self.closeSquared = 0.01 * self.perimeterWidth * self.perimeterWidth
+		self.closeSquared = 0.01 * self.extrusionWidth * self.extrusionWidth
 		self.earlyStartupMaximumDistance = oozebaneRepository.earlyStartupMaximumDistance.value
 		self.earlyStartupDistanceConstant = oozebaneRepository.earlyStartupDistanceConstant.value
 		self.minimumDistanceForEarlyStartup = oozebaneRepository.minimumDistanceForEarlyStartup.value

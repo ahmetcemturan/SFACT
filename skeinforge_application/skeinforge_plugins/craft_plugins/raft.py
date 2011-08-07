@@ -458,7 +458,7 @@ class RaftSkein:
 		self.isSurroundingLoop = True
 		self.layerIndex = - 1
 		self.layerStarted = False
-		self.layerThickness = 0.4
+		self.extrusionHeight = 0.4
 		self.lineIndex = 0
 		self.lines = None
 		self.objectFirstLayerInfillTemperature = None
@@ -472,7 +472,7 @@ class RaftSkein:
 		self.operatingLayerEndLine = '(<operatingLayerEnd> </operatingLayerEnd>)'
 		self.operatingJump = None
 		self.orbitalFeedRatePerSecond = 2.01
-		self.perimeterWidth = 0.6
+		self.extrusionWidth = 0.6
 		self.supportFeedRate = 20
 		self.supportFlowRate = None
 		self.supportLayers = []
@@ -482,7 +482,7 @@ class RaftSkein:
 
 	def addBaseLayer(self):
 		"""Add a base layer."""
-		baseLayerThickness = self.layerThickness * self.baseLayerThicknessOverLayerThickness
+		baseLayerThickness = self.extrusionHeight * self.baseLayerThicknessOverLayerThickness
 		zCenter = self.extrusionTop + 0.5 * baseLayerThickness
 		z = zCenter + baseLayerThickness * self.repository.baseNozzleLiftOverBaseLayerThickness.value
 		if len(self.baseEndpoints) < 1:
@@ -532,7 +532,7 @@ class RaftSkein:
 
 	def addInterfaceLayer(self):
 		"""Add an interface layer."""
-		interfaceLayerThickness = self.layerThickness * self.interfaceLayerThicknessOverLayerThickness
+		interfaceLayerThickness = self.extrusionHeight * self.interfaceLayerThicknessOverLayerThickness
 		zCenter = self.extrusionTop + 0.5 * interfaceLayerThickness
 		z = zCenter + interfaceLayerThickness * self.repository.interfaceNozzleLiftOverInterfaceLayerThickness.value
 		self.interfaceIntersectionsTableKeys.sort()
@@ -582,12 +582,12 @@ class RaftSkein:
 		feedRateMultiplier,
 		flowRateMultiplier,
 		layerLayerThickness,
-		layerThicknessRatio,
+		extrusionHeightRatio,
 		step,
 		z):
 		"""Add a layer from endpoints and raise the extrusion top."""
-		layerThicknessRatioSquared = layerThicknessRatio * layerThicknessRatio
-		feedRateMinute = self.feedRateMinute * feedRateMultiplier / layerThicknessRatioSquared
+		extrusionHeightRatioSquared = extrusionHeightRatio * extrusionHeightRatio
+		feedRateMinute = self.feedRateMinute * feedRateMultiplier / extrusionHeightRatioSquared
 		if len(endpoints) < 1:
 			return
 		aroundPixelTable = {}
@@ -607,7 +607,7 @@ class RaftSkein:
 			self.distanceFeedRate.addLine('(</layer>)')
 		self.distanceFeedRate.addLine('(<layer> %s )' % self.distanceFeedRate.getRounded(z)) # Indicate that a new layer is starting.
 		if self.beginLoop is not None:
-			zBegin = self.extrusionTop + self.layerThickness
+			zBegin = self.extrusionTop + self.extrusionHeight
 			intercircle.addOrbitsIfLarge(self.distanceFeedRate , self.beginLoop, self.orbitalFeedRatePerSecond, self.temperatureChangeTimeBeforeRaft, zBegin)
 			self.beginLoop = None
 		self.layerStarted = True
@@ -616,12 +616,12 @@ class RaftSkein:
 		"""Add the orbits before the operating layers."""
 		if len(boundaryLoops) < 1:
 			return
-		insetBoundaryLoops = intercircle.getInsetLoopsFromLoops(self.perimeterWidth, boundaryLoops)
+		insetBoundaryLoops = intercircle.getInsetLoopsFromLoops(self.extrusionWidth, boundaryLoops)
 		if len(insetBoundaryLoops) < 1:
 			insetBoundaryLoops = boundaryLoops
 		largestLoop = euclidean.getLargestLoop(insetBoundaryLoops)
 		if pointComplex is not None:
-			largestLoop = euclidean.getLoopStartingNearest(self.perimeterWidth, pointComplex, largestLoop)
+			largestLoop = euclidean.getLoopStartingNearest(self.extrusionWidth, pointComplex, largestLoop)
 		intercircle.addOrbitsIfLarge(self.distanceFeedRate , largestLoop, self.orbitalFeedRatePerSecond, temperatureChangeTime, z)
 
 	def addRaft(self):
@@ -630,10 +630,10 @@ class RaftSkein:
 			print('this should never happen, there are no boundary layers in addRaft')
 			return
 		self.baseLayerThicknessOverLayerThickness = self.repository.baseLayerThicknessOverLayerThickness.value
-		baseExtrusionWidth = self.perimeterWidth * self.baseLayerThicknessOverLayerThickness
+		baseExtrusionWidth = self.extrusionWidth * self.baseLayerThicknessOverLayerThickness
 		self.baseStep = baseExtrusionWidth / self.repository.baseInfillDensity.value
 		self.interfaceLayerThicknessOverLayerThickness = self.repository.interfaceLayerThicknessOverLayerThickness.value
-		interfaceExtrusionWidth = self.perimeterWidth * self.interfaceLayerThicknessOverLayerThickness
+		interfaceExtrusionWidth = self.extrusionWidth * self.interfaceLayerThicknessOverLayerThickness
 		self.interfaceStep = interfaceExtrusionWidth / self.repository.interfaceInfillDensity.value
 		self.setCornersZ()
 		self.cornerMinimumComplex = self.cornerMinimum.dropAxis()
@@ -664,8 +664,8 @@ class RaftSkein:
 			self.addTemperatureLineIfDifferent(self.interfaceTemperature)
 		for interfaceLayerIndex in xrange(self.repository.interfaceLayers.value):
 			self.addInterfaceLayer()
-		self.operatingJump = self.extrusionTop + self.layerThickness * (self.repository.operatingNozzleLiftOverLayerThickness.value + 0.5)
-#		self.operatingJump = self.extrusionTop + self.layerThickness + self.repository.operatingNozzleLiftOverLayerThickness.value
+		self.operatingJump = self.extrusionTop + self.extrusionHeight * (self.repository.operatingNozzleLiftOverLayerThickness.value + 0.5)
+#		self.operatingJump = self.extrusionTop + self.extrusionHeight + self.repository.operatingNozzleLiftOverLayerThickness.value
 		for boundaryLayer in self.boundaryLayers:
 			if self.operatingJump is not None:
 				boundaryLayer.z += self.operatingJump
@@ -687,11 +687,11 @@ class RaftSkein:
 		for supportLayer in self.supportLayers:
 			supportSegmentTable = supportLayer.supportSegmentTable
 			if len(supportSegmentTable) > 0:
-				outset = 0.5 * self.perimeterWidth
+				outset = 0.5 * self.extrusionWidth
 				self.addRaftPerimetersByLoops(getLoopsBySegmentsDictionary(supportSegmentTable, self.interfaceStep), outset)
 		if self.repository.baseLayers.value < 1 and self.repository.interfaceLayers.value < 1:
 			return
-		outset = (1.0 + self.repository.infillOverhangOverExtrusionWidth.value) * self.perimeterWidth
+		outset = (1.0 + self.repository.infillOverhangOverExtrusionWidth.value) * self.extrusionWidth
 		self.addRaftPerimetersByLoops(getLoopsBySegmentsDictionary(self.interfaceSegmentsTable, self.interfaceStep), outset)
 
 	def addRaftPerimetersByLoops(self, loops, outset):
@@ -792,7 +792,7 @@ class RaftSkein:
 			squareLoop = euclidean.getSquareLoopWiddershins( layerCornerLow, layerCornerHigh )
 			intercircle.addOrbitsIfLarge( self.distanceFeedRate, squareLoop, self.orbitalFeedRatePerSecond, temperatureTimeChange, z )
 			return
-		perimeterInset = 0.4 * self.perimeterWidth
+		perimeterInset = 0.4 * self.extrusionWidth
 		insetBoundaryLoops = intercircle.getInsetLoopsFromLoops( perimeterInset, boundaryLoops )
 		if len( insetBoundaryLoops ) < 1:
 			insetBoundaryLoops = boundaryLoops
@@ -912,7 +912,7 @@ class RaftSkein:
 			return []
 		supportSegmentTable = self.supportLayers[self.layerIndex].supportSegmentTable
 		if self.layerIndex % 2 == 1 and self.repository.supportCrossHatch.value:
-			return getVerticalEndpoints(supportSegmentTable, self.interfaceStep, 0.1 * self.perimeterWidth, self.interfaceStep)
+			return getVerticalEndpoints(supportSegmentTable, self.interfaceStep, 0.1 * self.extrusionWidth, self.interfaceStep)
 		return euclidean.getEndpointsFromSegmentTable(supportSegmentTable)
 
 	def getTemperatureChangeTime( self, temperature ):
@@ -947,8 +947,8 @@ class RaftSkein:
 				self.interfaceTemperature = float(splitLine[1])
 			elif firstWord == '(<layer>':
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<extrusionHeight>':
+				self.extrusionHeight = float(splitLine[1])
 			elif firstWord == '(<objectFirstLayerInfillTemperature>':
 				self.objectFirstLayerInfillTemperature = float(splitLine[1])
 			elif firstWord == '(<objectFirstLayerPerimeterTemperature>':
@@ -963,10 +963,10 @@ class RaftSkein:
 				self.oldFlowRateInput = float(splitLine[1])
 				self.operatingFlowRate = self.oldFlowRateInput
 				self.supportFlowRate = self.supportFeedRate * self.repository.supportFlowRateOverOperatingFlowRate.value
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.quarterPerimeterWidth = 0.25 * self.perimeterWidth
-				self.supportOutset = self.perimeterWidth + self.perimeterWidth * self.repository.supportGapOverPerimeterExtrusionWidth.value
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
+				self.quarterPerimeterWidth = 0.25 * self.extrusionWidth
+				self.supportOutset = self.extrusionWidth + self.extrusionWidth * self.repository.supportGapOverPerimeterExtrusionWidth.value
 			elif firstWord == '(<supportLayersTemperature>':
 				self.supportLayersTemperature = float(splitLine[1])
 			elif firstWord == '(<supportedLayersTemperature>':

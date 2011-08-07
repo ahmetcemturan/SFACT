@@ -172,12 +172,12 @@ class PrefaceSkein:
 		craftTypeName = skeinforge_profile.getCraftTypeName()
 		self.distanceFeedRate.addTagBracketedLine('craftTypeName', craftTypeName)
 		self.distanceFeedRate.addTagBracketedLine('decimalPlacesCarried', self.distanceFeedRate.decimalPlacesCarried)
-		layerThickness = float(self.svgReader.sliceDictionary['layerThickness'])
-		self.distanceFeedRate.addTagRoundedLine('layerThickness', layerThickness)
+		extrusionHeight = float(self.svgReader.sliceDictionary['extrusionHeight'])
+		self.distanceFeedRate.addTagRoundedLine('extrusionHeight', extrusionHeight)
 		if self.repository.meta.value:
 			self.distanceFeedRate.addTagBracketedLine('meta', self.repository.meta.value)
-		perimeterWidth = float(self.svgReader.sliceDictionary['perimeterWidth'])
-		self.distanceFeedRate.addTagRoundedLine('perimeterWidth', perimeterWidth)
+		extrusionWidth = float(self.svgReader.sliceDictionary['extrusionWidth'])
+		self.distanceFeedRate.addTagRoundedLine('extrusionWidth', extrusionWidth)
 		self.distanceFeedRate.addTagBracketedLine('profileName', skeinforge_profile.getProfileName(craftTypeName))
 		procedureNames = self.svgReader.sliceDictionary['procedureName'].replace(',', ' ').split()
 		for procedureName in procedureNames:

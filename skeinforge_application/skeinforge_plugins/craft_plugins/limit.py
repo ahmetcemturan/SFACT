@@ -162,7 +162,7 @@ class LimitSkein:
 				return
 			elif firstWord == '(<maximumZDrillFeedRatePerSecond>':
 				self.maximumZDrillFeedRatePerSecond = float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
+			elif firstWord == '(<extrusionWidth>':
 				self.distanceFeedRate.addTagBracketedLine('maximumZTravelFeedRatePerSecond', self.maximumZTravelFeedRatePerSecond )
 			self.distanceFeedRate.addLine(line)
 

@@ -80,7 +80,7 @@ class SLCCarving:
 		"""Add empty lists."""
 		self.maximumZ = - 987654321.0
 		self.minimumZ = 987654321.0
-		self.layerThickness = None
+		self.extrusionHeight = None
 		self.rotatedLoopLayers = []
 	
 	def __repr__(self):
@@ -103,13 +103,13 @@ class SLCCarving:
 		"""Get the carved svg text."""
 		if len(self.rotatedLoopLayers) < 1:
 			return ''
-		decimalPlaces = max(0, 2 - int(math.floor(math.log10(self.layerThickness))))
-		self.svgWriter = svg_writer.SVGWriter(True, self.cornerMaximum, self.cornerMinimum, decimalPlaces, self.layerThickness)
+		decimalPlaces = max(0, 2 - int(math.floor(math.log10(self.extrusionHeight))))
+		self.svgWriter = svg_writer.SVGWriter(True, self.cornerMaximum, self.cornerMinimum, decimalPlaces, self.extrusionHeight)
 		return self.svgWriter.getReplacedSVGTemplate(self.fileName, 'basic', self.rotatedLoopLayers)
 
 	def getCarveLayerThickness(self):
 		"""Get the layer thickness."""
-		return self.layerThickness
+		return self.extrusionHeight
 
 	def getCarveRotatedBoundaryLayers(self):
 		"""Get the rotated boundary layers."""
@@ -155,7 +155,7 @@ class SLCCarving:
 					pointVector3 = Vector3(point.real, point.imag, rotatedLoopLayer.z)
 					self.cornerMaximum.maximize(pointVector3)
 					self.cornerMinimum.minimize(pointVector3)
-		halfLayerThickness = 0.5 * self.layerThickness
+		halfLayerThickness = 0.5 * self.extrusionHeight
 		self.cornerMaximum.z += halfLayerThickness
 		self.cornerMinimum.z -= halfLayerThickness
 
@@ -167,13 +167,13 @@ class SLCCarving:
 			exit()
 		for index in xrange( tableEntrySize ):
 			sampleTableEntry = SampleTableEntry( file )
-			self.layerThickness = sampleTableEntry.layer_thickness
+			self.extrusionHeight = sampleTableEntry.layer_thickness
 
 	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
 		"""Set the infill in direction of bridge."""
 		pass
 
-	def setCarveLayerThickness( self, layerThickness ):
+	def setCarveLayerThickness( self, extrusionHeight ):
 		"""Set the layer thickness."""
 		pass
 

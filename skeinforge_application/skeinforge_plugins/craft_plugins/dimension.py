@@ -129,7 +129,8 @@ class DimensionRepository:
 		settings.LabelSeparator().getFromRepository(self)		
 		self.filamentDiameter = settings.FloatSpin().getFromValue(1.5, 'Filament Diameter (mm):', self, 3.5, 2.8)
 		self.filamentPackingDensity = settings.FloatSpin().getFromValue(0.7, 'Filament Packing Density (ratio) lower=more extrusion:', self, 1.0, 1.00)
-		settings.LabelSeparator().getFromRepository(self)		
+		self.MeasuredXSection = settings.FloatSpin().getFromValue(0.20, 'Measured Width of Extrusion:', self, 2.0, 0.5)
+		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Fighting Oooze -', self )
 		settings.LabelSeparator().getFromRepository(self)		
 		settings.LabelDisplay().getFromName('- Filament Retraction Settings -', self )		
@@ -188,6 +189,7 @@ class DimensionSkein:
 		"""Parse gcode text and store the dimension gcode."""
 		self.repository = repository
 		filamentRadius = 0.5 * repository.filamentDiameter.value
+		xSectionCorrector = repository.MeasuredXSection.value
 		filamentPackingArea = math.pi * filamentRadius * filamentRadius * repository.filamentPackingDensity.value
 		self.minimumExtrusionForRetraction = self.repository.minimumExtrusionForRetraction.value
 		self.minimumTravelForRetraction = self.repository.minimumTravelForRetraction.value
@@ -196,7 +198,8 @@ class DimensionSkein:
 		self.parseInitialization()
 		if self.repository.retractWhenCrossing.value:
 			self.parseBoundaries()
-		self.flowScaleSixty = 60.0 * (((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight*(self.extrusionWidth-self.extrusionHeight))/filamentPackingArea
+		self.calibrationFactor = (((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight*(xSectionCorrector -self.extrusionHeight))/(((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight *(self.extrusionWidth-self.extrusionHeight))
+		self.flowScaleSixty = 60.0 * ((((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight*(self.extrusionWidth-self.extrusionHeight))/filamentPackingArea) / self.calibrationFactor
 		if self.operatingFlowRate is None:
 			print('There is no operatingFlowRate so dimension will do nothing.')
 			return gcodeText
@@ -330,8 +333,8 @@ class DimensionSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> dimension </procedureName>)')
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<extrusionHeight>':
+				self.extrusionHeight = float(splitLine[1])
 			elif firstWord == '(<maximumZDrillFeedRatePerSecond>':
 				self.maximumZTravelFeedRatePerSecond = float(splitLine[1])
 			elif firstWord == '(<maximumZTravelFeedRatePerSecond>':
@@ -341,8 +344,8 @@ class DimensionSkein:
 			elif firstWord == '(<operatingFlowRate>':
 				self.operatingFlowRate = float(splitLine[1])
 				self.flowRate = self.operatingFlowRate
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRatePerSecond = float(splitLine[1])
 			self.distanceFeedRate.addLine(line)

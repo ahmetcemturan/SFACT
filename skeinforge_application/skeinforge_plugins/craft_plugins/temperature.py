@@ -173,7 +173,7 @@ class TemperatureSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> temperature </procedureName>)')
 				return
-			elif firstWord == '(<perimeterWidth>':
+			elif firstWord == '(<extrusionWidth>':
 				self.distanceFeedRate.addTagBracketedLine('coolingRate', self.repository.coolingRate.value )
 				self.distanceFeedRate.addTagBracketedLine('heatingRate', self.repository.heatingRate.value )
 				self.distanceFeedRate.addTagBracketedLine('baseTemperature', self.repository.baseTemperature.value )

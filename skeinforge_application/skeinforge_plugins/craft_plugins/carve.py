@@ -152,8 +152,8 @@ class CarveRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve')
 		settings.LabelDisplay().getFromName('- MAIN SETTINGS for Extrusion  -', self )
 		settings.LabelSeparator().getFromRepository(self)
-		self.layerThickness = settings.FloatSpin().getFromValue( 0.1, 'Layer Height = Extrusion Thickness (mm):', self, 1.0, 0.4 )
-		self.perimeterWidth = settings.FloatSpin().getFromValue( 0.2, 'Extrusion Width (mm):', self, 1.0, 0.6 )
+		self.extrusionHeight = settings.FloatSpin().getFromValue( 0.1, 'Layer Height = Extrusion Thickness (mm):', self, 1.0, 0.4 )
+		self.extrusionWidth = settings.FloatSpin().getFromValue( 0.2, 'Extrusion Width (mm):', self, 1.0, 0.6 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Layers to print -', self )
 		self.layersFrom = settings.IntSpin().getFromValue( 0, 'Print from Layer No::', self, 3333, 0 )
@@ -188,27 +188,27 @@ class CarveSkein:
 	"""A class to carve a carving."""
 	def getCarvedSVG(self, carving, fileName, repository):
 		"""Parse gnu triangulated surface text and store the carved gcode."""
-		layerThickness = repository.layerThickness.value
-		perimeterWidth = repository.perimeterWidth.value
+		extrusionHeight = repository.extrusionHeight.value
+		extrusionWidth = repository.extrusionWidth.value
 		carving.setCarveInfillInDirectionOfBridge(repository.infillInDirectionOfBridge.value)
-		carving.setCarveLayerThickness(layerThickness)
-		importRadius = 0.5 * repository.importCoarseness.value * abs(perimeterWidth)
-		carving.setCarveImportRadius(max(importRadius, 0.01 * layerThickness))
+		carving.setCarveLayerThickness(extrusionHeight)
+		importRadius = 0.5 * repository.importCoarseness.value * abs(extrusionWidth)
+		carving.setCarveImportRadius(max(importRadius, 0.01 * extrusionHeight))
 		carving.setCarveIsCorrectMesh(repository.correctMesh.value)
 		rotatedLoopLayers = carving.getCarveRotatedBoundaryLayers()
 		if len(rotatedLoopLayers) < 1:
 			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Thickness.')
 			return ''
-		layerThickness = carving.getCarveLayerThickness()
-		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerThickness)
-		perimeterWidth = repository.perimeterWidth.value
+		extrusionHeight = carving.getCarveLayerThickness()
+		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, extrusionHeight)
+		extrusionWidth = repository.extrusionWidth.value
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),
 			carving.getCarveCornerMinimum(),
 			decimalPlacesCarried,
 			carving.getCarveLayerThickness(),
-			perimeterWidth)
+			extrusionWidth)
 		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(repository, rotatedLoopLayers)
 		return svgWriter.getReplacedSVGTemplate(
 			fileName, 'carve', truncatedRotatedBoundaryLayers, carving.getFabmetheusXML())

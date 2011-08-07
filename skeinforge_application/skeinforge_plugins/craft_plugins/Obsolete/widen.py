@@ -162,7 +162,7 @@ class WidenSkein:
 				self.distanceFeedRate.addGcodeFromLoop(loop, rotatedLoopLayer.z)
 		for widdershinsLoop in widdershinsLoops:
 			outsetLoop = intercircle.getLargestInsetLoopFromLoop(widdershinsLoop, -self.doublePerimeterWidth)
-			widenedLoop = getWidenedLoop(widdershinsLoop, clockwiseInsetLoops, outsetLoop, self.perimeterWidth)
+			widenedLoop = getWidenedLoop(widdershinsLoop, clockwiseInsetLoops, outsetLoop, self.extrusionWidth)
 			self.distanceFeedRate.addGcodeFromLoop(widenedLoop, rotatedLoopLayer.z)
 
 	def getCraftedGcode(self, gcodeText, repository):
@@ -186,9 +186,9 @@ class WidenSkein:
 			elif firstWord == '(<crafting>)':
 				self.distanceFeedRate.addLine(line)
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.doublePerimeterWidth = 2.0 * self.perimeterWidth
+			elif firstWord == '(<extrusionWidth>':
+				self.extrusionWidth = float(splitLine[1])
+				self.doublePerimeterWidth = 2.0 * self.extrusionWidth
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):

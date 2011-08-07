@@ -90,7 +90,7 @@ class WhittleSkein:
 	"""A class to whittle a skein of extrusions."""
 	def __init__(self):
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
-		self.layerThickness = 0.3333333333
+		self.extrusionHeight = 0.3333333333
 		self.lineIndex = 0
 		self.movementLines = []
 		self.oldLocation = None
@@ -122,7 +122,7 @@ class WhittleSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedLine('procedureName', 'whittle')
 				return
-			elif firstWord == '(<layerThickness>':
+			elif firstWord == '(<extrusionHeight>':
 				self.setLayerThinknessVerticalDeltas(splitLine)
 				self.distanceFeedRate.addTagBracketedLine('layerStep', self.layerStep )
 			self.distanceFeedRate.addLine(line)
@@ -151,9 +151,9 @@ class WhittleSkein:
 
 	def setLayerThinknessVerticalDeltas( self, splitLine ):
 		"""Set the layer thickness and the vertical deltas."""
-		self.layerThickness = float(splitLine[1])
-		numberOfSteps = int( math.ceil( self.layerThickness / self.whittleRepository.maximumVerticalStep.value ) )
-		self.layerStep = self.layerThickness / float( numberOfSteps )
+		self.extrusionHeight = float(splitLine[1])
+		numberOfSteps = int( math.ceil( self.extrusionHeight / self.whittleRepository.maximumVerticalStep.value ) )
+		self.layerStep = self.extrusionHeight / float( numberOfSteps )
 		self.layerDeltas = []
 		halfDeltaMinusHalfTop = 0.5 * self.layerStep * ( 1.0 - numberOfSteps )
 		for layerDeltaIndex in xrange( numberOfSteps - 1, - 1, - 1 ):

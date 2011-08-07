@@ -205,12 +205,12 @@ class BevelSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> fillet </procedureName>)')
 				return
-			elif firstWord == '(<perimeterWidth>':
-				perimeterWidth = abs(float(splitLine[1]))
-				self.curveSection = 0.7 * perimeterWidth
-				self.filletRadius = perimeterWidth * repository.filletRadiusOverPerimeterWidth.value
-				self.minimumRadius = 0.1 * perimeterWidth
-				self.reversalSlowdownDistance = perimeterWidth * repository.reversalSlowdownDistanceOverPerimeterWidth.value
+			elif firstWord == '(<extrusionWidth>':
+				extrusionWidth = abs(float(splitLine[1]))
+				self.curveSection = 0.7 * extrusionWidth
+				self.filletRadius = extrusionWidth * repository.filletRadiusOverPerimeterWidth.value
+				self.minimumRadius = 0.1 * extrusionWidth
+				self.reversalSlowdownDistance = extrusionWidth * repository.reversalSlowdownDistanceOverPerimeterWidth.value
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):

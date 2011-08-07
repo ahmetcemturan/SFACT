@@ -3,7 +3,7 @@
 	<dictionary importRadius='=setting.getImportRadius()'/>
 	<dictionary interiorOverhangAngle='=setting.getInteriorOverhangAngle()'/>
 	<dictionary interiorOverhangRadians='=setting.getInteriorOverhangRadians()'/>
-	<dictionary layerThickness='=setting.getLayerThickness()'/>
+	<dictionary extrusionHeight='=setting.getLayerThickness()'/>
 	<dictionary overhangAngle='=setting.getOverhangAngle()'/>
 	<dictionary overhangRadians='=setting.getOverhangRadians()'/>
 	<dictionary overhangSpan='=setting.getOverhangSpan()' overhangSpan='=2 + 3'/>
