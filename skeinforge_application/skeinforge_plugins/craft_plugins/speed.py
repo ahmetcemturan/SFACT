@@ -222,7 +222,7 @@ class SpeedSkein:
 			feedRateMinute = self.repository.perimeterFeed.value * 60
 		self.addFlowRateLineIfNecessary()
 		if not self.isExtruderActive:
-			feedRateMinute = self.travelFeedRateMinute 
+			feedRateMinute = self.travelFeedRateMinute.value
 		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line, splitLine)
 
 	def parseInitialization(self):
