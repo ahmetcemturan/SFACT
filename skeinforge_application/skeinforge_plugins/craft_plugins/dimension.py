@@ -196,7 +196,7 @@ class DimensionSkein:
 		self.parseInitialization()
 		if self.repository.retractWhenCrossing.value:
 			self.parseBoundaries()
-			self.flowScaleSixty = 60.0 * (((self.layerThickness/2)*(self.layerThickness/2)*math.pi)+self.layerThickness*(self.perimeterWidth-self.layerThickness))/filamentPackingArea
+		self.flowScaleSixty = 60.0 * (((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight*(self.extrusionWidth-self.extrusionHeight))/filamentPackingArea
 		if self.operatingFlowRate is None:
 			print('There is no operatingFlowRate so dimension will do nothing.')
 			return gcodeText
