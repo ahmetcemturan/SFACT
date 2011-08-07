@@ -140,12 +140,12 @@ class SpeedRepository:
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Main Feedrate Settings -', self )
 		self.mainFeed = settings.FloatSpin().getFromValue( 20.0, 'Main Feed Rate (mm/s):', self, 140.0, 60.0 )
-		self.mainflowScaler = settings.FloatSpin().getFromValue( 0.5, 'Main Flow Rate  (scaler):', self, 1.5, 1.0 )
+		self.flowRateSettingScaler = settings.FloatSpin().getFromValue( 0.5, 'Main Flow Rate  (scaler):', self, 1.5, 1.0 )
 		self.orbitalFeedRateOverOperatingFeedRate = settings.FloatSpin().getFromValue( 0.1, 'Feed Rate ratio for Orbiting move (ratio):', self, 0.9, 0.5 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Perimeter Printing -', self )
-		self.perimeterFeed = settings.FloatSpin().getFromValue( 20.0, 'Perimeter Feed Rate (mm/s):', self, 80.0, 30.0 )
-		self.perimeterFlowScaler = settings.FloatSpin().getFromValue( 0.5, 'Perimeter Flow Rate (scaler):', self, 1.5, 1.0 )
+		self.perimeterFeedRate = settings.FloatSpin().getFromValue( 20.0, 'Perimeter Feed Rate (mm/s):', self, 80.0, 30.0 )
+		self.perimeterFlowRateScaler = settings.FloatSpin().getFromValue( 0.5, 'Perimeter Flow Rate (scaler):', self, 1.5, 1.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Bridge Layers -', self )
 		self.bridgeFeedRateMultiplier = settings.FloatSpin().getFromValue( 0.5, 'Bridge Feed Rate (ratio):', self, 1.5, 1.0 )
@@ -192,7 +192,7 @@ class SpeedSkein:
 		"""Parse gcode text and store the speed gcode."""
 		self.repository = repository
 		self.mainFeed = repository.mainFeed.value
-		self.perimeterFeed = repository.perimeterFeed.value
+		self.perimeterFeedRate = repository.perimeterFeedRate.value
 		self.travelFeedRateMinute = 60.0 * self.repository.travelFeedRatePerSecond.value
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
@@ -204,11 +204,11 @@ class SpeedSkein:
 		"""Get the flow rate string."""
 		if not self.repository.addFlowRate.value:
 			return None
-		flowRate = self.repository.mainflowScaler.value * self.mainFeed
+		flowRate = self.repository.flowRateSettingScaler.value * self.mainFeed
 		if self.isBridgeLayer:
 			flowRate *= self.repository.bridgeFlowRateScaler.value * self.repository.bridgeFeedRateMultiplier.value
 		if self.isPerimeterPath:
-			flowRate = self.repository.perimeterFlowScaler.value * self.repository.perimeterFeed.value
+			flowRate = self.repository.perimeterFlowRateScaler.value * self.repository.perimeterFeedRate.value
 		return euclidean.getFourSignificantFigures( flowRate )
 
 	def getSpeededLine(self, line, splitLine):
@@ -219,10 +219,10 @@ class SpeedSkein:
 		if self.isBridgeLayer:
 			feedRateMinute *= self.repository.bridgeFeedRateMultiplier.value 
 		if self.isPerimeterPath:
-			feedRateMinute = self.repository.perimeterFeed.value * 60
+			feedRateMinute = self.repository.perimeterFeedRate.value * 60
 		self.addFlowRateLineIfNecessary()
 		if not self.isExtruderActive:
-			feedRateMinute = self.travelFeedRateMinute.value
+			feedRateMinute = self.travelFeedRateMinute
 		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line, splitLine)
 
 	def parseInitialization(self):
@@ -240,10 +240,10 @@ class SpeedSkein:
 			elif firstWord == '(<extrusionWidth>':
 				self.absolutePerimeterWidth = abs(float(splitLine[1]))
 				self.distanceFeedRate.addTagBracketedLine('operatingFeedRatePerSecond', self.mainFeed )
-				self.distanceFeedRate.addTagBracketedLine('PerimeterFeedRatePerSecond', self.perimeterFeed )
+				self.distanceFeedRate.addTagBracketedLine('PerimeterFeedRatePerSecond', self.perimeterFeedRate )
 				if self.repository.addFlowRate.value:
-					self.distanceFeedRate.addTagBracketedLine('operatingFlowRate', self.repository.mainflowScaler.value )
-					self.distanceFeedRate.addTagBracketedLine('PerimeterFlowRate', self.repository.perimeterFlowScaler.value )
+					self.distanceFeedRate.addTagBracketedLine('operatingFlowRate', self.repository.flowRateSettingScaler.value )
+					self.distanceFeedRate.addTagBracketedLine('PerimeterFlowRate', self.repository.perimeterFlowRateScaler.value )
 				orbitalFeedRatePerSecond = self.mainFeed * self.repository.orbitalFeedRateOverOperatingFeedRate.value
 				self.distanceFeedRate.addTagBracketedLine('orbitalFeedRatePerSecond', orbitalFeedRatePerSecond )
 				self.distanceFeedRate.addTagBracketedLine('travelFeedRatePerSecond', self.repository.travelFeedRatePerSecond.value )
