@@ -123,7 +123,7 @@ class SkirtRepository:
 		self.convex = settings.BooleanSetting().getFromValue('Convex:', self, True)
 		self.gapOverPerimeterWidth = settings.FloatSpin().getFromValue(
 			1.0, 'Gap over Perimeter Width (ratio):', self, 10.0, 5.0)
-		self.layersTo = settings.IntSpin().getSingleIncrementFromValue(0, 'Layers To (index):', self, 912345678, 3)
+		self.layersTo = settings.IntSpin().getSingleIncrementFromValue(0, 'Layers To (index):', self, 912345678, 1)
 		self.executeTitle = 'Skirt'
 
 	def execute(self):
