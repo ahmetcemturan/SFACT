@@ -128,8 +128,7 @@ Measure the width of the wall.
 
 
 Known Bugs: 
--In FILL only Line Fill works reliably.
--In SPEED when you set perimeter speed exact same as fill  it will not work.  just make one of them slightly bigger (>1 is enough)
+-
 
 
 

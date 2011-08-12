@@ -240,7 +240,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 
-def addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gridPoints, isBothOrNone, isDoubleJunction, isJunctionWide, paths, pixelTable, width ):
+def addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gridPoints, gridRadius, isBothOrNone, isDoubleJunction, isJunctionWide, paths, pixelTable, width ):
 	"""Add the path around the grid point."""
 	closestPathIndex = None
 	aroundIntersectionPaths = []
@@ -258,10 +258,10 @@ def addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gr
 		return
 	yCloseToCenterArounds = getClosestOppositeIntersectionPaths( aroundIntersectionPaths )
 	if len( yCloseToCenterArounds ) < 2:
-#		This used to be worth the warning below.
-#		print('This should never happen, yCloseToCenterArounds is less than 2 in fill.')
-#		print( gridPoint )
-#		print( len( yCloseToCenterArounds ) )
+	#		This used to be worth the warning below.
+	#		print('This should never happen, yCloseToCenterArounds is less than 2 in fill.')
+	#		print( gridPoint )
+	#		print( len( yCloseToCenterArounds ) )
 		return
 	segmentFirstY = min( yCloseToCenterArounds[0].y, yCloseToCenterArounds[1].y )
 	segmentSecondY = max( yCloseToCenterArounds[0].y, yCloseToCenterArounds[1].y )
@@ -828,10 +828,10 @@ class FillRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Fill')
 		self.activateFill = settings.BooleanSetting().getFromValue('Activate Fill:', self, True )
 
-		
+
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Main Fill Settings -', self )
-		self.infillSolidity = settings.FloatSpin().getFromValue( 0.05, 'Infill Solidity (ratio):', self, 1.00, 0.35 )		
+		self.infillSolidity = settings.FloatSpin().getFromValue( 0.05, 'Infill Solidity (ratio):', self, 1.00, 0.35 )
 		self.infillWidthRatio = settings.FloatSpin().getFromValue( 0.75, 'Extrusion Lines extra Spacing (Scaler):', self, 1.25, 1.0 )
 		self.infillPerimeterOverlap = settings.FloatSpin().getFromValue( 0.50, 'Infill Overlap over Perimeter (Scaler):', self, 1.50, 1.00 )
 		settings.LabelSeparator().getFromRepository(self)
@@ -843,10 +843,10 @@ class FillRepository:
 
 
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- Top and Bottom Layers -', self )		
+		settings.LabelDisplay().getFromName('- Top and Bottom Layers -', self )
 		self.solidSurfaceThickness = settings.IntSpin().getFromValue( 0, 'Fully filled Layers (each top and bottom):', self, 5, 2 )
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- Extrusion Sequence -', self )				
+		settings.LabelDisplay().getFromName('- Extrusion Sequence -', self )
 		self.startFromChoice = settings.MenuButtonDisplay().getFromName('Start New Layer From :', self)
 		self.startFromLowerLeft = settings.MenuRadio().getFromMenuButtonDisplay(self.startFromChoice, 'Lower Left', self, True)
 		self.startFromNearest = settings.MenuRadio().getFromMenuButtonDisplay(self.startFromChoice, 'Nearest', self, False)
@@ -859,10 +859,10 @@ class FillRepository:
 		self.threadSequencePerimeterInfill = settings.MenuRadio().getFromMenuButtonDisplay(self.threadSequenceChoice, 'Perimeter > Infill > Loops', self, False)
 		self.threadSequencePerimeterLoops = settings.MenuRadio().getFromMenuButtonDisplay(self.threadSequenceChoice, 'Perimeter > Loops > Infill', self, True)
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- How to make the infill -', self )	
+		settings.LabelDisplay().getFromName('- How to make the infill -', self )
 		self.infillPatternLabel = settings.LabelDisplay().getFromName('Infill Pattern:', self )
 		infillLatentStringVar = settings.LatentStringVar()
-		self.infillPatternLine = settings.Radio().getFromRadio( infillLatentStringVar, 'Line', self, True )		
+		self.infillPatternLine = settings.Radio().getFromRadio( infillLatentStringVar, 'Line', self, True )
 		self.infillPatternGridCircular = settings.Radio().getFromRadio( infillLatentStringVar, 'Grid Circular', self, False )
 		self.infillPatternGridHexagonal = settings.Radio().getFromRadio( infillLatentStringVar, 'Grid Hexagonal', self, False )
 		self.infillPatternGridRectangular = settings.Radio().getFromRadio( infillLatentStringVar, 'Grid Rectangular', self, False )
@@ -914,8 +914,8 @@ class FillSkein:
 
 	def addFill(self, layerIndex):
 		"""Add fill to the carve layer."""
-#		if layerIndex > 2:
-#		return
+		#		if layerIndex > 2:
+		#		return
 		settings.printProgressByNumber(layerIndex, len(self.rotatedLayers), 'fill')
 		alreadyFilledArounds = []
 		pixelTable = {}
@@ -962,12 +962,12 @@ class FillSkein:
 			else:
 				self.isJunctionWide = False
 		rotatedLoops = []
-#		for nestedRing in rotatedLayer.nestedRings:
-#			nestedRing.fillBoundaries = intercircle.getInsetLoopsFromLoop( nestedRing.boundary, betweenWidth )
-#			nestedRing.lastExistingFillLoops = nestedRing.fillBoundaries
+		#		for nestedRing in rotatedLayer.nestedRings:
+		#			nestedRing.fillBoundaries = intercircle.getInsetLoopsFromLoop( nestedRing.boundary, betweenWidth )
+		#			nestedRing.lastExistingFillLoops = nestedRing.fillBoundaries
 		nestedRings = euclidean.getOrderedNestedRings(rotatedLayer.nestedRings)
-#		if isPerimeterPathInSurroundLoops( nestedRings ):
-#			extraShells = 0
+		#		if isPerimeterPathInSurroundLoops( nestedRings ):
+		#			extraShells = 0
 		createFillForSurroundings(nestedRings, betweenWidth, False)
 		for extraShellIndex in xrange(extraShells):
 			createFillForSurroundings(nestedRings, self.layerExtrusionWidth, True)
@@ -1144,7 +1144,7 @@ class FillSkein:
 			gridXOffset = offset + self.gridXStepSize * float(gridXStep)
 
 	def addRemainingGridPoints(
-		self, arounds, gridPointInsetX, gridPointInsetY, gridPoints, isBothOrNone, paths, pixelTable, width):
+	self, arounds, gridPointInsetX, gridPointInsetY, gridPoints, isBothOrNone, paths, pixelTable, width):
 		"""Add the remaining grid points to the grid point list."""
 		for gridPointIndex in xrange( len( gridPoints ) - 1, - 1, - 1 ):
 			gridPoint = gridPoints[ gridPointIndex ]
@@ -1215,12 +1215,12 @@ class FillSkein:
 			print('Warning, nothing will be done because self.extrusionWidth in getCraftedGcode in FillSkein was None.')
 			return ''
 		self.betweenWidth = self.extrusionWidth - 0.5 * self.infillWidth
-#		self.fillInset = self.infillWidth - self.infillWidth * 0.23
-#               self.fillInset = self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
+		#		self.fillInset = self.infillWidth - self.infillWidth * 0.23
+		#               self.fillInset = self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
 		self.fillInset = ((self.infillWidth * (math.pi / 4)) / self.repository.infillPerimeterOverlap.value )
-#		self.fillInset = ((self.infillWidth / 2 + self.infillWidth) / 2) / self.repository.infillPerimeterOverlap.value
-#               (self.extrusionHeight - (clipRepository.clipOverPerimeterWidth.value * self.extrusionHeight * 0.7853)) * 2
-#		self.fillInset = self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
+		#		self.fillInset = ((self.infillWidth / 2 + self.infillWidth) / 2) / self.repository.infillPerimeterOverlap.value
+		#               (self.extrusionHeight - (clipRepository.clipOverPerimeterWidth.value * self.extrusionHeight * 0.7853)) * 2
+		#		self.fillInset = self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
 		self.infillSolidity = repository.infillSolidity.value
 		if self.isGridToBeExtruded():
 			self.setGridVariables(repository)
@@ -1284,8 +1284,9 @@ class FillSkein:
 	def getNextGripXStep( self, gridXStep ):
 		"""Get the next grid x step, increment by an extra one every three if hexagonal grid is chosen."""
 		gridXStep += 1
-		if self.repository.infillPatternGridHexagonal.value and not gridXStep % 3:
-			gridXStep += 1
+		if self.repository.infillPatternGridHexagonal.value:
+			if gridXStep % 3 == 0:
+				gridXStep += 1
 		return gridXStep
 
 	def isGridToBeExtruded(self):
@@ -1341,10 +1342,10 @@ class FillSkein:
 				self.bridgeWidthMultiplier = float(splitLine[1])
 			elif firstWord == '(<extrusionHeight>':
 				self.extrusionHeight = float(splitLine[1])
-#				self.infillWidth = self.repository.infillWidthOverThickness.value * self.extrusionHeight
-#				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)
+			#				self.infillWidth = self.repository.infillWidthOverThickness.value * self.extrusionHeight
+			#				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)
 			self.distanceFeedRate.addLine(line)
- 
+
 	def parseLine( self, lineIndex ):
 		"""Parse a gcode line and add it to the fill skein."""
 		line = self.lines[lineIndex]
