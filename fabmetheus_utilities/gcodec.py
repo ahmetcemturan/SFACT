@@ -384,6 +384,10 @@ class DistanceFeedRate:
 		"""Get the line with a z."""
 		return getLineWithValueString('Z', line, splitLine, self.getRounded(z))
 
+	def getLineWithE(self, line, splitLine, e):
+		"""Get the line with a z."""
+		return getLineWithValueString('E', line, splitLine, self.getRounded(z))
+
 	def getRounded(self, number):
 		"""Get number rounded to the number of carried decimal places as a string."""
 		return euclidean.getRoundedToPlacesString(self.decimalPlacesCarried, number)
