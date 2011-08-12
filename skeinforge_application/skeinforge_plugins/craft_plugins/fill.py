@@ -833,7 +833,7 @@ class FillRepository:
 		settings.LabelDisplay().getFromName('- Main Fill Settings -', self )
 		self.infillSolidity = settings.FloatSpin().getFromValue( 0.05, 'Infill Solidity (ratio):', self, 1.00, 0.35 )		
 		self.infillWidthRatio = settings.FloatSpin().getFromValue( 0.75, 'Extrusion Lines extra Spacing (Scaler):', self, 1.25, 1.0 )
-		self.infillPerimeterOverlap = settings.FloatSpin().getFromValue( 0.000, 'Infill Overlap over Perimeter (Scaler):', self, 0.400, 1.0 )
+		self.infillPerimeterOverlap = settings.FloatSpin().getFromValue( 0.50, 'Infill Overlap over Perimeter (Scaler):', self, 1.50, 1.00 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Shell Settings -', self )
 		settings.LabelDisplay().getFromName('- Additional Perimeter Shells -', self )

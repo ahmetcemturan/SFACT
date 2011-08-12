@@ -1,6 +1,7 @@
 """
 This page is in the table of contents.
 Carve is a script to carve a shape into svg slice layers.
+It creates the perimeter contours
 
 The carve manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve

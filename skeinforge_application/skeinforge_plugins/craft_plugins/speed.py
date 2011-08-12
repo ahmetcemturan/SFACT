@@ -242,8 +242,8 @@ class SpeedSkein:
 				self.distanceFeedRate.addTagBracketedLine('operatingFeedRatePerSecond', self.mainFeed )
 				self.distanceFeedRate.addTagBracketedLine('PerimeterFeedRatePerSecond', self.perimeterFeedRate )
 				if self.repository.addFlowRate.value:
-					self.distanceFeedRate.addTagBracketedLine('operatingFlowRate', self.repository.flowRateSettingScaler.value )
-					self.distanceFeedRate.addTagBracketedLine('PerimeterFlowRate', self.repository.perimeterFlowRateScaler.value )
+					self.distanceFeedRate.addTagBracketedLine('operatingFlowRate', self.repository.flowRateSettingScaler.value * self.repository.mainFeed.value)
+					self.distanceFeedRate.addTagBracketedLine('PerimeterFlowRate', self.repository.perimeterFlowRateScaler.value * self.repository.perimeterFeedRate.value)
 				orbitalFeedRatePerSecond = self.mainFeed * self.repository.orbitalFeedRateOverOperatingFeedRate.value
 				self.distanceFeedRate.addTagBracketedLine('orbitalFeedRatePerSecond', orbitalFeedRatePerSecond )
 				self.distanceFeedRate.addTagBracketedLine('travelFeedRatePerSecond', self.repository.travelFeedRatePerSecond.value )

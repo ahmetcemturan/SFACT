@@ -2,6 +2,7 @@
 """
 This page is in the table of contents.
 Bottom sets the bottom of the carving to the defined altitude.
+Adjusts the Z heights of each layer.
 
 ==Operation==
 The default 'Activate Bottom' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
