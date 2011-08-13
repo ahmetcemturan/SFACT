@@ -195,10 +195,10 @@ class StatisticSkein:
 		self.delay = (repository.realPrintTime.value - repository.calculatedPrintTime.value) / self.totalCommandcount
 		self.estimatedBuildTime = self.delay * self.totalCommandcount + self.totalBuildTime
 		machineTimeCost = repository.machineTime.value * self.estimatedBuildTime / 3600.0
-		self.filamentInOutRatio = filamentCrossSectionArea / ((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight*(self.extrusionWidth-self.extrusionHeight)
-		self.totalDistanceFilament = self.totalDistanceExtruded *  self.filamentInOutRatio
+		self.filamentInOutRatio = filamentCrossSectionArea / ((((self.extrusionHeight+self.extrusionWidth)/4)*((self.extrusionHeight+self.extrusionWidth)/4)*math.pi))
+		self.totalDistanceFilament = self.totalDistanceExtruded / self.filamentInOutRatio
 		averageFeedRate = self.totalDistanceTraveled / self.estimatedBuildTime
-		totalDistanceExtruded = self.extrusion
+
 		materialCost = repository.material.value * mass
 		self.addLine(' ')
 		self.addLine('Cost')
@@ -215,7 +215,7 @@ class StatisticSkein:
 		self.addLine( "Calculated Build time is %s." % euclidean.getDurationString(self.totalBuildTime))
 		self.addLine( "Estimated Build time is %s." % euclidean.getDurationString( self.estimatedBuildTime))
 		self.addLine( "Delay  is %s seconds per command ." % self.delay )
-		self.addLine( "Filament used is %s cm." % euclidean.getThreeSignificantFigures( self.totalDistanceFilament /1000 ))
+		self.addLine( "Filament used is %s cm." % euclidean.getThreeSignificantFigures( self.totalDistanceFilament /10 ))
 		self.addLine( "Distance traveled is %s m." % euclidean.getThreeSignificantFigures( self.totalDistanceTraveled/1000 ) )
 		self.addLine( "Distance extruded is %s m." % euclidean.getThreeSignificantFigures( self.totalDistanceExtruded/1000 ) )
 		if self.extruderSpeed is not None:
@@ -259,16 +259,16 @@ class StatisticSkein:
 		"""Add a point to travel and maybe extrusion."""
 		if self.oldLocation is not None:
 			travel = location.distance( self.oldLocation )
-			self.extrusion =  self.getLineWithE( line, splitLine, 0 )
+#			self.extrusion =  self.getLineWithE( line, splitLine, 0 )
 			if self.feedRateMinute > 0.0:
 #				delay = self.delay
 				self.totalBuildTime += (60.0 * ((travel / self.feedRateMinute) ))
 			self.totalDistanceTraveled += travel
 			self.totalCommandcount += 1
-#			if self.extruderActive:
-#				self.totalDistanceExtruded += travel
-#				self.cornerMaximum.maximize(location)
-#				self.cornerMinimum.minimize(location)
+			if self.extruderActive:
+				self.totalDistanceExtruded += travel
+				self.cornerMaximum.maximize(location)
+				self.cornerMinimum.minimize(location)
 		self.oldLocation = location
 
 	def extruderSet( self, active ):

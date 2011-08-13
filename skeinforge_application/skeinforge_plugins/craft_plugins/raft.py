@@ -744,7 +744,7 @@ class RaftSkein:
 		paths = euclidean.getPathsFromEndpoints(endpoints, 1.5 * self.interfaceStep, aroundPixelTable, aroundWidth)
 		feedRateMinuteMultiplied = (self.supportFeedRate *60)
 		supportFlowRateMultiplied = self.supportFlowRate
-		travelFeedRateMultiplied = self.repository.objectFirstLayerTravelSpeed * 60
+		travelFeedRateMultiplied = self.repository.objectFirstLayerTravelSpeed.value * 60
 		if not self.layerIndex:
 			supportFlowRateMultiplied = self.repository.objectFirstLayerFlowRateInfillMultiplier.value * self.repository.objectFirstLayerFeedRateInfillMultiplier.value
 			self.addFlowRateValueIfDifferent(supportFlowRateMultiplied)

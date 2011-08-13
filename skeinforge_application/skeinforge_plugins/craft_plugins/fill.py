@@ -240,7 +240,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 
-def addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gridPoints, isBothOrNone, isDoubleJunction, isJunctionWide, paths, pixelTable, width ):
+def addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gridPoints, gridRadius, isBothOrNone, isDoubleJunction, isJunctionWide, paths, pixelTable, width ):
 	"""Add the path around the grid point."""
 	closestPathIndex = None
 	aroundIntersectionPaths = []
@@ -1213,11 +1213,11 @@ class FillSkein:
 		if self.extrusionWidth is None:
 			print('Warning, nothing will be done because self.extrusionWidth in getCraftedGcode in FillSkein was None.')
 			return ''
-		#self.infillSpacing = ((self.extrusionHeight/2) * (math.pi/4) *2)+(self.extrusionWidth - self.extrusionHeight)
-		self.infillSpacing = (self.extrusionWidth * (math.pi/4))
+		#self.infillSpacing = ((self.extrusionHeight/2) * (((0.785))) *2)+(self.extrusionWidth - self.extrusionHeight)
+		self.infillSpacing = (self.extrusionWidth * (((0.785))))
 		print('Spacing between parallel lines in fill (mm):', (self.infillSpacing))
-		#self.fillInset = self.extrusionHeight/2 *(math.pi/4)*2+(self.extrusionWidth - self.extrusionHeight)/2
-		self.fillInset = (self.extrusionWidth+self.extrusionHeight)/2*(math.pi/4)
+		#self.fillInset = self.extrusionHeight/2 *(((0.785)))*2+(self.extrusionWidth - self.extrusionHeight)/2
+		self.fillInset = (self.extrusionWidth+self.extrusionHeight)/2*(((0.785)))
 		print('Fill Overlap over Perimeter (mm):', self.fillInset)
 		self.infillSolidity = repository.infillSolidity.value
 		if self.isGridToBeExtruded():
@@ -1327,7 +1327,7 @@ class FillSkein:
 				self.extrusionWidth = float(splitLine[1])
 				threadSequenceString = ' '.join( self.threadSequence )
 				self.distanceFeedRate.addTagBracketedLine('threadSequenceString', threadSequenceString )
-				self.infillSpacing = self.extrusionWidth * (math.pi/4)
+				self.infillSpacing = self.extrusionWidth * (((0.785)))
 				self.distanceFeedRate.addTagRoundedLine('infillSpacing', self.infillSpacing)
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> fill </procedureName>)')

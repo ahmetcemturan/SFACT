@@ -165,8 +165,8 @@ class SkinSkein:
 				extrusionWidth = float(splitLine[1])
 				self.halfPerimeterWidth = 0.5 * extrusionWidth
 				self.quarterPerimeterWidth = 0.25 * extrusionWidth
-				#self.clipLength = (self.quarterLayerThickness - (self.repository.clipOverPerimeterWidth.value * self.quarterLayerThickness * (math.pi/4)))*4
-				self.clipLength = (self.quarterLayerThickness - (clipRepository.clipOverPerimeterWidth.value * self.quarterLayerThickness * (math.pi/4)))*4
+				#self.clipLength = (self.quarterLayerThickness - (self.repository.clipOverPerimeterWidth.value * self.quarterLayerThickness * (((0.785)))))*4
+				self.clipLength = (self.quarterLayerThickness - (clipRepository.clipOverPerimeterWidth.value * self.quarterLayerThickness * (((0.785)))))*4
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)

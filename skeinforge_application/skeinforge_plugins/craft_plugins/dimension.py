@@ -203,7 +203,7 @@ class DimensionSkein:
 		if repository.activateCalibration.value:
 			self.calibrationFactor = (((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight*(xSectionCorrector -self.extrusionHeight))/(((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight *(self.extrusionWidth-self.extrusionHeight))
 		self.newfilamentPackingDensity = repository.filamentPackingDensity.value * self.calibrationFactor
-		print('Filament Packing Density (if using this make sure extrusion width = measured width) :')
+		print('****************Filament Packing Density (For Calibration)**********************:')
 		print( self.newfilamentPackingDensity )
 		self.flowScaleSixty = 60.0 * ((((self.extrusionHeight+self.extrusionWidth)/4)*((self.extrusionHeight+self.extrusionWidth)/4)*math.pi)/filamentPackingArea) / self.calibrationFactor
 		if self.operatingFlowRate is None:
