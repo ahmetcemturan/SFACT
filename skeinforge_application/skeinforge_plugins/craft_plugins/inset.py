@@ -372,8 +372,8 @@ class InsetSkein:
 			elif firstWord == '(<extrusionWidth>':
 				self.extrusionWidth = float(splitLine[1])
 				self.halfExtrusionWidth = 0.5 * self.extrusionWidth
-				self.overlapRemovalWidth = self.extrusionWidth * (((0.785)))* self.repository.overlapRemovalWidthScaler.value
-				#self.overlapRemovalWidth = (self.extrusionHeight/2*(((0.785)))*2)+(self.extrusionWidth-self.extrusionHeight)
+				self.overlapRemovalWidth = self.extrusionWidth * (0.7853) * self.repository.overlapRemovalWidthScaler.value
+		
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):

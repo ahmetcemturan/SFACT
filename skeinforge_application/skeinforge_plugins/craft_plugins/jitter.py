@@ -198,7 +198,7 @@ class JitterSkein:
 			elif firstWord == '(<extrusionWidth>':
 				self.extrusionWidth = float(splitLine[1])
 				self.jitter = jitterRepository.jitterOverPerimeterWidth.value * self.extrusionWidth
-			elif firstWord == '(<travelFeedRatePerSecond>':
+			elif firstWord == '(<travelFeedRate>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
@@ -222,7 +222,7 @@ class JitterSkein:
 				self.addTailoredLoopPath()
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('jitter')
-			self.layerGolden = math.fmod(self.layerGolden + 0.61803398874989479, 1.0)
+			self.layerGolden = math.fmod(self.layerGolden + 0.61803398874989479, 1.0)  # x-n*y
 			self.layerJitter = self.jitter * self.layerGolden - 0.5
 		elif firstWord == '(<loop>' or firstWord == '(<perimeter>':
 			self.isLoopPerimeter = True

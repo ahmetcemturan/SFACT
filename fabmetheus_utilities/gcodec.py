@@ -385,8 +385,8 @@ class DistanceFeedRate:
 		return getLineWithValueString('Z', line, splitLine, self.getRounded(z))
 
 	def getLineWithE(self, line, splitLine, e):
-		"""Get the line with a z."""
-		return getLineWithValueString('E', line, splitLine, self.getRounded(z))
+		"""Get the line with a e."""
+		return getLineWithValueString('E', line, splitLine, self.getRounded(e))
 
 	def getRounded(self, number):
 		"""Get number rounded to the number of carried decimal places as a string."""

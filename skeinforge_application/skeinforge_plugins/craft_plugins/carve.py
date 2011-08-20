@@ -202,7 +202,6 @@ class CarveSkein:
 			return ''
 		extrusionHeight = carving.getCarveLayerThickness()
 		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, extrusionHeight)
-		extrusionWidth = repository.extrusionWidth.value
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),

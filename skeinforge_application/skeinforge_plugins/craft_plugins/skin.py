@@ -79,7 +79,7 @@ class SkinRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.skin.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Skin', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skin')
-		self.activateSkin = settings.BooleanSetting().getFromValue('Activate Skin: this is experimental.  \nIt prints the perimeters and loops only at half the layer height that is specified under carve.', self, False )
+		self.activateSkin = settings.BooleanSetting().getFromValue('Activate Skin: this is experimental', self, False )
 		self.clipOverPerimeterWidth = settings.FloatSpin().getFromValue(0.50, 'Clip Over Perimeter Width (scaler):', self, 1.50, 1.00)
 		self.layersFrom = settings.IntSpin().getSingleIncrementFromValue(0, 'Do Not Skin the first ... Layers:', self, 912345678, 3)
 		self.executeTitle = 'Skin'
@@ -159,14 +159,14 @@ class SkinSkein:
 			elif firstWord == '(<extrusionHeight>':
 
 				self.quarterLayerThickness = 0.25 * float(splitLine[1])
+				self.halfLayerThickness = 0.5 * float(splitLine[1])
 			elif firstWord == '(<operatingFlowRate>':
 				self.oldFlowRate = float(splitLine[1])
 			elif firstWord == '(<extrusionWidth>':
 				extrusionWidth = float(splitLine[1])
-				self.halfPerimeterWidth = 0.5 * extrusionWidth
 				self.quarterPerimeterWidth = 0.25 * extrusionWidth
-				#self.clipLength = (self.quarterLayerThickness - (self.repository.clipOverPerimeterWidth.value * self.quarterLayerThickness * (((0.785)))))*4
-				self.clipLength = (self.quarterLayerThickness - (clipRepository.clipOverPerimeterWidth.value * self.quarterLayerThickness * (((0.785)))))*4
+				self.halfPerimeterWidth = 0.5 * extrusionWidth
+				self.clipLength = (self.halfLayerThickness - (self.repository.clipOverPerimeterWidth.value * self.quarterLayerThickness * ((0.7853))))*4
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)

@@ -318,7 +318,7 @@ class TowerSkein:
 				self.minimumBelow = 0.1 * float(splitLine[1])
 			elif firstWord == '(<extrusionWidth>':
 				self.extrusionWidth = float(splitLine[1])
-			elif firstWord == '(<travelFeedRatePerSecond>':
+			elif firstWord == '(<travelFeedRate>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 

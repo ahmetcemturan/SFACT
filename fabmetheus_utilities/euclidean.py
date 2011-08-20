@@ -199,9 +199,9 @@ def addSurroundingLoopBeginning( distanceFeedRate, loop, z ):
 		pointVector3 = Vector3(point.real, point.imag, z)
 		distanceFeedRate.addLine( distanceFeedRate.getBoundaryLine( pointVector3 ) )
 
-def addToThreadsFromLoop(extrusionHalfWidth, gcodeType, loop, oldOrderedLocation, skein):
+def addToThreadsFromLoop(extrusionSpacingHalfWidth, gcodeType, loop, oldOrderedLocation, skein):
 	"""Add to threads from the last location from loop."""
-	loop = getLoopStartingNearest(extrusionHalfWidth, oldOrderedLocation.dropAxis(), loop)
+	loop = getLoopStartingNearest(extrusionSpacingHalfWidth, oldOrderedLocation.dropAxis(), loop)
 	oldOrderedLocation.x = loop[0].real
 	oldOrderedLocation.y = loop[0].imag
 	gcodeTypeStart = gcodeType
@@ -212,10 +212,10 @@ def addToThreadsFromLoop(extrusionHalfWidth, gcodeType, loop, oldOrderedLocation
 	skein.addGcodeFromThreadZ(loop + [loop[0]], oldOrderedLocation.z)
 	skein.distanceFeedRate.addLine('(</%s>)' % gcodeType)
 
-def addToThreadsRemove(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence):
+def addToThreadsRemove(extrusionSpacingHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence):
 	"""Add to threads from the last location from surrounding loops."""
 	while len(nestedRings) > 0:
-		getTransferClosestSurroundingLoop(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence)
+		getTransferClosestSurroundingLoop(extrusionSpacingHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence)
 
 def addValueSegmentToPixelTable( beginComplex, endComplex, pixelDictionary, value, width ):
 	"""Add line segment to the pixel table."""
@@ -1159,12 +1159,12 @@ def getLoopLength( polygon ):
 		polygonLength += abs( point - secondPoint )
 	return polygonLength
 
-def getLoopStartingNearest(extrusionHalfWidth, location, loop):
+def getLoopStartingNearest(extrusionSpacingHalfWidth, location, loop):
 	"""Add to threads from the last location from loop."""
 	nearestIndex = getNearestDistanceIndex(location, loop).index
 	loop = getAroundLoop(nearestIndex, nearestIndex, loop)
 	nearestPoint = getNearestPointOnSegment(loop[0], loop[1], location)
-	if abs(nearestPoint - loop[0]) > extrusionHalfWidth and abs(nearestPoint - loop[1]) > extrusionHalfWidth:
+	if abs(nearestPoint - loop[0]) > extrusionSpacingHalfWidth and abs(nearestPoint - loop[1]) > extrusionSpacingHalfWidth:
 		loop = [nearestPoint] + loop[1 :] + [loop[0]]
 	elif abs(nearestPoint - loop[0]) > abs(nearestPoint - loop[1]):
 		loop = loop[1 :] + [loop[0]]
@@ -1658,7 +1658,7 @@ def getTopPaths(paths):
 			top = max(top, point.z)
 	return top
 
-def getTransferClosestSurroundingLoop(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence):
+def getTransferClosestSurroundingLoop(extrusionSpacingHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence):
 	"""Get and transfer the closest remaining surrounding loop."""
 	if len(nestedRings) > 0:
 		oldOrderedLocation.z = nestedRings[0].z
@@ -1670,7 +1670,7 @@ def getTransferClosestSurroundingLoop(extrusionHalfWidth, nestedRings, oldOrdere
 			closestDistance = distance
 			closestSurroundingLoop = remainingSurroundingLoop
 	nestedRings.remove(closestSurroundingLoop)
-	closestSurroundingLoop.addToThreads(extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)
+	closestSurroundingLoop.addToThreads(extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence)
 	return closestSurroundingLoop
 
 def getTransferredPaths( insides, loop ):
@@ -2047,7 +2047,7 @@ def toggleHashtable( hashtable, key, value ):
 	else:
 		hashtable[key] = value
 
-def transferClosestFillLoop(extrusionHalfWidth, oldOrderedLocation, remainingFillLoops, skein):
+def transferClosestFillLoop(extrusionSpacingHalfWidth, oldOrderedLocation, remainingFillLoops, skein):
 	"""Transfer the closest remaining fill loop."""
 	closestDistance = 987654321987654321.0
 	closestFillLoop = None
@@ -2061,7 +2061,7 @@ def transferClosestFillLoop(extrusionHalfWidth, oldOrderedLocation, remainingFil
 		closestFillLoop = newClosestFillLoop
 		newClosestFillLoop = getLoopInsideContainingLoop(closestFillLoop, remainingFillLoops)
 	remainingFillLoops.remove(closestFillLoop)
-	addToThreadsFromLoop(extrusionHalfWidth, 'loop', closestFillLoop[:], oldOrderedLocation, skein)
+	addToThreadsFromLoop(extrusionSpacingHalfWidth, 'loop', closestFillLoop[:], oldOrderedLocation, skein)
 
 def transferClosestPath( oldOrderedLocation, remainingPaths, skein ):
 	"""Transfer the closest remaining path."""
@@ -2302,24 +2302,24 @@ class NestedBand(NestedRing):
 		self.loop.append(vector3.dropAxis())
 		self.z = vector3.z
 
-	def addPerimeterInner(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence):
+	def addPerimeterInner(self, extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence):
 		"""Add to the perimeter and the inner island."""
 		if self.loop is None:
 			skein.distanceFeedRate.addLine('(<perimeterPath>)')
 			transferClosestPaths(oldOrderedLocation, self.perimeterPaths[:], skein)
 			skein.distanceFeedRate.addLine('(</perimeterPath>)')
 		else:
-			addToThreadsFromLoop(extrusionHalfWidth, 'perimeter', self.loop[:], oldOrderedLocation, skein)
+			addToThreadsFromLoop(extrusionSpacingHalfWidth, 'perimeter', self.loop[:], oldOrderedLocation, skein)
 		skein.distanceFeedRate.addLine('(</boundaryPerimeter>)')
-		addToThreadsRemove(extrusionHalfWidth, self.innerNestedRings[:], oldOrderedLocation, skein, threadSequence)
+		addToThreadsRemove(extrusionSpacingHalfWidth, self.innerNestedRings[:], oldOrderedLocation, skein, threadSequence)
 
-	def addToThreads(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence):
+	def addToThreads(self, extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence):
 		"""Add to paths from the last location. perimeter>inner >fill>paths or fill> perimeter>inner >paths"""
 		addSurroundingLoopBeginning(skein.distanceFeedRate, self.boundary, self.z)
 		threadFunctionDictionary = {
 			'infill' : self.transferInfillPaths, 'loops' : self.transferClosestFillLoops, 'perimeter' : self.addPerimeterInner}
 		for threadType in threadSequence:
-			threadFunctionDictionary[threadType](extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)
+			threadFunctionDictionary[threadType](extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence)
 		skein.distanceFeedRate.addLine('(</nestedRing>)')
 
 	def getFillLoops(self, penultimateFillLoops):
@@ -2359,15 +2359,15 @@ class NestedBand(NestedRing):
 			surroundingBoundaries.append(nestedRing.boundary)
 		return surroundingBoundaries
 
-	def transferClosestFillLoops(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence):
+	def transferClosestFillLoops(self, extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence):
 		"""Transfer closest fill loops."""
 		if len( self.extraLoops ) < 1:
 			return
 		remainingFillLoops = self.extraLoops[:]
 		while len( remainingFillLoops ) > 0:
-			transferClosestFillLoop(extrusionHalfWidth, oldOrderedLocation, remainingFillLoops, skein)
+			transferClosestFillLoop(extrusionSpacingHalfWidth, oldOrderedLocation, remainingFillLoops, skein)
 
-	def transferInfillPaths(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence):
+	def transferInfillPaths(self, extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence):
 		"""Transfer the infill paths."""
 		transferClosestPaths(oldOrderedLocation, self.infillPaths[:], skein)
 

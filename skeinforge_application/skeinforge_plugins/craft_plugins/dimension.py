@@ -147,8 +147,8 @@ class DimensionRepository:
 		settings.LabelDisplay().getFromName('- Firmware Related Stuff -', self )
 		extrusionDistanceFormatLatentStringVar = settings.LatentStringVar()
 		self.extrusionDistanceFormatChoiceLabel = settings.LabelDisplay().getFromName('Extrusion Values should be: ', self )
-		settings.Radio().getFromRadio( extrusionDistanceFormatLatentStringVar, 'in Absolute units (Sprinter, Marlin, SCFW, FiveD , a.o.)', self, True )
-		self.relativeExtrusionDistance = settings.Radio().getFromRadio( extrusionDistanceFormatLatentStringVar, 'in Relative units (Teacup a.o.)', self, False )
+		settings.Radio().getFromRadio( extrusionDistanceFormatLatentStringVar, 'in Absolute units', self, True )
+		self.relativeExtrusionDistance = settings.Radio().getFromRadio( extrusionDistanceFormatLatentStringVar, 'in Relative units', self, False )
 		settings.LabelSeparator().getFromRepository(self)
 		self.executeTitle = 'Dimension'
 
@@ -170,12 +170,12 @@ class DimensionSkein:
 		self.isExtruderActive = False
 		self.layerIndex = -1
 		self.lineIndex = 0
-		self.maximumZTravelFeedRatePerSecond = None
+		self.maximumZTravelFeedRate = None
 		self.oldLocation = None
 		self.operatingFlowRate = None
 		self.retractionRatio = 1.0
 		self.totalExtrusionDistance = 0.0
-		self.travelFeedRatePerSecond = None
+		self.travelFeedRate = None
 		self.zDistanceRatio = 5.0
 
 	def addLinearMoveExtrusionDistanceLine( self, extrusionDistance ):
@@ -205,14 +205,16 @@ class DimensionSkein:
 		self.newfilamentPackingDensity = repository.filamentPackingDensity.value * self.calibrationFactor
 		print('****************Filament Packing Density (For Calibration)**********************:')
 		print( self.newfilamentPackingDensity )
-		self.flowScaleSixty = 60.0 * ((((self.extrusionHeight+self.extrusionWidth)/4)*((self.extrusionHeight+self.extrusionWidth)/4)*math.pi)/filamentPackingArea) / self.calibrationFactor
+		self.flowScaleSixty = 60.0 * ((((self.extrusionHeight+self.extrusionWidth)/4) ** 2 * math.pi )/filamentPackingArea) / self.calibrationFactor
+		if self.calibrationFactor is None:
+			print('Mesaured extrusion width cant be 0, either un-check calibration or set mewsured width to what you have measured!')			
 		if self.operatingFlowRate is None:
 			print('There is no operatingFlowRate so dimension will do nothing.')
 			return gcodeText
 		self.restartDistance = self.repository.retractionDistance.value + self.repository.restartExtraDistance.value
 		self.extruderRetractionSpeedMinuteString = self.distanceFeedRate.getRounded(60.0 * self.repository.extruderRetractionSpeed.value)
-		if self.maximumZTravelFeedRatePerSecond is not None and self.travelFeedRatePerSecond is not None:
-			self.zDistanceRatio = self.travelFeedRatePerSecond / self.maximumZTravelFeedRatePerSecond
+		if self.maximumZTravelFeedRate is not None and self.travelFeedRate is not None:
+			self.zDistanceRatio = self.travelFeedRate / self.maximumZTravelFeedRate
 		for lineIndex in xrange(self.lineIndex, len(self.lines)):
 			self.parseLine( lineIndex )
 		return self.distanceFeedRate.output.getvalue()
@@ -342,9 +344,9 @@ class DimensionSkein:
 			elif firstWord == '(<extrusionHeight>':
 				self.extrusionHeight = float(splitLine[1])
 			elif firstWord == '(<maximumZDrillFeedRatePerSecond>':
-				self.maximumZTravelFeedRatePerSecond = float(splitLine[1])
-			elif firstWord == '(<maximumZTravelFeedRatePerSecond>':
-				self.maximumZTravelFeedRatePerSecond = float(splitLine[1])
+				self.maximumZTravelFeedRate = float(splitLine[1])
+			elif firstWord == '(<maximumZTravelFeedRate>':
+				self.maximumZTravelFeedRate = float(splitLine[1])
 			elif firstWord == '(<operatingFeedRatePerSecond>':
 				self.feedRateMinute = 60.0 * float(splitLine[1])
 			elif firstWord == '(<operatingFlowRate>':
@@ -352,8 +354,8 @@ class DimensionSkein:
 				self.flowRate = self.operatingFlowRate
 			elif firstWord == '(<extrusionWidth>':
 				self.extrusionWidth = float(splitLine[1])
-			elif firstWord == '(<travelFeedRatePerSecond>':
-				self.travelFeedRatePerSecond = float(splitLine[1])
+			elif firstWord == '(<travelFeedRate>':
+				self.travelFeedRate = float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine( self, lineIndex ):

@@ -105,8 +105,8 @@ class LimitSkein:
 	def getCraftedGcode(self, gcodeText, repository):
 		"""Parse gcode text and store the limit gcode."""
 		self.maximumZDrillFeedRatePerSecond = repository.maximumZFeedRatePerSecond.value
-		self.maximumZTravelFeedRatePerSecond = repository.maximumZFeedRatePerSecond.value
-		self.maximumZFeedRatePerSecond = self.maximumZTravelFeedRatePerSecond
+		self.maximumZTravelFeedRate = repository.maximumZFeedRatePerSecond.value
+		self.maximumZFeedRatePerSecond = self.maximumZTravelFeedRate
 		self.repository = repository
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
@@ -163,7 +163,7 @@ class LimitSkein:
 			elif firstWord == '(<maximumZDrillFeedRatePerSecond>':
 				self.maximumZDrillFeedRatePerSecond = float(splitLine[1])
 			elif firstWord == '(<extrusionWidth>':
-				self.distanceFeedRate.addTagBracketedLine('maximumZTravelFeedRatePerSecond', self.maximumZTravelFeedRatePerSecond )
+				self.distanceFeedRate.addTagBracketedLine('maximumZTravelFeedRate', self.maximumZTravelFeedRate )
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine( self, lineIndex ):
@@ -183,7 +183,7 @@ class LimitSkein:
 		elif firstWord == 'M101':
 			self.maximumZFeedRatePerSecond = self.maximumZDrillFeedRatePerSecond
 		elif firstWord == 'M103':
-			self.maximumZFeedRatePerSecond = self.maximumZTravelFeedRatePerSecond
+			self.maximumZFeedRatePerSecond = self.maximumZTravelFeedRate
 		self.distanceFeedRate.addLine(line)
 
 

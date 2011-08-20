@@ -265,7 +265,7 @@ class SkirtSkein:
 				self.extrusionWidth = float(splitLine[1])
 				self.skirtOutset = (self.repository.gapOverPerimeterWidth.value + 0.5) * self.extrusionWidth
 				self.distanceFeedRate.addTagRoundedLine('skirtOutset', self.skirtOutset)
-			elif firstWord == '(<travelFeedRatePerSecond>':
+			elif firstWord == '(<travelFeedRate>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 

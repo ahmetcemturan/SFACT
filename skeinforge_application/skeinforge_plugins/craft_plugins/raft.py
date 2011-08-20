@@ -115,7 +115,7 @@ If support material is generated and if there is a file with the name of the "Na
 ===Object First Layer Feed Rate Infill Multiplier===
 Default is 0.4.
 
-Defines the object first layer infill feed rate multiplier.  The greater the 'Object First Layer g Rate Infill Multiplier, the thinner the infill, the lower the 'Object First Layer Feed Rate Infill Multiplier', the thicker the infill.
+Defines the object first layer infill feed rate multiplier.  The greater the 'Object First Layer Feed Rate Infill Multiplier, the thinner the infill, the lower the 'Object First Layer Feed Rate Infill Multiplier', the thicker the infill.
 
 ===Object First Layer Feed Rate Perimeter Multiplier===
 Default is 0.4.
@@ -217,6 +217,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_craft
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import math
+import os
 import sys
 
 
@@ -229,10 +230,12 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 #raft outline temperature http://hydraraptor.blogspot.com/2008/09/screw-top-pot.html
 def getCraftedText( fileName, text='', repository=None):
 	"""Raft the file or text."""
+	print ('Calculating raft, base and supports')
 	return getCraftedTextFromText(archive.getTextIfEmpty(fileName, text), repository)
 
 def getCraftedTextFromText(gcodeText, repository=None):
 	"""Raft a gcode linear move text."""
+	print ('parsing Gcode for raft - lines')
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'raft'):
 		return gcodeText
 	if repository is None:
@@ -243,12 +246,14 @@ def getCraftedTextFromText(gcodeText, repository=None):
 
 def getCrossHatchPointLine( crossHatchPointLineTable, y ):
 	"""Get the cross hatch point line."""
+	print ('Creating cross-hatch')
 	if not crossHatchPointLineTable.has_key(y):
 		crossHatchPointLineTable[ y ] = {}
 	return crossHatchPointLineTable[ y ]
 
 def getEndpointsFromYIntersections( x, yIntersections ):
 	"""Get endpoints from the y intersections."""
+	print ('Getting Endpoints')
 	endpoints = []
 	for yIntersectionIndex in xrange( 0, len( yIntersections ), 2 ):
 		firstY = yIntersections[ yIntersectionIndex ]
@@ -283,8 +288,9 @@ def getExtendedLineSegment(extensionDistance, lineSegment, loopXIntersections):
 
 def getLoopsBySegmentsDictionary(segmentsDictionary, width):
 	"""Get loops from a horizontal segments dictionary."""
+	print ('Getting loops')
 	points = []
-	for endpoint in getVerticalEndpoints(segmentsDictionary, width, 0.1 * width, width):
+	for endpoint in getVerticalEndpoints(segmentsDictionary, width, 0.1*width, width):  #todo 0.1 ??
 		points.append(endpoint.point)
 	for endpoint in euclidean.getEndpointsFromSegmentTable(segmentsDictionary):
 		points.append(endpoint.point)
@@ -296,6 +302,7 @@ def getNewRepository():
 
 def getVerticalEndpoints(horizontalSegmentsTable, horizontalStep, verticalOverhang, verticalStep):
 	"""Get vertical endpoints."""
+	print ('Getting vertical Endpoints')
 	interfaceSegmentsTableKeys = horizontalSegmentsTable.keys()
 	interfaceSegmentsTableKeys.sort()
 	verticalTableTable = {}
@@ -342,6 +349,7 @@ class RaftRepository:
 	"""A class to handle the raft settings."""
 	def __init__(self):
 		"""Set the default settings, execute title & settings fileName."""
+		print ('Initalizing Raft repsitory')
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.raft.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName(
 			fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Raft', self, '')
@@ -349,41 +357,27 @@ class RaftRepository:
 			'http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Raft')
 		self.activateRaft = settings.BooleanSetting().getFromValue('Activate Raft', self, True)
 		self.addRaftElevateNozzleOrbitSetAltitude = settings.BooleanSetting().getFromValue(
-			'Add Raft, Elevate Nozzle, Orbit:', self, True)
+			'Add Raft Elevate Nozzle Orbit:', self, True)
 		settings.LabelSeparator().getFromRepository(self)
-		
 		settings.LabelDisplay().getFromName('- Support -', self)
 		self.supportMaterialChoice = settings.MenuButtonDisplay().getFromName('Where to add support: ', self)
-		self.supportChoiceNone = settings.MenuRadio().getFromMenuButtonDisplay(
-			self.supportMaterialChoice, 'None', self, True)
-		self.supportChoiceEmptyLayersOnly = settings.MenuRadio().getFromMenuButtonDisplay(
-			self.supportMaterialChoice, 'Empty Layers Only', self, False)
-		self.supportChoiceEverywhere = settings.MenuRadio().getFromMenuButtonDisplay(
-			self.supportMaterialChoice, 'Everywhere', self, False)
-		self.supportChoiceExteriorOnly = settings.MenuRadio().getFromMenuButtonDisplay(
-			self.supportMaterialChoice, 'Exterior Only', self, False)
-		self.supportMinimumAngle = settings.FloatSpin().getFromValue(
-			40, 'Add support if flatter than (degrees):', self, 80, 50)
+		self.supportChoiceNone = settings.MenuRadio().getFromMenuButtonDisplay(	self.supportMaterialChoice, 'None', self, True)
+		self.supportChoiceEmptyLayersOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Empty Layers Only', self, False)
+		self.supportChoiceEverywhere = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Everywhere', self, False)
+		self.supportChoiceExteriorOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Exterior Only', self, False)
+		self.supportMinimumAngle = settings.FloatSpin().getFromValue(40.0, 'Add support if flatter than (degrees):', self, 80.0, 50.0)
 		self.supportCrossHatch = settings.BooleanSetting().getFromValue('Cross Hatch instead of Lines', self, False)
-		self.interfaceInfillDensity = settings.FloatSpin().getFromValue(
-			0.1, 'Interface/Support Lines Density (ratio):', self, 0.5, 0.25)
-		self.interfaceLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(
-			0.8, 'Interface/Support Layer Thickness over Layer Thickness:', self, 1.5, 1.0)
-		self.supportFeedRate = settings.FloatSpin().getFromValue(
-			10.0, 'Support Feed Rate mm/sec:', self, 50.0,15.0)
-		self.supportFlowRateOverOperatingFlowRate = settings.FloatSpin().getFromValue(
-			0.5, 'Support Flow Rate (scaler):', self, 2.0, 1.0)
-		self.supportGapOverPerimeterExtrusionWidth = settings.FloatSpin().getFromValue(
-			0.5, 'Support Gap over Perimeter Extrusion Width (ratio):', self, 1.5, 1.0)
-		self.raftAdditionalMarginOverLengthPercent = settings.FloatSpin().getFromValue(
-			0.0, 'Raft/Support extension in (%):', self, 10.0, 5.0)
-		self.raftMargin = settings.FloatSpin().getFromValue(
-			0.0, 'Raft/Support extension in(mm):', self, 5.0, 2.0)
+		self.interfaceInfillDensity = settings.FloatSpin().getFromValue(0.1, 'Interface/Support Lines Density (ratio):', self, 0.5, 0.25)
+		self.interfaceLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(	0.8, 'Interface/Support Layer Thickness over Layer Thickness:', self, 1.5, 1.0)
+		self.supportFeedRate = settings.FloatSpin().getFromValue(10.0, 'Support Feed Rate mm/sec:', self, 50.0,15.0)
+		self.supportFlowRateScaler = settings.FloatSpin().getFromValue(	0.5, 'Support Flow Rate (scaler):', self, 2.0, 1.0)
+		self.supportGapOverPerimeterExtrusionWidth = settings.FloatSpin().getFromValue(	0.5, 'Support Gap over Perimeter Extrusion Width (ratio):', self, 1.5, 1.0)
+		self.raftAdditionalMarginOverLengthPercent = settings.FloatSpin().getFromValue(	0.0, 'Raft/Support extension in (%):', self, 10.0, 0.0)
+		self.raftMargin = settings.FloatSpin().getFromValue(0.0, 'Raft/Support extension in(mm):', self, 5.0, 2.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Name of Support Macro files (gcode) -', self)
-		self.nameOfSupportEndFile = settings.StringSetting().getFromValue('Name of Support End File:', self, 'support_end.gcode')
-		self.nameOfSupportStartFile = settings.StringSetting().getFromValue(
-			'Name of Support Start File:', self, 'support_start.gcode')
+		self.nameOfSupportEndFile = settings.StringSetting().getFromValue('Name of Support End File:', self, 'support_end.gmc')
+		self.nameOfSupportStartFile = settings.StringSetting().getFromValue('Name of Support Start File:', self, 'support_start.gmc')
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Print Adhesion to Printbed Objects first layer -', self)
 		self.operatingNozzleLiftOverLayerThickness = settings.FloatSpin().getFromValue(	-0.1, 'Extra Nozzle clearance over Object(ratio):', self, 0.3, 0.0)
@@ -412,11 +406,7 @@ class RaftRepository:
 		self.initialCircling = settings.BooleanSetting().getFromValue('Initial Circling:', self, False)
 		self.infillOverhangOverExtrusionWidth = settings.FloatSpin().getFromValue(
 			0.0, 'Infill Overhang over Extrusion Width (ratio):', self, 5.0, 3.00)
-
 		settings.LabelSeparator().getFromRepository(self)
-
-
-
 		self.executeTitle = 'Raft'
 
 	def execute(self):
@@ -425,10 +415,10 @@ class RaftRepository:
 		for fileName in fileNames:
 			writeOutput(fileName)
 
-
-class RaftSkein:
+class RaftSkein :
 	"""A class to raft a skein of extrusions."""
 	def __init__(self):
+		print ('Skeining the Raft')
 		self.addLineLayerStart = True
 		self.baseTemperature = None
 		self.beginLoop = None
@@ -449,6 +439,7 @@ class RaftSkein:
 		self.extrusionHeight = 0.4
 		self.lineIndex = 0
 		self.lines = None
+		self.isExtruderActive = False
 		self.objectFirstLayerInfillTemperature = None
 		self.objectFirstLayerPerimeterTemperature = None
 		self.objectNextLayersTemperature = None
@@ -461,17 +452,17 @@ class RaftSkein:
 		self.operatingJump = None
 		self.orbitalFeedRatePerSecond = 2.01
 		self.extrusionWidth = 0.6
-		self.supportFeedRate = 20
+		self.supportFeedRate = 33
 		self.supportFlowRate = None
 		self.supportLayers = []
 		self.supportLayersTemperature = None
 		self.supportedLayersTemperature = None
-		self.travelFeedRateMinute = None
-		self.isExtruderActive = False
-		self.objectFirstLayerTravelSpeed = 20
+		self.travelFeedRateMinute = 55
+
 
 	def addBaseLayer(self):
 		"""Add a base layer."""
+		print ('adding Base Layer')
 		baseLayerThickness = self.extrusionHeight * self.baseLayerThicknessOverLayerThickness
 		zCenter = self.extrusionTop + 0.5 * baseLayerThickness
 		z = zCenter + baseLayerThickness * self.repository.baseNozzleLiftOverBaseLayerThickness.value
@@ -495,6 +486,7 @@ class RaftSkein:
 
 	def addEmptyLayerSupport( self, boundaryLayerIndex ):
 		"""Add support material to a layer if it is empty."""
+		print ('Adding Support to empty layers')
 		supportLayer = SupportLayer([])
 		self.supportLayers.append(supportLayer)
 		if len( self.boundaryLayers[ boundaryLayerIndex ].loops ) > 0:
@@ -522,6 +514,7 @@ class RaftSkein:
 
 	def addInterfaceLayer(self):
 		"""Add an interface layer."""
+		print ('Adding Interface layers')
 		interfaceLayerThickness = self.extrusionHeight * self.interfaceLayerThicknessOverLayerThickness
 		zCenter = self.extrusionTop + 0.5 * interfaceLayerThickness
 		z = zCenter + interfaceLayerThickness * self.repository.interfaceNozzleLiftOverInterfaceLayerThickness.value
@@ -576,7 +569,7 @@ class RaftSkein:
 		step,
 		z):
 		"""Add a layer from endpoints and raise the extrusion top."""
-		extrusionHeightRatioSquared = extrusionHeightRatio * extrusionHeightRatio
+		extrusionHeightRatioSquared = extrusionHeightRatio ** 2
 		feedRateMinute = self.feedRateMinute * feedRateMultiplier / extrusionHeightRatioSquared
 		if len(endpoints) < 1:
 			return
@@ -604,6 +597,7 @@ class RaftSkein:
 
 	def addOperatingOrbits(self, boundaryLoops, pointComplex, temperatureChangeTime, z):
 		"""Add the orbits before the operating layers."""
+		print ('Adding Orbit lines')
 		if len(boundaryLoops) < 1:
 			return
 		insetBoundaryLoops = intercircle.getInsetLoopsFromLoops(self.extrusionWidth, boundaryLoops)
@@ -616,6 +610,7 @@ class RaftSkein:
 
 	def addRaft(self):
 		"""Add the raft."""
+		print ('Adding the Raft')
 		if len(self.boundaryLayers) < 0:
 			print('this should never happen, there are no boundary layers in addRaft')
 			return
@@ -628,7 +623,7 @@ class RaftSkein:
 		self.setCornersZ()
 		self.cornerMinimumComplex = self.cornerMinimum.dropAxis()
 		originalExtent = self.cornerMaximumComplex - self.cornerMinimumComplex
-		self.raftOutsetRadius = self.repository.raftMargin.value + (max(originalExtent.real, originalExtent.imag) * self.repository.raftAdditionalMarginOverLengthPercent.value / 100) + 0.001
+		self.raftOutsetRadius = self.repository.raftMargin.value + ((self.repository.raftAdditionalMarginOverLengthPercent.value * 0.01) * max(originalExtent.real, originalExtent.imag))+0.1
 		self.setBoundaryLayers()
 		outsetSeparateLoops = intercircle.getInsetSeparateLoopsFromLoops(-self.raftOutsetRadius, self.boundaryLayers[0].loops, 0.8)
 		self.interfaceIntersectionsTable = {}
@@ -674,6 +669,7 @@ class RaftSkein:
 
 	def addRaftPerimeters(self):
 		"""Add raft perimeters if there is a raft."""
+		print ('Add perimeters to raft')
 		for supportLayer in self.supportLayers:
 			supportSegmentTable = supportLayer.supportSegmentTable
 			if len(supportSegmentTable) > 0:
@@ -686,6 +682,7 @@ class RaftSkein:
 
 	def addRaftPerimetersByLoops(self, loops, outset):
 		"""Add raft perimeters to the gcode for loops."""
+		print ('Add loops to raft')
 		loops = intercircle.getInsetSeparateLoopsFromLoops(-outset, loops)
 		for loop in loops:
 			self.distanceFeedRate.addLine('(<raftPerimeter>)')
@@ -742,17 +739,12 @@ class RaftSkein:
 		for aroundBoundaryLoop in aroundBoundaryLoops:
 			euclidean.addLoopToPixelTable(aroundBoundaryLoop, aroundPixelTable, aroundWidth)
 		paths = euclidean.getPathsFromEndpoints(endpoints, 1.5 * self.interfaceStep, aroundPixelTable, aroundWidth)
-		feedRateMinuteMultiplied = (self.supportFeedRate *60)
+		feedRateMinuteMultiplied = self.supportFeedRate *60
 		supportFlowRateMultiplied = self.supportFlowRate
-		travelFeedRateMultiplied = self.repository.objectFirstLayerTravelSpeed.value * 60
 		if not self.layerIndex:
+			feedRateMinuteMultiplied = self.repository.objectFirstLayerFeedRateInfillMultiplier.value * 60
 			supportFlowRateMultiplied = self.repository.objectFirstLayerFlowRateInfillMultiplier.value * self.repository.objectFirstLayerFeedRateInfillMultiplier.value
-			self.addFlowRateValueIfDifferent(supportFlowRateMultiplied)
-			if self.isExtruderActive:
-				feedRateMinuteMultiplied = self.repository.objectFirstLayerFeedRateInfillMultiplier.value * 60
-			if not self.isExtruderActive:
-				feedRateMinuteMultiplied = self.repository.objectFirstLayerTravelSpeed.value * 60
-				return
+		self.addFlowRateValueIfDifferent(supportFlowRateMultiplied)
 		for path in paths:
 			self.distanceFeedRate.addGcodeFromFeedRateThreadZ(feedRateMinuteMultiplied, path, self.travelFeedRateMinute, z)
 		self.addFlowRateLineIfDifferent(str(self.oldFlowRateInput))
@@ -795,7 +787,6 @@ class RaftSkein:
 		intercircle.addOrbitsIfLarge( self.distanceFeedRate, largestLoop, self.orbitalFeedRatePerSecond, temperatureTimeChange, z )
 
 	def addToFillXIntersectionIndexTables( self, supportLayer ):
-		"""Add fill segments from the boundary layers."""
 		supportLoops = supportLayer.supportLoops
 		supportLayer.fillXIntersectionsTable = {}
 		if len(supportLoops) < 1:
@@ -828,6 +819,7 @@ class RaftSkein:
 		self.supportEndLines = settings.getLinesInAlterationsOrGivenDirectory(repository.nameOfSupportEndFile.value)
 		self.supportStartLines = settings.getLinesInAlterationsOrGivenDirectory(repository.nameOfSupportStartFile.value)
 		self.lines = archive.getTextLines(gcodeText)
+		self.objectFirstLayerTravelSpeed = self.repository.objectFirstLayerTravelSpeed.value
 		self.parseInitialization()
 		self.temperatureChangeTimeBeforeRaft = 0.0
 		if self.repository.initialCircling.value:
@@ -879,20 +871,17 @@ class RaftSkein:
 			z += self.operatingJump
 		flowRate = self.oldFlowRateInput
 		temperature = self.objectNextLayersTemperature
-#		travelFeedRateMultiplied = self.repository.objectFirstLayerTravelSpeed * 60
 		if not self.layerIndex:
 			if self.isPerimeterPath:
 				feedRateMinuteMultiplied = self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value * 60
 				flowRate = self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value * self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value
 				temperature = self.objectFirstLayerPerimeterTemperature
-				if not self.isExtruderActive:
-					feedRateMinuteMultiplied = self.repository.objectFirstLayerTravelSpeed.value *60
 			else:
 				feedRateMinuteMultiplied = self.repository.objectFirstLayerFeedRateInfillMultiplier.value * 60
 				flowRate = self.repository.objectFirstLayerFlowRateInfillMultiplier.value * self.repository.objectFirstLayerFeedRateInfillMultiplier.value
 				temperature = self.objectFirstLayerInfillTemperature
-				if not self.isExtruderActive:
-					feedRateMinuteMultiplied = self.repository.objectFirstLayerTravelSpeed.value *60
+			if not self.isExtruderActive:
+				feedRateMinuteMultiplied = self.objectFirstLayerTravelSpeed * 60
 		self.addFlowRateValueIfDifferent(flowRate)
 		self.addTemperatureLineIfDifferent(temperature)
 		return self.distanceFeedRate.getLinearGcodeMovementWithFeedRate(feedRateMinuteMultiplied, location.dropAxis(), z)
@@ -962,16 +951,16 @@ class RaftSkein:
 			elif firstWord == '(<operatingFlowRate>':
 				self.oldFlowRateInput = float(splitLine[1])
 				self.operatingFlowRate = self.oldFlowRateInput
-				self.supportFlowRate = self.supportFeedRate * self.repository.supportFlowRateOverOperatingFlowRate.value
+				self.supportFlowRate = self.supportFeedRate * self.repository.supportFlowRateScaler.value
 			elif firstWord == '(<extrusionWidth>':
 				self.extrusionWidth = float(splitLine[1])
 				self.quarterPerimeterWidth = 0.25 * self.extrusionWidth
-				self.supportOutset = self.extrusionWidth + self.extrusionWidth * self.repository.supportGapOverPerimeterExtrusionWidth.value
+				self.supportOutset = self.extrusionWidth * self.repository.supportGapOverPerimeterExtrusionWidth.value #todo check ACT
 			elif firstWord == '(<supportLayersTemperature>':
 				self.supportLayersTemperature = float(splitLine[1])
 			elif firstWord == '(<supportedLayersTemperature>':
 				self.supportedLayersTemperature = float(splitLine[1])
-			elif firstWord == '(<travelFeedRatePerSecond>':
+			elif firstWord == '(<travelFeedRate>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
@@ -1037,11 +1026,12 @@ class RaftSkein:
 
 	def setBoundaryLayers(self):
 		"""Set the boundary layers."""
-		if self.repository.supportChoiceNone.value:
+		print ('Setting the boundary layers.')
+		if self.repository.supportChoiceNone.value : #**************************
 			return
-		if len(self.boundaryLayers) < 2:
+		elif len(self.boundaryLayers) < 2:
 			return
-		if self.repository.supportChoiceEmptyLayersOnly.value:
+		elif self.repository.supportChoiceEmptyLayersOnly.value:#**************************
 			supportLayer = SupportLayer([])
 			self.supportLayers.append(supportLayer)
 			for boundaryLayerIndex in xrange(1, len(self.boundaryLayers) -1):
@@ -1062,7 +1052,7 @@ class RaftSkein:
 			self.extendXIntersections( boundaryLoops, self.supportOutset, self.supportLayers[supportLayerIndex].xIntersectionsTable)
 		for supportLayer in self.supportLayers:
 			self.addToFillXIntersectionIndexTables(supportLayer)
-		if self.repository.supportChoiceExteriorOnly.value:
+		if self.repository.supportChoiceExteriorOnly.value:#**************************
 			for supportLayerIndex in xrange(1, len(self.supportLayers)):
 				self.subtractJoinedFill(supportLayerIndex)
 		for supportLayer in self.supportLayers:
@@ -1080,6 +1070,7 @@ class RaftSkein:
 
 	def setCornersZ(self):
 		"""Set maximum and minimum corners and z."""
+		print ('Set maximum and minimum corners and z.')
 		boundaryLoop = None
 		boundaryLayer = None
 		layerIndex = - 1
@@ -1111,6 +1102,7 @@ class RaftSkein:
 
 	def subtractJoinedFill( self, supportLayerIndex ):
 		"""Join the fill then subtract it from the support layer table."""
+		print ('Join the fill then subtract it from the support layer table')
 		supportLayer = self.supportLayers[supportLayerIndex]
 		fillXIntersectionsTable = supportLayer.fillXIntersectionsTable
 		belowFillXIntersectionsTable = self.supportLayers[ supportLayerIndex - 1 ].fillXIntersectionsTable
@@ -1132,7 +1124,7 @@ class SupportLayer:
 		self.supportLoops = supportLoops
 		self.supportSegmentTable = {}
 		self.xIntersectionsTable = {}
-		self.isExtruderActive = False
+#		self.isExtruderActive = False
         
 	def __repr__(self):
 		"""Get the string representation of this loop layer."""

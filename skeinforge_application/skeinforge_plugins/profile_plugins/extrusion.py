@@ -39,7 +39,7 @@ class ExtrusionRepository:
 	"""A class to handle the export settings."""
 	def __init__(self):
 		"""Set the default settings, execute title & settings fileName."""
-		skeinforge_profile.addListsSetCraftProfile( getCraftSequence(), 'PLA', self, 'skeinforge_plugins.profile_plugins.extrusion.html')
+		skeinforge_profile.addListsSetCraftProfile( getCraftSequence(), 'Default', self, 'skeinforge_plugins.profile_plugins.extrusion.html')
 
 
 def main():
