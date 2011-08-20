@@ -243,7 +243,7 @@ class InsetRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.inset.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Inset', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Inset')
-		self.bridgeWidthMultiplier = settings.FloatSpin().getFromValue( 0.8, 'Bridge Width Multiplier (ratio):', self, 1.2, 1.0 )
+		self.bridgeWidthMultiplier = settings.FloatSpin().getFromValue( 0.7, 'Bridge Width Multiplier (ratio):', self, 2.0, 1.4 )
 		self.loopOrderChoice = settings.MenuButtonDisplay().getFromName('In case of Conflict Solve:', self )
 		self.loopOrderAscendingArea = settings.MenuRadio().getFromMenuButtonDisplay( self.loopOrderChoice, 'Prefer Loops', self, False )
 		self.loopOrderDescendingArea = settings.MenuRadio().getFromMenuButtonDisplay( self.loopOrderChoice, 'Prefer Perimeter', self, True )
