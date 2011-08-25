@@ -140,6 +140,7 @@ class CoolRepository:
 
 		settings.LabelDisplay().getFromName('- When To use Cool?-', self )
 		self.minimumLayerTime = settings.FloatSpin().getFromValue(0.0, 'Use Cool if layer takes shorter than(seconds):', self, 120.0, 10.0)
+		self.minimumLayerFeedrate = settings.FloatSpin().getFromValue(5.0, 'Do not go slower than (mm/s):', self, 50.0, 15.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- What to do if Cool is necessary? -', self )		
 		self.turnFanOnAtBeginning = settings.BooleanSetting().getFromValue('Turn Fan On at Beginning', self, True)
@@ -257,7 +258,15 @@ class CoolSkein:
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 		self.highestZ = max(location.z, self.highestZ)
 		self.addFlowRateMultipliedLineIfNecessary(self.oldFlowRate)
-		return self.distanceFeedRate.getLineWithFeedRate(self.multiplier * self.feedRateMinute, line, splitLine)
+		coolFeedRate = self.multiplier * self.feedRateMinute
+#		print('0',coolFeedRate)
+		if coolFeedRate >  self.repository.minimumLayerFeedrate.value *60 :
+			coolFeedRate = coolFeedRate
+#			print('1',coolFeedRate)
+		else:
+			coolFeedRate =  self.repository.minimumLayerFeedrate.value *60
+#			print('2',coolFeedRate)
+		return self.distanceFeedRate.getLineWithFeedRate(coolFeedRate, line, splitLine)
 
 	def getCraftedGcode(self, gcodeText, repository):
 		"""Parse gcode text and store the cool gcode."""

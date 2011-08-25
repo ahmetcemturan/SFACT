@@ -206,7 +206,7 @@ class SpeedSkein:
 			return None
 		flowRate = self.repository.mainFeedFlowRateScaler.value * self.mainFeed
 		if self.isBridgeLayer:
-			flowRate *= self.repository.bridgeFlowRateScaler.value * self.repository.bridgeFeedRateMultiplier.value
+			flowRate = self.repository.bridgeFlowRateScaler.value * self.repository.bridgeFeedRateMultiplier.value * self.repository.mainFeedFlowRateScaler.value * self.mainFeed
 		if self.isPerimeterPath:
 			flowRate = self.repository.perimeterFlowRateScaler.value * self.repository.perimeterFeed.value
 		return euclidean.getFourSignificantFigures( flowRate )
@@ -217,7 +217,7 @@ class SpeedSkein:
 			return line
 		feedRateMinute = self.mainFeed * 60
 		if self.isBridgeLayer:
-			feedRateMinute *= self.repository.bridgeFeedRateMultiplier.value
+			feedRateMinute = self.repository.bridgeFeedRateMultiplier.value * self.mainFeed * 60
 		if self.isPerimeterPath:
 			feedRateMinute = self.repository.perimeterFeed.value * 60
 		if not self.isExtruderActive:

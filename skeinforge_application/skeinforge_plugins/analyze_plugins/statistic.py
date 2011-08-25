@@ -235,7 +235,7 @@ class StatisticSkein:
 		self.addLine( "Extrusion Cross section area is %s mm2." % euclidean.getThreeSignificantFigures( extrusionXSection))
 		self.addLine( "Mass extruded is %s grams." % euclidean.getThreeSignificantFigures(  mass ) )
 		self.addLine( "Volume extruded is %s cc." % euclidean.getThreeSignificantFigures( volumeExtruded) )
-		self.addLine( "Filament used is %s m." % euclidean.getThreeSignificantFigures( self.totalDistanceFilament /10000 ))
+		self.addLine( "Filament used is %s m." % euclidean.getThreeSignificantFigures( self.totalDistanceFilament /100000 ))
 
 		self.addLine(' ')
 		self.addLine('Cost')

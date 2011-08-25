@@ -79,7 +79,7 @@ class SkinRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.skin.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Skin', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skin')
-		self.activateSkin = settings.BooleanSetting().getFromValue('Activate Skin: this is experimental', self, False )
+		self.activateSkin = settings.BooleanSetting().getFromValue('Activate Skin:', self, False )
 		self.clipOverPerimeterWidth = settings.FloatSpin().getFromValue(0.50, 'Clip Over Perimeter Width (scaler):', self, 1.50, 1.00)
 		self.layersFrom = settings.IntSpin().getSingleIncrementFromValue(0, 'Do Not Skin the first ... Layers:', self, 912345678, 3)
 		self.executeTitle = 'Skin'
@@ -103,7 +103,7 @@ class SkinSkein:
 		self.oldFlowRate = None
 		self.oldLocation = None
 		self.perimeter = None
-		self.travelFeedRateMinute = 957.0
+		self.travelFeedRateMinute = 999.0
 
 	def addFlowRateLine(self, flowRate):
 		"""Add a flow rate line."""
@@ -118,19 +118,17 @@ class SkinSkein:
 		if self.perimeter is None:
 			return
 		self.perimeter = self.perimeter[: -1]
-		innerPerimeter = intercircle.getLargestInsetLoopFromLoop(self.perimeter, self.quarterPerimeterWidth)
-		innerPerimeter = self.getClippedSimplifiedLoopPathByLoop(innerPerimeter)
-		outerPerimeter = intercircle.getLargestInsetLoopFromLoop(self.perimeter, -self.quarterPerimeterWidth)
+		outerPerimeter = self.perimeter
 		outerPerimeter = self.getClippedSimplifiedLoopPathByLoop(outerPerimeter)
-		lowerZ = self.oldLocation.z - self.quarterLayerThickness
-		higherZ = self.oldLocation.z + self.quarterLayerThickness
-		self.addFlowRateLine(0.25 * self.oldFlowRate)
-		self.addPerimeterLoop(innerPerimeter, lowerZ)
+
+
+		lowerZ = self.oldLocation.z - self.halfLayerThickness
+		higherZ = self.oldLocation.z 
+		skinFlowRate=self.oldFlowRate*(((self.LayerThickness/2/0.7853 + self.PerimeterWidth)/4)**2*math.pi)/(((self.LayerThickness + self.PerimeterWidth)/4)**2*math.pi)
+		self.addFlowRateLine(skinFlowRate)#todo check
 		self.addPerimeterLoop(outerPerimeter, lowerZ)
-		self.addPerimeterLoop(innerPerimeter, higherZ)
 		self.addPerimeterLoop(outerPerimeter, higherZ)
 		self.addFlowRateLine(self.oldFlowRate)
-
 	def getClippedSimplifiedLoopPathByLoop(self, loop):
 		"""Get clipped and simplified loop path from a loop."""
 		loopPath = loop + [loop[0]]
@@ -157,18 +155,18 @@ class SkinSkein:
 				self.distanceFeedRate.addLine('(<procedureName> skin </procedureName>)')
 				return
 			elif firstWord == '(<extrusionHeight>':
-
 				self.quarterLayerThickness = 0.25 * float(splitLine[1])
 				self.halfLayerThickness = 0.5 * float(splitLine[1])
+				self.LayerThickness = float(splitLine[1])
 			elif firstWord == '(<operatingFlowRate>':
 				self.oldFlowRate = float(splitLine[1])
 			elif firstWord == '(<extrusionWidth>':
 				extrusionWidth = float(splitLine[1])
 				self.quarterPerimeterWidth = 0.25 * extrusionWidth
 				self.halfPerimeterWidth = 0.5 * extrusionWidth
-				self.clipLength = (self.halfLayerThickness - (self.repository.clipOverPerimeterWidth.value * self.quarterLayerThickness * ((0.7853))))*4
-			elif firstWord == '(<travelFeedRatePerSecond>':
-				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
+				self.PerimeterWidth = extrusionWidth
+				self.clipLength = (self.repository.clipOverPerimeterWidth.value * self.halfLayerThickness * (0.7853))/2
+			elif firstWord == '(<travelFeedRate>': self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):

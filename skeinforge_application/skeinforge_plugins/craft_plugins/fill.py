@@ -235,11 +235,10 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 
-def addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gridPoints, gridSearchRadius, isBothOrNone, isDoubleJunction, isJunctionWide, paths, pixelTable, width ):
+def addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gridPoints, gridRadius, isBothOrNone, isDoubleJunction, isJunctionWide, paths, pixelTable, width ):
 	"""Add the path around the grid point."""
 	closestPathIndex = None
 	aroundIntersectionPaths = []
-	gridSearchRadius = self.infillSpacing / self.infillSolidity #todo ACT fix it is it gridRadius
 	for aroundIndex in xrange( len(arounds) ):
 		loop = arounds[ aroundIndex ]
 		for pointIndex in xrange(len(loop)):
@@ -375,7 +374,7 @@ def addSparseEndpointsFromSegment( doubleExtrusionSpacing, endpoints, fillLine, 
 		if not isSegmentAround( horizontalSegmentLists[ fillLine + 1 ], segment ):
 			endpoints += segment
 			return
-	if solidSurfaceThickness is 0:
+	if not solidSurfaceThickness:
 		removedEndpoints += segment
 		return
 	if isSegmentCompletelyInAnIntersection( segment, surroundingXIntersections ):
@@ -392,8 +391,7 @@ def addYIntersectionPathToList( pathIndex, pointIndex, y, yIntersection, yInters
 	yIntersectionPaths.append( yIntersectionPath )
 
 def compareDistanceFromCenter(self, other):
-	"""Get comparison in order to sort y intersections in ascending order of distance from the center.  ACT"""
-
+	"""Get comparison in order to sort y intersections in ascending order of distance from the center."""
 	distanceFromCenter = abs( self.yMinusCenter )
 	distanceFromCenterOther = abs( other.yMinusCenter )
 	if distanceFromCenter > distanceFromCenterOther:
@@ -429,7 +427,7 @@ def createFillForSurroundings(nestedRings, radius, shouldExtraLoopsBeAdded):
 
 def getAdditionalLength( path, point, pointIndex ):
 	"""Get the additional length added by inserting a point into a path."""
-	if pointIndex is 0:
+	if not pointIndex:
 		return abs( point - path[0] )
 	if pointIndex == len(path):
 		return abs( point - path[-1] )
@@ -463,7 +461,7 @@ def getClosestOppositeIntersectionPaths( yIntersectionPaths ):
 
 def getExtraFillLoops(loops, radius):
 	"""Get extra loops between inside and outside loops. Extra perimeters"""
-	greaterThanRadius = radius / 0.7853  #todo was  *1.4 ACT (radius /0.7853)  how much the tight spots are covered by the extra loops
+	greaterThanRadius = radius /0.7853  #todo was  *1.4 ACT (radius /0.7853)  how much the tight spots are covered by the extra loops
 	extraFillLoops = []
 	centers = intercircle.getCentersFromPoints(intercircle.getPointsFromLoops(loops, greaterThanRadius), greaterThanRadius)
 	for center in centers:
@@ -936,7 +934,7 @@ class FillSkein:
 				extraShells = self.repository.extraShellsBase.value
 		if rotatedLayer.rotation is not None:
 			extraShells = 0
-			self.infillSpacing *= self.bridgeWidthMultiplier
+			betweenWidth *= self.bridgeWidthMultiplier/0.7853  #todo check what is better with or without the normalizer
 			self.layerExtrusionSpacing *= self.bridgeWidthMultiplier
 			layerFillInset *= self.bridgeWidthMultiplier
 			self.distanceFeedRate.addLine('(<bridgeRotation> %s )' % rotatedLayer.rotation)
@@ -968,7 +966,7 @@ class FillSkein:
 		for extraShellIndex in xrange(extraShells):
 			createFillForSurroundings(nestedRings, self.layerExtrusionSpacing, True)
 		fillLoops = euclidean.getFillOfSurroundings(nestedRings, None)
-		slightlyGreaterThanFill = 0.95 * layerFillInset #todo was 1.01 ACT 0.95  How much the parallel fill is filled
+		slightlyGreaterThanFill = 1.01 * layerFillInset #todo was 1.01 ACT 0.95  How much the parallel fill is filled
 		for loop in fillLoops:
 			alreadyFilledLoop = []
 			alreadyFilledArounds.append(alreadyFilledLoop)
@@ -1139,12 +1137,11 @@ class FillSkein:
 			gridXStep = self.getNextGripXStep(gridXStep)
 			gridXOffset = offset + self.gridXStepSize * float(gridXStep)
 
-	def addRemainingGridPoints(
-		self, arounds, gridPointInsetX, gridPointInsetY, gridPoints, isBothOrNone, paths, pixelTable, width):
+	def addRemainingGridPoints(self, arounds, gridPointInsetX, gridPointInsetY, gridPoints, isBothOrNone, paths, pixelTable, width):
 		"""Add the remaining grid points to the grid point list."""
 		for gridPointIndex in xrange( len( gridPoints ) - 1, - 1, - 1 ):
 			gridPoint = gridPoints[ gridPointIndex ]
-			addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gridPoints, self.gridSearchRadius, isBothOrNone, self.isDoubleJunction, self.isJunctionWide, paths, pixelTable, width )
+			addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gridPoints, self.gridRadius, isBothOrNone, self.isDoubleJunction, self.isJunctionWide, paths, pixelTable, width )
 
 	def addRotatedCarve(self, currentLayer, layerDelta, reverseRotation, surroundingCarves):
 		"""Add a rotated carve to the surrounding carves."""
@@ -1231,7 +1228,7 @@ class FillSkein:
 		rotationBaseAngle = euclidean.getWiddershinsUnitPolar(self.infillBeginRotation)
 		reverseRotationBaseAngle = complex(rotationBaseAngle.real, - rotationBaseAngle.imag)
 		gridRotationAngle = reverseRotation * rotationBaseAngle
-		slightlyGreaterThanFill = 1.01 * self.gridInset
+		slightlyGreaterThanFill = 1.01 * self.gridInset #todo 1.01 or 0.99
 		rotatedLoops = []
 		triangle_mesh.sortLoopsInOrderOfArea(True, fillLoops)
 		for fillLoop in fillLoops:

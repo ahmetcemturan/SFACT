@@ -275,13 +275,13 @@ def getBridgeDirection( belowLoops, layerLoops, extrusionHeight ):
 
 def getBridgeLoops( extrusionHeight, loop ):
 	"""Get the inset bridge loops from the loop."""
-	halfWidth = 1.5 * extrusionHeight
-	slightlyGreaterThanHalfWidth = 1.1 * halfWidth
+	extrusionSpacingHalfWidth = 1.5 * extrusionHeight #todo 1.5 * extrusionHeight
+	slightlyGreaterThanHalfWidth = 1.1 * extrusionSpacingHalfWidth
 	extrudateLoops = []
 	centers = intercircle.getCentersFromLoop( loop, slightlyGreaterThanHalfWidth )
 	for center in centers:
-		extrudateLoop = intercircle.getSimplifiedInsetFromClockwiseLoop( center, halfWidth )
-		if intercircle.isLargeSameDirection( extrudateLoop, center, halfWidth ):
+		extrudateLoop = intercircle.getSimplifiedInsetFromClockwiseLoop( center, extrusionSpacingHalfWidth )
+		if intercircle.isLargeSameDirection( extrudateLoop, center, extrusionSpacingHalfWidth ):
 			if euclidean.isPathInsideLoop( loop, extrudateLoop ) == euclidean.isWiddershins(loop):
 				extrudateLoop.reverse()
 				extrudateLoops.append( extrudateLoop )

@@ -201,7 +201,7 @@ class DimensionSkein:
 			self.parseBoundaries()
 		self.calibrationFactor = 1
 		if repository.activateCalibration.value:
-			self.calibrationFactor = (((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight*(xSectionCorrector -self.extrusionHeight))/(((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight *(self.extrusionWidth-self.extrusionHeight))
+			self.calibrationFactor = (((self.extrusionHeight**2/4)*math.pi)+self.extrusionHeight*(xSectionCorrector -self.extrusionHeight))/(((self.extrusionHeight**2/4)*math.pi)+self.extrusionHeight *(self.extrusionWidth-self.extrusionHeight))
 		self.newfilamentPackingDensity = repository.filamentPackingDensity.value * self.calibrationFactor
 		print('****************Filament Packing Density (For Calibration)**********************:')
 		print( self.newfilamentPackingDensity )
@@ -280,7 +280,7 @@ class DimensionSkein:
 		if distance <= 0.0:
 			return ''
 		scaledFlowRate = self.flowRate * self.flowScaleSixty
-		return self.getExtrusionDistanceStringFromExtrusionDistance(scaledFlowRate / self.feedRateMinute * distance)
+		return self.getExtrusionDistanceStringFromExtrusionDistance((scaledFlowRate / self.feedRateMinute) * distance)
 	def getExtrusionDistanceStringFromExtrusionDistance( self, extrusionDistance ):
 		"""Get the extrusion distance string from the extrusion distance."""
 		if self.repository.relativeExtrusionDistance.value:

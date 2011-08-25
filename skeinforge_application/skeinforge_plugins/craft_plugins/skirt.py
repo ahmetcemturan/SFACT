@@ -151,7 +151,7 @@ class SkirtSkein:
 		self.oldTemperatureInput = None
 		self.skirtFlowRate = None
 		self.skirtTemperature = None
-		self.travelFeedRateMinute = 957.0
+		self.travelFeedRateMinute = 999.0
 		self.unifiedLoop = LoopCrossDictionary()
 
 	def addFlowRateLineIfDifferent(self, flowRate):

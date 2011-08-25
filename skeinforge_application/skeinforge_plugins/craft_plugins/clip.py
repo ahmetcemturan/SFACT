@@ -269,7 +269,7 @@ class ClipSkein:
             elif firstWord == '(<extrusionWidth>':
                 self.extrusionWidth = float(splitLine[1])
                 absolutePerimeterWidth = abs( self.extrusionWidth )
-                self.clipLength = (self.extrusionHeight - (self.extrusionHeight * (0.7853)))*2
+                self.clipLength = (self.extrusionHeight - (clipRepository.clipOverPerimeterWidth.value*self.extrusionHeight * (0.7853)))*2
                 self.connectingStepLength = 0.5 * absolutePerimeterWidth
                 self.layerPixelWidth = 0.1 * absolutePerimeterWidth
                 self.maximumConnectionDistance = clipRepository.maximumConnectionDistanceOverPerimeterWidth.value * absolutePerimeterWidth

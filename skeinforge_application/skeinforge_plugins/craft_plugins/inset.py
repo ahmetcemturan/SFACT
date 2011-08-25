@@ -243,7 +243,7 @@ class InsetRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.inset.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Inset', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Inset')
-		self.bridgeWidthMultiplier = settings.FloatSpin().getFromValue( 0.7, 'Bridge Width Multiplier (ratio):', self, 2.0, 1.4 )
+		self.bridgeWidthMultiplier = settings.FloatSpin().getFromValue( 0.7, 'Bridge Width Multiplier (ratio):', self, 2.0, 1.4  )
 		self.loopOrderChoice = settings.MenuButtonDisplay().getFromName('In case of Conflict Solve:', self )
 		self.loopOrderAscendingArea = settings.MenuRadio().getFromMenuButtonDisplay( self.loopOrderChoice, 'Prefer Loops', self, False )
 		self.loopOrderDescendingArea = settings.MenuRadio().getFromMenuButtonDisplay( self.loopOrderChoice, 'Prefer Perimeter', self, True )
@@ -333,14 +333,14 @@ class InsetSkein:
 	def addInset(self, rotatedLoopLayer):
 		"""Add inset to the layer."""
 		alreadyFilledArounds = []
-		halfWidth = self.halfExtrusionWidth
+		extrusionSpacingHalfWidth = self.halfExtrusionWidth
 		if rotatedLoopLayer.rotation is not None:
-			halfWidth *= self.repository.bridgeWidthMultiplier.value
+			extrusionSpacingHalfWidth *= self.repository.bridgeWidthMultiplier.value
 			self.distanceFeedRate.addTagBracketedLine('bridgeRotation', rotatedLoopLayer.rotation)
-		extrudateLoops = intercircle.getInsetLoopsFromLoops(halfWidth, rotatedLoopLayer.loops)
+		extrudateLoops = intercircle.getInsetLoopsFromLoops(extrusionSpacingHalfWidth, rotatedLoopLayer.loops)
 		triangle_mesh.sortLoopsInOrderOfArea(not self.repository.loopOrderAscendingArea.value, extrudateLoops)
 		for extrudateLoop in extrudateLoops:
-			self.addGcodeFromRemainingLoop(extrudateLoop, alreadyFilledArounds, halfWidth, rotatedLoopLayer)
+			self.addGcodeFromRemainingLoop(extrudateLoop, alreadyFilledArounds, extrusionSpacingHalfWidth, rotatedLoopLayer)
 
 	def getCraftedGcode(self, gcodeText, repository):
 		"""Parse gcode text and store the bevel gcode."""
@@ -373,7 +373,6 @@ class InsetSkein:
 				self.extrusionWidth = float(splitLine[1])
 				self.halfExtrusionWidth = 0.5 * self.extrusionWidth
 				self.overlapRemovalWidth = self.extrusionWidth * (0.7853) * self.repository.overlapRemovalWidthScaler.value
-		
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
