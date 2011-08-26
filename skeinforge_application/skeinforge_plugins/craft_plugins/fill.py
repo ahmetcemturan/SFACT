@@ -10,15 +10,11 @@ Allan Ecker aka The Masked Retriever has written the "Skeinforge Quicktip: Fill"
 http://blog.thingiverse.com/2009/07/21/mysteries-of-skeinforge-fill/
 
 ==Operation==
-The default 'Activate Fill' checkbox is off.
-When it is on, the functions described below will work, when it is off,
-the functions will not be called.
+The default 'Activate Fill' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
 
 ==Settings==
 ===Diaphragm===
-The diaphragm is a solid group of layers, at regular intervals.
-It can be used with a sparse infill to give the object watertight,
-horizontal compartments and/or a higher shear strength.
+The diaphragm is a solid group of layers, at regular intervals.  It can be used with a sparse infill to give the object watertight, horizontal compartments and/or a higher shear strength.
 
 ====Diaphragm Period====
 Default is one hundred.
@@ -31,8 +27,7 @@ Default is zero, because the diaphragm feature is rarely used.
 Defines the number of layers the diaphram is composed of.
 
 ===Extra Shells===
-The shells interior perimeter loops.  Adding extra shells makes the object stronger
-& heavier.
+The shells interior perimeter loops.  Adding extra shells makes the object stronger & heavier.
 
 ====Extra Shells on Alternating Solid Layers====
 Default is two.
@@ -299,18 +294,18 @@ def addAroundGridPoint( arounds, gridPoint, gridPointInsetX, gridPointInsetY, gr
 	yCloseToCenterPaths.sort( comparePointIndexDescending )
 	insertGridPointPairs( gridPoint, gridPointInsetX, gridPoints, yCloseToCenterPaths[0], yCloseToCenterPaths[1], isBothOrNone, isJunctionWide, paths, pixelTable, width )
 
-def addLoop(infillWidth, infillPaths, loop, rotationPlaneAngle):
+def addLoop(infillSpacing, infillPaths, loop, rotationPlaneAngle):
 	"""Add simplified path to fill."""
-	simplifiedLoop = euclidean.getSimplifiedLoop(loop, infillWidth)
+	simplifiedLoop = euclidean.getSimplifiedLoop(loop, infillSpacing)
 	if len(simplifiedLoop) < 2:
 		return
 	simplifiedLoop.append(simplifiedLoop[0])
 	planeRotated = euclidean.getPointsRoundZAxis(rotationPlaneAngle, simplifiedLoop)
 	infillPaths.append(planeRotated)
 
-def addPath(infillWidth, infillPaths, path, rotationPlaneAngle):
+def addPath(infillSpacing, infillPaths, path, rotationPlaneAngle):
 	"""Add simplified path to fill."""
-	simplifiedPath = euclidean.getSimplifiedPath(path, infillWidth)
+	simplifiedPath = euclidean.getSimplifiedPath(path, infillSpacing)
 	if len(simplifiedPath) < 2:
 		return
 	planeRotated = euclidean.getPointsRoundZAxis(rotationPlaneAngle, simplifiedPath)
@@ -453,7 +448,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	return FillSkein().getCraftedGcode( repository, gcodeText )
 
 def getClosestOppositeIntersectionPaths( yIntersectionPaths ):
-	"""Get the close to center paths, starting with the first and an additional opposite if it exists."""
+	"""Get the close to center paths, starting with the first and an additional opposite if it exists.""" #todo extra perimeters order
 	yIntersectionPaths.sort( compareDistanceFromCenter )
 	beforeFirst = yIntersectionPaths[0].yMinusCenter < 0.0
 	yCloseToCenterPaths = [ yIntersectionPaths[0] ]
@@ -466,7 +461,7 @@ def getClosestOppositeIntersectionPaths( yIntersectionPaths ):
 
 def getExtraFillLoops(loops, radius):
 	"""Get extra loops between inside and outside loops."""
-	greaterThanRadius = 1.4 * radius
+	greaterThanRadius = 1.4 * radius 
 	extraFillLoops = []
 	centers = intercircle.getCentersFromPoints(intercircle.getPointsFromLoops(loops, greaterThanRadius), greaterThanRadius)
 	for center in centers:
@@ -828,12 +823,11 @@ class FillRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Fill')
 		self.activateFill = settings.BooleanSetting().getFromValue('Activate Fill:', self, True )
 
-
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Main Fill Settings -', self )
 		self.infillSolidity = settings.FloatSpin().getFromValue( 0.05, 'Infill Solidity (ratio):', self, 1.00, 0.35 )
-		self.infillWidthRatio = settings.FloatSpin().getFromValue( 0.75, 'Extrusion Lines extra Spacing (Scaler):', self, 1.25, 1.0 )
-		self.infillPerimeterOverlap = settings.FloatSpin().getFromValue( 0.50, 'Infill Overlap over Perimeter (Scaler):', self, 1.50, 1.00 )
+		self.infillSpacingScaler = settings.FloatSpin().getFromValue( 0.75, 'Extrusion Lines extra Spacing (Scaler):', self, 1.25, 1.0 )
+		self.infillPerimeterOverlap = settings.FloatSpin().getFromValue( 0.500, 'Infill Overlap over Perimeter (Scaler):', self, 1.500, 1.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Shell Settings -', self )
 		settings.LabelDisplay().getFromName('- Additional Perimeter Shells -', self )
@@ -896,7 +890,7 @@ class FillSkein:
 	def __init__(self):
 		self.bridgeWidthMultiplier = 1.0
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
-		self.infillWidthRatio = 1
+		self.infillSpacingScaler = 1
 		self.extruderActive = False
 		self.fillInset = 0.18
 		self.isPerimeter = False
@@ -910,18 +904,19 @@ class FillSkein:
 		self.shutdownLineIndex = sys.maxint
 		self.nestedRing = None
 		self.thread = None
-		self.infillWidth = None
+		self.infillSpacing = None
 
 	def addFill(self, layerIndex):
 		"""Add fill to the carve layer."""
 		#		if layerIndex > 2:
 		#		return
+		print('calculating bridge layers')
 		settings.printProgressByNumber(layerIndex, len(self.rotatedLayers), 'fill')
 		alreadyFilledArounds = []
 		pixelTable = {}
 		arounds = []
-		betweenWidth = self.betweenWidth
-		self.layerExtrusionWidth = self.infillWidth
+		infillSpacing = self.infillSpacing
+		self.layerExtrusionWidth = self.infillSpacing
 		layerFillInset = self.fillInset
 		rotatedLayer = self.rotatedLayers[layerIndex]
 		self.distanceFeedRate.addLine('(<layer> %s )' % rotatedLayer.z)
@@ -940,7 +935,7 @@ class FillSkein:
 				extraShells = self.repository.extraShellsBase.value
 		if rotatedLayer.rotation is not None:
 			extraShells = 0
-			betweenWidth *= self.bridgeWidthMultiplier
+			infillSpacing *= self.bridgeWidthMultiplier
 			self.layerExtrusionWidth *= self.bridgeWidthMultiplier
 			layerFillInset *= self.bridgeWidthMultiplier
 			self.distanceFeedRate.addLine('(<bridgeRotation> %s )' % rotatedLayer.rotation)
@@ -963,12 +958,12 @@ class FillSkein:
 				self.isJunctionWide = False
 		rotatedLoops = []
 		#		for nestedRing in rotatedLayer.nestedRings:
-		#			nestedRing.fillBoundaries = intercircle.getInsetLoopsFromLoop( nestedRing.boundary, betweenWidth )
+		#			nestedRing.fillBoundaries = intercircle.getInsetLoopsFromLoop( nestedRing.boundary, infillSpacing )
 		#			nestedRing.lastExistingFillLoops = nestedRing.fillBoundaries
 		nestedRings = euclidean.getOrderedNestedRings(rotatedLayer.nestedRings)
 		#		if isPerimeterPathInSurroundLoops( nestedRings ):
 		#			extraShells = 0
-		createFillForSurroundings(nestedRings, betweenWidth, False)
+		createFillForSurroundings(nestedRings, infillSpacing, False)
 		for extraShellIndex in xrange(extraShells):
 			createFillForSurroundings(nestedRings, self.layerExtrusionWidth, True)
 		fillLoops = euclidean.getFillOfSurroundings(nestedRings, None)
@@ -1143,8 +1138,7 @@ class FillSkein:
 			gridXStep = self.getNextGripXStep(gridXStep)
 			gridXOffset = offset + self.gridXStepSize * float(gridXStep)
 
-	def addRemainingGridPoints(
-	self, arounds, gridPointInsetX, gridPointInsetY, gridPoints, isBothOrNone, paths, pixelTable, width):
+	def addRemainingGridPoints(self, arounds, gridPointInsetX, gridPointInsetY, gridPoints, isBothOrNone, paths, pixelTable, width):
 		"""Add the remaining grid points to the grid point list."""
 		for gridPointIndex in xrange( len( gridPoints ) - 1, - 1, - 1 ):
 			gridPoint = gridPoints[ gridPointIndex ]
@@ -1207,20 +1201,16 @@ class FillSkein:
 		if repository.threadSequencePerimeterLoops.value:
 			self.threadSequence = ['perimeter', 'loops', 'infill']
 		if self.repository.infillPerimeterOverlap.value > 0.45:
-			print('')
-			print('Here we GO !!!')
-			print('')
+			print('Executing Fill procedure')
+			print('Filling the inside of the Object(s)')
 		self.parseInitialization()
 		if self.extrusionWidth is None:
 			print('Warning, nothing will be done because self.extrusionWidth in getCraftedGcode in FillSkein was None.')
 			return ''
-		self.betweenWidth = self.extrusionWidth - 0.5 * self.infillWidth
-		#		self.fillInset = self.infillWidth - self.infillWidth * 0.23
-		#               self.fillInset = self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
-		self.fillInset = ((self.infillWidth * (math.pi / 4)) / self.repository.infillPerimeterOverlap.value )
-		#		self.fillInset = ((self.infillWidth / 2 + self.infillWidth) / 2) / self.repository.infillPerimeterOverlap.value
-		#               (self.extrusionHeight - (clipRepository.clipOverPerimeterWidth.value * self.extrusionHeight * 0.7853)) * 2
-		#		self.fillInset = self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
+		self.infillSpacing = (self.extrusionWidth * (0.7853))
+		print('Spacing between parallel lines in fill (mm):', (self.infillSpacing))
+		self.fillInset = self.infillSpacing / self.repository.infillPerimeterOverlap.value
+		print('Fill Overlap over Perimeter (mm):', self.fillInset)
 		self.infillSolidity = repository.infillSolidity.value
 		if self.isGridToBeExtruded():
 			self.setGridVariables(repository)
@@ -1330,9 +1320,8 @@ class FillSkein:
 				self.extrusionWidth = float(splitLine[1])
 				threadSequenceString = ' '.join( self.threadSequence )
 				self.distanceFeedRate.addTagBracketedLine('threadSequenceString', threadSequenceString )
-				self.infillWidth = self.repository.infillWidthRatio.value * self.extrusionWidth * ((self.extrusionWidth -(self.extrusionHeight -( math.pi * (self.extrusionHeight/4))))/self.extrusionWidth)
-				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)
-				self.infillWidthOverThickness = self.extrusionWidth / self.extrusionHeight
+				self.infillSpacing = self.extrusionWidth * self.repository.infillSpacingScaler.value * (0.7853)
+				self.distanceFeedRate.addTagRoundedLine('infillSpacing', self.infillSpacing)
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> fill </procedureName>)')
 			elif firstWord == '(<crafting>)':
@@ -1342,10 +1331,8 @@ class FillSkein:
 				self.bridgeWidthMultiplier = float(splitLine[1])
 			elif firstWord == '(<extrusionHeight>':
 				self.extrusionHeight = float(splitLine[1])
-			#				self.infillWidth = self.repository.infillWidthOverThickness.value * self.extrusionHeight
-			#				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)
 			self.distanceFeedRate.addLine(line)
-
+ 
 	def parseLine( self, lineIndex ):
 		"""Parse a gcode line and add it to the fill skein."""
 		line = self.lines[lineIndex]
@@ -1383,8 +1370,8 @@ class FillSkein:
 
 	def setGridVariables( self, repository ):
 		"""Set the grid variables."""
-		self.gridInset = 1.2 * self.infillWidth
-		self.gridRadius = self.infillWidth / self.infillSolidity
+		self.gridInset = 1.2 * self.infillSpacing
+		self.gridRadius = self.infillSpacing / self.infillSolidity
 		self.gridXStepSize = 2.0 * self.gridRadius
 		self.offsetMultiplier = self.gridRadius
 		if self.repository.infillPatternGridHexagonal.value:
@@ -1408,7 +1395,7 @@ class FillSkein:
 				self.gridCircleRadius = self.gridMinimumCircleRadius
 		self.offsetBaseX = 0.25 * self.gridXStepSize
 		if self.repository.infillPatternGridRectangular.value:
-			halfGridMinusWidth = 0.5 * ( self.gridRadius - self.infillWidth )
+			halfGridMinusWidth = 0.5 * ( self.gridRadius - self.infillSpacing )
 			self.gridJunctionEnd = halfGridMinusWidth * repository.gridJunctionSeparationOverOctogonRadiusAtEnd.value
 			self.gridJunctionMiddle = halfGridMinusWidth * repository.gridJunctionSeparationOverOctogonRadiusAtMiddle.value
 

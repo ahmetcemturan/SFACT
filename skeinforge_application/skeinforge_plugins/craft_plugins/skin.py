@@ -157,16 +157,16 @@ class SkinSkein:
 				self.distanceFeedRate.addLine('(<procedureName> skin </procedureName>)')
 				return
 			elif firstWord == '(<extrusionHeight>':
-
 				self.quarterLayerThickness = 0.25 * float(splitLine[1])
+				self.halfLayerThickness = 0.5 * float(splitLine[1])
 			elif firstWord == '(<operatingFlowRate>':
 				self.oldFlowRate = float(splitLine[1])
 			elif firstWord == '(<extrusionWidth>':
 				extrusionWidth = float(splitLine[1])
-				self.halfPerimeterWidth = 0.5 * extrusionWidth
 				self.quarterPerimeterWidth = 0.25 * extrusionWidth
-				self.clipLength = (self.quarterLayerThickness - (self.repository.clipOverPerimeterWidth.value * self.quarterLayerThickness * (math.pi/4)))*4
-			elif firstWord == '(<travelFeedRatePerSecond>':
+				self.halfPerimeterWidth = 0.5 * extrusionWidth
+				self.clipLength = (self.halfLayerThickness - (self.repository.clipOverPerimeterWidth.value * self.quarterLayerThickness * ((0.7853))))*4
+			elif firstWord == '(<travelFeedRate>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 

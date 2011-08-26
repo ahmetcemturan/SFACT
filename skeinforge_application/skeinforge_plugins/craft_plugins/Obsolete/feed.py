@@ -92,7 +92,7 @@ class FeedRepository:
 		self.activateFeed = settings.BooleanSetting().getFromValue('Activate Feed:', self, True)
 		self.mainFeed = settings.FloatSpin().getFromValue(2.0, 'Feed Rate (mm/s):', self, 50.0, 16.0)
 		self.maximumZDrillFeedRatePerSecond = settings.FloatSpin().getFromValue(0.02, 'Maximum Z Drill Feed Rate (mm/s):', self, 0.5, 0.1)
-		self.travelFeedRatePerSecond = settings.FloatSpin().getFromValue(2.0, 'Travel Feed Rate (mm/s):', self, 50.0, 16.0)
+		self.travelFeedRate = settings.FloatSpin().getFromValue(2.0, 'Travel Feed Rate (mm/s):', self, 50.0, 16.0)
 		self.executeTitle = 'Feed'
 
 	def execute(self):
@@ -117,7 +117,7 @@ class FeedSkein:
 		"""Parse gcode text and store the feed gcode."""
 		self.repository = repository
 		self.mainFeed = repository.mainFeed.value
-		self.travelFeedRateMinute = 60.0 * self.repository.travelFeedRatePerSecond.value
+		self.travelFeedRateMinute = 60.0 * self.repository.travelFeedRate.value
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		for line in self.lines[self.lineIndex :]:
@@ -147,7 +147,7 @@ class FeedSkein:
 				self.absolutePerimeterWidth = abs(float(splitLine[1]))
 				self.distanceFeedRate.addTagBracketedLine('maximumZDrillFeedRatePerSecond', self.repository.maximumZDrillFeedRatePerSecond.value)
 				self.distanceFeedRate.addTagBracketedLine('operatingFeedRatePerSecond', self.mainFeed)
-				self.distanceFeedRate.addTagBracketedLine('travelFeedRatePerSecond', self.repository.travelFeedRatePerSecond.value)
+				self.distanceFeedRate.addTagBracketedLine('travelFeedRate', self.repository.travelFeedRate.value)
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):

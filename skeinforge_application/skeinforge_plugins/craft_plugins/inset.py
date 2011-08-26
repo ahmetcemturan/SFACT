@@ -243,11 +243,11 @@ class InsetRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.inset.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Inset', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Inset')
-		self.bridgeWidthMultiplier = settings.FloatSpin().getFromValue( 0.8, 'Bridge Width Multiplier (ratio):', self, 1.2, 1.0 )
+		self.bridgeWidthMultiplier = settings.FloatSpin().getFromValue( 0.7, 'Bridge Width Multiplier (ratio):', self, 2.0, 1.4  )
 		self.loopOrderChoice = settings.MenuButtonDisplay().getFromName('In case of Conflict Solve:', self )
 		self.loopOrderAscendingArea = settings.MenuRadio().getFromMenuButtonDisplay( self.loopOrderChoice, 'Prefer Loops', self, False )
 		self.loopOrderDescendingArea = settings.MenuRadio().getFromMenuButtonDisplay( self.loopOrderChoice, 'Prefer Perimeter', self, True )
-		self.overlapRemovalWidthOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.5, 'Overlap Removal(Scaler):', self, 1.5, 1.0 )
+		self.overlapRemovalWidthScaler = settings.FloatSpin().getFromValue( 0.5, 'Overlap Removal(Scaler):', self, 1.5, 1.0 )
 		self.executeTitle = 'Inset'
 
 	def execute(self):
@@ -317,7 +317,7 @@ class InsetSkein:
 
 	def addGcodePerimeterBlockFromRemainingLoop(self, loop, loopLists, radius, rotatedLoopLayer):
 		"""Add the perimter block remainder of the loop which does not overlap the alreadyFilledArounds loops."""
-		if self.repository.overlapRemovalWidthOverPerimeterWidth.value < 0.2:
+		if self.repository.overlapRemovalWidthScaler.value < 0.1:
 			self.distanceFeedRate.addPerimeterBlock(loop, rotatedLoopLayer.z)
 			return
 		isIntersectingSelf = isIntersectingItself(loop, self.overlapRemovalWidth)
@@ -333,7 +333,7 @@ class InsetSkein:
 	def addInset(self, rotatedLoopLayer):
 		"""Add inset to the layer."""
 		alreadyFilledArounds = []
-		halfWidth = self.halfPerimeterWidth
+		halfWidth = self.halfExtrusionWidth
 		if rotatedLoopLayer.rotation is not None:
 			halfWidth *= self.repository.bridgeWidthMultiplier.value
 			self.distanceFeedRate.addTagBracketedLine('bridgeRotation', rotatedLoopLayer.rotation)
@@ -344,13 +344,15 @@ class InsetSkein:
 
 	def getCraftedGcode(self, gcodeText, repository):
 		"""Parse gcode text and store the bevel gcode."""
+		print('Executing Inset procedure......')
+		print('removing Overlaps of Perimeter and loops.............')
 		self.repository = repository
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		for line in self.lines[self.lineIndex :]:
 			self.parseLine(line)
+		print('Overlap Removal Width', self.overlapRemovalWidth)
 		return self.distanceFeedRate.output.getvalue()
-
 	def parseInitialization(self):
 		"""Parse gcode initialization and store the parameters."""
 		for self.lineIndex in xrange(len(self.lines)):
@@ -369,8 +371,8 @@ class InsetSkein:
 				self.extrusionHeight = float(splitLine[1])
 			elif firstWord == '(<extrusionWidth>':
 				self.extrusionWidth = float(splitLine[1])
-				self.halfPerimeterWidth = 0.5 * self.extrusionWidth
-				self.overlapRemovalWidth = (self.halfPerimeterWidth + self.extrusionHeight/2) * ((math.pi/4) * self.repository.overlapRemovalWidthOverPerimeterWidth.value)
+				self.halfExtrusionWidth = 0.5 * self.extrusionWidth
+				self.overlapRemovalWidth = self.extrusionWidth * (0.7853) * self.repository.overlapRemovalWidthScaler.value
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):

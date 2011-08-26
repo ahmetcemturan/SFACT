@@ -140,11 +140,11 @@ class SpeedRepository:
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Main Feedrate Settings -', self )
 		self.mainFeed = settings.FloatSpin().getFromValue( 20.0, 'Main Feed Rate (mm/s):', self, 140.0, 60.0 )
-		self.flowRateSettingScaler = settings.FloatSpin().getFromValue( 0.5, 'Main Flow Rate  (scaler):', self, 1.5, 1.0 )
+		self.mainFeedFlowRateScaler = settings.FloatSpin().getFromValue( 0.5, 'Main Flow Rate  (scaler):', self, 1.5, 1.0 )
 		self.orbitalFeedRateOverOperatingFeedRate = settings.FloatSpin().getFromValue( 0.1, 'Feed Rate ratio for Orbiting move (ratio):', self, 0.9, 0.5 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Perimeter Printing -', self )
-		self.perimeterFeedRate = settings.FloatSpin().getFromValue( 20.0, 'Perimeter Feed Rate (mm/s):', self, 80.0, 30.0 )
+		self.perimeterFeed = settings.FloatSpin().getFromValue( 20.0, 'Perimeter Feed Rate (mm/s):', self, 80.0, 30.0 )
 		self.perimeterFlowRateScaler = settings.FloatSpin().getFromValue( 0.5, 'Perimeter Flow Rate (scaler):', self, 1.5, 1.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Bridge Layers -', self )
@@ -152,7 +152,7 @@ class SpeedRepository:
 		self.bridgeFlowRateScaler = settings.FloatSpin().getFromValue( 0.5, 'Bridge Flow Rate (scaler):', self, 1.3, 1.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelSeparator().getFromRepository(self)
-		self.travelFeedRatePerSecond = settings.FloatSpin().getFromValue( 40.0, 'Travel Feed Rate (mm/s):', self, 200.0, 130.0 )
+		self.travelFeedRate = settings.FloatSpin().getFromValue( 40.0, 'Travel Feed Rate (mm/s):', self, 200.0, 130.0 )
 		self.executeTitle = 'Speed'
 
 	def execute(self):
@@ -192,8 +192,8 @@ class SpeedSkein:
 		"""Parse gcode text and store the speed gcode."""
 		self.repository = repository
 		self.mainFeed = repository.mainFeed.value
-		self.perimeterFeedRate = repository.perimeterFeedRate.value
-		self.travelFeedRateMinute = 60.0 * self.repository.travelFeedRatePerSecond.value
+		self.perimeterFeed = repository.perimeterFeed.value
+		self.travelFeedRate = self.repository.travelFeedRate.value
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		for line in self.lines[self.lineIndex :]:
@@ -204,25 +204,25 @@ class SpeedSkein:
 		"""Get the flow rate string."""
 		if not self.repository.addFlowRate.value:
 			return None
-		flowRate = self.repository.flowRateSettingScaler.value * self.mainFeed
+		flowRate = self.repository.mainFeedFlowRateScaler.value * self.mainFeed
 		if self.isBridgeLayer:
 			flowRate *= self.repository.bridgeFlowRateScaler.value * self.repository.bridgeFeedRateMultiplier.value
 		if self.isPerimeterPath:
-			flowRate = self.repository.perimeterFlowRateScaler.value * self.repository.perimeterFeedRate.value
+			flowRate = self.repository.perimeterFlowRateScaler.value * self.repository.perimeterFeed.value
 		return euclidean.getFourSignificantFigures( flowRate )
 
 	def getSpeededLine(self, line, splitLine):
 		"""Get gcode line with feed rate."""
 		if gcodec.getIndexOfStartingWithSecond('F', splitLine) > 0:
 			return line
-		feedRateMinute = 60.0 * self.mainFeed
+		feedRateMinute = self.mainFeed * 60
 		if self.isBridgeLayer:
-			feedRateMinute *= self.repository.bridgeFeedRateMultiplier.value 
+			feedRateMinute *= self.repository.bridgeFeedRateMultiplier.value
 		if self.isPerimeterPath:
-			feedRateMinute = self.repository.perimeterFeedRate.value * 60
+			feedRateMinute = self.repository.perimeterFeed.value * 60
 		self.addFlowRateLineIfNecessary()
 		if not self.isExtruderActive:
-			feedRateMinute = self.travelFeedRateMinute
+			feedRateMinute = self.travelFeedRate * 60
 		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line, splitLine)
 
 	def parseInitialization(self):
@@ -240,13 +240,13 @@ class SpeedSkein:
 			elif firstWord == '(<extrusionWidth>':
 				self.absolutePerimeterWidth = abs(float(splitLine[1]))
 				self.distanceFeedRate.addTagBracketedLine('operatingFeedRatePerSecond', self.mainFeed )
-				self.distanceFeedRate.addTagBracketedLine('PerimeterFeedRatePerSecond', self.perimeterFeedRate )
+				self.distanceFeedRate.addTagBracketedLine('PerimeterFeedRatePerSecond', self.perimeterFeed )
 				if self.repository.addFlowRate.value:
-					self.distanceFeedRate.addTagBracketedLine('operatingFlowRate', self.repository.flowRateSettingScaler.value * self.repository.mainFeed.value)
-					self.distanceFeedRate.addTagBracketedLine('PerimeterFlowRate', self.repository.perimeterFlowRateScaler.value * self.repository.perimeterFeedRate.value)
+					self.distanceFeedRate.addTagBracketedLine('operatingFlowRate', self.repository.mainFeedFlowRateScaler.value * self.repository.mainFeed.value )
+					self.distanceFeedRate.addTagBracketedLine('PerimeterFlowRate', self.repository.perimeterFlowRateScaler.value * self.repository.perimeterFeed.value )
 				orbitalFeedRatePerSecond = self.mainFeed * self.repository.orbitalFeedRateOverOperatingFeedRate.value
 				self.distanceFeedRate.addTagBracketedLine('orbitalFeedRatePerSecond', orbitalFeedRatePerSecond )
-				self.distanceFeedRate.addTagBracketedLine('travelFeedRatePerSecond', self.repository.travelFeedRatePerSecond.value )
+				self.distanceFeedRate.addTagBracketedLine('travelFeedRate', self.repository.travelFeedRate.value )
 			self.distanceFeedRate.addLine(line)
 	def parseLine(self, line):
 		"""Parse a gcode line and add it to the speed skein."""

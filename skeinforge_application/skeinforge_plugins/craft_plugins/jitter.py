@@ -198,7 +198,7 @@ class JitterSkein:
 			elif firstWord == '(<extrusionWidth>':
 				self.extrusionWidth = float(splitLine[1])
 				self.jitter = jitterRepository.jitterOverPerimeterWidth.value * self.extrusionWidth
-			elif firstWord == '(<travelFeedRatePerSecond>':
+			elif firstWord == '(<travelFeedRate>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 

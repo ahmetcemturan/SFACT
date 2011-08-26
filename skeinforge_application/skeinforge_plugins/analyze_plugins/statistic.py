@@ -249,7 +249,7 @@ class StatisticSkein:
 		return self.output.getvalue()
 
 	def getLocationSetFeedRateToSplitLine( self, splitLine ):
-		"""Get location ans set feed rate to the plsit line."""
+		"""Get location ans set feed rate to the split line."""
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		indexOfF = gcodec.getIndexOfStartingWithSecond( "F", splitLine )
 		if indexOfF > 0:
