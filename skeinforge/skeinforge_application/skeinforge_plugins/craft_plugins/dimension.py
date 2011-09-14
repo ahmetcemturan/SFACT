@@ -140,7 +140,7 @@ class DimensionRepository:
 		settings.LabelDisplay().getFromName('- Filament Retraction Settings -', self )
 		self.retractionDistance = settings.FloatSpin().getFromValue( 0.00, 'Retraction Distance (millimeters):', self, 3.00, 1.00 )
 		self.restartExtraDistance = settings.FloatSpin().getFromValue( -0.50, 'Restart Extra Distance (millimeters):', self, 0.50, 0.00 )
-		self.oozeRate = settings.FloatSpin().getFromValue( 0.00, 'Oozerate (mm/min):', self, 3.50, 1.50 )
+		self.oozeRate = settings.FloatSpin().getFromValue( 0, 'Oozerate (mm/min):', self, 200, 75 )
 		self.extruderRetractionSpeed = settings.FloatSpin().getFromValue( 5.0, 'Extruder Retraction Speed (mm/s):', self, 50.0, 15.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- When to retract ? -', self )

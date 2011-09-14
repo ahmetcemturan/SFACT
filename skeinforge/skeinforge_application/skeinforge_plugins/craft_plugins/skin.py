@@ -97,7 +97,7 @@ class SkinRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Skin', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skin')
 		self.activateSkin = settings.BooleanSetting().getFromValue('Activate Skin', self, False )
-		self.clipOverPerimeterWidth = settings.FloatSpin().getFromValue(0.04, 'Clip Over Perimeter Width (ratio):', self, 0.4, 0.1)
+		self.clipOverPerimeterWidth = settings.FloatSpin().getFromValue(0.5, 'Clip Over Perimeter Width (ratio):', self, 1.5, 1.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Infill -', self )
 		self.infillBottomFeedRate = settings.FloatSpin().getFromValue(0.2, 'Infill Bottom Feed Rate Multiplier (ratio):', self, 2.0, 1.0)
