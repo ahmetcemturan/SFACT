@@ -1,0 +1,11 @@
+Format is tab separated leadin settings.
+_Name                          	Value
+WindowPosition	700+0
+Open File for Leadin	
+Activate Leadin	False
+Clip Over Perimeter Width (ratio):	1.0
+Infill Bottom Feed Rate Multiplier (ratio):	1.0
+Infill Bottom Flow Rate Multiplier (ratio):	1.0
+Infill Top Feed Rate Multiplier (ratio):	1.0
+Infill Top Flow Rate Multiplier (ratio):	1.0
+Layers From (index):	1
