@@ -1,9 +1,0 @@
-Format is tab separated skeinforge settings.
-_Name                          	Value
-WindowPosition	540+15
-Open File for Skeinforge	C:/Users/Ahmet/STL/_x3Screw Holder Bottom.stl
-analyze	False
-craft	True
-help	False
-meta	False
-profile	False
