@@ -22,10 +22,10 @@ globalExecutionOrder = 80
 
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get inset path."""
+	"Get inset path."
 	radius = lineation.getStrokeRadiusByPrefix(prefix, xmlElement )
 	return intercircle.getInsetLoopsFromVector3Loop(loop, radius)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)

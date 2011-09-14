@@ -25,22 +25,22 @@ from skeinforge_application.skeinforge_utilities import skeinforge_analyze
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def addToMenu(master, menu, repository, window):
-	"""Add a tool plugin menu."""
+	"Add a tool plugin menu."
 	pluginsDirectoryPath = skeinforge_analyze.getPluginsDirectoryPath()
 	settings.addPluginsParentToMenu(pluginsDirectoryPath, menu, __file__, skeinforge_analyze.getPluginFileNames())
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return skeinforge_analyze.AnalyzeRepository()
 
 def writeOutput(fileName):
-	"""Analyze a gcode file."""
+	"Analyze a gcode file."
 	repository = getNewRepository()
 	repository.fileNameInput.value = fileName
 	repository.execute()
@@ -48,7 +48,7 @@ def writeOutput(fileName):
 
 
 def main():
-	"""Display the analyze dialog."""
+	"Display the analyze dialog."
 	if len(sys.argv) > 1:
 		writeOutput(' '.join(sys.argv[1 :]))
 	else:

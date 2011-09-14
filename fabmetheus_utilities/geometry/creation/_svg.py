@@ -21,19 +21,19 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	"Get vector3 vertexes from attribute dictionary."
+	if derivation == None:
 		derivation = SVGDerivation(xmlElement)
 	return getGeometryOutputBySVGReader(derivation.svgReader, xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	"Get vector3 vertexes from attribute dictionary by arguments."
 	derivation = SVGDerivation()
 	derivation.svgReader.parseSVG('', arguments[0])
 	return getGeometryOutput(derivation, xmlElement)
 
 def getGeometryOutputBySVGReader(svgReader, xmlElement):
-	"""Get vector3 vertexes from svgReader."""
+	"Get vector3 vertexes from svgReader."
 	geometryOutput = []
 	for rotatedLoopLayer in svgReader.rotatedLoopLayers:
 		for loop in rotatedLoopLayer.loops:
@@ -44,21 +44,21 @@ def getGeometryOutputBySVGReader(svgReader, xmlElement):
 	return geometryOutput
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return SVGDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class SVGDerivation:
-	"""Class to hold svg variables."""
+	"Class to hold svg variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.svgReader = svg_reader.SVGReader()
 		self.svgReader.parseSVGByXMLElement(xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this SVGDerivation."""
+		"Get the string representation of this SVGDerivation."
 		return str(self.__dict__)

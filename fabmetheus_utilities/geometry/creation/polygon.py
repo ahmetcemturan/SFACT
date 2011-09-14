@@ -22,8 +22,8 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	"Get vector3 vertexes from attribute dictionary."
+	if derivation == None:
 		derivation = PolygonDerivation(xmlElement)
 	loop = []
 	spiral = lineation.Spiral(derivation.spiral, 0.5 * derivation.sideAngle / math.pi)
@@ -38,23 +38,23 @@ def getGeometryOutput(derivation, xmlElement):
 	return lineation.getGeometryOutputByLoop(lineation.SideLoop(loop, derivation.sideAngle, sideLength), xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	"Get vector3 vertexes from attribute dictionary by arguments."
 	evaluate.setAttributeDictionaryByArguments(['sides', 'radius'], arguments, xmlElement)
 	return getGeometryOutput(None, xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return PolygonDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class PolygonDerivation:
-	"""Class to hold polygon variables."""
+	"Class to hold polygon variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.sides = evaluate.getEvaluatedFloat(4.0, 'sides', xmlElement)
 		self.sideAngle = 2.0 * math.pi / self.sides
 		cosSide = math.cos(0.5 * self.sideAngle)
@@ -70,5 +70,5 @@ class PolygonDerivation:
 		self.spiral = evaluate.getVector3ByPrefix(None, 'spiral', xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this PolygonDerivation."""
+		"Get the string representation of this PolygonDerivation."
 		return str(self.__dict__)

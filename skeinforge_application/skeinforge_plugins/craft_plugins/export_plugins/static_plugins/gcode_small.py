@@ -15,7 +15,7 @@ import cStringIO
 import os
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -25,35 +25,35 @@ globalIsReplaceable = True
 
 
 def getOutput(gcodeText):
-	"""Get the exported version of a gcode file."""
+	'Get the exported version of a gcode file.'
 	return GcodeSmallSkein().getCraftedGcode(gcodeText)
 
 def getSplitLineBeforeBracketSemicolon(line):
-	"""Get the split line before a bracket or semicolon."""
+	"Get the split line before a bracket or semicolon."
 	bracketSemicolonIndex = min( line.find(';'), line.find('(') )
 	if bracketSemicolonIndex < 0:
 		return line.split()
 	return line[ : bracketSemicolonIndex ].split()
 
 def getStringFromCharacterSplitLine(character, splitLine):
-	"""Get the string after the first occurence of the character in the split line."""
+	"Get the string after the first occurence of the character in the split line."
 	indexOfCharacter = getIndexOfStartingWithSecond(character, splitLine)
 	if indexOfCharacter < 0:
 		return None
 	return splitLine[indexOfCharacter][1 :]
 
 def getSummarizedFileName(fileName):
-	"""Get the fileName basename if the file is in the current working directory, otherwise return the original full name."""
+	"Get the fileName basename if the file is in the current working directory, otherwise return the original full name."
 	if os.getcwd() == os.path.dirname(fileName):
 		return os.path.basename(fileName)
 	return fileName
 
 def getTextLines(text):
-	"""Get the all the lines of text of a text."""
+	"Get the all the lines of text of a text."
 	return text.replace('\r', '\n').split('\n')
 
 def getIndexOfStartingWithSecond(letter, splitLine):
-	"""Get index of the first occurence of the given letter in the split line, starting with the second word.  Return - 1 if letter is not found"""
+	"Get index of the first occurence of the given letter in the split line, starting with the second word.  Return - 1 if letter is not found"
 	for wordIndex in xrange( 1, len(splitLine) ):
 		word = splitLine[ wordIndex ]
 		firstLetter = word[0]
@@ -63,21 +63,21 @@ def getIndexOfStartingWithSecond(letter, splitLine):
 
 
 class GcodeSmallSkein:
-	"""A class to remove redundant z and feed rate parameters from a skein of extrusions."""
+	"A class to remove redundant z and feed rate parameters from a skein of extrusions."
 	def __init__(self):
 		self.lastFeedRateString = None
 		self.lastZString = None
 		self.output = cStringIO.StringIO()
 
 	def getCraftedGcode( self, gcodeText ):
-		"""Parse gcode text and store the gcode."""
+		"Parse gcode text and store the gcode."
 		lines = getTextLines(gcodeText)
 		for line in lines:
 			self.parseLine(line)
 		return self.output.getvalue()
 
 	def parseLine(self, line):
-		"""Parse a gcode line."""
+		"Parse a gcode line."
 		splitLine = getSplitLineBeforeBracketSemicolon(line)
 		if len(splitLine) < 1:
 			return
@@ -95,15 +95,15 @@ class GcodeSmallSkein:
 		zString = getStringFromCharacterSplitLine('Z', splitLine )
 		feedRateString = getStringFromCharacterSplitLine('F', splitLine )
 		self.output.write('G1')
-		if xString is not None:
+		if xString != None:
 			self.output.write(' X' + xString )
-		if yString is not None:
+		if yString != None:
 			self.output.write(' Y' + yString )
-		if zString is not None and zString != self.lastZString:
+		if zString != None and zString != self.lastZString:
 			self.output.write(' Z' + zString )
-		if feedRateString is not None and feedRateString != self.lastFeedRateString:
+		if feedRateString != None and feedRateString != self.lastFeedRateString:
 			self.output.write(' F' + feedRateString )
-		if eString is not None:
+		if eString != None:
 			self.output.write(' E' + eString )
 		self.lastFeedRateString = feedRateString
 		self.lastZString = zString

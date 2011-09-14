@@ -18,13 +18,13 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	evaluate.processArchivable( _Comment, xmlElement)
 
 
 class _Comment(dictionary.Dictionary):
-	"""A comment."""
+	"A comment."
 	def addXML(self, depth, output):
-		"""Add xml for this object."""
+		"Add xml for this object."
 		output.write( self.xmlElement.text )
 

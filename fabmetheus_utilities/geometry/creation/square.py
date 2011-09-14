@@ -22,8 +22,8 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	"Get vector3 vertexes from attribute dictionary."
+	if derivation == None:
 		derivation = SquareDerivation(xmlElement)
 	topRight = complex(derivation.topDemiwidth, derivation.demiheight)
 	topLeft = complex(-derivation.topDemiwidth, derivation.demiheight)
@@ -47,7 +47,7 @@ def getGeometryOutput(derivation, xmlElement):
 	return lineation.getGeometryOutputByLoop(lineation.SideLoop(loop, 0.5 * math.pi), xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	"Get vector3 vertexes from attribute dictionary by arguments."
 	if len(arguments) < 1:
 		return getGeometryOutput(None, xmlElement)
 	inradius = 0.5 * euclidean.getFloatFromValue(arguments[0])
@@ -58,18 +58,18 @@ def getGeometryOutputByArguments(arguments, xmlElement):
 	return getGeometryOutput(None, xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return SquareDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class SquareDerivation:
-	"""Class to hold square variables."""
+	"Class to hold square variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.inradius = lineation.getComplexByPrefixes(['demisize', 'inradius'], complex(1.0, 1.0), xmlElement)
 		self.inradius = lineation.getComplexByMultiplierPrefix(2.0, 'size', self.inradius, xmlElement)
 		self.demiwidth = lineation.getFloatByPrefixBeginEnd('demiwidth', 'width', self.inradius.real, xmlElement)
@@ -81,5 +81,5 @@ class SquareDerivation:
 		self.spiral = evaluate.getVector3ByPrefix(None, 'spiral', xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this SquareDerivation."""
+		"Get the string representation of this SquareDerivation."
 		return str(self.__dict__)

@@ -34,12 +34,12 @@ globalNumberOfCirclePoints = 4 * globalNumberOfCornerPoints
 
 
 def addFunctionsToDictionary( dictionary, functions, prefix ):
-	"""Add functions to dictionary."""
+	"Add functions to dictionary."
 	for function in functions:
 		dictionary[ function.__name__[ len( prefix ) : ] ] = function
 
 def getArcComplexes(begin, end, largeArcFlag, radius, sweepFlag, xAxisRotation):
-	"""Get the arc complexes, procedure at http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes"""
+	'Get the arc complexes, procedure at http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes'
 	if begin == end:
 		print('Warning, begin equals end in getArcComplexes in svgReader')
 		print(begin)
@@ -124,27 +124,27 @@ def getArcComplexes(begin, end, largeArcFlag, radius, sweepFlag, xAxisRotation):
 	return arcComplexes
 
 def getChainMatrixSVG(matrixSVG, xmlElement):
-	"""Get chain matrixSVG by svgElement."""
+	"Get chain matrixSVG by svgElement."
 	matrixSVG = matrixSVG.getOtherTimesSelf(getMatrixSVG(xmlElement).tricomplex)
-	if xmlElement.parent is not None:
-		matrixSVG = getChainMatrixSVG(matrixSVG, xmlElement.parent)
+	if xmlElement.parentNode != None:
+		matrixSVG = getChainMatrixSVG(matrixSVG, xmlElement.parentNode)
 	return matrixSVG
 
 def getChainMatrixSVGIfNecessary(xmlElement, yAxisPointingUpward):
-	"""Get chain matrixSVG by svgElement and yAxisPointingUpward."""
+	"Get chain matrixSVG by svgElement and yAxisPointingUpward."
 	matrixSVG = MatrixSVG()
 	if yAxisPointingUpward:
 		return matrixSVG
 	return getChainMatrixSVG(matrixSVG, xmlElement)
 
 def getCubicPoint( along, begin, controlPoints, end ):
-	"""Get the cubic point."""
+	'Get the cubic point.'
 	segmentBegin = getQuadraticPoint( along, begin, controlPoints[0], controlPoints[1] )
 	segmentEnd = getQuadraticPoint( along, controlPoints[0], controlPoints[1], end )
 	return ( 1.0 - along ) * segmentBegin + along * segmentEnd
 
 def getCubicPoints( begin, controlPoints, end, numberOfBezierPoints=globalNumberOfBezierPoints):
-	"""Get the cubic points."""
+	'Get the cubic points.'
 	bezierPortion = 1.0 / float(numberOfBezierPoints)
 	cubicPoints = []
 	for bezierIndex in xrange( 1, numberOfBezierPoints + 1 ):
@@ -152,13 +152,13 @@ def getCubicPoints( begin, controlPoints, end, numberOfBezierPoints=globalNumber
 	return cubicPoints
 
 def getFontReader(fontFamily):
-	"""Get the font reader for the fontFamily."""
+	"Get the font reader for the fontFamily."
 	fontLower = fontFamily.lower().replace(' ', '_')
 	global globalFontReaderDictionary
 	if fontLower in globalFontReaderDictionary:
 		return globalFontReaderDictionary[fontLower]
 	global globalFontFileNames
-	if globalFontFileNames is None:
+	if globalFontFileNames == None:
 		globalFontFileNames = archive.getFileNamesByFilePaths(archive.getFilePathsByDirectory(getFontsDirectoryPath()))
 	if fontLower not in globalFontFileNames:
 		print('Warning, the %s font was not found in the fonts folder, so Gentium Basic Regular will be substituted.' % fontFamily)
@@ -168,11 +168,11 @@ def getFontReader(fontFamily):
 	return fontReader
 
 def getFontsDirectoryPath():
-	"""Get the fonts directory path."""
+	"Get the fonts directory path."
 	return archive.getFabmetheusUtilitiesPath('fonts')
 
 def getLabelString(dictionary):
-	"""Get the label string for the dictionary."""
+	"Get the label string for the dictionary."
 	for key in dictionary:
 		labelIndex = key.find('label')
 		if labelIndex >= 0:
@@ -180,7 +180,7 @@ def getLabelString(dictionary):
 	return ''
 
 def getMatrixSVG(xmlElement):
-	"""Get matrixSVG by svgElement."""
+	"Get matrixSVG by svgElement."
 	matrixSVG = MatrixSVG()
 	if 'transform' not in xmlElement.attributeDictionary:
 		return matrixSVG
@@ -198,14 +198,14 @@ def getMatrixSVG(xmlElement):
 	return matrixSVG
 
 def getQuadraticPoint( along, begin, controlPoint, end ):
-	"""Get the quadratic point."""
+	'Get the quadratic point.'
 	oneMinusAlong = 1.0 - along
 	segmentBegin = oneMinusAlong * begin + along * controlPoint
 	segmentEnd = oneMinusAlong * controlPoint + along * end
 	return oneMinusAlong * segmentBegin + along * segmentEnd
 
 def getQuadraticPoints(begin, controlPoint, end, numberOfBezierPoints=globalNumberOfBezierPoints):
-	"""Get the quadratic points."""
+	'Get the quadratic points.'
 	bezierPortion = 1.0 / float(numberOfBezierPoints)
 	quadraticPoints = []
 	for bezierIndex in xrange(1, numberOfBezierPoints + 1):
@@ -213,7 +213,7 @@ def getQuadraticPoints(begin, controlPoint, end, numberOfBezierPoints=globalNumb
 	return quadraticPoints
 
 def getRightStripAlphabetPercent(word):
-	"""Get word with alphabet characters and the percent sign stripped from the right."""
+	"Get word with alphabet characters and the percent sign stripped from the right."
 	word = word.strip()
 	for characterIndex in xrange(len(word) - 1, -1, -1):
 		character = word[characterIndex]
@@ -222,7 +222,7 @@ def getRightStripAlphabetPercent(word):
 	return None
 
 def getRightStripMinusSplit(lineString):
-	"""Get string with spaces after the minus sign stripped."""
+	"Get string with spaces after the minus sign stripped."
 	oldLineStringLength = -1
 	while oldLineStringLength < len(lineString):
 		oldLineStringLength = len(lineString)
@@ -230,11 +230,11 @@ def getRightStripMinusSplit(lineString):
 	return lineString.split()
 
 def getStrokeRadius(xmlElement):
-	"""Get the stroke radius."""
+	"Get the stroke radius."
 	return 0.5 * getRightStripAlphabetPercent(getStyleValue('1.0', 'stroke-width', xmlElement))
 
 def getStyleValue(defaultValue, key, xmlElement):
-	"""Get the stroke value string."""
+	"Get the stroke value string."
 	if 'style' in xmlElement.attributeDictionary:
 		line = xmlElement.attributeDictionary['style']
 		strokeIndex = line.find(key)
@@ -244,12 +244,12 @@ def getStyleValue(defaultValue, key, xmlElement):
 				return words[1]
 	if key in xmlElement.attributeDictionary:
 		return xmlElement.attributeDictionary[key]
-	if xmlElement.parent is None:
+	if xmlElement.parentNode == None:
 		return defaultValue
-	return getStyleValue(defaultValue, key, xmlElement.parent)
+	return getStyleValue(defaultValue, key, xmlElement.parentNode)
 
 def getTextComplexLoops(fontFamily, fontSize, text, yAxisPointingUpward=True):
-	"""Get text as complex loops."""
+	"Get text as complex loops."
 	textComplexLoops = []
 	fontReader = getFontReader(fontFamily)
 	horizontalAdvanceX = 0.0
@@ -260,7 +260,7 @@ def getTextComplexLoops(fontFamily, fontSize, text, yAxisPointingUpward=True):
 	return textComplexLoops
 
 def getTransformedFillOutline(loop, xmlElement, yAxisPointingUpward):
-	"""Get the loops if fill is on, otherwise get the outlines."""
+	"Get the loops if fill is on, otherwise get the outlines."
 	fillOutlineLoops = None
 	if getStyleValue('none', 'fill', xmlElement).lower() == 'none':
 		fillOutlineLoops = intercircle.getAroundsFromLoop(loop, getStrokeRadius(xmlElement))
@@ -269,50 +269,50 @@ def getTransformedFillOutline(loop, xmlElement, yAxisPointingUpward):
 	return getChainMatrixSVGIfNecessary(xmlElement, yAxisPointingUpward).getTransformedPaths(fillOutlineLoops)
 
 def getTransformedOutlineByPath(path, xmlElement, yAxisPointingUpward):
-	"""Get the outline from the path."""
+	"Get the outline from the path."
 	aroundsFromPath = intercircle.getAroundsFromPath(path, getStrokeRadius(xmlElement))
 	return getChainMatrixSVGIfNecessary(xmlElement, yAxisPointingUpward).getTransformedPaths(aroundsFromPath)
 
 def getTransformedOutlineByPaths(paths, xmlElement, yAxisPointingUpward):
-	"""Get the outline from the paths."""
+	"Get the outline from the paths."
 	aroundsFromPaths = intercircle.getAroundsFromPaths(paths, getStrokeRadius(xmlElement))
 	return getChainMatrixSVGIfNecessary(xmlElement, yAxisPointingUpward).getTransformedPaths(aroundsFromPaths)
 
 def getTricomplexmatrix(transformWords):
-	"""Get matrixSVG by transformWords."""
+	"Get matrixSVG by transformWords."
 	tricomplex = [euclidean.getComplexByWords(transformWords)]
 	tricomplex.append(euclidean.getComplexByWords(transformWords, 2))
 	tricomplex.append(euclidean.getComplexByWords(transformWords, 4))
 	return tricomplex
 
 def getTricomplexrotate(transformWords):
-	"""Get matrixSVG by transformWords."""
+	"Get matrixSVG by transformWords."
 	rotate = euclidean.getWiddershinsUnitPolar(math.radians(float(transformWords[0])))
 	return [rotate, complex(-rotate.imag,rotate.real), complex()]
 
 def getTricomplexscale(transformWords):
-	"""Get matrixSVG by transformWords."""
+	"Get matrixSVG by transformWords."
 	scale = euclidean.getComplexByWords(transformWords)
 	return [complex(scale.real,0.0), complex(0.0,scale.imag), complex()]
 
 def getTricomplexskewX(transformWords):
-	"""Get matrixSVG by transformWords."""
+	"Get matrixSVG by transformWords."
 	skewX = math.tan(math.radians(float(transformWords[0])))
 	return [complex(1.0, 0.0), complex(skewX, 1.0), complex()]
 
 def getTricomplexskewY(transformWords):
-	"""Get matrixSVG by transformWords."""
+	"Get matrixSVG by transformWords."
 	skewY = math.tan(math.radians(float(transformWords[0])))
 	return [complex(1.0, skewY), complex(0.0, 1.0), complex()]
 
 def getTricomplexTimesColumn(firstTricomplex, otherColumn):
-	"""Get this matrix multiplied by the otherColumn."""
+	"Get this matrix multiplied by the otherColumn."
 	dotProductX = firstTricomplex[0].real * otherColumn.real + firstTricomplex[1].real * otherColumn.imag
 	dotProductY = firstTricomplex[0].imag * otherColumn.real + firstTricomplex[1].imag * otherColumn.imag
 	return complex(dotProductX, dotProductY)
 
 def getTricomplexTimesOther(firstTricomplex, otherTricomplex):
-	"""Get the first tricomplex multiplied by the other tricomplex."""
+	"Get the first tricomplex multiplied by the other tricomplex."
 	#A down, B right from http://en.wikipedia.org/wiki/Matrix_multiplication
 	tricomplexTimesOther = [getTricomplexTimesColumn(firstTricomplex, otherTricomplex[0])]
 	tricomplexTimesOther.append(getTricomplexTimesColumn(firstTricomplex, otherTricomplex[1]))
@@ -320,12 +320,12 @@ def getTricomplexTimesOther(firstTricomplex, otherTricomplex):
 	return tricomplexTimesOther
 
 def getTricomplextranslate(transformWords):
-	"""Get matrixSVG by transformWords."""
+	"Get matrixSVG by transformWords."
 	translate = euclidean.getComplexByWords(transformWords)
 	return [complex(1.0, 0.0), complex(0.0, 1.0), translate]
 
 def processSVGElementcircle( svgReader, xmlElement ):
-	"""Process xmlElement by svgReader."""
+	"Process xmlElement by svgReader."
 	attributeDictionary = xmlElement.attributeDictionary
 	center = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributeDictionary, 'cx', 'cy')
 	radius = euclidean.getFloatDefaultByDictionary( 0.0, attributeDictionary, 'r')
@@ -343,7 +343,7 @@ def processSVGElementcircle( svgReader, xmlElement ):
 	rotatedLoopLayer.loops += getTransformedFillOutline(loop, xmlElement, svgReader.yAxisPointingUpward)
 
 def processSVGElementellipse( svgReader, xmlElement ):
-	"""Process xmlElement by svgReader."""
+	"Process xmlElement by svgReader."
 	attributeDictionary = xmlElement.attributeDictionary
 	center = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributeDictionary, 'cx', 'cy')
 	radius = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributeDictionary, 'rx', 'ry')
@@ -361,7 +361,7 @@ def processSVGElementellipse( svgReader, xmlElement ):
 	rotatedLoopLayer.loops += getTransformedFillOutline(loop, xmlElement, svgReader.yAxisPointingUpward)
 
 def processSVGElementg(svgReader, xmlElement):
-	"""Process xmlElement by svgReader."""
+	'Process xmlElement by svgReader.'
 	if 'id' not in xmlElement.attributeDictionary:
 		return
 	idString = xmlElement.attributeDictionary['id']
@@ -377,19 +377,19 @@ def processSVGElementg(svgReader, xmlElement):
 	if zIndex < 0:
 		return
 	floatFromValue = euclidean.getFloatFromValue(idStringLower[zIndex + len('z:') :].strip())
-	if floatFromValue is not None:
+	if floatFromValue != None:
 		svgReader.z = floatFromValue
 	svgReader.bridgeRotation = euclidean.getComplexDefaultByDictionary( None, xmlElement.attributeDictionary, 'bridgeRotation')
 
 def processSVGElementline(svgReader, xmlElement):
-	"""Process xmlElement by svgReader."""
+	"Process xmlElement by svgReader."
 	begin = euclidean.getComplexDefaultByDictionaryKeys(complex(), xmlElement.attributeDictionary, 'x1', 'y1')
 	end = euclidean.getComplexDefaultByDictionaryKeys(complex(), xmlElement.attributeDictionary, 'x2', 'y2')
 	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
 	rotatedLoopLayer.loops += getTransformedOutlineByPath([begin, end], xmlElement, svgReader.yAxisPointingUpward)
 
 def processSVGElementpath( svgReader, xmlElement ):
-	"""Process xmlElement by svgReader."""
+	"Process xmlElement by svgReader."
 	if 'd' not in xmlElement.attributeDictionary:
 		print('Warning, in processSVGElementpath in svgReader can not get a value for d in:')
 		print(xmlElement.attributeDictionary)
@@ -398,7 +398,7 @@ def processSVGElementpath( svgReader, xmlElement ):
 	PathReader(rotatedLoopLayer.loops, xmlElement, svgReader.yAxisPointingUpward)
 
 def processSVGElementpolygon( svgReader, xmlElement ):
-	"""Process xmlElement by svgReader."""
+	"Process xmlElement by svgReader."
 	if 'points' not in xmlElement.attributeDictionary:
 		print('Warning, in processSVGElementpolygon in svgReader can not get a value for d in:')
 		print(xmlElement.attributeDictionary)
@@ -411,7 +411,7 @@ def processSVGElementpolygon( svgReader, xmlElement ):
 	rotatedLoopLayer.loops += getTransformedFillOutline(loop, xmlElement, svgReader.yAxisPointingUpward)
 
 def processSVGElementpolyline(svgReader, xmlElement):
-	"""Process xmlElement by svgReader."""
+	"Process xmlElement by svgReader."
 	if 'points' not in xmlElement.attributeDictionary:
 		print('Warning, in processSVGElementpolyline in svgReader can not get a value for d in:')
 		print(xmlElement.attributeDictionary)
@@ -424,7 +424,7 @@ def processSVGElementpolyline(svgReader, xmlElement):
 	rotatedLoopLayer.loops += getTransformedOutlineByPath(path, xmlElement, svgReader.yAxisPointingUpward)
 
 def processSVGElementrect( svgReader, xmlElement ):
-	"""Process xmlElement by svgReader."""
+	"Process xmlElement by svgReader."
 	attributeDictionary = xmlElement.attributeDictionary
 	height = euclidean.getFloatDefaultByDictionary( 0.0, attributeDictionary, 'height')
 	if height == 0.0:
@@ -475,7 +475,7 @@ def processSVGElementrect( svgReader, xmlElement ):
 	rotatedLoopLayer.loops += getTransformedFillOutline(loop, xmlElement, svgReader.yAxisPointingUpward)
 
 def processSVGElementtext(svgReader, xmlElement):
-	"""Process xmlElement by svgReader."""
+	"Process xmlElement by svgReader."
 	if svgReader.yAxisPointingUpward:
 		return
 	fontFamily = getStyleValue('Gentium Basic Regular', 'font-family', xmlElement)
@@ -491,27 +491,27 @@ def processSVGElementtext(svgReader, xmlElement):
 
 
 class FontReader:
-	"""Class to read a font in the fonts folder."""
+	"Class to read a font in the fonts folder."
 	def __init__(self, fontFamily):
-		"""Initialize."""
+		"Initialize."
 		self.fontFamily = fontFamily
 		self.glyphDictionary = {}
 		self.glyphXMLElementDictionary = {}
 		self.missingGlyph = None
 		fileName = os.path.join(getFontsDirectoryPath(), fontFamily + '.svg')
 		self.xmlParser = XMLSimpleReader(fileName, None, archive.getFileText(fileName))
-		self.fontXMLElement = self.xmlParser.getRoot().getFirstChildWithClassName('defs').getFirstChildWithClassName('font')
-		self.fontFaceXMLElement = self.fontXMLElement.getFirstChildWithClassName('font-face')
+		self.fontXMLElement = self.xmlParser.getRoot().getFirstChildByLocalName('defs').getFirstChildByLocalName('font')
+		self.fontFaceXMLElement = self.fontXMLElement.getFirstChildByLocalName('font-face')
 		self.unitsPerEM = float(self.fontFaceXMLElement.attributeDictionary['units-per-em'])
-		glyphXMLElements = self.fontXMLElement.getChildrenWithClassName('glyph')
+		glyphXMLElements = self.fontXMLElement.getChildNodesByLocalName('glyph')
 		for glyphXMLElement in glyphXMLElements:
 			self.glyphXMLElementDictionary[glyphXMLElement.attributeDictionary['unicode']] = glyphXMLElement
 
 	def getGlyph(self, character, yAxisPointingUpward):
-		"""Get the glyph for the character."""
+		"Get the glyph for the character."
 		if character not in self.glyphXMLElementDictionary:
-			if self.missingGlyph is None:
-				missingGlyphXMLElement = self.fontXMLElement.getFirstChildWithClassName('missing-glyph')
+			if self.missingGlyph == None:
+				missingGlyphXMLElement = self.fontXMLElement.getFirstChildByLocalName('missing-glyph')
 				self.missingGlyph = Glyph(self.unitsPerEM, missingGlyphXMLElement, yAxisPointingUpward)
 			return self.missingGlyph
 		if character not in self.glyphDictionary:
@@ -520,9 +520,9 @@ class FontReader:
 
 
 class Glyph:
-	"""Class to handle a glyph."""
+	"Class to handle a glyph."
 	def __init__(self, unitsPerEM, xmlElement, yAxisPointingUpward):
-		"""Initialize."""
+		"Initialize."
 		self.horizontalAdvanceX = float(xmlElement.attributeDictionary['horiz-adv-x'])
 		self.loops = []
 		self.unitsPerEM = unitsPerEM
@@ -532,7 +532,7 @@ class Glyph:
 		PathReader(self.loops, xmlElement, yAxisPointingUpward)
 
 	def getSizedAdvancedLoops(self, fontSize, horizontalAdvanceX, yAxisPointingUpward=True):
-		"""Get loops for font size, advanced horizontally."""
+		"Get loops for font size, advanced horizontally."
 		multiplierX = fontSize / self.unitsPerEM
 		multiplierY = multiplierX
 		if not yAxisPointingUpward:
@@ -547,34 +547,34 @@ class Glyph:
 
 
 class MatrixSVG:
-	"""Two by three svg matrix."""
+	"Two by three svg matrix."
 	def __init__(self, tricomplex=None):
-		"""Initialize."""
+		"Initialize."
 		self.tricomplex = tricomplex
 
 	def __repr__(self):
-		"""Get the string representation of this two by three svg matrix."""
+		"Get the string representation of this two by three svg matrix."
 		return str(self.tricomplex)
 
 	def getOtherTimesSelf(self, otherTricomplex):
-		"""Get the other matrix multiplied by this matrix."""
-		if otherTricomplex is None:
+		"Get the other matrix multiplied by this matrix."
+		if otherTricomplex == None:
 			return MatrixSVG(self.tricomplex)
-		if self.tricomplex is None:
+		if self.tricomplex == None:
 			return MatrixSVG(otherTricomplex)
 		return MatrixSVG(getTricomplexTimesOther(otherTricomplex, self.tricomplex))
 
 	def getSelfTimesOther(self, otherTricomplex):
-		"""Get this matrix multiplied by the other matrix."""
-		if otherTricomplex is None:
+		"Get this matrix multiplied by the other matrix."
+		if otherTricomplex == None:
 			return MatrixSVG(self.tricomplex)
-		if self.tricomplex is None:
+		if self.tricomplex == None:
 			return MatrixSVG(otherTricomplex)
 		return MatrixSVG(getTricomplexTimesOther(self.tricomplex, otherTricomplex))
 
 	def getTransformedPath(self, path):
-		"""Get transformed path."""
-		if self.tricomplex is None:
+		"Get transformed path."
+		if self.tricomplex == None:
 			return path
 		complexX = self.tricomplex[0]
 		complexY = self.tricomplex[1]
@@ -587,8 +587,8 @@ class MatrixSVG:
 		return transformedPath
 
 	def getTransformedPaths(self, paths):
-		"""Get transformed paths."""
-		if self.tricomplex is None:
+		"Get transformed paths."
+		if self.tricomplex == None:
 			return paths
 		transformedPaths = []
 		for path in paths:
@@ -597,9 +597,9 @@ class MatrixSVG:
 
 
 class PathReader:
-	"""Class to read svg path."""
+	"Class to read svg path."
 	def __init__(self, loops, xmlElement, yAxisPointingUpward):
-		"""Add to path string to loops."""
+		"Add to path string to loops."
 		self.controlPoints = None
 		self.loops = loops
 		self.oldPoint = None
@@ -622,7 +622,7 @@ class PathReader:
 		self.loops += getTransformedOutlineByPaths(self.outlinePaths, xmlElement, yAxisPointingUpward)
 
 	def addPathArc( self, end ):
-		"""Add an arc to the path."""
+		"Add an arc to the path."
 		begin = self.getOldPoint()
 		self.controlPoints = None
 		radius = self.getComplexByExtraIndex(1)
@@ -633,17 +633,17 @@ class PathReader:
 		self.wordIndex += 8
 
 	def addPathCubic( self, controlPoints, end ):
-		"""Add a cubic curve to the path."""
+		"Add a cubic curve to the path."
 		begin = self.getOldPoint()
 		self.controlPoints = controlPoints
 		self.path += getCubicPoints( begin, controlPoints, end )
 		self.wordIndex += 7
 
 	def addPathCubicReflected( self, controlPoint, end ):
-		"""Add a cubic curve to the path from a reflected control point."""
+		"Add a cubic curve to the path from a reflected control point."
 		begin = self.getOldPoint()
 		controlPointBegin = begin
-		if self.controlPoints is not None:
+		if self.controlPoints != None:
 			if len(self.controlPoints) == 2:
 				controlPointBegin = begin + begin - self.controlPoints[-1]
 		self.controlPoints = [controlPointBegin, controlPoint]
@@ -651,28 +651,28 @@ class PathReader:
 		self.wordIndex += 5
 
 	def addPathLine(self, lineFunction, point):
-		"""Add a line to the path."""
+		"Add a line to the path."
 		self.controlPoints = None
 		self.path.append(point)
 		self.wordIndex += 3
 		self.addPathLineByFunction(lineFunction)
 
 	def addPathLineAxis(self, point):
-		"""Add an axis line to the path."""
+		"Add an axis line to the path."
 		self.controlPoints = None
 		self.path.append(point)
 		self.wordIndex += 2
 
 	def addPathLineByFunction( self, lineFunction ):
-		"""Add a line to the path by line function."""
+		"Add a line to the path by line function."
 		while 1:
-			if self.getFloatByExtraIndex() is None:
+			if self.getFloatByExtraIndex() == None:
 				return
 			self.path.append(lineFunction())
 			self.wordIndex += 2
 
 	def addPathMove( self, lineFunction, point ):
-		"""Add an axis line to the path."""
+		"Add an axis line to the path."
 		self.controlPoints = None
 		if len(self.path) > 0:
 			self.outlinePaths.append(self.path)
@@ -682,17 +682,17 @@ class PathReader:
 		self.addPathLineByFunction(lineFunction)
 
 	def addPathQuadratic( self, controlPoint, end ):
-		"""Add a quadratic curve to the path."""
+		"Add a quadratic curve to the path."
 		begin = self.getOldPoint()
 		self.controlPoints = [controlPoint]
 		self.path += getQuadraticPoints(begin, controlPoint, end)
 		self.wordIndex += 5
 
 	def addPathQuadraticReflected( self, end ):
-		"""Add a quadratic curve to the path from a reflected control point."""
+		"Add a quadratic curve to the path from a reflected control point."
 		begin = self.getOldPoint()
 		controlPoint = begin
-		if self.controlPoints is not None:
+		if self.controlPoints != None:
 			if len( self.controlPoints ) == 1:
 				controlPoint = begin + begin - self.controlPoints[-1]
 		self.controlPoints = [ controlPoint ]
@@ -700,15 +700,15 @@ class PathReader:
 		self.wordIndex += 3
 
 	def getComplexByExtraIndex( self, extraIndex=0 ):
-		"""Get complex from the extraIndex."""
+		'Get complex from the extraIndex.'
 		return euclidean.getComplexByWords(self.words, self.wordIndex + extraIndex)
 
 	def getComplexRelative(self):
-		"""Get relative complex."""
+		"Get relative complex."
 		return self.getComplexByExtraIndex() + self.getOldPoint()
 
 	def getFloatByExtraIndex( self, extraIndex=0 ):
-		"""Get float from the extraIndex."""
+		'Get float from the extraIndex.'
 		totalIndex = self.wordIndex + extraIndex
 		if totalIndex >= len(self.words):
 			return None
@@ -718,118 +718,118 @@ class PathReader:
 		return euclidean.getFloatFromValue(word)
 
 	def getOldPoint(self):
-		"""Get the old point."""
+		'Get the old point.'
 		if len(self.path) > 0:
 			return self.path[-1]
 		return self.oldPoint
 
 	def processPathWordA(self):
-		"""Process path word A."""
+		'Process path word A.'
 		self.addPathArc( self.getComplexByExtraIndex( 6 ) )
 
 	def processPathWorda(self):
-		"""Process path word a."""
+		'Process path word a.'
 		self.addPathArc(self.getComplexByExtraIndex(6) + self.getOldPoint())
 
 	def processPathWordC(self):
-		"""Process path word C."""
+		'Process path word C.'
 		end = self.getComplexByExtraIndex( 5 )
 		self.addPathCubic( [ self.getComplexByExtraIndex( 1 ), self.getComplexByExtraIndex(3) ], end )
 
 	def processPathWordc(self):
-		"""Process path word C."""
+		'Process path word C.'
 		begin = self.getOldPoint()
 		end = self.getComplexByExtraIndex( 5 )
 		self.addPathCubic( [ self.getComplexByExtraIndex( 1 ) + begin, self.getComplexByExtraIndex(3) + begin ], end + begin )
 
 	def processPathWordH(self):
-		"""Process path word H."""
+		"Process path word H."
 		beginY = self.getOldPoint().imag
 		self.addPathLineAxis(complex(float(self.words[self.wordIndex + 1]), beginY))
 		while 1:
 			floatByExtraIndex = self.getFloatByExtraIndex()
-			if floatByExtraIndex is None:
+			if floatByExtraIndex == None:
 				return
 			self.path.append(complex(floatByExtraIndex, beginY))
 			self.wordIndex += 1
 
 	def processPathWordh(self):
-		"""Process path word h."""
+		"Process path word h."
 		begin = self.getOldPoint()
 		self.addPathLineAxis(complex(float(self.words[self.wordIndex + 1]) + begin.real, begin.imag))
 		while 1:
 			floatByExtraIndex = self.getFloatByExtraIndex()
-			if floatByExtraIndex is None:
+			if floatByExtraIndex == None:
 				return
 			self.path.append(complex(floatByExtraIndex + self.getOldPoint().real, begin.imag))
 			self.wordIndex += 1
 
 	def processPathWordL(self):
-		"""Process path word L."""
+		"Process path word L."
 		self.addPathLine(self.getComplexByExtraIndex, self.getComplexByExtraIndex( 1 ))
 
 	def processPathWordl(self):
-		"""Process path word l."""
+		"Process path word l."
 		self.addPathLine(self.getComplexRelative, self.getComplexByExtraIndex(1) + self.getOldPoint())
 
 	def processPathWordM(self):
-		"""Process path word M."""
+		"Process path word M."
 		self.addPathMove(self.getComplexByExtraIndex, self.getComplexByExtraIndex(1))
 
 	def processPathWordm(self):
-		"""Process path word m."""
+		"Process path word m."
 		self.addPathMove(self.getComplexRelative, self.getComplexByExtraIndex(1) + self.getOldPoint())
 
 	def processPathWordQ(self):
-		"""Process path word Q."""
+		'Process path word Q.'
 		self.addPathQuadratic( self.getComplexByExtraIndex( 1 ), self.getComplexByExtraIndex(3) )
 
 	def processPathWordq(self):
-		"""Process path word q."""
+		'Process path word q.'
 		begin = self.getOldPoint()
 		self.addPathQuadratic(self.getComplexByExtraIndex(1) + begin, self.getComplexByExtraIndex(3) + begin)
 
 	def processPathWordS(self):
-		"""Process path word S."""
+		'Process path word S.'
 		self.addPathCubicReflected( self.getComplexByExtraIndex( 1 ), self.getComplexByExtraIndex(3) )
 
 	def processPathWords(self):
-		"""Process path word s."""
+		'Process path word s.'
 		begin = self.getOldPoint()
 		self.addPathCubicReflected(self.getComplexByExtraIndex(1) + begin, self.getComplexByExtraIndex(3) + begin)
 
 	def processPathWordT(self):
-		"""Process path word T."""
+		'Process path word T.'
 		self.addPathQuadraticReflected( self.getComplexByExtraIndex( 1 ) )
 
 	def processPathWordt(self):
-		"""Process path word t."""
+		'Process path word t.'
 		self.addPathQuadraticReflected(self.getComplexByExtraIndex(1) + self.getOldPoint())
 
 	def processPathWordV(self):
-		"""Process path word V."""
+		"Process path word V."
 		beginX = self.getOldPoint().real
 		self.addPathLineAxis(complex(beginX, float(self.words[self.wordIndex + 1])))
 		while 1:
 			floatByExtraIndex = self.getFloatByExtraIndex()
-			if floatByExtraIndex is None:
+			if floatByExtraIndex == None:
 				return
 			self.path.append(complex(beginX, floatByExtraIndex))
 			self.wordIndex += 1
 
 	def processPathWordv(self):
-		"""Process path word v."""
+		"Process path word v."
 		begin = self.getOldPoint()
 		self.addPathLineAxis(complex(begin.real, float(self.words[self.wordIndex + 1]) + begin.imag))
 		while 1:
 			floatByExtraIndex = self.getFloatByExtraIndex()
-			if floatByExtraIndex is None:
+			if floatByExtraIndex == None:
 				return
 			self.path.append(complex(begin.real, floatByExtraIndex + self.getOldPoint().imag))
 			self.wordIndex += 1
 
 	def processPathWordZ(self):
-		"""Process path word Z."""
+		"Process path word Z."
 		self.controlPoints = None
 		if len(self.path) < 1:
 			return
@@ -838,14 +838,14 @@ class PathReader:
 		self.path = []
 
 	def processPathWordz(self):
-		"""Process path word z."""
+		"Process path word z."
 		self.processPathWordZ()
 
 
 class SVGReader:
-	"""An svg carving."""
+	"An svg carving."
 	def __init__(self):
-		"""Add empty lists."""
+		"Add empty lists."
 		self.bridgeRotation = None
 		self.rotatedLoopLayers = []
 		self.sliceDictionary = None
@@ -853,7 +853,7 @@ class SVGReader:
 		self.z = 0.0
 
 	def flipDirectLayer(self, rotatedLoopLayer):
-		"""Flip the y coordinate of the layer and direct the loops."""
+		"Flip the y coordinate of the layer and direct the loops."
 		for loop in rotatedLoopLayer.loops:
 			for pointIndex, point in enumerate(loop):
 				loop[pointIndex] = complex(point.real, -point.imag)
@@ -863,8 +863,8 @@ class SVGReader:
 			intercircle.directLoop((not isInsideLoops), loop)
 
 	def getRotatedLoopLayer(self):
-		"""Return the rotated loop layer."""
-		if self.z is not None:
+		"Return the rotated loop layer."
+		if self.z != None:
 			rotatedLoopLayer = euclidean.RotatedLoopLayer( self.z )
 			self.rotatedLoopLayers.append( rotatedLoopLayer )
 			rotatedLoopLayer.rotation = self.bridgeRotation
@@ -872,18 +872,18 @@ class SVGReader:
 		return self.rotatedLoopLayers[-1]
 
 	def parseSVG(self, fileName, svgText):
-		"""Parse SVG text and store the layers."""
+		"Parse SVG text and store the layers."
 		self.fileName = fileName
 		xmlParser = XMLSimpleReader(fileName, None, svgText)
 		self.root = xmlParser.getRoot()
-		if self.root is None:
+		if self.root == None:
 			print('Warning, root was None in parseSVG in SVGReader, so nothing will be done for:')
 			print(fileName)
 			return
 		self.parseSVGByXMLElement(self.root)
 
 	def parseSVGByXMLElement(self, xmlElement):
-		"""Parse SVG by xmlElement."""
+		"Parse SVG by xmlElement."
 		self.sliceDictionary = svg_writer.getSliceDictionary(xmlElement)
 		self.yAxisPointingUpward = euclidean.getBooleanFromDictionary(False, self.sliceDictionary, 'yAxisPointingUpward')
 		self.processXMLElement(xmlElement)
@@ -892,20 +892,20 @@ class SVGReader:
 				self.flipDirectLayer(rotatedLoopLayer)
 
 	def processXMLElement(self, xmlElement):
-		"""Process the xml element."""
+		"Process the xml element."
 		if self.stopProcessing:
 			return
-		lowerClassName = xmlElement.className.lower()
+		lowerLocalName = xmlElement.localName.lower()
 		global globalProcessSVGElementDictionary
-		if lowerClassName in globalProcessSVGElementDictionary:
+		if lowerLocalName in globalProcessSVGElementDictionary:
 			try:
-				globalProcessSVGElementDictionary[ lowerClassName ](self, xmlElement)
+				globalProcessSVGElementDictionary[ lowerLocalName ](self, xmlElement)
 			except:
 				print('Warning, in processXMLElement in svg_reader, could not process:')
 				print(xmlElement)
 				traceback.print_exc(file=sys.stdout)
-		for child in xmlElement.children:
-			self.processXMLElement( child )
+		for childNode in xmlElement.childNodes:
+			self.processXMLElement( childNode )
 
 
 globalFontFileNames = None

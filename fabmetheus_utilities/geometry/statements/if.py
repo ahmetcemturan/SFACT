@@ -17,5 +17,5 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	evaluate.processCondition(xmlElement)

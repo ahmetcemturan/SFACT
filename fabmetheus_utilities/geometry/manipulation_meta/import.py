@@ -27,27 +27,27 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return ImportDerivation(xmlElement)
 
 def getXMLFromCarvingFileName(fileName):
-	"""Get xml text from xml text."""
+	'Get xml text from xml text.'
 	carving = fabmetheus_interpret.getCarving(fileName)
-	if carving is None:
+	if carving == None:
 		return ''
 	output = xml_simple_writer.getBeginGeometryXMLOutput()
 	carving.addXML(0, output)
 	return xml_simple_writer.getEndGeometryXMLString(output)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	processXMLElementByDerivation(None, xmlElement)
 
 def processXMLElementByDerivation(derivation, xmlElement):
-	"""Process the xml element by derivation."""
-	if derivation is None:
+	'Process the xml element by derivation.'
+	if derivation == None:
 		derivation = ImportDerivation(xmlElement)
-	if derivation.fileName is None:
+	if derivation.fileName == None:
 		return
 	parserFileName = xmlElement.getParser().fileName
 	absoluteFileName = archive.getAbsoluteFolderPath(parserFileName, derivation.fileName)
@@ -69,7 +69,7 @@ def processXMLElementByDerivation(derivation, xmlElement):
 	if xmlText == '':
 		print('The file %s could not be found by processXMLElement in import.' % derivation.fileName)
 		return
-	if derivation.importName is None:
+	if derivation.importName == None:
 		xmlElement.importName = archive.getUntilDot(derivation.fileName)
 		if derivation.basename:
 			xmlElement.importName = os.path.basename(xmlElement.importName)
@@ -78,20 +78,20 @@ def processXMLElementByDerivation(derivation, xmlElement):
 		xmlElement.importName = derivation.importName
 	importXMLElement = xml_simple_reader.XMLElement()
 	xml_simple_reader.XMLSimpleReader(parserFileName, importXMLElement, xmlText)
-	for child in importXMLElement.children:
-		child.copyXMLChildren('', xmlElement)
-		evaluate.removeIdentifiersFromDictionary(child.attributeDictionary)
-		xmlElement.attributeDictionary.update(child.attributeDictionary)
+	for childNode in importXMLElement.childNodes:
+		childNode.copyXMLChildNodes('', xmlElement)
+		evaluate.removeIdentifiersFromDictionary(childNode.attributeDictionary)
+		xmlElement.attributeDictionary.update(childNode.attributeDictionary)
 		if derivation.overwriteRoot:
-			xmlElement.getRoot().attributeDictionary.update(child.attributeDictionary)
-	xmlElement.className = 'group'
+			xmlElement.getRoot().attributeDictionary.update(childNode.attributeDictionary)
+	xmlElement.localName = 'group'
 	evaluate.processArchivable(group.Group, xmlElement)
 
 
 class ImportDerivation:
-	"""Class to hold import variables."""
+	"Class to hold import variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.basename = evaluate.getEvaluatedBoolean(True, 'basename', xmlElement)
 		self.fileName = evaluate.getEvaluatedString('', 'file', xmlElement)
 		self.importName = evaluate.getEvaluatedString(None, '_importName', xmlElement)
@@ -99,5 +99,5 @@ class ImportDerivation:
 		self.xmlElement = xmlElement
 
 	def __repr__(self):
-		"""Get the string representation of this ImportDerivation."""
+		"Get the string representation of this ImportDerivation."
 		return str(self.__dict__)

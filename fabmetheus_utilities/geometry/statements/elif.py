@@ -17,9 +17,9 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def processElse(xmlElement):
-	"""Process the else statement."""
+	"Process the else statement."
 	evaluate.processCondition(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	pass

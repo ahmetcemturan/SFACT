@@ -131,51 +131,51 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getCraftedText(fileName, text='', repository=None):
-	"""Chamber the file or text."""
+	"Chamber the file or text."
 	return getCraftedTextFromText(archive.getTextIfEmpty(fileName, text), repository)
 
 def getCraftedTextFromText(gcodeText, repository=None):
-	"""Chamber a gcode linear move text."""
+	"Chamber a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'chamber'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(ChamberRepository())
 	if not repository.activateChamber.value:
 		return gcodeText
 	return ChamberSkein().getCraftedGcode(gcodeText, repository)
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return ChamberRepository()
 
 def writeOutput(fileName, shouldAnalyze=True):
-	"""Chamber a gcode linear move file."""
+	"Chamber a gcode linear move file."
 	skeinforge_craft.writeChainTextWithNounMessage(fileName, 'chamber', shouldAnalyze)
 
 
 class ChamberRepository:
-	"""A class to handle the chamber settings."""
+	"A class to handle the chamber settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.chamber.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Chamber', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Chamber')
 		self.activateChamber = settings.BooleanSetting().getFromValue('Activate Chamber..if you want below functions to work', self, False )
 		settings.LabelSeparator().getFromRepository(self)
-		self.BedHeaterTemperature = settings.FloatSpin().getFromValue( 20.0, 'Heated PrintBed Temperature (Celcius):', self, 130.0, 60.0 )
+		self.bedTemperature = settings.FloatSpin().getFromValue( 20.0, 'Heated PrintBed Temperature (Celcius):', self, 130.0, 60.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		self.turnBedHeaterOffAtShutDown = settings.BooleanSetting().getFromValue('Turn print Bed Heater Off at Shut Down', self, True )
 		self.turnExtruderHeaterOffAtShutDown = settings.BooleanSetting().getFromValue('Turn Extruder Heater Off at Shut Down', self, True )
 		self.executeTitle = 'Chamber'
 
 	def execute(self):
-		""""Chamber button has been clicked."""
+		"Chamber button has been clicked."
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
 		for fileName in fileNames:
 			writeOutput(fileName)
@@ -183,14 +183,14 @@ class ChamberRepository:
 
 
 class ChamberSkein:
-	"""A class to chamber a skein of extrusions."""
+	"A class to chamber a skein of extrusions."
 	def __init__(self):
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.lineIndex = 0
 		self.lines = None
 
 	def getCraftedGcode(self, gcodeText, repository):
-		"""Parse gcode text and store the chamber gcode."""
+		"Parse gcode text and store the chamber gcode."
 		self.repository = repository
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
@@ -199,7 +199,7 @@ class ChamberSkein:
 		return self.distanceFeedRate.output.getvalue()
 
 	def parseInitialization(self):
-		"""Parse gcode initialization and store the parameters."""
+		'Parse gcode initialization and store the parameters.'
 		for self.lineIndex in xrange(len(self.lines)):
 			line = self.lines[self.lineIndex]
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
@@ -211,31 +211,32 @@ class ChamberSkein:
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
-		"""Parse a gcode line and add it to the chamber skein."""
+		"Parse a gcode line and add it to the chamber skein."
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		if len(splitLine) < 1:
 			return
 		firstWord = splitLine[0]
 		if firstWord == '(<crafting>)':
 			self.distanceFeedRate.addLine(line)
-			self.distanceFeedRate.addParameter('M140', self.repository.BedHeaterTemperature.value ) # Set bed temperature.
-
+			self.distanceFeedRate.addParameter('M140', self.repository.bedTemperature.value ) # Set bed temperature.
 		elif firstWord == '(</crafting>)':
-				self.distanceFeedRate.addLine(line)
-				if self.repository.turnExtruderHeaterOffAtShutDown.value:
-					self.distanceFeedRate.addLine('M104 S0') # Turn extruder heater off.
-				if self.repository.turnBedHeaterOffAtShutDown.value:
-					self.distanceFeedRate.addLine('M140 S0') # Turn bed heater off.
-				return
+			self.distanceFeedRate.addLine(line)
+			if self.repository.turnExtruderHeaterOffAtShutDown.value:
+				self.distanceFeedRate.addLine('M104 S0') # Turn extruder heater off.
+			if self.repository.turnBedHeaterOffAtShutDown.value:
+				self.distanceFeedRate.addLine('M140 S0') # Turn bed heater off.
+#			self.distanceFeedRate.addParameter('M141', self.repository.chamberTemperature.value ) # Set chamber temperature.
+#			self.distanceFeedRate.addParameter('M142', self.repository.holdingForce.value ) # Set holding pressure.
+			return
 		self.distanceFeedRate.addLine(line)
 
 
 def main():
-	"""Display the chamber dialog."""
+	"Display the chamber dialog."
 	if len(sys.argv) > 1:
 		writeOutput(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

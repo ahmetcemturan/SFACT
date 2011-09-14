@@ -241,13 +241,13 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def compareLayerSequence( first, second ):
-	"""Get comparison in order to sort skein panes in ascending order of layer zone index then sequence index."""
+	"Get comparison in order to sort skein panes in ascending order of layer zone index then sequence index."
 	if first.layerZoneIndex < second.layerZoneIndex:
 		return - 1
 	if first.layerZoneIndex > second.layerZoneIndex:
@@ -257,32 +257,32 @@ def compareLayerSequence( first, second ):
 	return int( first.sequenceIndex > second.sequenceIndex )
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return SkeinisoRepository()
 
 def getWindowAnalyzeFile(fileName):
-	"""Skeiniso a gcode file."""
+	"Skeiniso a gcode file."
 	gcodeText = archive.getFileText(fileName)
 	return getWindowAnalyzeFileGivenText(fileName, gcodeText)
 
 def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
-	"""Display a skeiniso gcode file for a gcode file."""
+	"Display a skeiniso gcode file for a gcode file."
 	if gcodeText == '':
 		return None
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( SkeinisoRepository() )
 	skeinWindow = getWindowGivenTextRepository( fileName, gcodeText, repository )
 	skeinWindow.updateDeiconify()
 	return skeinWindow
 
 def getWindowGivenTextRepository( fileName, gcodeText, repository ):
-	"""Display the gcode text in a skeiniso viewer."""
+	"Display the gcode text in a skeiniso viewer."
 	skein = SkeinisoSkein()
 	skein.parseGcode( fileName, gcodeText, repository )
 	return SkeinWindow( repository, skein )
 
 def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWritten, gcodeText=''):
-	"""Write a skeinisoed gcode file for a skeinforge gcode file, if 'Activate Skeiniso' is selected."""
+	"Write a skeinisoed gcode file for a skeinforge gcode file, if 'Activate Skeiniso' is selected."
 	try:
 		import Tkinter
 	except:
@@ -295,9 +295,9 @@ def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWr
 
 
 class SkeinisoRepository( tableau.TableauRepository ):
-	"""A class to handle the skeiniso settings."""
+	"A class to handle the skeiniso settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.analyze_plugins.skeiniso.html', self)
 		self.baseNameSynonym = 'behold.csv'
 		self.fileNameInput = settings.FileNameInput().getFromFileName( [ ('Gcode text files', '*.gcode') ], 'Open File for Skeiniso', self, '')
@@ -352,14 +352,14 @@ class SkeinisoRepository( tableau.TableauRepository ):
 		self.executeTitle = 'Skeiniso'
 
 	def execute(self):
-		"""Write button has been clicked."""
+		"Write button has been clicked."
 		fileNames = skeinforge_polyfile.getFileOrGcodeDirectory( self.fileNameInput.value, self.fileNameInput.wasCancelled )
 		for fileName in fileNames:
 			getWindowAnalyzeFile(fileName)
 
 
 class SkeinisoSkein:
-	"""A class to write a get a scalable vector graphics text for a gcode skein."""
+	"A class to write a get a scalable vector graphics text for a gcode skein."
 	def __init__(self):
 		self.coloredThread = []
 		self.feedRateMinute = 960.1
@@ -378,8 +378,8 @@ class SkeinisoSkein:
 		self.thirdLayerThickness = 0.133333
 
 	def addToPath( self, line, location ):
-		"""Add a point to travel and maybe extrusion."""
-		if self.oldLocation is None:
+		'Add a point to travel and maybe extrusion.'
+		if self.oldLocation == None:
 			return
 		begin = self.scale * self.oldLocation - self.scaleCenterBottom
 		end = self.scale * location - self.scaleCenterBottom
@@ -391,13 +391,13 @@ class SkeinisoSkein:
 		self.coloredThread.append( coloredLine )
 
 	def getLayerTop(self):
-		"""Get the layer top."""
+		"Get the layer top."
 		if len( self.layerTops ) < 1:
 			return - 9123456789123.9
 		return self.layerTops[-1]
 
 	def getLayerZoneIndex( self, z ):
-		"""Get the layer zone index."""
+		"Get the layer zone index."
 		if self.layerTops[ self.oldLayerZoneIndex ] > z:
 			if self.oldLayerZoneIndex == 0:
 				return 0
@@ -412,12 +412,12 @@ class SkeinisoSkein:
 		return self.oldLayerZoneIndex
 
 	def initializeActiveLocation(self):
-		"""Set variables to default."""
+		"Set variables to default."
 		self.extruderActive = False
 		self.oldLocation = None
 
 	def linearCorner( self, splitLine ):
-		"""Update the bounding corners."""
+		"Update the bounding corners."
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		if self.extruderActive or self.goAroundExtruderOffTravel:
 			self.cornerMaximum.maximize(location)
@@ -425,13 +425,13 @@ class SkeinisoSkein:
 		self.oldLocation = location
 
 	def linearMove( self, line, location ):
-		"""Get statistics for a linear move."""
-		if self.skeinPane is None:
+		"Get statistics for a linear move."
+		if self.skeinPane == None:
 			return
 		self.addToPath(line, location)
 
 	def moveColoredThreadToSkeinPane(self):
-		"""Move a colored thread to the skein pane."""
+		'Move a colored thread to the skein pane.'
 		if len( self.coloredThread ) <= 0:
 			return
 		layerZoneIndex = self.getLayerZoneIndex( self.coloredThread[0].z )
@@ -460,7 +460,7 @@ class SkeinisoSkein:
 		self.setColoredThread( ( 0.0, 255.0, 0.0 ), self.skeinPane.infillLines ) #green
 
 	def parseCorner(self, line):
-		"""Parse a gcode line and use the location to update the bounding corners."""
+		"Parse a gcode line and use the location to update the bounding corners."
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		if len(splitLine) < 1:
 			return
@@ -477,14 +477,14 @@ class SkeinisoSkein:
 			self.extruderActive = True
 		elif firstWord == 'M103':
 			self.extruderActive = False
-		elif firstWord == '(<extrusionHeight>':
+		elif firstWord == '(<layerThickness>':#todo
 			self.thirdLayerThickness = 0.33333333333 * float(splitLine[1])
 		if firstWord == '(<nestedRing>)':
 			if self.layerTopZ > self.getLayerTop():
 				self.layerTops.append( self.layerTopZ )
 
 	def parseGcode( self, fileName, gcodeText, repository ):
-		"""Parse gcode text and store the vector output."""
+		"Parse gcode text and store the vector output."
 		self.repository = repository
 		self.fileName = fileName
 		self.gcodeText = gcodeText
@@ -534,7 +534,7 @@ class SkeinisoSkein:
 			self.parseLine(line)
 
 	def parseInitialization(self):
-		"""Parse gcode initialization and store the parameters."""
+		'Parse gcode initialization and store the parameters.'
 		for self.lineIndex in xrange(len(self.lines)):
 			line = self.lines[self.lineIndex]
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
@@ -545,7 +545,7 @@ class SkeinisoSkein:
 				self.feedRateMinute = 60.0 * float(splitLine[1])
 
 	def parseLine(self, line):
-		"""Parse a gcode line and add it to the vector output."""
+		"Parse a gcode line and add it to the vector output."
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		if len(splitLine) < 1:
 			return
@@ -587,7 +587,7 @@ class SkeinisoSkein:
 			self.oldLocation = location
 
 	def setColoredLineColor( self, coloredLine, colorTuple ):
-		"""Set the color and stipple of the colored line."""
+		'Set the color and stipple of the colored line.'
 		layerZoneIndex = self.getLayerZoneIndex( coloredLine.z )
 		multiplier = self.repository.bottomLayerBrightness.value
 		if len( self.layerTops ) > 1:
@@ -604,7 +604,7 @@ class SkeinisoSkein:
 		coloredLine.colorName = '#%s%s%s' % ( red, green, blue )
 
 	def setColoredThread( self, colorTuple, lineList ):
-		"""Set the colored thread, then move it to the line list and stipple of the colored line."""
+		'Set the colored thread, then move it to the line list and stipple of the colored line.'
 		for coloredLine in self.coloredThread:
 			self.setColoredLineColor( coloredLine, colorTuple )
 		lineList += self.coloredThread
@@ -612,9 +612,9 @@ class SkeinisoSkein:
 
 
 class SkeinPane:
-	"""A class to hold the colored lines for a layer."""
+	"A class to hold the colored lines for a layer."
 	def __init__( self, sequenceIndex ):
-		"""Create empty line lists."""
+		"Create empty line lists."
 		self.coloredLines = []
 		self.fillBottomLines = []
 		self.fillTopLines = []
@@ -631,14 +631,14 @@ class SkeinPane:
 
 class Ruling:
 	def __init__( self, modelDistance, roundedRulingText ):
-		"""Initialize the ruling."""
+		"Initialize the ruling."
 		self.modelDistance = modelDistance
 		self.roundedRulingText = roundedRulingText
 
 
 class SkeinWindow( tableau.TableauWindow ):
 	def __init__( self, repository, skein ):
-		"""Initialize the skein window."""
+		"Initialize the skein window."
 		self.arrowshape = ( 24, 30, 9 )
 		self.addCanvasMenuRootScrollSkein( repository, skein, '_skeiniso', 'Skeiniso')
 		self.center = 0.5 * self.screenSize
@@ -687,7 +687,7 @@ class SkeinWindow( tableau.TableauWindow ):
 		self.rulingExtentHalf = 0.5 * self.rulingExtent
 
 	def drawRuling( self, projectiveSpace, relativeRulingEnd, ruling, tags, viewBegin, viewEnd ):
-		"""Draw ruling."""
+		"Draw ruling."
 		alongWay = ruling.modelDistance / self.halfCenterModel
 		oneMinusAlongWay = 1.0 - alongWay
 		alongScreen = alongWay * viewEnd + oneMinusAlongWay * viewBegin
@@ -703,7 +703,7 @@ class SkeinWindow( tableau.TableauWindow ):
 		self.canvas.create_text( int( alongScreenEnd.real ) + 3, alongScreenEnd.imag, anchor = settings.Tkinter.W, text = ruling.roundedRulingText )
 
 	def drawRulings( self, axisLine, projectiveSpace, rulings ):
-		"""Draw rulings for the axis line."""
+		"Draw rulings for the axis line."
 		if not self.repository.axisRulings.value:
 			return
 		viewBegin = self.getScreenView( axisLine.begin, projectiveSpace )
@@ -720,7 +720,7 @@ class SkeinWindow( tableau.TableauWindow ):
 			self.drawRuling( projectiveSpace, relativeRulingEnd * self.rulingExtentHalf, ruling, axisLine.tagString, viewBegin, viewEnd )
 
 	def drawSkeinPane( self, projectiveSpace, skeinPane ):
-		"""Draw colored lines."""
+		"Draw colored lines."
 		self.getDrawnColoredLines( skeinPane.raftLines, projectiveSpace, self.repository.widthOfRaftThread.value )
 		self.getDrawnColoredLines( skeinPane.travelLines, projectiveSpace, self.repository.widthOfTravelThread.value )
 		self.getDrawnColoredLines( skeinPane.fillBottomLines, projectiveSpace, self.repository.widthOfFillBottomThread.value )
@@ -731,7 +731,7 @@ class SkeinWindow( tableau.TableauWindow ):
 		self.getDrawnColoredLines( skeinPane.perimeterOutsideLines, projectiveSpace, self.repository.widthOfPerimeterOutsideThread.value )
 
 	def drawXYAxisLines( self, projectiveSpace ):
-		"""Draw the x and y axis lines."""
+		"Draw the x and y axis lines."
 		if self.repository.widthOfAxisNegativeSide.value > 0:
 			self.getDrawnColoredLineWithoutArrow( self.negativeAxisLineX, projectiveSpace, self.negativeAxisLineX.tagString, self.repository.widthOfAxisNegativeSide.value )
 			self.getDrawnColoredLineWithoutArrow( self.negativeAxisLineY, projectiveSpace, self.negativeAxisLineY.tagString, self.repository.widthOfAxisNegativeSide.value )
@@ -740,41 +740,41 @@ class SkeinWindow( tableau.TableauWindow ):
 			self.getDrawnColoredLine('last', self.positiveAxisLineY, projectiveSpace, self.positiveAxisLineY.tagString, self.repository.widthOfAxisPositiveSide.value )
 
 	def drawZAxisLine( self, projectiveSpace ):
-		"""Draw the z axis line."""
+		"Draw the z axis line."
 		if self.repository.widthOfAxisNegativeSide.value > 0:
 			self.getDrawnColoredLineWithoutArrow( self.negativeAxisLineZ, projectiveSpace, self.negativeAxisLineZ.tagString, self.repository.widthOfAxisNegativeSide.value )
 		if self.repository.widthOfAxisPositiveSide.value > 0:
 			self.getDrawnColoredLine('last', self.positiveAxisLineZ, projectiveSpace, self.positiveAxisLineZ.tagString, self.repository.widthOfAxisPositiveSide.value )
 
 	def getCentered( self, coordinate ):
-		"""Get the centered coordinate."""
+		"Get the centered coordinate."
 		relativeToCenter = complex( coordinate.real - self.center.real, self.center.imag - coordinate.imag )
 		if abs( relativeToCenter ) < 1.0:
 			relativeToCenter = complex( 0.0, 1.0 )
 		return relativeToCenter
 
 	def getCanvasRadius(self):
-		"""Get half of the minimum of the canvas height and width."""
+		"Get half of the minimum of the canvas height and width."
 		return 0.5 * min( float( self.canvasHeight ), float( self.canvasWidth ) )
 
 	def getCenteredScreened( self, coordinate ):
-		"""Get the normalized centered coordinate."""
+		"Get the normalized centered coordinate."
 		return self.getCentered( coordinate ) / self.getCanvasRadius()
 
 	def getColoredLines(self):
-		"""Get the colored lines from the skein pane."""
+		"Get the colored lines from the skein pane."
 		return self.skeinPanes[ self.repository.layer.value ].coloredLines
 
 	def getCopy(self):
-		"""Get a copy of this window."""
+		"Get a copy of this window."
 		return SkeinWindow( self.repository, self.skein )
 
 	def getCopyWithNewSkein(self):
-		"""Get a copy of this window with a new skein."""
+		"Get a copy of this window with a new skein."
 		return getWindowGivenTextRepository( self.skein.fileName, self.skein.gcodeText, self.repository )
 
 	def getDrawnColoredLine( self, arrowType, coloredLine, projectiveSpace, tags, width ):
-		"""Draw colored line."""
+		"Draw colored line."
 		viewBegin = self.getScreenView( coloredLine.begin, projectiveSpace )
 		viewEnd = self.getScreenView( coloredLine.end, projectiveSpace )
 		return self.canvas.create_line(
@@ -788,7 +788,7 @@ class SkeinWindow( tableau.TableauWindow ):
 			width = width )
 
 	def getDrawnColoredLineMotion( self, coloredLine, projectiveSpace, width ):
-		"""Draw colored line with motion stipple and tag."""
+		"Draw colored line with motion stipple and tag."
 		viewBegin = self.getScreenView( coloredLine.begin, projectiveSpace )
 		viewEnd = self.getScreenView( coloredLine.end, projectiveSpace )
 		return self.canvas.create_line(
@@ -804,7 +804,7 @@ class SkeinWindow( tableau.TableauWindow ):
 			width = width + 4 )
 
 	def getDrawnColoredLines( self, coloredLines, projectiveSpace, width ):
-		"""Draw colored lines."""
+		"Draw colored lines."
 		if width <= 0:
 			return
 		drawnColoredLines = []
@@ -813,7 +813,7 @@ class SkeinWindow( tableau.TableauWindow ):
 		return drawnColoredLines
 
 	def getDrawnColoredLineWithoutArrow( self, coloredLine, projectiveSpace, tags, width ):
-		"""Draw colored line without an arrow."""
+		"Draw colored line without an arrow."
 		viewBegin = self.getScreenView( coloredLine.begin, projectiveSpace )
 		viewEnd = self.getScreenView( coloredLine.end, projectiveSpace )
 		return self.canvas.create_line(
@@ -826,25 +826,25 @@ class SkeinWindow( tableau.TableauWindow ):
 			width = width )
 
 	def getDrawnSelectedColoredLine( self, coloredLine ):
-		"""Get the drawn selected colored line."""
+		"Get the drawn selected colored line."
 		projectiveSpace = euclidean.ProjectiveSpace().getByLatitudeLongitude( self.repository.viewpointLatitude.value, self.repository.viewpointLongitude.value )
 		return self.getDrawnColoredLine( self.arrowType, coloredLine, projectiveSpace, 'selection_line', self.repository.widthOfSelectionThread.value )
 
 	def getScreenComplex( self, pointComplex ):
-		"""Get the point in screen perspective."""
+		"Get the point in screen perspective."
 		return complex( pointComplex.real, - pointComplex.imag ) + self.center
 
 	def getScreenView( self, point, projectiveSpace ):
-		"""Get the point in screen view perspective."""
+		"Get the point in screen view perspective."
 		return self.getScreenComplex( projectiveSpace.getDotComplex(point) )
 
 	def printHexadecimalColorName(self, name):
-		"""Print the color name in hexadecimal."""
+		"Print the color name in hexadecimal."
 		colorTuple = self.canvas.winfo_rgb( name )
 		print('#%s%s%s' % ( settings.getWidthHex( colorTuple[0], 2 ), settings.getWidthHex( colorTuple[1], 2 ), settings.getWidthHex( colorTuple[2], 2 ) ) )
 
 	def update(self):
-		"""Update the screen."""
+		"Update the screen."
 		if len( self.skeinPanes ) < 1:
 			return
 		self.limitIndexSetArrowMouseDeleteCanvas()
@@ -876,11 +876,11 @@ class SkeinWindow( tableau.TableauWindow ):
 
 
 def main():
-	"""Display the skeiniso dialog."""
+	"Display the skeiniso dialog."
 	if len(sys.argv) > 1:
 		settings.startMainLoopFromWindow( getWindowAnalyzeFile(' '.join(sys.argv[1 :])) )
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

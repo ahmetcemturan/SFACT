@@ -17,124 +17,124 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def _getAccessibleAttribute(attributeName, xmlElement):
-	"""Get the accessible attribute."""
+	'Get the accessible attribute.'
 	if attributeName in globalGetAccessibleAttributeSet:
 		return getattr(Setting(xmlElement), attributeName, None)
 	return None
 
 def getCascadeFloatWithoutSelf(defaultFloat, key, xmlElement):
-	"""Get the importRadius."""
+	'Get the importRadius.'
 	if key in xmlElement.attributeDictionary:
 		value = xmlElement.attributeDictionary[key]
 		functionName = 'get' + key[0].upper() + key[1 :]
 		if functionName in value:
-			if xmlElement.parent is None:
+			if xmlElement.parentNode == None:
 				return defaultFloat
 			else:
-				xmlElement = xmlElement.parent
+				xmlElement = xmlElement.parentNode
 	return xmlElement.getCascadeFloat(defaultFloat, key)
 
 def getImportRadius(xmlElement):
-	"""Get the importRadius."""
-	if xmlElement is None:
+	'Get the importRadius.'
+	if xmlElement == None:
 		return 0.6
 	return getCascadeFloatWithoutSelf(1.5 * getLayerThickness(xmlElement), 'importRadius', xmlElement)
 
 def getInteriorOverhangAngle(xmlElement):
-	"""Get the interior overhang support angle in degrees."""
+	'Get the interior overhang support angle in degrees.'
 	return getCascadeFloatWithoutSelf(30.0, 'interiorOverhangAngle', xmlElement)
 
 def getInteriorOverhangRadians(xmlElement):
-	"""Get the interior overhang support angle in radians."""
+	'Get the interior overhang support angle in radians.'
 	return math.radians(getInteriorOverhangAngle(xmlElement))
 
 def getLayerThickness(xmlElement):
-	"""Get the layer thickness."""
-	if xmlElement is None:
+	'Get the layer thickness.'
+	if xmlElement == None:
 		return 0.4
-	return getCascadeFloatWithoutSelf(0.4, 'extrusionHeight', xmlElement)
+	return getCascadeFloatWithoutSelf(0.4, 'layerThickness', xmlElement)
 
 def getOverhangSpan(xmlElement):
-	"""Get the overhang span."""
+	'Get the overhang span.'
 	return getCascadeFloatWithoutSelf(2.0 * getLayerThickness(xmlElement), 'overhangSpan', xmlElement)
 
 def getOverhangAngle(xmlElement):
-	"""Get the overhang support angle in degrees."""
+	'Get the overhang support angle in degrees.'
 	return getCascadeFloatWithoutSelf(45.0, 'overhangAngle', xmlElement)
 
 def getOverhangRadians(xmlElement):
-	"""Get the overhang support angle in radians."""
+	'Get the overhang support angle in radians.'
 	return math.radians(getOverhangAngle(xmlElement))
 
 def getPrecision(xmlElement):
-	"""Get the cascade precision."""
+	'Get the cascade precision.'
 	return getCascadeFloatWithoutSelf(0.2 * getLayerThickness(xmlElement), 'precision', xmlElement)
 
 def getSheetThickness(xmlElement):
-	"""Get the sheet thickness."""
+	'Get the sheet thickness.'
 	return getCascadeFloatWithoutSelf(3.0, 'sheetThickness', xmlElement)
 
 def getTwistPrecision(xmlElement):
-	"""Get the twist precision in degrees."""
+	'Get the twist precision in degrees.'
 	return getCascadeFloatWithoutSelf(5.0, 'twistPrecision', xmlElement)
 
 def getTwistPrecisionRadians(xmlElement):
-	"""Get the twist precision in radians."""
+	'Get the twist precision in radians.'
 	return math.radians(getTwistPrecision(xmlElement))
 
 
 class Setting:
-	"""Class to get handle xmlElements in a setting."""
+	'Class to get handle xmlElements in a setting.'
 	def __init__(self, xmlElement):
-		"""Initialize."""
+		'Initialize.'
 		self.xmlElement = xmlElement
 
 	def __repr__(self):
-		"""Get the string representation of this Setting."""
+		'Get the string representation of this Setting.'
 		return self.xmlElement
 
 	def getImportRadius(self):
-		"""Get the importRadius."""
+		'Get the importRadius.'
 		return getImportRadius(self.xmlElement)
 
 	def getInteriorOverhangAngle(self):
-		"""Get the interior overhang support angle in degrees."""
+		'Get the interior overhang support angle in degrees.'
 		return getInteriorOverhangAngle(self.xmlElement)
 
 	def getInteriorOverhangRadians(self):
-		"""Get the interior overhang support angle in radians."""
+		'Get the interior overhang support angle in radians.'
 		return getInteriorOverhangRadians(self.xmlElement)
 
 	def getLayerThickness(self):
-		"""Get the layer thickness."""
+		'Get the layer thickness.'
 		return getLayerThickness(self.xmlElement)
 
 	def getOverhangSpan(self):
-		"""Get the overhang span."""
+		'Get the overhang span.'
 		return getOverhangSpan(self.xmlElement)
 
 	def getOverhangAngle(self):
-		"""Get the overhang support angle in degrees."""
+		'Get the overhang support angle in degrees.'
 		return getOverhangAngle(self.xmlElement)
 
 	def getOverhangRadians(self):
-		"""Get the overhang support angle in radians."""
+		'Get the overhang support angle in radians.'
 		return getOverhangRadians(self.xmlElement)
 
 	def getPrecision(self):
-		"""Get the cascade precision."""
+		'Get the cascade precision.'
 		return getPrecision(self.xmlElement)
 
 	def getSheetThickness(self):
-		"""Get the sheet thickness."""
+		'Get the sheet thickness.'
 		return getSheetThickness(self.xmlElement)
 
 	def getTwistPrecision(self):
-		"""Get the twist precision in degrees."""
+		'Get the twist precision in degrees.'
 		return getTwistPrecision(self.xmlElement)
 
 	def getTwistPrecisionRadians(self):
-		"""Get the twist precision in radians."""
+		'Get the twist precision in radians.'
 		return getTwistPrecisionRadians(self.xmlElement)
 
 

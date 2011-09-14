@@ -12,20 +12,20 @@ from skeinforge_application.skeinforge_plugins.analyze_plugins.analyze_utilities
 from fabmetheus_utilities import settings
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getNewMouseTool():
-	"""Get a new mouse tool."""
+	"Get a new mouse tool."
 	return ZoomIn()
 
 
 class ZoomIn( MouseToolBase ):
-	"""The zoom in mouse tool."""
+	"The zoom in mouse tool."
 	def button1( self, event, shift = False ):
-		"""Print line text and connection line."""
+		"Print line text and connection line."
 		scaleSetting = self.window.repository.scale
 		scaleSetting.value *= self.getMultiplier()
 		delta = complex( float(event.x) / float( self.window.screenSize.real ), float(event.y) / float( self.window.screenSize.imag ) ) - self.window.canvasScreenCenter
@@ -34,17 +34,17 @@ class ZoomIn( MouseToolBase ):
 		self.window.updateNewDestroyOld( scrollPaneCenter )
 
 	def click(self, event=None):
-		"""Set the window mouse tool to this."""
+		"Set the window mouse tool to this."
 		self.window.destroyMouseToolRaiseMouseButtons()
 		self.window.mouseTool = self
 		self.mouseButton['relief'] = settings.Tkinter.SUNKEN
 
 	def getReset( self, window ):
-		"""Reset the mouse tool to default."""
+		"Reset the mouse tool to default."
 		self.setWindowItems( window )
 		self.mouseButton = None
 		return self
 
 	def getMultiplier(self):
-		"""Get the scale multiplier."""
+		"Get the scale multiplier."
 		return 2.0

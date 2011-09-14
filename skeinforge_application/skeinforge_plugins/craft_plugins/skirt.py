@@ -51,6 +51,7 @@ import __init__
 
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 from fabmetheus_utilities.geometry.solids import triangle_mesh
+from fabmetheus_utilities.vector3 import Vector3
 from fabmetheus_utilities import archive
 from fabmetheus_utilities import euclidean
 from fabmetheus_utilities import gcodec
@@ -59,34 +60,35 @@ from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_craft
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
+import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getCraftedText(fileName, text='', repository=None):
-	"""Skirt the fill file or text."""
+	'Skirt the fill file or text.'
 	return getCraftedTextFromText(archive.getTextIfEmpty(fileName, text), repository)
 
 def getCraftedTextFromText(gcodeText, repository=None):
-	"""Skirt the fill text."""
+	'Skirt the fill text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'skirt'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(SkirtRepository())
 	if not repository.activateSkirt.value:
 		return gcodeText
 	return SkirtSkein().getCraftedGcode(gcodeText, repository)
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return SkirtRepository()
 
 def getOuterLoops(loops):
-	"""Get widdershins outer loops."""
+	'Get widdershins outer loops.'
 	outerLoops = []
 	for loop in loops:
 		if not euclidean.isPathInsideLoops(outerLoops, loop):
@@ -95,27 +97,25 @@ def getOuterLoops(loops):
 	return outerLoops
 
 def writeOutput(fileName, shouldAnalyze=True):
-	"""Skirt a gcode linear move file."""
+	'Skirt a gcode linear move file.'
 	skeinforge_craft.writeChainTextWithNounMessage(fileName, 'skirt', shouldAnalyze)
 
 
 class LoopCrossDictionary:
-	"""Loop with a horizontal and vertical dictionary."""
+	'Loop with a horizontal and vertical dictionary.'
 	def __init__(self):
-		"""Initialize LoopCrossDictionary."""
+		'Initialize LoopCrossDictionary.'
 		self.loop = []
-		self.horizontalDictionary = None
-		self.verticalDictionary = None
 
 	def __repr__(self):
-		"""Get the string representation of this LoopCrossDictionary."""
+		'Get the string representation of this LoopCrossDictionary.'
 		return str(self.__dict__)
 
 
 class SkirtRepository:
-	"""A class to handle the skirt settings."""
+	'A class to handle the skirt settings.'
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		'Set the default settings, execute title & settings fileName.'
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.skirt.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName(
 			fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Skirt', self, '')
@@ -127,7 +127,7 @@ class SkirtRepository:
 		self.executeTitle = 'Skirt'
 
 	def execute(self):
-		"""Skirt button has been clicked."""
+		'Skirt button has been clicked.'
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(
 			self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
 		for fileName in fileNames:
@@ -135,9 +135,9 @@ class SkirtRepository:
 
 
 class SkirtSkein:
-	"""A class to skirt a skein of extrusions."""
+	'A class to skirt a skein of extrusions.'
 	def __init__(self):
-		"""Initialize variables."""
+		'Initialize variables.'
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.feedRateMinute = 961.0
 		self.isExtruderActive = False
@@ -151,18 +151,18 @@ class SkirtSkein:
 		self.oldTemperatureInput = None
 		self.skirtFlowRate = None
 		self.skirtTemperature = None
-		self.travelFeedRateMinute = 999.0
+		self.travelFeedRateMinute = 957.0
 		self.unifiedLoop = LoopCrossDictionary()
 
 	def addFlowRateLineIfDifferent(self, flowRate):
-		"""Add a line of temperature if different."""
-		if flowRate is None or flowRate == self.oldFlowRateInput:
+		'Add a line of temperature if different.'
+		if flowRate == None or flowRate == self.oldFlowRateInput:
 			return
 		self.distanceFeedRate.addLine('M108 S' + euclidean.getFourSignificantFigures(flowRate))
 		self.oldFlowRateInput = flowRate
 
 	def addSkirt(self, z):
-		"""At skirt at z to gcode output."""
+		'At skirt at z to gcode output.'
 		self.setSkirtFeedFlowTemperature()
 		self.distanceFeedRate.addLine('(<skirt>)')
 		oldFlowRate = self.oldFlowRateInput
@@ -177,23 +177,23 @@ class SkirtSkein:
 		self.distanceFeedRate.addLine('(</skirt>)')
 
 	def addTemperatureLineIfDifferent(self, temperature):
-		"""Add a line of temperature if different."""
-		if temperature is None or temperature == self.oldTemperatureInput:
+		'Add a line of temperature if different.'
+		if temperature == None or temperature == self.oldTemperatureInput:
 			return
 		self.distanceFeedRate.addLine('M104 S' + euclidean.getRoundedToThreePlaces(temperature))
 		self.oldTemperatureInput = temperature
 
 	def createSegmentDictionaries(self, loopCrossDictionary):
-		"""Create horizontal and vertical segment dictionaries."""
+		'Create horizontal and vertical segment dictionaries.'
 		loopCrossDictionary.horizontalDictionary = self.getHorizontalXIntersectionsTable(loopCrossDictionary.loop)
 		flippedLoop = euclidean.getDiagonalFlippedLoop(loopCrossDictionary.loop)
 		loopCrossDictionary.verticalDictionary = self.getHorizontalXIntersectionsTable(flippedLoop)
 
 	def createSkirtLoops(self):
-		"""Create the skirt loops."""
-		points = euclidean.getPointsByHorizontalDictionary(self.extrusionWidth, self.unifiedLoop.horizontalDictionary)
-		points += euclidean.getPointsByVerticalDictionary(self.extrusionWidth, self.unifiedLoop.verticalDictionary)
-		loops = triangle_mesh.getDescendingAreaOrientedLoops(points, points, 2.5 * self.extrusionWidth)
+		'Create the skirt loops.'
+		points = euclidean.getPointsByHorizontalDictionary(self.perimeterWidth, self.unifiedLoop.horizontalDictionary)
+		points += euclidean.getPointsByVerticalDictionary(self.perimeterWidth, self.unifiedLoop.verticalDictionary)
+		loops = triangle_mesh.getDescendingAreaOrientedLoops(points, points, 2.5 * self.perimeterWidth)
 		outerLoops = getOuterLoops(loops)
 		outsetLoops = intercircle.getInsetSeparateLoopsFromLoops(-self.skirtOutset, outerLoops)
 		self.outsetLoops = getOuterLoops(outsetLoops)
@@ -201,7 +201,7 @@ class SkirtSkein:
 			self.outsetLoops = [euclidean.getLoopConvex(euclidean.getConcatenatedList(self.outsetLoops))]
 
 	def getCraftedGcode(self, gcodeText, repository):
-		"""Parse gcode text and store the skirt gcode."""
+		'Parse gcode text and store the skirt gcode.'
 		self.repository = repository
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
@@ -213,13 +213,13 @@ class SkirtSkein:
 		return self.distanceFeedRate.output.getvalue()
 
 	def getHorizontalXIntersectionsTable(self, loop):
-		"""Get the horizontal x intersections table from the loop."""
+		'Get the horizontal x intersections table from the loop.'
 		horizontalXIntersectionsTable = {}
-		euclidean.addXIntersectionsFromLoopForTable(loop, horizontalXIntersectionsTable, self.extrusionWidth)
+		euclidean.addXIntersectionsFromLoopForTable(loop, horizontalXIntersectionsTable, self.perimeterWidth)
 		return horizontalXIntersectionsTable
 
 	def parseBoundaries(self):
-		"""Parse the boundaries and union them."""
+		'Parse the boundaries and union them.'
 		self.createSegmentDictionaries(self.unifiedLoop)
 		if self.repository.layersTo.value < 1:
 			return
@@ -234,7 +234,7 @@ class SkirtSkein:
 				loopCrossDictionary = None
 			elif firstWord == '(<boundaryPoint>' or firstWord == '(<raftPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if loopCrossDictionary is None:
+				if loopCrossDictionary == None:
 					loopCrossDictionary = LoopCrossDictionary()
 				loopCrossDictionary.loop.append(location.dropAxis())
 			elif firstWord == '(<layer>':
@@ -244,7 +244,7 @@ class SkirtSkein:
 				self.layerCount.printProgressIncrement('skirt')
 
 	def parseInitialization(self):
-		"""Parse gcode initialization and store the parameters."""
+		'Parse gcode initialization and store the parameters.'
 		for self.lineIndex in xrange(len(self.lines)):
 			line = self.lines[self.lineIndex]
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
@@ -261,16 +261,16 @@ class SkirtSkein:
 			elif firstWord == '(<operatingFlowRate>':
 				self.oldFlowRateInput = float(splitLine[1])
 				self.skirtFlowRate = self.oldFlowRateInput
-			elif firstWord == '(<extrusionWidth>':
-				self.extrusionWidth = float(splitLine[1])
-				self.skirtOutset = (self.repository.gapOverPerimeterWidth.value + 0.5) * self.extrusionWidth
+			elif firstWord == '(<perimeterWidth>':
+				self.perimeterWidth = float(splitLine[1])
+				self.skirtOutset = (self.repository.gapOverPerimeterWidth.value + 0.5) * self.perimeterWidth
 				self.distanceFeedRate.addTagRoundedLine('skirtOutset', self.skirtOutset)
-			elif firstWord == '(<travelFeedRate>':
+			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
-		"""Parse a gcode line and add it to the skirt skein."""
+		'Parse a gcode line and add it to the skirt skein.'
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		if len(splitLine) < 1:
 			return
@@ -300,7 +300,7 @@ class SkirtSkein:
 			self.isSupportLayer = False
 
 	def setSkirtFeedFlowTemperature(self):
-		"""Set the skirt feed rate, flow rate and temperature to that of the next extrusion."""
+		'Set the skirt feed rate, flow rate and temperature to that of the next extrusion.'
 		isExtruderActive = self.isExtruderActive
 		isSupportLayer = self.isSupportLayer
 		for lineIndex in xrange(self.lineIndex, len(self.lines)):
@@ -326,13 +326,13 @@ class SkirtSkein:
 				isSupportLayer = False
 
 	def unifyLayer(self, loopCrossDictionary):
-		"""Union the loopCrossDictionary with the unifiedLoop."""
+		'Union the loopCrossDictionary with the unifiedLoop.'
 		euclidean.joinXIntersectionsTables(loopCrossDictionary.horizontalDictionary, self.unifiedLoop.horizontalDictionary)
 		euclidean.joinXIntersectionsTables(loopCrossDictionary.verticalDictionary, self.unifiedLoop.verticalDictionary)
 
 
 def main():
-	"""Display the skirt dialog."""
+	'Display the skirt dialog.'
 	if len(sys.argv) > 1:
 		writeOutput(' '.join(sys.argv[1 :]))
 	else:

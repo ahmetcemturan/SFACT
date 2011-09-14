@@ -427,7 +427,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addBevelGear(derivation, extrudeDerivation, pitchRadius, positives, teeth, vector3GearProfile):
-	"""Get extrude output for a cylinder gear."""
+	"Get extrude output for a cylinder gear."
 	totalPitchRadius = derivation.pitchRadiusComplement + derivation.pitchRadius
 	totalTeeth = derivation.teethPinion + derivation.teethComplement
 	portionDirections = extrude.getSpacedPortionDirections(extrudeDerivation.interpolationDictionary)
@@ -470,7 +470,7 @@ def addBevelGear(derivation, extrudeDerivation, pitchRadius, positives, teeth, v
 	positives.append(geometryOutput)
 
 def addBottomLoop(deltaZ, loops):
-	"""Add bottom loop to loops."""
+	"Add bottom loop to loops."
 	bottomLoop = loops[0]
 	bottomAddition = []
 	bottomZ = euclidean.getBottomByPath(bottomLoop) + deltaZ
@@ -484,7 +484,7 @@ def addBottomLoop(deltaZ, loops):
 			numberOfVertexes += 1
 
 def addCollarShaft(collarHeight, derivation, negatives, positives, xmlElement):
-	"""Add collar."""
+	'Add collar.'
 	if collarHeight <= 0.0:
 		addShaft(derivation, negatives, positives)
 		return
@@ -495,7 +495,7 @@ def addCollarShaft(collarHeight, derivation, negatives, positives, xmlElement):
 	addCollarShaftSetDerivation(collarDerivation, collarHeight, derivation, negatives, positives, xmlElement)
 
 def addCollarShaftSetDerivation(collarDerivation, collarHeight, derivation, negatives, positives, xmlElement):
-	"""Add collar and shaft."""
+	'Add collar and shaft.'
 	collarSides = evaluate.getSidesMinimumThreeBasedOnPrecision(derivation.shaftRimRadius, xmlElement)
 	collarProfile = euclidean.getComplexPolygon(complex(), derivation.shaftRimRadius, collarSides)
 	vector3CollarProfile = euclidean.getVector3Path(collarProfile)
@@ -507,7 +507,7 @@ def addCollarShaftSetDerivation(collarDerivation, collarHeight, derivation, nega
 	teardrop.addNegativesByRadius(drillEnd, negatives, derivation.keywayRadius, drillStart, xmlElement)
 
 def addLighteningHoles(derivation, gearHolePaths, negatives, pitchRadius, positives):
-	"""Add lightening holes."""
+	"Add lightening holes."
 	positiveVertexes = matrix.getVertexes(positives)
 	bottomPath = euclidean.getTopPath(positiveVertexes)
 	topPath = euclidean.getBottomByPath(positiveVertexes)
@@ -518,12 +518,12 @@ def addLighteningHoles(derivation, gearHolePaths, negatives, pitchRadius, positi
 	extrude.addNegativesPositives(extrudeDerivation, negatives, vector3LighteningHoles, positives)
 
 def addRackHole(derivation, vector3RackProfiles, x, xmlElement):
-	"""Add rack hole to vector3RackProfiles."""
+	"Add rack hole to vector3RackProfiles."
 	rackHole = euclidean.getComplexPolygon(complex(x, -derivation.rackHoleBelow), derivation.rackHoleRadius, -13)
 	vector3RackProfiles.append(euclidean.getVector3Path(rackHole))
 
 def addRackHoles(derivation, vector3RackProfiles, xmlElement):
-	"""Add rack holes to vector3RackProfiles."""
+	"Add rack holes to vector3RackProfiles."
 	if len(derivation.gearHolePaths) > 0:
 		vector3RackProfiles += derivation.gearHolePaths
 		return
@@ -538,7 +538,7 @@ def addRackHoles(derivation, vector3RackProfiles, xmlElement):
 		addRackHole(derivation, vector3RackProfiles, x, xmlElement)
 
 def addShaft(derivation, negatives, positives):
-	"""Add shaft."""
+	"Add shaft."
 	if len(derivation.shaftPath) < 3:
 		return
 	positiveVertexes = matrix.getVertexes(positives)
@@ -550,11 +550,11 @@ def addShaft(derivation, negatives, positives):
 	extrude.addNegativesPositives(extrudeDerivation, negatives, [derivation.shaftPath], positives)
 
 def getAxialMargin(circleRadius, numberOfSides, polygonRadius):
-	"""Get axial margin."""
+	'Get axial margin.'
 	return polygonRadius * math.sin(math.pi / float(numberOfSides)) - circleRadius
 
 def getBevelPath(begin, bevel, center, end):
-	"""Get bevel path."""
+	'Get bevel path.'
 	centerMinusBegin = center - begin
 	centerMinusBeginLength = abs(centerMinusBegin)
 	endMinusCenter = end - center
@@ -571,7 +571,7 @@ def getBevelPath(begin, bevel, center, end):
 	return bevelPath
 
 def getGearPaths(derivation, pitchRadius, teeth, toothProfile):
-	"""Get gear paths."""
+	'Get gear paths.'
 	if teeth < 0:
 		return getGearProfileAnnulus(derivation, pitchRadius, teeth, toothProfile)
 	if teeth == 0:
@@ -579,13 +579,13 @@ def getGearPaths(derivation, pitchRadius, teeth, toothProfile):
 	return [getGearProfileCylinder(teeth, toothProfile)]
 
 def getGearProfileAnnulus(derivation, pitchRadius, teeth, toothProfile):
-	"""Get gear profile for an annulus gear."""
+	'Get gear profile for an annulus gear.'
 	gearProfileCylinder = getGearProfileCylinder(teeth, toothProfile)
 	annulusRadius = derivation.dedendum + derivation.rimWidth - pitchRadius
 	return [euclidean.getComplexPolygon(complex(), annulusRadius, -teeth, 0.5 * math.pi), gearProfileCylinder]
 
 def getGearProfileCylinder(teeth, toothProfile):
-	"""Get gear profile for a cylinder gear."""
+	'Get gear profile for a cylinder gear.'
 	gearProfile = []
 	toothAngleRadian = 2.0 * math.pi / float(teeth)
 	totalToothAngle = 0.0
@@ -596,7 +596,7 @@ def getGearProfileCylinder(teeth, toothProfile):
 	return gearProfile
 
 def getGearProfileRack(derivation, toothProfile):
-	"""Get gear profile for rack."""
+	'Get gear profile for rack.'
 	derivation.extraRackDemilength = 0.0
 	for complexPoint in derivation.helixPath:
 		derivation.extraRackDemilength = max(abs(derivation.helixHeight * complexPoint.imag), derivation.extraRackDemilength)
@@ -623,8 +623,8 @@ def getGearProfileRack(derivation, toothProfile):
 	return gearProfile
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	"Get vector3 vertexes from attribute dictionary."
+	if derivation == None:
 		derivation = GearDerivation(xmlElement)
 	creationFirst = derivation.creationType.lower()[: 1]
 	toothProfileComplement = getToothProfile(derivation, derivation.pitchRadiusComplement, derivation.teethComplement)
@@ -681,15 +681,15 @@ def getGeometryOutput(derivation, xmlElement):
 	return {'group' : {'shapes' : [extrudeOutputPinion, extrudeOutputSecond]}}
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	"Get vector3 vertexes from attribute dictionary by arguments."
 	return getGeometryOutput(None, xmlElement)
 
 def getHalfwave(pitchRadius, teeth):
-	"""Get tooth halfwave."""
+	'Get tooth halfwave.'
 	return pitchRadius * math.pi / float(teeth)
 
 def getHelixComplexPath(derivation, xmlElement):
-	"""Set gear helix path."""
+	'Set gear helix path.'
 	helixTypeFirstCharacter = derivation.helixType.lower()[: 1]
 	if helixTypeFirstCharacter == 'b':
 		return [complex(), complex(1.0, 1.0)]
@@ -712,7 +712,7 @@ def getHelixComplexPath(derivation, xmlElement):
 	print(derivation.xmlElement)
 
 def getLiftedOutput(derivation, geometryOutput, xmlElement):
-	"""Get extrude output for a rack."""
+	"Get extrude output for a rack."
 	if derivation.moveType.lower()[: 1] == 'm':
 		return geometryOutput
 	geometryOutputVertexes = matrix.getVertexes(geometryOutput)
@@ -721,13 +721,13 @@ def getLiftedOutput(derivation, geometryOutput, xmlElement):
 	return geometryOutput
 
 def getLighteningHoles(derivation, gearHolePaths, pitchRadius):
-	"""Get cutout circles."""
-	if gearHolePaths is not None:
+	'Get cutout circles.'
+	if gearHolePaths != None:
 		if len(gearHolePaths) > 0:
 			return gearHolePaths
 	innerRadius = abs(pitchRadius) - derivation.dedendum
 	lighteningHoleOuterRadius = innerRadius - derivation.rimWidth
-	shaftRimRadius = max(derivation.shaftRimRadius, lighteningHoleOuterRadius * (0.5 - math.sqrt(0.1875)))
+	shaftRimRadius = max(derivation.shaftRimRadius, (lighteningHoleOuterRadius) * (0.5 - math.sqrt(0.1875)))
 	lighteningHoleRadius = 0.5 * (lighteningHoleOuterRadius - derivation.shaftRimRadius)
 	if lighteningHoleRadius < derivation.lighteningHoleMinimumRadius:
 		return []
@@ -758,12 +758,12 @@ def getLighteningHoles(derivation, gearHolePaths, pitchRadius):
 	return euclidean.getVector3Paths(lighteningHoles)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return GearDerivation(xmlElement)
 
 def getOutputCylinder(
 		collarHeight, derivation, gearHolePaths, pitchRadius, teeth, twist, vector3GearProfile, xmlElement):
-	"""Get extrude output for a cylinder gear."""
+	"Get extrude output for a cylinder gear."
 	copyShallow = derivation.xmlElement.getCopyShallow()
 	copyShallow.attributeDictionary['path'] = [Vector3(), Vector3(0.0, 0.0, derivation.height)]
 	extrudeDerivation = extrude.ExtrudeDerivation(copyShallow)
@@ -823,7 +823,7 @@ def getOutputCylinder(
 	return getLiftedOutput(derivation, outputCylinder, xmlElement)
 
 def getOutputRack(derivation, vector3GearProfile, xmlElement):
-	"""Get extrude output for a rack."""
+	"Get extrude output for a rack."
 	path = []
 	for complexPoint in derivation.helixPath:
 		point = Vector3(derivation.helixHeight * complexPoint.imag, 0.0, derivation.height * complexPoint.real)
@@ -862,7 +862,7 @@ def getOutputRack(derivation, vector3GearProfile, xmlElement):
 	return extrude.getGeometryOutputByNegativesPositives(negatives, positives, xmlElement)
 
 def getPathOutput(creationFirst, derivation, translation, vector3ComplementPaths, vector3PinionProfile, xmlElement):
-	"""Get gear path output."""
+	"Get gear path output."
 	vector3PinionProfile = lineation.getPackedGeometryOutputByLoop(lineation.SideLoop(vector3PinionProfile), xmlElement)
 	if creationFirst == 'p':
 		return vector3PinionProfile
@@ -876,7 +876,7 @@ def getPathOutput(creationFirst, derivation, translation, vector3ComplementPaths
 	return vector3PinionProfile + packedGearGeometry
 
 def getToothProfile(derivation, pitchRadius, teeth):
-	"""Get profile for one tooth."""
+	'Get profile for one tooth.'
 	if teeth < 0:
 		return getToothProfileAnnulus(derivation, pitchRadius, teeth)
 	if teeth == 0:
@@ -884,7 +884,7 @@ def getToothProfile(derivation, pitchRadius, teeth):
 	return getToothProfileCylinder(derivation, pitchRadius, teeth)
 
 def getToothProfileAnnulus(derivation, pitchRadius, teeth):
-	"""Get profile for one tooth of an annulus."""
+	'Get profile for one tooth of an annulus.'
 	toothProfileHalf = []
 	toothProfileHalfCylinder = getToothProfileHalfCylinder(derivation, pitchRadius)
 	pitchRadius = -pitchRadius
@@ -924,7 +924,7 @@ def getToothProfileAnnulus(derivation, pitchRadius, teeth):
 	return toothProfileAnnulus
 
 def getToothProfileCylinder(derivation, pitchRadius, teeth):
-	"""Get profile for one tooth of a cylindrical gear."""
+	'Get profile for one tooth of a cylindrical gear.'
 	toothProfileHalfCylinder = getToothProfileHalfCylinder(derivation, pitchRadius)
 	toothProfileHalfCylinder = getWidthMultipliedPath(toothProfileHalfCylinder, derivation.toothWidthMultiplier)
 	toothProfileHalf = []
@@ -935,7 +935,7 @@ def getToothProfileCylinder(derivation, pitchRadius, teeth):
 	return getToothProfileCylinderByProfile(derivation, pitchRadius, teeth, toothProfileHalf)
 
 def getToothProfileCylinderByProfile(derivation, pitchRadius, teeth, toothProfileHalf):
-	"""Get profile for one tooth of a cylindrical gear."""
+	'Get profile for one tooth of a cylindrical gear.'
 	profileFirst = toothProfileHalf[0]
 	profileSecond = toothProfileHalf[1]
 	firstMinusSecond = profileFirst - profileSecond
@@ -959,7 +959,7 @@ def getToothProfileCylinderByProfile(derivation, pitchRadius, teeth, toothProfil
 	return euclidean.getMirrorPath(toothProfileHalf)
 
 def getToothProfileHalfCylinder(derivation, pitchRadius):
-	"""Get profile for half of a one tooth of a cylindrical gear."""
+	'Get profile for half of a one tooth of a cylindrical gear.'
 	toothProfile=[]
 #	x = -y * tan(p) + 1
 #	x*x + y*y = (2-cos(p))^2
@@ -996,7 +996,7 @@ def getToothProfileHalfCylinder(derivation, pitchRadius):
 	return toothProfile
 
 def getToothProfileRack(derivation):
-	"""Get profile for one rack tooth."""
+	'Get profile for one rack tooth.'
 	addendumSide = derivation.quarterWavelength - derivation.addendum * derivation.tanPressure
 	addendumComplex = complex(addendumSide, derivation.addendum)
 	dedendumSide = derivation.quarterWavelength + derivation.dedendum * derivation.tanPressure
@@ -1015,13 +1015,13 @@ def getToothProfileRack(derivation):
 	return euclidean.getMirrorPath(getWidthMultipliedPath(toothProfile, derivation.toothWidthMultiplier))
 
 def getWidthMultipliedPath(path, widthMultiplier):
-	"""Get width multiplied path."""
+	"Get width multiplied path."
 	for pointIndex, point in enumerate(path):
 		path[pointIndex] = complex(point.real * widthMultiplier, point.imag)
 	return path
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	geometryOutput = getGeometryOutput(None, xmlElement)
 	if geometryOutput.__class__ == list:
 		path.convertXMLElement(geometryOutput, xmlElement)
@@ -1030,9 +1030,9 @@ def processXMLElement(xmlElement):
 
 
 class GearDerivation:
-	"""Class to hold gear variables."""
+	"Class to hold gear variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.clearanceOverWavelength = evaluate.getEvaluatedFloat(0.1, 'clearanceOverWavelength', xmlElement)
 		self.collarWidthOverRadius = evaluate.getEvaluatedFloat(1.0, 'collarWidthOverRadius', xmlElement)
 		self.complementCollarHeightOverHeight = evaluate.getEvaluatedFloat(
@@ -1152,5 +1152,5 @@ class GearDerivation:
 		self.xmlElement = xmlElement
 
 	def __repr__(self):
-		"""Get the string representation of this GearDerivation."""
+		"Get the string representation of this GearDerivation."
 		return str(self.__dict__)

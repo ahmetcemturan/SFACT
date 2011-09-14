@@ -92,41 +92,42 @@ from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_craft
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
+import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getCraftedText( fileName, text, wipeRepository = None ):
-	"""Wipe a gcode linear move text."""
+	"Wipe a gcode linear move text."
 	return getCraftedTextFromText( archive.getTextIfEmpty(fileName, text), wipeRepository )
 
 def getCraftedTextFromText( gcodeText, wipeRepository = None ):
-	"""Wipe a gcode linear move text."""
+	"Wipe a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'wipe'):
 		return gcodeText
-	if wipeRepository is None:
+	if wipeRepository == None:
 		wipeRepository = settings.getReadRepository( WipeRepository() )
 	if not wipeRepository.activateWipe.value:
 		return gcodeText
 	return WipeSkein().getCraftedGcode( gcodeText, wipeRepository )
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return WipeRepository()
 
 def writeOutput(fileName, shouldAnalyze=True):
-	"""Wipe a gcode linear move file."""
+	"Wipe a gcode linear move file."
 	skeinforge_craft.writeChainTextWithNounMessage(fileName, 'wipe', shouldAnalyze)
 
 
 class WipeRepository:
-	"""A class to handle the wipe settings."""
+	"A class to handle the wipe settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.wipe.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Wipe', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Wipe')
@@ -151,14 +152,14 @@ class WipeRepository:
 		self.executeTitle = 'Wipe'
 
 	def execute(self):
-		"""Wipe button has been clicked."""
+		"Wipe button has been clicked."
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
 		for fileName in fileNames:
 			writeOutput(fileName)
 
 
 class WipeSkein:
-	"""A class to wipe a skein of extrusions."""
+	"A class to wipe a skein of extrusions."
 	def __init__(self):
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.extruderActive = False
@@ -171,7 +172,7 @@ class WipeSkein:
 		self.travelFeedRateMinute = 957.0
 
 	def addHop( self, begin, end ):
-		"""Add hop to highest point."""
+		"Add hop to highest point."
 		beginEndDistance = begin.distance(end)
 		if beginEndDistance < 3.0 * self.absolutePerimeterWidth:
 			return
@@ -184,7 +185,7 @@ class WipeSkein:
 		self.distanceFeedRate.addLine( self.getLinearMoveWithFeedRate( self.travelFeedRateMinute, closeToOldArrival ) )
 
 	def addWipeTravel( self, splitLine ):
-		"""Add the wipe travel gcode."""
+		"Add the wipe travel gcode."
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.highestZ = max( self.highestZ, location.z )
 		if not self.shouldWipe:
@@ -192,7 +193,7 @@ class WipeSkein:
 		self.shouldWipe = False
 		if self.extruderActive:
 			self.distanceFeedRate.addLine('M103')
-		if self.oldLocation is not None:
+		if self.oldLocation != None:
 			self.addHop( self.oldLocation, self.locationArrival )
 		self.distanceFeedRate.addLine( self.getLinearMoveWithFeedRate( self.travelFeedRateMinute, self.locationArrival ) )
 		self.distanceFeedRate.addLine( self.getLinearMoveWithFeedRate( self.travelFeedRateMinute, self.locationWipe ) )
@@ -202,7 +203,7 @@ class WipeSkein:
 			self.distanceFeedRate.addLine('M101')
 
 	def getCraftedGcode( self, gcodeText, wipeRepository ):
-		"""Parse gcode text and store the wipe gcode."""
+		"Parse gcode text and store the wipe gcode."
 		self.lines = archive.getTextLines(gcodeText)
 		self.wipePeriod = wipeRepository.wipePeriod.value
 		self.parseInitialization( wipeRepository )
@@ -215,11 +216,11 @@ class WipeSkein:
 		return self.distanceFeedRate.output.getvalue()
 
 	def getLinearMoveWithFeedRate( self, feedRate, location ):
-		"""Get a linear move line with the feedRate."""
+		"Get a linear move line with the feedRate."
 		return self.distanceFeedRate.getLinearGcodeMovementWithFeedRate( feedRate, location.dropAxis(), location.z )
 
 	def parseInitialization( self, wipeRepository ):
-		"""Parse gcode initialization and store the parameters."""
+		'Parse gcode initialization and store the parameters.'
 		for self.lineIndex in xrange(len(self.lines)):
 			line = self.lines[self.lineIndex]
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
@@ -228,14 +229,14 @@ class WipeSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> wipe </procedureName>)')
 				return
-			elif firstWord == '(<extrusionWidth>':
+			elif firstWord == '(<perimeterWidth>':
 				self.absolutePerimeterWidth = abs(float(splitLine[1]))
-			elif firstWord == '(<travelFeedRate>':
+			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
-		"""Parse a gcode line and add it to the bevel gcode."""
+		"Parse a gcode line and add it to the bevel gcode."
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		if len(splitLine) < 1:
 			return
@@ -246,7 +247,7 @@ class WipeSkein:
 		elif firstWord == '(<layer>':
 			settings.printProgress(self.layerIndex, 'wipe')
 			self.layerIndex += 1
-			if not self.layerIndex % self.wipePeriod:
+			if self.layerIndex % self.wipePeriod == 0:
 				self.shouldWipe = True
 		elif firstWord == 'M101':
 			self.extruderActive = True
@@ -256,11 +257,11 @@ class WipeSkein:
 
 
 def main():
-	"""Display the wipe dialog."""
+	"Display the wipe dialog."
 	if len(sys.argv) > 1:
 		writeOutput(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

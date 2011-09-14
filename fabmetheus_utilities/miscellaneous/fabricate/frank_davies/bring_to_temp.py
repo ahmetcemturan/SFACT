@@ -13,7 +13,7 @@ def out_rep(out_string):
       c=2
    line=ser.readline() # read a '\n' terminated line
    #print "02:",line
-   return 0
+   return(0)
 
 print "starting"
 
@@ -32,10 +32,10 @@ line=ser.readline()
 # read temperature until it is good
 t=0
 
-while t<225:
+while (t<225):
 
    ser.write("M105\n") # set initial temperature
-   while ser.inWaiting()==0:
+   while (ser.inWaiting()==0):
       t=t
    line1=ser.readline() # read a '\n' terminated line
    #print "line1:",line1

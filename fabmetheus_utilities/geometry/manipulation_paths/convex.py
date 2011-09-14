@@ -21,12 +21,12 @@ globalExecutionOrder = 80
 
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get path with overhangs removed or filled in."""
+	"Get path with overhangs removed or filled in."
 	if len(loop) < 4:
 		return [loop]
 	loopComplex = euclidean.getComplexPath(loop)
 	return euclidean.getVector3Paths([euclidean.getLoopConvex(loopComplex)], loop[0].z)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)

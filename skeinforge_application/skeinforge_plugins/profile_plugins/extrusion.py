@@ -21,33 +21,33 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getCraftSequence():
-	"""Get the extrusion craft sequence."""
+	'Get the extrusion craft sequence.'
 	return 'carve scale bottom preface inset fill multiply speed temperature raft skirt chamber jitter clip stretch skin comb cool wipe lash limit dimension export'.split()
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return ExtrusionRepository()
 
 
 class ExtrusionRepository:
-	"""A class to handle the export settings."""
+	'A class to handle the export settings.'
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		'Set the default settings, execute title & settings fileName.'
 		skeinforge_profile.addListsSetCraftProfile( getCraftSequence(), 'Default', self, 'skeinforge_plugins.profile_plugins.extrusion.html')
 
 
 def main():
-	"""Display the export dialog."""
+	'Display the export dialog.'
 	if len(sys.argv) > 1:
 		writeOutput(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == '__main__':
 	main()

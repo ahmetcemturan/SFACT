@@ -17,7 +17,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	functions = xmlElement.getXMLProcessor().functions
 	if len(functions) < 1:
 		print('Warning, there are no functions in processXMLElement in statement for:')
@@ -25,7 +25,7 @@ def processXMLElement(xmlElement):
 		return
 	function = functions[-1]
 	evaluate.setLocalAttribute(xmlElement)
-	if xmlElement.xmlObject.value is None:
+	if xmlElement.xmlObject.value == None:
 		print('Warning, xmlElement.xmlObject.value is None in processXMLElement in statement for:')
 		print(xmlElement)
 		return

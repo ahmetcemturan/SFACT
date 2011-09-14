@@ -20,13 +20,13 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def addSubmenus( menu, pluginFileName, pluginFolderPath, pluginPath ):
-	"""Add a tool plugin menu."""
+	"Add a tool plugin menu."
 	submenu = settings.Tkinter.Menu( menu, tearoff = 0 )
 	menu.add_cascade( label = pluginFileName.capitalize(), menu = submenu )
 	settings.ToolDialog().addPluginToMenu( submenu, pluginPath )
@@ -36,7 +36,7 @@ def addSubmenus( menu, pluginFileName, pluginFolderPath, pluginPath ):
 		settings.ToolDialog().addPluginToMenu( submenu, os.path.join( pluginFolderPath, submenuFileName ) )
 
 def addToCraftMenu( menu ):
-	"""Add a craft plugin menu."""
+	"Add a craft plugin menu."
 	settings.ToolDialog().addPluginToMenu( menu, archive.getUntilDot( os.path.abspath(__file__) ) )
 	menu.add_separator()
 	directoryPath = skeinforge_craft.getPluginsDirectoryPath()
@@ -51,36 +51,36 @@ def addToCraftMenu( menu ):
 			settings.ToolDialog().addPluginToMenu( menu, pluginPath )
 
 def addToMenu( master, menu, repository, window ):
-	"""Add a tool plugin menu."""
+	"Add a tool plugin menu."
 	CraftMenuSaveListener( menu, window )
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return skeinforge_craft.CraftRepository()
 
 def writeOutput(fileName):
-	"""Craft a gcode file."""
+	"Craft a gcode file."
 	return skeinforge_craft.writeOutput(fileName)
 
 
 class CraftMenuSaveListener:
-	"""A class to update a craft menu."""
+	"A class to update a craft menu."
 	def __init__( self, menu, window ):
-		"""Set the menu."""
+		"Set the menu."
 		self.menu = menu
 		addToCraftMenu( menu )
 		euclidean.addElementToListDictionaryIfNotThere( self, window, settings.globalProfileSaveListenerListTable )
 
 	def save(self):
-		"""Profile has been saved and profile menu should be updated."""
+		"Profile has been saved and profile menu should be updated."
 		settings.deleteMenuItems( self.menu )
 		addToCraftMenu( self.menu )
 
 
 class CraftRadioButtonsSaveListener:
-	"""A class to update the craft radio buttons."""
+	"A class to update the craft radio buttons."
 	def addToDialog( self, gridPosition ):
-		"""Add this to the dialog."""
+		"Add this to the dialog."
 		euclidean.addElementToListDictionaryIfNotThere( self, self.repository.repositoryDialog, settings.globalProfileSaveListenerListTable )
 		self.gridPosition = gridPosition.getCopy()
 		self.gridPosition.increment()
@@ -88,7 +88,7 @@ class CraftRadioButtonsSaveListener:
 		self.setRadioButtons()
 
 	def getFromRadioPlugins( self, radioPlugins, repository ):
-		"""Initialize."""
+		"Initialize."
 		self.name = 'CraftRadioButtonsSaveListener'
 		self.radioPlugins = radioPlugins
 		self.repository = repository
@@ -96,11 +96,11 @@ class CraftRadioButtonsSaveListener:
 		return self
 
 	def save(self):
-		"""Profile has been saved and craft radio plugins should be updated."""
+		"Profile has been saved and craft radio plugins should be updated."
 		self.setRadioButtons()
 
 	def setRadioButtons(self):
-		"""Profile has been saved and craft radio plugins should be updated."""
+		"Profile has been saved and craft radio plugins should be updated."
 		craftSequence = skeinforge_profile.getCraftTypePluginModule().getCraftSequence()
 		gridPosition = self.gridPosition.getCopy()
 		maximumValue = False
@@ -118,11 +118,11 @@ class CraftRadioButtonsSaveListener:
 
 
 def main():
-	"""Display the craft dialog."""
+	"Display the craft dialog."
 	if len(sys.argv) > 1:
 		settings.startMainLoopFromWindow(writeOutput(' '.join(sys.argv[1 :])))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

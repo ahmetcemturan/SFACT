@@ -23,27 +23,27 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return PostscriptRepository()
 
 
 class PostscriptRepository:
-	"""A class to handle the export settings."""
+	"A class to handle the export settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository(
 			'skeinforge_application.skeinforge_plugins.analyze_plugins.export_canvas_plugins.postscript.html', self)
 		self.fileExtension = settings.StringSetting().getFromValue('File Extension:', self, '')
 		self.postscriptProgram = settings.StringSetting().getFromValue('Postscript Program:', self, 'gimp')
 
 	def execute(self):
-		"""Convert to postscript button has been clicked."""
+		"Convert to postscript button has been clicked."
 		"Export the canvas as a postscript file."
 		postscriptFileName = archive.getFilePathWithUnderscoredBasename( self.fileName, self.suffix )
 		boundingBox = self.canvas.bbox( settings.Tkinter.ALL ) # tuple (w, n, e, s)
@@ -80,7 +80,7 @@ class PostscriptRepository:
 			print('http://www.imagemagick.org/script/index.php')
 
 	def setCanvasFileNameSuffix( self, canvas, fileName, suffix ):
-		"""Set the canvas and initialize the execute title."""
+		"Set the canvas and initialize the execute title."
 		self.canvas = canvas
 		self.executeTitle = 'Export to Postscript'
 		self.fileName = fileName
@@ -88,8 +88,8 @@ class PostscriptRepository:
 
 
 def main():
-	"""Display the file or directory dialog."""
-	settings.startMainLoopFromConstructor( getNewRepository() )
+	"Display the file or directory dialog."
+	settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

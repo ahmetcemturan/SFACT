@@ -17,8 +17,8 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
-	if xmlElement.xmlObject is None:
+	"Process the xml element."
+	if xmlElement.xmlObject == None:
 		if 'condition' in xmlElement.attributeDictionary:
 			value = xmlElement.attributeDictionary['condition']
 			xmlElement.xmlObject = evaluate.getEvaluatorSplitWords(value)
@@ -31,4 +31,4 @@ def processXMLElement(xmlElement):
 		return
 	function = xmlProcessor.functions[-1]
 	while evaluate.getEvaluatedExpressionValueBySplitLine( xmlElement.xmlObject, xmlElement ) > 0:
-		function.processChildren(xmlElement)
+		function.processChildNodes(xmlElement)

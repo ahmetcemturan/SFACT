@@ -8,43 +8,45 @@ from __future__ import absolute_import
 import __init__
 
 from fabmetheus_utilities import archive
+from fabmetheus_utilities import gcodec
 from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
+import os
 import sys
 import traceback
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return AnalyzeRepository()
 
 def getPluginFileNames():
-	"""Get analyze plugin fileNames."""
+	"Get analyze plugin fileNames."
 	return archive.getPluginFileNamesFromDirectoryPath( getPluginsDirectoryPath() )
 
 def getPluginsDirectoryPath():
-	"""Get the plugins directory path."""
+	"Get the plugins directory path."
 	return archive.getSkeinforgePluginsPath('analyze_plugins')
 
 def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWritten, gcodeText=''):
-	"""Analyze a gcode file."""
+	"Analyze a gcode file."
 	gcodeText = archive.getTextIfEmpty(fileName, gcodeText)
 	pluginFileNames = getPluginFileNames()
 	window = None
 	for pluginFileName in pluginFileNames:
 		analyzePluginsDirectoryPath = getPluginsDirectoryPath()
 		pluginModule = archive.getModuleWithDirectoryPath( analyzePluginsDirectoryPath, pluginFileName )
-		if pluginModule is not None:
+		if pluginModule != None:
 			try:
 				newWindow = pluginModule.writeOutput(fileName, fileNamePenultimate, fileNameSuffix,
 					filePenultimateWritten, gcodeText )
-				if newWindow is not None:
+				if newWindow != None:
 					window = newWindow
 			except:
 				print('Warning, the tool %s could not analyze the output.' % pluginFileName )
@@ -54,9 +56,9 @@ def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWr
 
 
 class AnalyzeRepository:
-	"""A class to handle the analyze settings."""
+	"A class to handle the analyze settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_utilities.skeinforge_analyze.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName( [ ('Gcode text files', '*.gcode') ], 'Open File for Analyze', self, '')
 		importantFileNames = ['skeiniso', 'skeinlayer', 'statistic']
@@ -64,14 +66,14 @@ class AnalyzeRepository:
 		self.executeTitle = 'Analyze'
 
 	def execute(self):
-		"""Analyze button has been clicked."""
+		"Analyze button has been clicked."
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode( self.fileNameInput.value, [], self.fileNameInput.wasCancelled )
 		for fileName in fileNames:
 			writeOutput( fileName, fileName )
 
 
 def main():
-	"""Write analyze output."""
+	"Write analyze output."
 	fileName = ' '.join(sys.argv[1 :])
 	settings.startMainLoopFromWindow(writeOutput(fileName, fileName))
 

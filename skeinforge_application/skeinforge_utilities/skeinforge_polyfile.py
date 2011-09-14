@@ -12,13 +12,13 @@ from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getFileOrGcodeDirectory( fileName, wasCancelled, words = [] ):
-	"""Get the gcode files in the directory the file is in if directory setting is true.  Otherwise, return the file in a list."""
+	"Get the gcode files in the directory the file is in if directory setting is true.  Otherwise, return the file in a list."
 	if isEmptyOrCancelled( fileName, wasCancelled ):
 		return []
 	if isDirectorySetting():
@@ -31,7 +31,7 @@ def getFileOrGcodeDirectory( fileName, wasCancelled, words = [] ):
 	return [ fileName ]
 
 def getFileOrDirectoryTypes( fileName, fileTypes, wasCancelled ):
-	"""Get the gcode files in the directory the file is in if directory setting is true.  Otherwise, return the file in a list."""
+	"Get the gcode files in the directory the file is in if directory setting is true.  Otherwise, return the file in a list."
 	if isEmptyOrCancelled( fileName, wasCancelled ):
 		return []
 	if isDirectorySetting():
@@ -39,7 +39,7 @@ def getFileOrDirectoryTypes( fileName, fileTypes, wasCancelled ):
 	return [ fileName ]
 
 def getFileOrDirectoryTypesUnmodifiedGcode(fileName, fileTypes, wasCancelled):
-	"""Get the gcode files in the directory the file is in if directory setting is true.  Otherwise, return the file in a list."""
+	"Get the gcode files in the directory the file is in if directory setting is true.  Otherwise, return the file in a list."
 	if isEmptyOrCancelled(fileName, wasCancelled):
 		return []
 	if isDirectorySetting():
@@ -47,22 +47,22 @@ def getFileOrDirectoryTypesUnmodifiedGcode(fileName, fileTypes, wasCancelled):
 	return [fileName]
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return PolyfileRepository()
 
 def isDirectorySetting():
-	"""Determine if the directory setting is true."""
+	"Determine if the directory setting is true."
 	return settings.getReadRepository( PolyfileRepository() ).directorySetting.value
 
 def isEmptyOrCancelled( fileName, wasCancelled ):
-	"""Determine if the fileName is empty or the dialog was cancelled."""
+	"Determine if the fileName is empty or the dialog was cancelled."
 	return str(fileName) == '' or str(fileName) == '()' or wasCancelled
 
 
 class PolyfileRepository:
-	"""A class to handle the polyfile settings."""
+	"A class to handle the polyfile settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_utilities.skeinforge_plugins.polyfile.html', self)
 		self.directoryOrFileChoiceLabel = settings.LabelDisplay().getFromName('Directory or File Choice: ', self )
 		directoryLatentStringVar = settings.LatentStringVar()

@@ -91,6 +91,7 @@ try:
 except:
 	pass
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
+import __init__
 
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 from fabmetheus_utilities import archive
@@ -100,37 +101,39 @@ from fabmetheus_utilities import settings
 from fabmetheus_utilities import svg_writer
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
+import math
+import os
 import sys
 import time
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getCraftedText( fileName, gcodeText = '', repository=None):
-	"""Get carved text."""
+	"Get carved text."
 	if fileName.endswith('.svg'):
 		gcodeText = archive.getTextIfEmpty(fileName, gcodeText)
 		if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'carve'):
 			return gcodeText
 	carving = svg_writer.getCarving(fileName)
-	if carving is None:
+	if carving == None:
 		return ''
-	if repository is None:
+	if repository == None:
 		repository = CarveRepository()
 		settings.getReadRepository(repository)
 	return CarveSkein().getCarvedSVG( carving, fileName, repository )
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return CarveRepository()
 
 def writeOutput(fileName, shouldAnalyze=True):
-	"""Carve a GNU Triangulated Surface file."""
+	"Carve a GNU Triangulated Surface file."
 	startTime = time.time()
-	print("File %s is being carved." % (archive.getSummarizedFileName(fileName)))
+	print('File ' + archive.getSummarizedFileName(fileName) + ' is being carved.')
 	repository = CarveRepository()
 	settings.getReadRepository(repository)
 	carveGcode = getCraftedText(fileName, '', repository)
@@ -145,16 +148,16 @@ def writeOutput(fileName, shouldAnalyze=True):
 
 
 class CarveRepository:
-	"""A class to handle the carve settings."""
+	"A class to handle the carve settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.carve.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getTranslatorFileTypeTuples(), 'Open File for Carve', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve')
 		settings.LabelDisplay().getFromName('- MAIN SETTINGS for Extrusion  -', self )
 		settings.LabelSeparator().getFromRepository(self)
-		self.extrusionHeight = settings.FloatSpin().getFromValue( 0.1, 'Layer Height = Extrusion Thickness (mm):', self, 1.0, 0.4 )
-		self.extrusionWidth = settings.FloatSpin().getFromValue( 0.2, 'Extrusion Width (mm):', self, 1.0, 0.6 )
+		self.layerThickness = settings.FloatSpin().getFromValue( 0.1, 'Layer Height = Extrusion Thickness (mm):', self, 1.0, 0.4 )
+		self.perimeterWidthOverThickness = settings.FloatSpin().getFromValue( 0.2, 'Extrusion Width (mm):', self, 1.0, 0.6 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Layers to print -', self )
 		self.layersFrom = settings.IntSpin().getFromValue( 0, 'Print from Layer No::', self, 3333, 0 )
@@ -174,53 +177,52 @@ class CarveRepository:
 		self.addLayerTemplateToSVG = settings.BooleanSetting().getFromValue('Add Layer Template to SVG', self, True)
 		self.extraDecimalPlaces = settings.FloatSpin().getFromValue(0.0, 'Extra Decimal Places (float):', self, 3.0, 2.0)
 		self.importCoarseness = settings.FloatSpin().getFromValue( 0.5, 'Import Coarseness (ratio):', self, 2.0, 1.0 )
-		
 		settings.LabelSeparator().getFromRepository(self)
 		self.executeTitle = 'Carve'
 
 	def execute(self):
-		"""Carve button has been clicked."""
+		"Carve button has been clicked."
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypes(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
 		for fileName in fileNames:
 			writeOutput(fileName)
 
 
 class CarveSkein:
-	"""A class to carve a carving."""
+	"A class to carve a carving."
 	def getCarvedSVG(self, carving, fileName, repository):
-		"""Parse gnu triangulated surface text and store the carved gcode."""
-		extrusionHeight = repository.extrusionHeight.value
-		extrusionWidth = repository.extrusionWidth.value
+		"Parse gnu triangulated surface text and store the carved gcode."
+		layerThickness = repository.layerThickness.value
+		perimeterWidth = repository.perimeterWidthOverThickness.value
 		carving.setCarveInfillInDirectionOfBridge(repository.infillInDirectionOfBridge.value)
-		carving.setCarveLayerThickness(extrusionHeight)
-		importRadius = 0.5 * repository.importCoarseness.value * abs(extrusionWidth)
-		carving.setCarveImportRadius(max(importRadius, 0.01 * extrusionHeight))
+		carving.setCarveLayerThickness(layerThickness)
+		importRadius = 0.5 * repository.importCoarseness.value * abs(perimeterWidth)
+		carving.setCarveImportRadius(max(importRadius, 0.01 * layerThickness))
 		carving.setCarveIsCorrectMesh(repository.correctMesh.value)
 		rotatedLoopLayers = carving.getCarveRotatedBoundaryLayers()
 		if len(rotatedLoopLayers) < 1:
 			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Thickness.')
 			return ''
-		extrusionHeight = carving.getCarveLayerThickness()
-		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, extrusionHeight)
-		extrusionWidth = repository.extrusionWidth.value #todo add extrusionwidth for later use
+		layerThickness = carving.getCarveLayerThickness()
+		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerThickness)
+		perimeterWidth = repository.perimeterWidthOverThickness.value
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),
 			carving.getCarveCornerMinimum(),
 			decimalPlacesCarried,
 			carving.getCarveLayerThickness(),
-			extrusionWidth)
+			perimeterWidth)
 		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(repository, rotatedLoopLayers)
 		return svgWriter.getReplacedSVGTemplate(
 			fileName, 'carve', truncatedRotatedBoundaryLayers, carving.getFabmetheusXML())
 
 
 def main():
-	"""Display the carve dialog."""
+	"Display the carve dialog."
 	if len(sys.argv) > 1:
 		writeOutput(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

@@ -50,32 +50,32 @@ globalExecutionOrder = 200
 # M[:3, 3] = (2.0 * numpy.dot(point[:3], normal)) * normal
 # return M
 def flipPoints(points, prefix, xmlElement):
-	"""Flip the points."""
+	'Flip the points.'
 	origin = evaluate.getVector3ByPrefix(Vector3(), prefix + 'origin', xmlElement)
 	axis = evaluate.getVector3ByPrefix(Vector3(1.0, 0.0, 0.0), prefix + 'axis', xmlElement).getNormalized()
 	for point in points:
 		point.setToVector3(point - 2.0 * axis.dot(point - origin) * axis)
 
 def getFlippedLoop(loop, prefix, xmlElement):
-	"""Get flipped loop."""
+	'Get flipped loop.'
 	flipPoints(loop, prefix, xmlElement)
 	if getShouldReverse(prefix, xmlElement):
 		loop.reverse()
 	return loop
 
 def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
-	"""Get equated geometryOutput."""
+	'Get equated geometryOutput.'
 	flipPoints(matrix.getVertexes(geometryOutput), prefix, xmlElement)
 	return geometryOutput
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get flipped paths."""
+	'Get flipped paths.'
 	return [getFlippedLoop(loop, prefix, xmlElement)]
 
 def getShouldReverse(prefix, xmlElement):
-	"""Determine if the loop should be reversed."""
+	'Determine if the loop should be reversed.'
 	return evaluate.getEvaluatedBoolean(True, prefix + 'reverse', xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	solid.processXMLElementByFunctions(getManipulatedGeometryOutput, getManipulatedPaths, xmlElement)

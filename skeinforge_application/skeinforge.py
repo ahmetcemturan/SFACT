@@ -219,28 +219,31 @@ import __init__
 
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 from fabmetheus_utilities import archive
+from fabmetheus_utilities import euclidean
+from fabmetheus_utilities import gcodec
 from fabmetheus_utilities import settings
 from optparse import OptionParser
 from skeinforge_application.skeinforge_utilities import skeinforge_craft
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
+import os
 import sys
 
 
-# double circle top infill in skin
-# weird missing line on second layer of interfaceRaft
+# attributeDictionary, write, getTextContent, comment, pcdata, idDictionary.., importName getImportChain, document, rootElement
+# cool travel bug? getLayerTimeActive multiplier = active / (remainder + active) http://forums.reprap.org/read.php?154,91413
+# double circle top infill in skin & above layer, should clip before getAroundsFromPath(
 # circle is average radius in circle, cylinder, drill, extrude
 # infuse _extrusion
-# base xmlelement off xmlatom
 # cutting ahmet
 # smooth http://hydraraptor.blogspot.com/2010/12/frequency-limit.html _extrusion
 # think about changing getOverlapRatio(loop, pointDictionary) < 0.2 to 0.51
 # change topOverBottom in linearbearingexample to pegAngle
 # add links download manual svg_writer, add left right arrow keys to layer
-# change thickness to height in gear xml
+# change thickness to face width in gear xml
 # documentation Retract When Crossing
-# document announce convex, http://www.thingiverse.com/thing:7652
-# document clairvoyance, announcement
+# document announce skirt convex
+# announcement clairvoyance, synopsis, export http://garyhodgson.com/reprap/2011/06/hacking-skeinforge-export-module/
 # maybe in svgReader if loop intersection with previous union else add
 # think about http://code.google.com/p/skeinarchiver/ and/or undo
 #
@@ -249,6 +252,7 @@ import sys
 # view profile 1 mm thickness
 #
 # raftPerimeter outset by maximum thickness
+# xmlparser to xmldocument, xmlelement of xml dom, originally 563 http://stackoverflow.com/questions/1971186/how-to-set-elements-id-in-pythons-xml-dom-minidom
 # When opening a file for craft I wondered if there is an option to set the file type to .stl as it currently defaults to .xml
 # scrollbar/width problem when starting with narrow view like help/meta/profile
 # check inset loop for intersection with rotatedLoopLayer.loops
@@ -367,7 +371,7 @@ import sys
 # help primary menu item refresh
 # add plugin help menu, add craft below menu
 # give option of saving when switching profiles
-# xml & svg more forgiving, svg make defaults for extrusionHeight
+# xml & svg more forgiving, svg make defaults for layerThickness
 # option of surrounding lines in display
 # maybe add connecting line in display line
 # maybe check inset loops to see if they are smaller, but this would be slow
@@ -486,7 +490,7 @@ import sys
 # concept, intermittent cloud with multiple hash functions
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __credits__ = """
 Adrian Bowyer <http://forums.reprap.org/profile.php?12,13>
 Brendan Erwin <http://forums.reprap.org/profile.php?12,217>
@@ -511,107 +515,106 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addToProfileMenu(profileSelection, profileType, repository):
-    """Add a profile menu."""
-    pluginFileNames = skeinforge_profile.getPluginFileNames()
-    craftTypeName = skeinforge_profile.getCraftTypeName()
-    pluginModule = skeinforge_profile.getCraftTypePluginModule()
-    profilePluginSettings = settings.getReadRepository(pluginModule.getNewRepository())
-    for pluginFileName in pluginFileNames:
-        skeinforge_profile.ProfileTypeMenuRadio().getFromMenuButtonDisplay(profileType, pluginFileName, repository, craftTypeName == pluginFileName)
-    for profileName in profilePluginSettings.profileList.value:
-        skeinforge_profile.ProfileSelectionMenuRadio().getFromMenuButtonDisplay(profileSelection, profileName, repository, profileName == profilePluginSettings.profileListbox.value)
+	'Add a profile menu.'
+	pluginFileNames = skeinforge_profile.getPluginFileNames()
+	craftTypeName = skeinforge_profile.getCraftTypeName()
+	pluginModule = skeinforge_profile.getCraftTypePluginModule()
+	profilePluginSettings = settings.getReadRepository(pluginModule.getNewRepository())
+	for pluginFileName in pluginFileNames:
+		skeinforge_profile.ProfileTypeMenuRadio().getFromMenuButtonDisplay(profileType, pluginFileName, repository, craftTypeName == pluginFileName)
+	for profileName in profilePluginSettings.profileList.value:
+		skeinforge_profile.ProfileSelectionMenuRadio().getFromMenuButtonDisplay(profileSelection, profileName, repository, profileName == profilePluginSettings.profileListbox.value)
 
 def getNewRepository():
-    """Get new repository."""
-    return SkeinforgeRepository()
+	'Get new repository.'
+	return SkeinforgeRepository()
 
 def getPluginFileNames():
-    """Get skeinforge plugin fileNames."""
-    return archive.getPluginFileNamesFromDirectoryPath(archive.getSkeinforgePluginsPath())
+	'Get skeinforge plugin fileNames.'
+	return archive.getPluginFileNamesFromDirectoryPath(archive.getSkeinforgePluginsPath())
 
 def getRadioPluginsAddPluginGroupFrame(directoryPath, importantFileNames, names, repository):
-    """Get the radio plugins and add the plugin frame."""
-    repository.pluginGroupFrame = settings.PluginGroupFrame()
-    radioPlugins = []
-    for name in names:
-        radioPlugin = settings.RadioPlugin().getFromRadio(name in importantFileNames, repository.pluginGroupFrame.latentStringVar, name, repository, name == importantFileNames[0])
-        radioPlugin.updateFunction = repository.pluginGroupFrame.update
-        radioPlugins.append( radioPlugin )
-    defaultRadioButton = settings.getSelectedRadioPlugin(importantFileNames + [radioPlugins[0].name], radioPlugins)
-    repository.pluginGroupFrame.getFromPath(defaultRadioButton, directoryPath, repository)
-    return radioPlugins
+	'Get the radio plugins and add the plugin frame.'
+	repository.pluginGroupFrame = settings.PluginGroupFrame()
+	radioPlugins = []
+	for name in names:
+		radioPlugin = settings.RadioPlugin().getFromRadio(name in importantFileNames, repository.pluginGroupFrame.latentStringVar, name, repository, name == importantFileNames[0])
+		radioPlugin.updateFunction = repository.pluginGroupFrame.update
+		radioPlugins.append( radioPlugin )
+	defaultRadioButton = settings.getSelectedRadioPlugin(importantFileNames + [radioPlugins[0].name], radioPlugins)
+	repository.pluginGroupFrame.getFromPath(defaultRadioButton, directoryPath, repository)
+	return radioPlugins
 
 def writeOutput(fileName):
-    """Craft a file, display dialog."""
-    repository = getNewRepository()
-    repository.fileNameInput.value = fileName
-    repository.execute()
-    settings.startMainLoopFromConstructor(repository)
+	'Craft a file, display dialog.'
+	repository = getNewRepository()
+	repository.fileNameInput.value = fileName
+	repository.execute()
+	settings.startMainLoopFromConstructor(repository)
 
 
 class SkeinforgeRepository:
-    """A class to handle the skeinforge settings."""
-    def __init__(self):
-        """Set the default settings, execute title & settings fileName."""
-        skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge.html', self)
-        self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Skeinforge', self, '')
-        self.profileType = settings.MenuButtonDisplay().getFromName('Profile Type: ', self )
-        self.profileSelection = settings.MenuButtonDisplay().getFromName('Profile Selection: ', self)
-        addToProfileMenu( self.profileSelection, self.profileType, self )
-        settings.LabelDisplay().getFromName('Search:', self )
-        reprapSearch = settings.HelpPage().getFromNameAfterHTTP('members.axion.net/~enrique/search_reprap.html', 'Reprap', self)
-        skeinforgeSearch = settings.HelpPage().getFromNameAfterHTTP('members.axion.net/~enrique/search_skeinforge.html', 'Skeinforge', self )
-        skeinforgeSearch.column += 2
-        webSearch = settings.HelpPage().getFromNameAfterHTTP('members.axion.net/~enrique/search_web.html', 'Web', self)
-        webSearch.column += 4
-        versionText = archive.getFileText( archive.getVersionFileName() )
-        self.version = settings.LabelDisplay().getFromName('Version: ' + versionText, self)
-        settings.LabelDisplay().getFromName('', self)
-        importantFileNames = ['craft', 'profile']
-        getRadioPluginsAddPluginGroupFrame(archive.getSkeinforgePluginsPath(), importantFileNames, getPluginFileNames(), self)
-        self.executeTitle = 'Skeinforge'
-        self.repositoryDialog = None
+	'A class to handle the skeinforge settings.'
+	def __init__(self):
+		'Set the default settings, execute title & settings fileName.'
+		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge.html', self)
+		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Skeinforge', self, '')
+		self.profileType = settings.MenuButtonDisplay().getFromName('Profile Type: ', self )
+		self.profileSelection = settings.MenuButtonDisplay().getFromName('Profile Selection: ', self)
+		addToProfileMenu( self.profileSelection, self.profileType, self )
+		settings.LabelDisplay().getFromName('Search:', self )
+		reprapSearch = settings.HelpPage().getFromNameAfterHTTP('github.com/ahmetcemturan/SFACT', 'SFACT Update', self)
+		skeinforgeSearch = settings.HelpPage().getFromNameAfterHTTP('www.reprapfordummies.net/index.php/softwaresection/44-gcode-generators/49-sfact-homepage', 'SFACT Help', self )
+		skeinforgeSearch.column += 6
+		webSearch = settings.HelpPage().getFromNameAfterHTTP('www.reprap.org', 'Reprap', self)
+		webSearch.column += 4
+		versionText = archive.getFileText( archive.getVersionFileName() )
+		self.version = settings.LabelDisplay().getFromName('Version: ' + versionText, self)
+		settings.LabelDisplay().getFromName('', self)
+		importantFileNames = ['craft', 'profile']
+		getRadioPluginsAddPluginGroupFrame(archive.getSkeinforgePluginsPath(), importantFileNames, getPluginFileNames(), self)
+		self.executeTitle = 'Skeinforge'
 
-    def execute(self):
-        """Skeinforge button has been clicked."""
-        fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
-        for fileName in fileNames:
-            skeinforge_craft.writeOutput(fileName)
+	def execute(self):
+		'Skeinforge button has been clicked.'
+		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
+		for fileName in fileNames:
+			skeinforge_craft.writeOutput(fileName)
 
-    def save(self):
-        """Profile has been saved and profile menu should be updated."""
-        self.profileType.removeMenus()
-        self.profileSelection.removeMenus()
-        addToProfileMenu(self.profileSelection, self.profileType, self)
-        self.profileType.addRadiosToDialog(self.repositoryDialog)
-        self.profileSelection.addRadiosToDialog(self.repositoryDialog)
+	def save(self):
+		'Profile has been saved and profile menu should be updated.'
+		self.profileType.removeMenus()
+		self.profileSelection.removeMenus()
+		addToProfileMenu(self.profileSelection, self.profileType, self)
+		self.profileType.addRadiosToDialog(self.repositoryDialog)
+		self.profileSelection.addRadiosToDialog(self.repositoryDialog)
 
 
 def main():
-    """Display the skeinforge dialog."""
-    parser = OptionParser()
-    parser.add_option(
-        '-p', '--prefdir', help='set path to preference directory', action='store', type='string', dest='preferencesDirectory')
-    parser.add_option(
-        '-s', '--start', help='set start file to use', action='store', type='string', dest='startFile')
-    parser.add_option(
-        '-e', '--end', help='set end file to use',	action='store', type='string', dest='endFile')
-    parser.add_option(
-        '-o', '--option', help='set an individual option in the format "module:preference=value"',
-        action='append', type='string', dest='preferences')
-    (options, args) = parser.parse_args()
-    if options.preferencesDirectory:
-        archive.globalTemporarySettingsPath = options.preferencesDirectory
-    if options.preferences:
-        for prefSpec in options.preferences:
-            (moduleName, prefSpec) = prefSpec.split(':', 1)
-            (prefName, valueName) = prefSpec.split('=', 1)
-            settings.addPreferenceOverride(moduleName, prefName, valueName)
-    sys.argv = [sys.argv[0]] + args
-    if len( args ) > 0:
-        writeOutput( ' '.join(args) )
-    else:
-        settings.startMainLoopFromConstructor(getNewRepository())
+	'Display the skeinforge dialog.'
+	parser = OptionParser()
+	parser.add_option(
+		'-p', '--prefdir', help='set path to preference directory', action='store', type='string', dest='preferencesDirectory')
+	parser.add_option(
+		'-s', '--start', help='set start file to use', action='store', type='string', dest='startFile')
+	parser.add_option(
+		'-e', '--end', help='set end file to use',	action='store', type='string', dest='endFile')
+	parser.add_option(
+		'-o', '--option', help='set an individual option in the format "module:preference=value"',
+		action='append', type='string', dest='preferences')
+	(options, args) = parser.parse_args()
+	if options.preferencesDirectory:
+		archive.globalTemporarySettingsPath = options.preferencesDirectory
+	if options.preferences:
+		for prefSpec in options.preferences:
+			(moduleName, prefSpec) = prefSpec.split(':', 1)
+			(prefName, valueName) = prefSpec.split('=', 1)
+			settings.addPreferenceOverride(moduleName, prefName, valueName)
+	sys.argv = [sys.argv[0]] + args
+	if len( args ) > 0:
+		writeOutput( ' '.join(args) )
+	else:
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == '__main__':
-    main()
+	main()

@@ -22,7 +22,7 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 def addLoopByComplex(derivation, endMultiplier, loopLists, path, pointComplex, vertexes):
-	"""Add an indexed loop to the vertexes."""
+	"Add an indexed loop to the vertexes."
 	loops = loopLists[-1]
 	loop = []
 	loops.append(loop)
@@ -36,14 +36,14 @@ def addLoopByComplex(derivation, endMultiplier, loopLists, path, pointComplex, v
 		loop.append(projectedVector3)
 
 def addNegatives(derivation, negatives, paths):
-	"""Add pillars output to negatives."""
+	"Add pillars output to negatives."
 	for path in paths:
 		loopListsByPath = getLoopListsByPath(derivation, 1.000001, path)
 		geometryOutput = triangle_mesh.getPillarsOutput(loopListsByPath)
 		negatives.append(geometryOutput)
 
 def addNegativesPositives(derivation, negatives, paths, positives):
-	"""Add pillars output to negatives and positives."""
+	"Add pillars output to negatives and positives."
 	for path in paths:
 		endMultiplier = None
 		normal = euclidean.getNormalByPath(path)
@@ -51,27 +51,27 @@ def addNegativesPositives(derivation, negatives, paths, positives):
 			endMultiplier = 1.000001
 		loopListsByPath = getLoopListsByPath(derivation, endMultiplier, path)
 		geometryOutput = triangle_mesh.getPillarsOutput(loopListsByPath)
-		if endMultiplier is None:
+		if endMultiplier == None:
 			positives.append(geometryOutput)
 		else:
 			negatives.append(geometryOutput)
 
 def addOffsetAddToLists( loop, offset, vector3Index, vertexes ):
-	"""Add an indexed loop to the vertexes."""
+	"Add an indexed loop to the vertexes."
 	vector3Index += offset
 	loop.append( vector3Index )
 	vertexes.append( vector3Index )
 
 def addPositives(derivation, paths, positives):
-	"""Add pillars output to positives."""
+	"Add pillars output to positives."
 	for path in paths:
 		loopListsByPath = getLoopListsByPath(derivation, None, path)
 		geometryOutput = triangle_mesh.getPillarsOutput(loopListsByPath)
 		positives.append(geometryOutput)
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get triangle mesh from attribute dictionary."""
-	if derivation is None:
+	"Get triangle mesh from attribute dictionary."
+	if derivation == None:
 		derivation = LatheDerivation(xmlElement)
 	if len(euclidean.getConcatenatedList(derivation.target)) == 0:
 		print('Warning, in lathe there are no paths.')
@@ -83,24 +83,24 @@ def getGeometryOutput(derivation, xmlElement):
 	return getGeometryOutputByNegativesPositives(derivation, negatives, positives, xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get triangle mesh from attribute dictionary by arguments."""
+	"Get triangle mesh from attribute dictionary by arguments."
 	return getGeometryOutput(None, xmlElement)
 
 def getGeometryOutputByNegativesPositives(derivation, negatives, positives, xmlElement):
-	"""Get triangle mesh from derivation, negatives, positives and xmlElement."""
+	"Get triangle mesh from derivation, negatives, positives and xmlElement."
 	positiveOutput = triangle_mesh.getUnifiedOutput(positives)
 	if len(negatives) < 1:
 		return solid.getGeometryOutputByManipulation(positiveOutput, xmlElement)
 	return solid.getGeometryOutputByManipulation({'difference' : {'shapes' : [positiveOutput] + negatives}}, xmlElement)
 
 def getLoopListsByPath(derivation, endMultiplier, path):
-	"""Get loop lists from path."""
+	"Get loop lists from path."
 	vertexes = []
 	loopLists = [[]]
 	if len(derivation.loop) < 2:
 		return loopLists
 	for pointIndex, pointComplex in enumerate(derivation.loop):
-		if endMultiplier is not None and not derivation.isEndCloseToStart:
+		if endMultiplier != None and not derivation.isEndCloseToStart:
 			if pointIndex == 0:
 				nextPoint = derivation.loop[1]
 				pointComplex = endMultiplier * (pointComplex - nextPoint) + nextPoint
@@ -113,18 +113,18 @@ def getLoopListsByPath(derivation, endMultiplier, path):
 	return loopLists
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return LatheDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	solid.processXMLElementByGeometry(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class LatheDerivation:
-	"""Class to hold lathe variables."""
+	"Class to hold lathe variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.axisEnd = evaluate.getVector3ByPrefix(None, 'axisEnd', xmlElement)
 		self.axisStart = evaluate.getVector3ByPrefix(None, 'axisStart', xmlElement)
 		self.end = evaluate.getEvaluatedFloat(360.0, 'end', xmlElement)
@@ -142,8 +142,8 @@ class LatheDerivation:
 			print(xmlElement)
 			self.target = []
 			return
-		if self.axisStart is None:
-			if self.axisEnd is None:
+		if self.axisStart == None:
+			if self.axisEnd == None:
 				self.axisStart = firstPath[0]
 				self.axisEnd = firstPath[-1]
 			else:
@@ -165,7 +165,7 @@ class LatheDerivation:
 			return
 		firstVector3 /= firstVector3Length
 		self.axisProjectiveSpace = euclidean.ProjectiveSpace().getByBasisZFirst(self.axis, firstVector3)
-		if self.sides is None:
+		if self.sides == None:
 			distanceToLine = euclidean.getDistanceToLineByPaths(self.axisStart, self.axisEnd, self.target)
 			self.sides = evaluate.getSidesMinimumThreeBasedOnPrecisionSides(distanceToLine, xmlElement)
 		endRadian = math.radians(self.end)
@@ -176,5 +176,5 @@ class LatheDerivation:
 		self.normal = euclidean.getNormalByPath(firstPath)
 
 	def __repr__(self):
-		"""Get the string representation of this LatheDerivation."""
+		"Get the string representation of this LatheDerivation."
 		return str(self.__dict__)

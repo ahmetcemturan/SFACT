@@ -29,7 +29,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addAlongWay(begin, distance, end, loop):
-	"""Get the beveled rectangle."""
+	'Get the beveled rectangle.'
 	endMinusBegin = end - begin
 	endMinusBeginLength = abs(endMinusBegin)
 	if endMinusBeginLength <= 0.0:
@@ -38,7 +38,7 @@ def addAlongWay(begin, distance, end, loop):
 	loop.append(begin + alongWayMultiplier * endMinusBegin)
 
 def addGroove(derivation, negatives):
-	"""Add groove on each side of cage."""
+	'Add groove on each side of cage.'
 	copyShallow = derivation.xmlElement.getCopyShallow()
 	extrude.setXMLElementToEndStart(Vector3(-derivation.demilength), Vector3(derivation.demilength), copyShallow)
 	extrudeDerivation = extrude.ExtrudeDerivation(copyShallow)
@@ -58,7 +58,7 @@ def addGroove(derivation, negatives):
 	extrude.addPositives(extrudeDerivation, groovesVector3, negatives)
 
 def addHollowPegSocket(derivation, hollowPegSocket, negatives, positives):
-	"""Add the socket and hollow peg."""
+	'Add the socket and hollow peg.'
 	pegHeight = derivation.pegHeight
 	pegRadians = derivation.pegRadians
 	pegRadiusComplex = complex(derivation.pegRadius, derivation.pegRadius)
@@ -87,7 +87,7 @@ def addHollowPegSocket(derivation, hollowPegSocket, negatives, positives):
 	cylinder.addCylinderOutputByEndStart(boltTop + tinyHeight, boltRadiusComplex, negatives, derivation.boltSides, start)
 
 def addSlab(derivation, positives):
-	"""Add slab."""
+	'Add slab.'
 	copyShallow = derivation.xmlElement.getCopyShallow()
 	copyShallow.attributeDictionary['path'] = [Vector3(), Vector3(0.0, 0.0, derivation.height)]
 	extrudeDerivation = extrude.ExtrudeDerivation(copyShallow)
@@ -96,7 +96,7 @@ def addSlab(derivation, positives):
 	extrude.addPositives(extrudeDerivation, [outsidePath], positives)
 
 def addXGroove(derivation, negatives, y):
-	"""Add x groove."""
+	'Add x groove.'
 	if derivation.topBevel <= 0.0:
 		return
 	bottom = derivation.height - derivation.topBevel
@@ -105,7 +105,7 @@ def addXGroove(derivation, negatives, y):
 	triangle_mesh.addSymmetricXPath(negatives, groove, 1.0001 * derivation.topRight.real)
 
 def addYGroove(derivation, negatives, x):
-	"""Add y groove"""
+	'Add y groove'
 	if derivation.topBevel <= 0.0:
 		return
 	bottom = derivation.height - derivation.topBevel
@@ -114,7 +114,7 @@ def addYGroove(derivation, negatives, x):
 	triangle_mesh.addSymmetricYPath(negatives, groove, 1.0001 * derivation.topRight.imag)
 
 def getBeveledRectangle(bevel, bottomLeft):
-	"""Get the beveled rectangle."""
+	'Get the beveled rectangle.'
 	bottomRight = complex(-bottomLeft.real, bottomLeft.imag)
 	rectangle = [bottomLeft, bottomRight, -bottomLeft, -bottomRight]
 	if bevel <= 0.0:
@@ -128,7 +128,7 @@ def getBeveledRectangle(bevel, bottomLeft):
 	return beveledRectangle
 
 def getGeometryOutput(xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
+	'Get vector3 vertexes from attribute dictionary.'
 	derivation = MechaslabDerivation(xmlElement)
 	negatives = []
 	positives = []
@@ -146,25 +146,25 @@ def getGeometryOutput(xmlElement):
 	return extrude.getGeometryOutputByNegativesPositives(negatives, positives, xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	'Get vector3 vertexes from attribute dictionary by arguments.'
 	evaluate.setAttributeDictionaryByArguments(['length', 'radius'], arguments, xmlElement)
 	return getGeometryOutput(xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return MechaslabDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	solid.processXMLElementByGeometry(getGeometryOutput(xmlElement), xmlElement)
 
 
 class CellExistence:
-	"""Class to determine if a cell exists."""
+	'Class to determine if a cell exists.'
 	def __init__(self, columns, rows, value):
-		"""Initialize."""
+		'Initialize.'
 		self.existenceSet = None
-		if value is None:
+		if value == None:
 			return
 		self.existenceSet = set()
 		for element in value:
@@ -178,33 +178,33 @@ class CellExistence:
 				self.existenceSet.add(keyTuple)
 
 	def __repr__(self):
-		"""Get the string representation of this CellExistence."""
+		'Get the string representation of this CellExistence.'
 		return euclidean.getDictionaryString(self.__dict__)
 
 	def getIsInExistence(self, columnIndex, rowIndex):
-		"""Detremine if the cell at the column and row exists."""
-		if self.existenceSet is None:
+		'Detremine if the cell at the column and row exists.'
+		if self.existenceSet == None:
 			return True
 		return (columnIndex, rowIndex) in self.existenceSet
 
 
 class HollowPegSocket:
-	"""Class to hold hollow peg socket variables."""
+	'Class to hold hollow peg socket variables.'
 	def __init__(self, center):
-		"""Initialize."""
+		'Initialize.'
 		self.center = center
 		self.shouldAddPeg = True
 		self.shouldAddSocket = True
 
 	def __repr__(self):
-		"""Get the string representation of this HollowPegSocket."""
+		'Get the string representation of this HollowPegSocket.'
 		return euclidean.getDictionaryString(self.__dict__)
 
 
 class MechaslabDerivation:
-	"""Class to hold mechaslab variables."""
+	'Class to hold mechaslab variables.'
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.bevelOverRadius = evaluate.getEvaluatedFloat(0.2, 'bevelOverRadius', xmlElement)
 		self.boltRadiusOverRadius = evaluate.getEvaluatedFloat(0.0, 'boltRadiusOverRadius', xmlElement)
 		self.columns = evaluate.getEvaluatedInt(2, 'columns', xmlElement)
@@ -253,5 +253,5 @@ class MechaslabDerivation:
 		self.topRight = complex(float(self.columns), float(self.rows)) * self.radius
 
 	def __repr__(self):
-		"""Get the string representation of this MechaslabDerivation."""
+		'Get the string representation of this MechaslabDerivation.'
 		return euclidean.getDictionaryString(self.__dict__)

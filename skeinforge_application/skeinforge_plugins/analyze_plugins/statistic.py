@@ -62,37 +62,25 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
-def getCraftedText( fileName, text='', repository=None):
-	"""Stat the file or text."""
-	return getCraftedTextFromText(archive.getTextIfEmpty(fileName, text), repository)
-
-def getCraftedTextFromText(gcodeText, repository=None):
-	"""Stat a gcode text."""
-	#if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'dimension'):
-	#	return gcodeText
-	if repository is None:
-		repository = settings.getReadRepository( StatisticRepository() )
-		return gcodeText
-	return StatisticSkein().getCraftedGcode(gcodeText, repository)
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return StatisticRepository()
 
 def getWindowAnalyzeFile(fileName):
-	"""Write statistics for a gcode file."""
+	"Write statistics for a gcode file."
 	return getWindowAnalyzeFileGivenText( fileName, archive.getFileText(fileName) )
 
 def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
-	"""Write statistics for a gcode file."""
+	"Write statistics for a gcode file."
 	print('')
 	print('')
 	print('Statistics are being generated for the file ' + archive.getSummarizedFileName(fileName) )
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( StatisticRepository() )
 	skein = StatisticSkein()
 	statisticGcode = skein.getCraftedGcode(gcodeText, repository)
@@ -102,7 +90,7 @@ def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
 		archive.writeFileMessageEnd('.txt', fileName, statisticGcode, 'The statistics file is saved as ')
 
 def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWritten, gcodeText=''):
-	"""Write statistics for a skeinforge gcode file, if 'Write Statistics File for Skeinforge Chain' is selected."""
+	"Write statistics for a skeinforge gcode file, if 'Write Statistics File for Skeinforge Chain' is selected."
 	repository = settings.getReadRepository( StatisticRepository() )
 	if gcodeText == '':
 		gcodeText = archive.getFileText( fileNameSuffix )
@@ -111,9 +99,9 @@ def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWr
 
 
 class StatisticRepository:
-	"""A class to handle the statistics settings."""
+	"A class to handle the statistics settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.analyze_plugins.statistic.html', self)
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Statistic')
 		self.activateStatistic = settings.BooleanSetting().getFromValue('Activate Statistic', self, True )
@@ -134,16 +122,16 @@ class StatisticRepository:
 		self.executeTitle = 'Generate Statistics'
 
 	def execute(self):
-		"""Write button has been clicked."""
+		"Write button has been clicked."
 		fileNames = skeinforge_polyfile.getFileOrGcodeDirectory( self.fileNameInput.value, self.fileNameInput.wasCancelled, ['_comment'] )
 		for fileName in fileNames:
 			getWindowAnalyzeFile(fileName)
 
 
 class StatisticSkein:
-	"""A class to get statistics for a gcode skein."""
+	"A class to get statistics for a gcode skein."
 	def __init__(self):
-		self.extrusionDiameter = None
+#		self.extrusionDiameter = None
 		self.oldLocation = None
 		self.operatingFeedRatePerSecond = None
 		self.output = cStringIO.StringIO()
@@ -151,14 +139,32 @@ class StatisticSkein:
 		self.version = None
 		self.totalCommandcount = 0
 
-
 	def addLine(self, line):
-		"""Add a line of text and a newline to the output."""
+		"Add a line of text and a newline to the output."
 		self.output.write(line + '\n')
 
+	def addToPath(self, location):
+		"Add a point to travel and maybe extrusion."
+		if self.oldLocation != None:
+			travel = location.distance( self.oldLocation )
+			if self.feedRateMinute > 0.0:
+				self.totalBuildTime += 60.0 * travel / self.feedRateMinute
+			self.totalDistanceTraveled += travel
+			if self.extruderActive:
+				self.totalDistanceExtruded += travel
+				self.cornerMaximum.maximize(location)
+				self.cornerMinimum.minimize(location)
+		self.oldLocation = location
+
+	def extruderSet( self, active ):
+		"Maybe increment the number of times the extruder was toggled."
+		if self.extruderActive != active:
+			self.extruderToggled += 1
+		self.extruderActive = active
+
 	def getCraftedGcode(self, gcodeText, repository):
-		"""Parse gcode text and store the statistics."""
-		self.extrusionWidth = 0.4
+		"Parse gcode text and store the statistics."
+		self.absolutePerimeterWidth = 0.4
 		self.characters = 0
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, -987654321.0)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, 987654321.0)
@@ -166,7 +172,7 @@ class StatisticSkein:
 		self.extruderSpeed = None
 		self.extruderToggled = 0
 		self.feedRateMinute = 600.0
-		self.extrusionHeight = 0.4
+		self.layerThickness = 0.4
 		self.numberOfLines = 0
 		self.procedures = []
 		self.repository = repository
@@ -177,10 +183,10 @@ class StatisticSkein:
 		lines = archive.getTextLines(gcodeText)
 		for line in lines:
 			self.parseLine(line)
-
+		averageFeedRate = self.totalDistanceTraveled / self.totalBuildTime
 		self.characters += self.numberOfLines
 		kilobytes = round( self.characters / 1024.0 )
-		halfPerimeterWidth = 0.5 * self.extrusionWidth
+		halfPerimeterWidth = 0.5 * self.absolutePerimeterWidth
 		halfExtrusionCorner = Vector3( halfPerimeterWidth, halfPerimeterWidth, halfPerimeterWidth )
 		self.cornerMaximum += halfExtrusionCorner
 		self.cornerMinimum -= halfExtrusionCorner
@@ -189,25 +195,25 @@ class StatisticSkein:
 		roundedLow = euclidean.getRoundedPoint( self.cornerMinimum )
 		roundedExtent = euclidean.getRoundedPoint( extent )
 		axisString =  " axis extrusion starts at "
+		crossSectionArea = 0.9 * self.absolutePerimeterWidth * self.layerThickness # 0.9 if from the typical fill density
 		FilamentRadius = repository.FilamentDiameter.value /2
 		filamentCrossSectionArea = (FilamentRadius * FilamentRadius)*math.pi
-		extrusionXSection =(((self.extrusionHeight+self.extrusionWidth)/4)**2)*math.pi
+		extrusionXSection =(((self.layerThickness+self.perimeterWidth)/4)**2)*math.pi
 		volumeExtruded = extrusionXSection * self.totalDistanceExtruded / 1000
 		mass = (volumeExtruded /1000)* repository.density.value
 		self.delay = (repository.realPrintTime.value - repository.calculatedPrintTime.value ) / repository.totalCommandsEntered.value
 		self.estimatedBuildTime = self.delay * self.totalCommandcount + self.totalBuildTime
 		machineTimeCost = repository.machineTime.value * self.estimatedBuildTime / 3600.0
-		self.filamentInOutRatio = filamentCrossSectionArea / ((((self.extrusionHeight+self.extrusionWidth)/4)*((self.extrusionHeight+self.extrusionWidth)/4)*math.pi))
+		self.filamentInOutRatio = filamentCrossSectionArea / ((((self.layerThickness+self.perimeterWidth)/4)*((self.layerThickness+self.perimeterWidth)/4)*math.pi))
 		self.totalDistanceFilament = self.totalDistanceExtruded
 		averageFeedRate = self.totalDistanceTraveled / self.estimatedBuildTime
 		materialCost = repository.material.value * mass /1000
-
 		self.addLine(' ')
 		self.addLine( "Procedures used (in sequence.." )
 		for procedure in self.procedures:
 			self.addLine(procedure)
 		self.addLine(' ')
-		self.addLine('Dimensions')
+		self.addLine('Extent')
 		self.addLine( "X%s%s mm and ends at %s mm, for a width of %s mm." % ( axisString, int( roundedLow.x ), int( roundedHigh.x ), int( extent.x ) ) )
 		self.addLine( "Y%s%s mm and ends at %s mm, for a depth of %s mm." % ( axisString, int( roundedLow.y ), int( roundedHigh.y ), int( extent.y ) ) )
 		self.addLine( "Z%s%s mm and ends at %s mm, for a height of %s mm." % ( axisString, int( roundedLow.z ), int( roundedHigh.z ), int( extent.z ) ) )
@@ -216,15 +222,13 @@ class StatisticSkein:
 
 		self.addLine( "Distance traveled is %s m." % euclidean.getThreeSignificantFigures( self.totalDistanceTraveled/1000 ) )
 		self.addLine( "Distance extruded is %s m." % euclidean.getThreeSignificantFigures( self.totalDistanceExtruded/1000 ) )
-		if self.extruderSpeed is not None:
+		if self.extruderSpeed != None:
 			self.addLine( "Extruder speed is %s" % euclidean.getThreeSignificantFigures( self.extruderSpeed ) )
 		self.addLine( "Extruder was extruding %s percent of the time." % euclidean.getThreeSignificantFigures( 100.0 * self.totalDistanceExtruded / self.totalDistanceTraveled ) )
 		self.addLine( "Extruder was toggled %s times." % self.extruderToggled )
 		self.addLine( "Feed rate average is %s mm/s, (%s mm/min)." % ( euclidean.getThreeSignificantFigures( averageFeedRate ), euclidean.getThreeSignificantFigures( 60.0 * averageFeedRate ) ) )
 		self.addLine( "A Total of %s commands will be executed." %  self.totalCommandcount)
 		self.addLine(' ')
-
-
 		self.addLine('Time')
 		self.addLine( "Calculated Build time is %s." % euclidean.getDurationString(self.totalBuildTime))
 		self.addLine( "Corrected Build time is %s." % euclidean.getDurationString( self.estimatedBuildTime))
@@ -243,15 +247,14 @@ class StatisticSkein:
 		self.addLine( "Material cost is %s$." % round( materialCost, 2 ) )
 		self.addLine( "Total cost is %s$." % round( machineTimeCost + materialCost, 2 ) )
 		self.addLine(' ')
-
-		if self.profileName is not None:
+		if self.profileName != None:
 			self.addLine(' ')
 			self.addLine( 'Profile' )
 			self.addLine(self.profileName)
 		self.addLine(' ')
 		self.addLine('Info')
-		self.addLine( "Layer thickness is %s mm." % euclidean.getThreeSignificantFigures( self.extrusionHeight ) )
-		self.addLine( "Perimeter width is %s mm." % euclidean.getThreeSignificantFigures( self.extrusionWidth ) )
+		self.addLine( "Layer thickness is %s mm." % euclidean.getThreeSignificantFigures( self.layerThickness ) )
+		self.addLine( "Perimeter width is %s mm." % euclidean.getThreeSignificantFigures( self.absolutePerimeterWidth ) )
 		self.addLine( "Filament Cross section area is %s mm2." % euclidean.getThreeSignificantFigures( filamentCrossSectionArea ) )
 		self.addLine('Filament In / Out ratio is %s' % euclidean.getThreeSignificantFigures (self.filamentInOutRatio))
 		self.addLine( "Text has %s lines and a size of %s KB." % ( self.numberOfLines, kilobytes ) )
@@ -265,9 +268,8 @@ class StatisticSkein:
 			self.addLine( "You are using SFACT Version "  + self.version )
 		self.addLine(' ')
 		return self.output.getvalue()
-
 	def addToPath(self, location):
-		"""Add a point to travel and maybe extrusion."""
+		'Add a point to travel and maybe extrusion.'
 		if self.oldLocation is not None:
 			travel = location.distance( self.oldLocation )
 #			self.extrusion =  self.getLineWithE( line, splitLine, 0 )
@@ -281,18 +283,14 @@ class StatisticSkein:
 				self.cornerMaximum.maximize(location)
 				self.cornerMinimum.minimize(location)
 		self.oldLocation = location
-
 	def extruderSet( self, active ):
-		"""Maybe increment the number of times the extruder was toggled."""
+		'Maybe increment the number of times the extruder was toggled.'
 		if self.extruderActive != active:
 			self.extruderToggled += 1
 		self.extruderActive = active
 
-
-
-
 	def getLocationSetFeedRateToSplitLine( self, splitLine ):
-		"""Get location ans set feed rate to the split line."""
+		"Get location ans set feed rate to the split line."
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		indexOfF = gcodec.getIndexOfStartingWithSecond( "F", splitLine )
 		if indexOfF > 0:
@@ -300,8 +298,8 @@ class StatisticSkein:
 		return location
 
 	def helicalMove( self, isCounterclockwise, splitLine ):
-		"""Get statistics for a helical move."""
-		if self.oldLocation is None:
+		"Get statistics for a helical move."
+		if self.oldLocation == None:
 			return
 		location = self.getLocationSetFeedRateToSplitLine(splitLine)
 		location += self.oldLocation
@@ -341,12 +339,12 @@ class StatisticSkein:
 		self.addToPath( location )
 
 	def linearMove( self, splitLine ):
-		"""Get statistics for a linear move."""
+		"Get statistics for a linear move."
 		location = self.getLocationSetFeedRateToSplitLine(splitLine)
 		self.addToPath( location )
 
 	def parseLine(self, line):
-		"""Parse a gcode line and add it to the statistics."""
+		"Parse a gcode line and add it to the statistics."
 		self.characters += len(line)
 		self.numberOfLines += 1
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
@@ -365,12 +363,16 @@ class StatisticSkein:
 			self.extruderSet( False )
 		elif firstWord == 'M103':
 			self.extruderSet( False )
-		elif firstWord == '(<extrusionHeight>':
-			self.extrusionHeight = float(splitLine[1])
+		elif firstWord == 'M108':
+			self.extruderSpeed = gcodec.getDoubleAfterFirstLetter(splitLine[1])
+		elif firstWord == '(<layerThickness>':
+			self.layerThickness = float(splitLine[1])
+#			self.extrusionDiameter = self.repository.extrusionDiameterOverThickness.value * self.layerThickness
 		elif firstWord == '(<operatingFeedRatePerSecond>':
 			self.operatingFeedRatePerSecond = float(splitLine[1])
-		elif firstWord == '(<extrusionWidth>':
-			self.extrusionWidth = abs(float(splitLine[1]))
+		elif firstWord == '(<perimeterWidth>':
+			self.perimeterWidth = float(splitLine[1])
+			self.absolutePerimeterWidth = abs(float(splitLine[1]))
 		elif firstWord == '(<procedureName>':
 			self.procedures.append(splitLine[1])
 		elif firstWord == '(<profileName>':
@@ -379,13 +381,12 @@ class StatisticSkein:
 			self.version = splitLine[1]
 
 
-
 def main():
-	"""Display the statistics dialog."""
+	"Display the statistics dialog."
 	if len(sys.argv) > 1:
 		getWindowAnalyzeFile(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

@@ -22,11 +22,11 @@ globalExecutionOrder = -200
 
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get wedge loop."""
+	"Get wedge loop."
 	wedgeCenter = evaluate.getVector3ByPrefix(Vector3(), prefix + 'center', xmlElement)
 	loop.append(wedgeCenter)
 	return [loop]
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)

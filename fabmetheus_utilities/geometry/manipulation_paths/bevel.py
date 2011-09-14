@@ -23,7 +23,7 @@ globalExecutionOrder = 20
 
 
 def getBevelPath( begin, center, close, end, radius ):
-	"""Get bevel path."""
+	"Get bevel path."
 	beginComplex = begin.dropAxis()
 	centerComplex = center.dropAxis()
 	endComplex = end.dropAxis()
@@ -41,7 +41,7 @@ def getBevelPath( begin, center, close, end, radius ):
 	return [ beginBevel, Vector3( spikeComplex.real, spikeComplex.imag, center.z ), endBevel ]
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get bevel loop."""
+	"Get bevel loop."
 	if len(loop) < 3:
 		return [loop]
 	radius = lineation.getRadiusByPrefix( prefix, sideLength, xmlElement )
@@ -56,5 +56,5 @@ def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
 	return [ euclidean.getLoopWithoutCloseSequentialPoints( close, bevelLoop ) ]
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)

@@ -22,8 +22,8 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get triangle mesh from attribute dictionary."""
-	if derivation is None:
+	'Get triangle mesh from attribute dictionary.'
+	if derivation == None:
 		derivation = ConcatenateDerivation(xmlElement)
 	concatenatedList = euclidean.getConcatenatedList(derivation.target)[:]
 	if len(concatenatedList) == 0:
@@ -35,24 +35,24 @@ def getGeometryOutput(derivation, xmlElement):
 	return lineation.getGeometryOutputByLoop(lineation.SideLoop(concatenatedList, None, None), xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get triangle mesh from attribute dictionary by arguments."""
+	'Get triangle mesh from attribute dictionary by arguments.'
 	return getGeometryOutput(None, xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return ConcatenateDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class ConcatenateDerivation:
-	"""Class to hold concatenate variables."""
+	'Class to hold concatenate variables.'
 	def __init__(self, xmlElement):
-		"""Initialize."""
+		'Initialize.'
 		self.target = evaluate.getTransformedPathsByKey([], 'target', xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this ConcatenateDerivation."""
+		'Get the string representation of this ConcatenateDerivation.'
 		return str(self.__dict__)

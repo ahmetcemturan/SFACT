@@ -23,7 +23,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addSphere(faces, radius, vertexes, xmlElement):
-	"""Add sphere by radius."""
+	'Add sphere by radius.'
 	bottom = -radius.z
 	sides = evaluate.getSidesMinimumThreeBasedOnPrecision(max(radius.x, radius.y, radius.z), xmlElement )
 	sphereSlices = max(sides / 2, 2)
@@ -40,25 +40,25 @@ def addSphere(faces, radius, vertexes, xmlElement):
 	triangle_mesh.addPillarByLoops(faces, polygons)
 
 def getGeometryOutput(radius, xmlElement):
-	"""Get triangle mesh from attribute dictionary."""
+	'Get triangle mesh from attribute dictionary.'
 	faces = []
 	vertexes = []
 	addSphere(faces, radius, vertexes, xmlElement)
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	evaluate.processArchivable(Sphere, xmlElement)
 
 
 class Sphere(cube.Cube):
-	"""A sphere object."""
+	'A sphere object.'
 	def createShape(self):
-		"""Create the shape."""
+		'Create the shape.'
 		addSphere(self.faces, self.radius, self.vertexes, self.xmlElement)
 
 	def setToXMLElement(self, xmlElement):
-		"""Set to xmlElement."""
+		'Set to xmlElement.'
 		attributeDictionary = xmlElement.attributeDictionary
 		self.radius = evaluate.getVector3ByPrefixes( ['demisize', 'radius'], Vector3(1.0, 1.0, 1.0), xmlElement )
 		self.radius = evaluate.getVector3ByMultiplierPrefixes( 2.0, ['diameter', 'size'], self.radius, xmlElement )

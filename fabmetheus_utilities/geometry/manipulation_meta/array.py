@@ -21,7 +21,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addPathToGroup(derivation, groupDictionaryCopy, path, targetMatrix, totalIndex):
-	"""Add path to the array group."""
+	'Add path to the array group.'
 	for pointIndex, point in enumerate(path):
 		arrayElement = derivation.target.getCopy(derivation.xmlElement.getIDSuffix(totalIndex), derivation.xmlElement)
 		arrayDictionary = arrayElement.attributeDictionary
@@ -38,11 +38,11 @@ def addPathToGroup(derivation, groupDictionaryCopy, path, targetMatrix, totalInd
 		totalIndex += 1
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return ArrayDerivation(xmlElement)
 
 def getRotationMatrix(arrayDictionary, derivation, path, point, pointIndex):
-	"""Get rotationMatrix."""
+	'Get rotationMatrix.'
 	if len(path) < 2 or not derivation.track:
 		return matrix.Matrix()
 	point = point.dropAxis()
@@ -82,20 +82,20 @@ def getRotationMatrix(arrayDictionary, derivation, path, point, pointIndex):
 	return getRotationMatrixByPolar(arrayDictionary, averagePolar, averagePolarLength)
 
 def getRotationMatrixByPolar(arrayDictionary, polar, polarLength):
-	"""Get rotationMatrix by polar and polarLength."""
+	'Get rotationMatrix by polar and polarLength.'
 	polar /= polarLength
 	arrayDictionary['_arrayRotation'] = math.degrees(math.atan2(polar.imag, polar.real))
 	return matrix.Matrix(matrix.getDiagonalSwitchedTetragridByPolar([0, 1], polar))
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	processXMLElementByDerivation(None, xmlElement)
 
 def processXMLElementByDerivation(derivation, xmlElement):
-	"""Process the xml element by derivation."""
-	if derivation is None:
+	'Process the xml element by derivation.'
+	if derivation == None:
 		derivation = ArrayDerivation(xmlElement)
-	if derivation.target is None:
+	if derivation.target == None:
 		print('Warning, array could not get target for:')
 		print(xmlElement)
 		return
@@ -107,7 +107,7 @@ def processXMLElementByDerivation(derivation, xmlElement):
 	euclidean.removeElementsFromDictionary(groupDictionaryCopy, ['closed', 'paths', 'target', 'track', 'vertexes'])
 	evaluate.removeIdentifiersFromDictionary(groupDictionaryCopy)
 	targetMatrix = matrix.getBranchMatrixSetXMLElement(derivation.target)
-	xmlElement.className = 'group'
+	xmlElement.localName = 'group'
 	totalIndex = 0
 	for path in derivation.paths:
 		addPathToGroup(derivation, groupDictionaryCopy, path, targetMatrix, totalIndex)
@@ -116,9 +116,9 @@ def processXMLElementByDerivation(derivation, xmlElement):
 
 
 class ArrayDerivation:
-	"""Class to hold array variables."""
+	"Class to hold array variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.closed = evaluate.getEvaluatedBoolean(True, 'closed', xmlElement)
 		self.paths = evaluate.getTransformedPathsByKey([], 'paths', xmlElement)
 		vertexTargets = evaluate.getXMLElementsByKey('vertexes', xmlElement)
@@ -130,5 +130,5 @@ class ArrayDerivation:
 		self.xmlElement = xmlElement
 
 	def __repr__(self):
-		"""Get the string representation of this ArrayDerivation."""
+		"Get the string representation of this ArrayDerivation."
 		return str(self.__dict__)

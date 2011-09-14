@@ -17,7 +17,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def _getAccessibleAttribute(attributeName, listObject):
-	"""Get the accessible attribute."""
+	'Get the accessible attribute.'
 	if attributeName in globalNativeFunctionSet:
 		return getattr(listObject, attributeName, None)
 	if attributeName in globalGetAccessibleAttributeSet:
@@ -27,25 +27,25 @@ def _getAccessibleAttribute(attributeName, listObject):
 
 
 class ListAttribute:
-	"""Class to handle a list."""
+	'Class to handle a list.'
 	def __init__(self, listObject):
-		"""Initialize."""
+		'Initialize.'
 		self.listObject = listObject
 
 	def __repr__(self):
-		"""Get the list representation of this ListAttribute."""
+		"Get the list representation of this ListAttribute."
 		return str(self.listObject)
 
 	def add(self, value):
-		"""Get the concatenation, same as append."""
+		'Get the concatenation, same as append.'
 		return self.listObject + [value]
 
 	def copy(self):
-		"""Get the copy."""
+		'Get the copy.'
 		return self.listObject[:]
 
 	def delete(self, arguments):
-		"""Get the delete list."""
+		'Get the delete list.'
 		deleteList = []
 		enumeratorSet = set(euclidean.getEnumeratorKeysAlwaysList(self.listObject, arguments))
 		for elementIndex, element in enumerate(self.listObject):
@@ -54,65 +54,65 @@ class ListAttribute:
 		return deleteList
 
 	def get(self, itemIndex):
-		"""Get value by index"""
+		'Get value by index'
 		return self.listObject[itemIndex]
 
 	def getExpansion(self, items):
-		"""Get the concatenated copies."""
+		'Get the concatenated copies.'
 		expansion = []
 		for itemIndex in xrange(items):
 			expansion += self.listObject[:]
 		return expansion
 
 	def getIsIn(self, value):
-		"""Determine if the value is in."""
+		'Determine if the value is in.'
 		return value in self.listObject
 
 	def getIsNotIn(self, value):
-		"""Determine if the value is in."""
+		'Determine if the value is in.'
 		return not(value in self.listObject)
 
 	def getLength(self):
-		"""Get the length."""
+		'Get the length.'
 		return len(self.listObject)
 
 	def getMax(self):
-		"""Get the max."""
+		'Get the max.'
 		return max(self.listObject)
 
 	def getMin(self):
-		"""Get the min."""
+		'Get the min.'
 		return min(self.listObject)
 
 	def insert(self, insertIndex, value):
-		"""Get the insert list."""
+		'Get the insert list.'
 		if insertIndex < 0:
 			insertIndex += len(self.listObject)
 		insertIndex = max(0, insertIndex)
 		return self.listObject[: insertIndex] + [value] + self.listObject[insertIndex :]
 
 	def keys(self):
-		"""Get the keys."""
+		'Get the keys.'
 		return range(len(self.listObject))
 
 	def length(self):
-		"""Get the length."""
+		'Get the length.'
 		return len(self.listObject)
 
 	def rindex(self, value):
-		"""Get the rindex element."""
+		'Get the rindex element.'
 		for elementIndex, element in enumerate(self.listObject):
 			if element == value:
 				return elementIndex
 		raise ValueError('Value (%s) not found in rindex in ListAttribute for (%s).' % (value, self.listObject))
 
 	def set(self, itemIndex, value):
-		"""Set value."""
+		'Set value.'
 		self.listObject[itemIndex] = value
 		return self.listObject
 
 	def values(self, arguments=None):
-		"""Get the values."""
+		'Get the values.'
 		return self.listObject
 
 

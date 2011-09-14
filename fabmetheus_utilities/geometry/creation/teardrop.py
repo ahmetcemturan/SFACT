@@ -24,7 +24,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addNegativesByRadius(end, negatives, radius, start, xmlElement):
-	"""Add teardrop drill hole to negatives."""
+	"Add teardrop drill hole to negatives."
 	if radius <= 0.0:
 		return
 	copyShallow = xmlElement.getCopyShallow()
@@ -33,30 +33,30 @@ def addNegativesByRadius(end, negatives, radius, start, xmlElement):
 	extrude.addNegatives(extrudeDerivation, negatives, [getTeardropPathByEndStart(end, radius, start, xmlElement)])
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	"Get vector3 vertexes from attribute dictionary."
+	if derivation == None:
 		derivation = TeardropDerivation(xmlElement)
 	teardropPath = getTeardropPath(derivation.inclination, derivation.radius, xmlElement)
 	return lineation.getGeometryOutputByLoop(lineation.SideLoop(teardropPath), xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	"Get vector3 vertexes from attribute dictionary by arguments."
 	evaluate.setAttributeDictionaryByArguments(['radius', 'inclination'], arguments, xmlElement)
 	return getGeometryOutput(None, xmlElement)
 
 def getInclination(end, start):
-	"""Get inclination."""
-	if end is None or start is None:
+	"Get inclination."
+	if end == None or start == None:
 		return 0.0
 	endMinusStart = end - start
 	return math.atan2(endMinusStart.z, abs(endMinusStart.dropAxis()))
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return TeardropDerivation(xmlElement)
 
 def getTeardropPath(inclination, radius, xmlElement):
-	"""Get vector3 teardrop path."""
+	"Get vector3 teardrop path."
 	teardropSides = evaluate.getSidesMinimumThreeBasedOnPrecision(radius, xmlElement)
 	sideAngle = 2.0 * math.pi / float(teardropSides)
 	overhangRadians = setting.getOverhangRadians(xmlElement)
@@ -86,29 +86,29 @@ def getTeardropPath(inclination, radius, xmlElement):
 	return euclidean.getVector3Path(teardropPath)
 
 def getTeardropPathByEndStart(end, radius, start, xmlElement):
-	"""Get vector3 teardrop path by end and start."""
+	"Get vector3 teardrop path by end and start."
 	inclination = getInclination(end, start)
 	return getTeardropPath(inclination, radius, xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class TeardropDerivation:
-	"""Class to hold teardrop variables."""
+	"Class to hold teardrop variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		end = evaluate.getVector3ByPrefix(None, 'end', xmlElement)
 		start = evaluate.getVector3ByPrefix(Vector3(), 'start', xmlElement)
 		inclinationDegree = math.degrees(getInclination(end, start))
 		self.inclination = math.radians(evaluate.getEvaluatedFloat(inclinationDegree, 'inclination', xmlElement))
 		self.radius = lineation.getFloatByPrefixBeginEnd('radius', 'diameter', 1.0, xmlElement)
 		size = evaluate.getEvaluatedFloat(None, 'size', xmlElement)
-		if size is not None:
+		if size != None:
 			self.radius = 0.5 * size
 		self.xmlElement = xmlElement
 
 	def __repr__(self):
-		"""Get the string representation of this TeardropDerivation."""
+		"Get the string representation of this TeardropDerivation."
 		return str(self.__dict__)

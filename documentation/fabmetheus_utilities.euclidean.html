@@ -125,13 +125,13 @@ Below are examples of euclidean use.<br>
 
 <dl><dt><a name="NestedBand-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;surrounding&nbsp;loop.</tt></dd></dl>
 
-<dl><dt><a name="NestedBand-addPerimeterInner"><strong>addPerimeterInner</strong></a>(self, extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;the&nbsp;perimeter&nbsp;and&nbsp;the&nbsp;inner&nbsp;island.</tt></dd></dl>
+<dl><dt><a name="NestedBand-addPerimeterInner"><strong>addPerimeterInner</strong></a>(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;the&nbsp;perimeter&nbsp;and&nbsp;the&nbsp;inner&nbsp;island.</tt></dd></dl>
 
 <dl><dt><a name="NestedBand-addToBoundary"><strong>addToBoundary</strong></a>(self, vector3)</dt><dd><tt>Add&nbsp;vector3&nbsp;to&nbsp;boundary.</tt></dd></dl>
 
 <dl><dt><a name="NestedBand-addToLoop"><strong>addToLoop</strong></a>(self, vector3)</dt><dd><tt>Add&nbsp;vector3&nbsp;to&nbsp;loop.</tt></dd></dl>
 
-<dl><dt><a name="NestedBand-addToThreads"><strong>addToThreads</strong></a>(self, extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;paths&nbsp;from&nbsp;the&nbsp;last&nbsp;location.&nbsp;perimeter&gt;inner&nbsp;&gt;fill&gt;paths&nbsp;or&nbsp;fill&gt;&nbsp;perimeter&gt;inner&nbsp;&gt;paths</tt></dd></dl>
+<dl><dt><a name="NestedBand-addToThreads"><strong>addToThreads</strong></a>(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;paths&nbsp;from&nbsp;the&nbsp;last&nbsp;location.&nbsp;perimeter&gt;inner&nbsp;&gt;fill&gt;paths&nbsp;or&nbsp;fill&gt;&nbsp;perimeter&gt;inner&nbsp;&gt;paths</tt></dd></dl>
 
 <dl><dt><a name="NestedBand-getFillLoops"><strong>getFillLoops</strong></a>(self, penultimateFillLoops)</dt><dd><tt>Get&nbsp;last&nbsp;fill&nbsp;loops&nbsp;from&nbsp;the&nbsp;outside&nbsp;loop&nbsp;and&nbsp;the&nbsp;loops&nbsp;inside&nbsp;the&nbsp;inside&nbsp;loops.</tt></dd></dl>
 
@@ -139,9 +139,9 @@ Below are examples of euclidean use.<br>
 
 <dl><dt><a name="NestedBand-getSurroundingBoundaries"><strong>getSurroundingBoundaries</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;boundary&nbsp;of&nbsp;the&nbsp;surronding&nbsp;loop&nbsp;plus&nbsp;any&nbsp;boundaries&nbsp;of&nbsp;the&nbsp;innerNestedRings.</tt></dd></dl>
 
-<dl><dt><a name="NestedBand-transferClosestFillLoops"><strong>transferClosestFillLoops</strong></a>(self, extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Transfer&nbsp;closest&nbsp;fill&nbsp;loops.</tt></dd></dl>
+<dl><dt><a name="NestedBand-transferClosestFillLoops"><strong>transferClosestFillLoops</strong></a>(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Transfer&nbsp;closest&nbsp;fill&nbsp;loops.</tt></dd></dl>
 
-<dl><dt><a name="NestedBand-transferInfillPaths"><strong>transferInfillPaths</strong></a>(self, extrusionSpacingHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Transfer&nbsp;the&nbsp;infill&nbsp;paths.</tt></dd></dl>
+<dl><dt><a name="NestedBand-transferInfillPaths"><strong>transferInfillPaths</strong></a>(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Transfer&nbsp;the&nbsp;infill&nbsp;paths.</tt></dd></dl>
 
 <dl><dt><a name="NestedBand-transferPaths"><strong>transferPaths</strong></a>(self, paths)</dt><dd><tt>Transfer&nbsp;paths.</tt></dd></dl>
 
@@ -285,8 +285,8 @@ Methods inherited from <a href="fabmetheus_utilities.euclidean.html#NestedRing">
  <dl><dt><a name="-addSegmentToPixelTable"><strong>addSegmentToPixelTable</strong></a>(beginComplex, endComplex, pixelDictionary, shortenDistanceBegin, shortenDistanceEnd, width)</dt><dd><tt>Add&nbsp;line&nbsp;segment&nbsp;to&nbsp;the&nbsp;pixel&nbsp;table.</tt></dd></dl>
  <dl><dt><a name="-addSquareTwoToPixelDictionary"><strong>addSquareTwoToPixelDictionary</strong></a>(pixelDictionary, point, value, width)</dt><dd><tt>Add&nbsp;square&nbsp;with&nbsp;two&nbsp;pixels&nbsp;around&nbsp;the&nbsp;center&nbsp;to&nbsp;pixel&nbsp;dictionary.</tt></dd></dl>
  <dl><dt><a name="-addSurroundingLoopBeginning"><strong>addSurroundingLoopBeginning</strong></a>(distanceFeedRate, loop, z)</dt><dd><tt>Add&nbsp;surrounding&nbsp;loop&nbsp;beginning&nbsp;to&nbsp;gcode&nbsp;output.</tt></dd></dl>
- <dl><dt><a name="-addToThreadsFromLoop"><strong>addToThreadsFromLoop</strong></a>(extrusionSpacingHalfWidth, gcodeType, loop, oldOrderedLocation, skein)</dt><dd><tt>Add&nbsp;to&nbsp;threads&nbsp;from&nbsp;the&nbsp;last&nbsp;location&nbsp;from&nbsp;loop.</tt></dd></dl>
- <dl><dt><a name="-addToThreadsRemove"><strong>addToThreadsRemove</strong></a>(extrusionSpacingHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;threads&nbsp;from&nbsp;the&nbsp;last&nbsp;location&nbsp;from&nbsp;surrounding&nbsp;loops.</tt></dd></dl>
+ <dl><dt><a name="-addToThreadsFromLoop"><strong>addToThreadsFromLoop</strong></a>(extrusionHalfWidth, gcodeType, loop, oldOrderedLocation, skein)</dt><dd><tt>Add&nbsp;to&nbsp;threads&nbsp;from&nbsp;the&nbsp;last&nbsp;location&nbsp;from&nbsp;loop.</tt></dd></dl>
+ <dl><dt><a name="-addToThreadsRemove"><strong>addToThreadsRemove</strong></a>(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;threads&nbsp;from&nbsp;the&nbsp;last&nbsp;location&nbsp;from&nbsp;surrounding&nbsp;loops.</tt></dd></dl>
  <dl><dt><a name="-addValueSegmentToPixelTable"><strong>addValueSegmentToPixelTable</strong></a>(beginComplex, endComplex, pixelDictionary, value, width)</dt><dd><tt>Add&nbsp;line&nbsp;segment&nbsp;to&nbsp;the&nbsp;pixel&nbsp;table.</tt></dd></dl>
  <dl><dt><a name="-addValueToOutput"><strong>addValueToOutput</strong></a>(depth, keyInput, output, value)</dt><dd><tt>Add&nbsp;value&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
  <dl><dt><a name="-addXIntersectionIndexesFromLoop"><strong>addXIntersectionIndexesFromLoop</strong></a>(frontOverWidth, loop, solidIndex, xIntersectionIndexLists, width, yList)</dt><dd><tt>Add&nbsp;the&nbsp;x&nbsp;intersection&nbsp;indexes&nbsp;for&nbsp;a&nbsp;loop.</tt></dd></dl>
@@ -382,7 +382,7 @@ Methods inherited from <a href="fabmetheus_utilities.euclidean.html#NestedRing">
  <dl><dt><a name="-getLoopConvexCentroid"><strong>getLoopConvexCentroid</strong></a>(polygonComplex)</dt><dd><tt>Get&nbsp;centroid&nbsp;of&nbsp;the&nbsp;convex&nbsp;hull&nbsp;of&nbsp;a&nbsp;complex&nbsp;polygon.</tt></dd></dl>
  <dl><dt><a name="-getLoopInsideContainingLoop"><strong>getLoopInsideContainingLoop</strong></a>(containingLoop, loops)</dt><dd><tt>Get&nbsp;a&nbsp;loop&nbsp;that&nbsp;is&nbsp;inside&nbsp;the&nbsp;containing&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-getLoopLength"><strong>getLoopLength</strong></a>(polygon)</dt><dd><tt>Get&nbsp;the&nbsp;length&nbsp;of&nbsp;a&nbsp;polygon&nbsp;perimeter.</tt></dd></dl>
- <dl><dt><a name="-getLoopStartingNearest"><strong>getLoopStartingNearest</strong></a>(extrusionSpacingHalfWidth, location, loop)</dt><dd><tt>Add&nbsp;to&nbsp;threads&nbsp;from&nbsp;the&nbsp;last&nbsp;location&nbsp;from&nbsp;loop.</tt></dd></dl>
+ <dl><dt><a name="-getLoopStartingNearest"><strong>getLoopStartingNearest</strong></a>(extrusionHalfWidth, location, loop)</dt><dd><tt>Add&nbsp;to&nbsp;threads&nbsp;from&nbsp;the&nbsp;last&nbsp;location&nbsp;from&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-getLoopWithoutCloseEnds"><strong>getLoopWithoutCloseEnds</strong></a>(close, loop)</dt><dd><tt>Get&nbsp;loop&nbsp;without&nbsp;close&nbsp;ends.</tt></dd></dl>
  <dl><dt><a name="-getLoopWithoutCloseSequentialPoints"><strong>getLoopWithoutCloseSequentialPoints</strong></a>(close, loop)</dt><dd><tt>Get&nbsp;loop&nbsp;without&nbsp;close&nbsp;sequential&nbsp;points.</tt></dd></dl>
  <dl><dt><a name="-getMaximum"><strong>getMaximum</strong></a>(firstComplex, secondComplex)</dt><dd><tt>Get&nbsp;a&nbsp;complex&nbsp;with&nbsp;each&nbsp;component&nbsp;the&nbsp;maximum&nbsp;of&nbsp;the&nbsp;respective&nbsp;components&nbsp;of&nbsp;a&nbsp;pair&nbsp;of&nbsp;complexes.</tt></dd></dl>
@@ -439,7 +439,7 @@ Methods inherited from <a href="fabmetheus_utilities.euclidean.html#NestedRing">
  <dl><dt><a name="-getThreeSignificantFigures"><strong>getThreeSignificantFigures</strong></a>(number)</dt><dd><tt>Get&nbsp;number&nbsp;rounded&nbsp;to&nbsp;three&nbsp;significant&nbsp;figures&nbsp;as&nbsp;a&nbsp;string.</tt></dd></dl>
  <dl><dt><a name="-getTopPath"><strong>getTopPath</strong></a>(path)</dt><dd><tt>Get&nbsp;the&nbsp;top&nbsp;of&nbsp;the&nbsp;path.</tt></dd></dl>
  <dl><dt><a name="-getTopPaths"><strong>getTopPaths</strong></a>(paths)</dt><dd><tt>Get&nbsp;the&nbsp;top&nbsp;of&nbsp;the&nbsp;paths.</tt></dd></dl>
- <dl><dt><a name="-getTransferClosestSurroundingLoop"><strong>getTransferClosestSurroundingLoop</strong></a>(extrusionSpacingHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Get&nbsp;and&nbsp;transfer&nbsp;the&nbsp;closest&nbsp;remaining&nbsp;surrounding&nbsp;loop.</tt></dd></dl>
+ <dl><dt><a name="-getTransferClosestSurroundingLoop"><strong>getTransferClosestSurroundingLoop</strong></a>(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Get&nbsp;and&nbsp;transfer&nbsp;the&nbsp;closest&nbsp;remaining&nbsp;surrounding&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-getTransferredPaths"><strong>getTransferredPaths</strong></a>(insides, loop)</dt><dd><tt>Get&nbsp;transferred&nbsp;paths&nbsp;from&nbsp;inside&nbsp;paths.</tt></dd></dl>
  <dl><dt><a name="-getTransferredSurroundingLoops"><strong>getTransferredSurroundingLoops</strong></a>(insides, loop)</dt><dd><tt>Get&nbsp;transferred&nbsp;paths&nbsp;from&nbsp;inside&nbsp;surrounding&nbsp;loops.</tt></dd></dl>
  <dl><dt><a name="-getTranslatedComplexPath"><strong>getTranslatedComplexPath</strong></a>(path, translateComplex)</dt><dd><tt>Get&nbsp;the&nbsp;translated&nbsp;complex&nbsp;path.</tt></dd></dl>
@@ -485,7 +485,7 @@ Methods inherited from <a href="fabmetheus_utilities.euclidean.html#NestedRing">
  <dl><dt><a name="-subtractXIntersectionsTable"><strong>subtractXIntersectionsTable</strong></a>(subtractFromTable, subtractTable)</dt><dd><tt>Subtract&nbsp;the&nbsp;subtractTable&nbsp;from&nbsp;the&nbsp;subtractFromTable.</tt></dd></dl>
  <dl><dt><a name="-swapList"><strong>swapList</strong></a>(elements, indexBegin, indexEnd)</dt><dd><tt>Swap&nbsp;the&nbsp;list&nbsp;elements.</tt></dd></dl>
  <dl><dt><a name="-toggleHashtable"><strong>toggleHashtable</strong></a>(hashtable, key, value)</dt><dd><tt>Toggle&nbsp;a&nbsp;hashtable&nbsp;between&nbsp;having&nbsp;and&nbsp;not&nbsp;having&nbsp;a&nbsp;key.</tt></dd></dl>
- <dl><dt><a name="-transferClosestFillLoop"><strong>transferClosestFillLoop</strong></a>(extrusionSpacingHalfWidth, oldOrderedLocation, remainingFillLoops, skein)</dt><dd><tt>Transfer&nbsp;the&nbsp;closest&nbsp;remaining&nbsp;fill&nbsp;loop.</tt></dd></dl>
+ <dl><dt><a name="-transferClosestFillLoop"><strong>transferClosestFillLoop</strong></a>(extrusionHalfWidth, oldOrderedLocation, remainingFillLoops, skein)</dt><dd><tt>Transfer&nbsp;the&nbsp;closest&nbsp;remaining&nbsp;fill&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-transferClosestPath"><strong>transferClosestPath</strong></a>(oldOrderedLocation, remainingPaths, skein)</dt><dd><tt>Transfer&nbsp;the&nbsp;closest&nbsp;remaining&nbsp;path.</tt></dd></dl>
  <dl><dt><a name="-transferClosestPaths"><strong>transferClosestPaths</strong></a>(oldOrderedLocation, remainingPaths, skein)</dt><dd><tt>Transfer&nbsp;the&nbsp;closest&nbsp;remaining&nbsp;paths.</tt></dd></dl>
  <dl><dt><a name="-transferPathsToSurroundingLoops"><strong>transferPathsToSurroundingLoops</strong></a>(nestedRings, paths)</dt><dd><tt>Transfer&nbsp;paths&nbsp;to&nbsp;surrounding&nbsp;loops.</tt></dd></dl>

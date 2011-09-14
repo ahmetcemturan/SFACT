@@ -32,21 +32,21 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getCarving(fileName=''):
-	"""Get the triangle mesh for the slc file."""
+	"Get the triangle mesh for the slc file."
 	carving = SLCCarving()
 	carving.readFile(fileName)
 	return carving
 
 def getLittleEndianFloatGivenFile( file ):
-	"""Get little endian float given a file."""
+	"Get little endian float given a file."
 	return unpack('<f', file.read(4) )[0]
 
 def getLittleEndianUnsignedLongGivenFile( file ):
-	"""Get little endian float given a file."""
+	"Get little endian float given a file."
 	return unpack('<L', file.read(4) )[0]
 
 def getPointsFromFile( numPoints, file ):
-	"""Process the vertice points for a given boundary."""
+	"Process the vertice points for a given boundary."
 	points = []
 	for pointIndex in xrange( numPoints ):
 		x = getLittleEndianFloatGivenFile( file )
@@ -55,76 +55,76 @@ def getPointsFromFile( numPoints, file ):
 	return points
 
 def readHeader( file ):
-	"""Read the slc header."""
+	"Read the slc header."
 	while ord( file.read( 1 ) ) != 0x1A:
 		pass
 
 
 class SampleTableEntry:
-	"""Sample table entry."""
+	"Sample table entry."
 	def __init__( self, file ):
-		"""Read in the sampling table section. It contains a table length (byte) and the table entries."""
+		"Read in the sampling table section. It contains a table length (byte) and the table entries."
 		self.min_z_level = getLittleEndianFloatGivenFile( file )
 		self.layer_thickness = getLittleEndianFloatGivenFile( file )
 		self.beam_comp = getLittleEndianFloatGivenFile( file )
 		getLittleEndianFloatGivenFile( file )
 
 	def __repr__(self):
-		"""Get the string representation of this sample table entry."""
+		"Get the string representation of this sample table entry."
 		return '%s, %s, %s' % ( self.min_z_level, self.layer_thickness, self.beam_comp )
 
 
 class SLCCarving:
-	"""An slc carving."""
+	"An slc carving."
 	def __init__(self):
-		"""Add empty lists."""
+		"Add empty lists."
 		self.maximumZ = - 987654321.0
 		self.minimumZ = 987654321.0
-		self.extrusionHeight = None
+		self.layerThickness = None
 		self.rotatedLoopLayers = []
 	
 	def __repr__(self):
-		"""Get the string representation of this carving."""
+		"Get the string representation of this carving."
 		return self.getCarvedSVG()
 
 	def addXML(self, depth, output):
-		"""Add xml for this object."""
+		"Add xml for this object."
 		xml_simple_writer.addXMLFromObjects(depth, self.rotatedLoopLayers, output)
 
 	def getCarveCornerMaximum(self):
-		"""Get the corner maximum of the vertexes."""
+		"Get the corner maximum of the vertexes."
 		return self.cornerMaximum
 
 	def getCarveCornerMinimum(self):
-		"""Get the corner minimum of the vertexes."""
+		"Get the corner minimum of the vertexes."
 		return self.cornerMinimum
 
 	def getCarvedSVG(self):
-		"""Get the carved svg text."""
+		"Get the carved svg text."
 		if len(self.rotatedLoopLayers) < 1:
 			return ''
-		decimalPlaces = max(0, 2 - int(math.floor(math.log10(self.extrusionHeight))))
-		self.svgWriter = svg_writer.SVGWriter(True, self.cornerMaximum, self.cornerMinimum, decimalPlaces, self.extrusionHeight)
+		decimalPlaces = max(0, 2 - int(math.floor(math.log10(self.layerThickness))))
+		self.svgWriter = svg_writer.SVGWriter(True, self.cornerMaximum, self.cornerMinimum, decimalPlaces, self.layerThickness)
 		return self.svgWriter.getReplacedSVGTemplate(self.fileName, 'basic', self.rotatedLoopLayers)
 
 	def getCarveLayerThickness(self):
-		"""Get the layer thickness."""
-		return self.extrusionHeight
+		"Get the layer thickness."
+		return self.layerThickness
 
 	def getCarveRotatedBoundaryLayers(self):
-		"""Get the rotated boundary layers."""
+		"Get the rotated boundary layers."
 		return self.rotatedLoopLayers
 
 	def getFabmetheusXML(self):
-		"""Return the fabmetheus XML."""
+		"Return the fabmetheus XML."
 		return None
 
 	def getInterpretationSuffix(self):
-		"""Return the suffix for a carving."""
+		"Return the suffix for a carving."
 		return 'svg'
 
 	def processContourLayers( self, file ):
-		"""Process a contour layer at a time until the top of the part."""
+		"Process a contour layer at a time until the top of the part."
 		while True:
 			minLayer = getLittleEndianFloatGivenFile( file )
 			numContours = getLittleEndianUnsignedLongGivenFile( file )
@@ -139,7 +139,7 @@ class SLCCarving:
 					rotatedLoopLayer.loops.append( getPointsFromFile( numPoints, file ) )
 
 	def readFile( self, fileName ):
-		"""Read SLC and store the layers."""
+		"Read SLC and store the layers."
 		self.fileName = fileName
 		pslcfile = open( fileName, 'rb')
 		readHeader( pslcfile )
@@ -155,39 +155,39 @@ class SLCCarving:
 					pointVector3 = Vector3(point.real, point.imag, rotatedLoopLayer.z)
 					self.cornerMaximum.maximize(pointVector3)
 					self.cornerMinimum.minimize(pointVector3)
-		halfLayerThickness = 0.5 * self.extrusionHeight
+		halfLayerThickness = 0.5 * self.layerThickness
 		self.cornerMaximum.z += halfLayerThickness
 		self.cornerMinimum.z -= halfLayerThickness
 
 	def readTableEntry( self, file ):
-		"""Read in the sampling table section. It contains a table length (byte) and the table entries."""
+		"Read in the sampling table section. It contains a table length (byte) and the table entries."
 		tableEntrySize = ord( file.read( 1 ) )
 		if tableEntrySize == 0:
 			print( "Sampling table size is zero!" )
 			exit()
 		for index in xrange( tableEntrySize ):
 			sampleTableEntry = SampleTableEntry( file )
-			self.extrusionHeight = sampleTableEntry.layer_thickness
+			self.layerThickness = sampleTableEntry.layer_thickness
 
 	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
-		"""Set the infill in direction of bridge."""
+		'Set the infill in direction of bridge.'
 		pass
 
-	def setCarveLayerThickness( self, extrusionHeight ):
-		"""Set the layer thickness."""
+	def setCarveLayerThickness( self, layerThickness ):
+		"Set the layer thickness."
 		pass
 
 	def setCarveImportRadius( self, importRadius ):
-		"""Set the import radius."""
+		"Set the import radius."
 		pass
 
 	def setCarveIsCorrectMesh( self, isCorrectMesh ):
-		"""Set the is correct mesh flag."""
+		"Set the is correct mesh flag."
 		pass
 
 
 def main():
-	"""Display the inset dialog."""
+	"Display the inset dialog."
 	if len(sys.argv) > 1:
 		getCarving(' '.join(sys.argv[1 :]))
 

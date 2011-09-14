@@ -92,25 +92,25 @@ Methods inherited from <a href="fabmetheus_utilities.xml_simple_reader.html#XMLE
 
 <dl><dt><a name="CSVElement-addXML"><strong>addXML</strong></a>(self, depth, output)</dt><dd><tt>Add&nbsp;xml&nbsp;for&nbsp;this&nbsp;xmlElement.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-copyXMLChildren"><strong>copyXMLChildren</strong></a>(self, idSuffix, parent)</dt><dd><tt>Copy&nbsp;the&nbsp;xml&nbsp;children.</tt></dd></dl>
+<dl><dt><a name="CSVElement-copyXMLChildNodes"><strong>copyXMLChildNodes</strong></a>(self, idSuffix, parentNode)</dt><dd><tt>Copy&nbsp;the&nbsp;xml&nbsp;childNodes.</tt></dd></dl>
 
 <dl><dt><a name="CSVElement-getCascadeFloat"><strong>getCascadeFloat</strong></a>(self, defaultFloat, key)</dt><dd><tt>Get&nbsp;the&nbsp;cascade&nbsp;float.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-getChildrenWithClassName"><strong>getChildrenWithClassName</strong></a>(self, className)</dt><dd><tt>Get&nbsp;the&nbsp;children&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;class&nbsp;name.</tt></dd></dl>
+<dl><dt><a name="CSVElement-getChildNodesByLocalName"><strong>getChildNodesByLocalName</strong></a>(self, localName)</dt><dd><tt>Get&nbsp;the&nbsp;childNodes&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;class&nbsp;name.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-getChildrenWithClassNameRecursively"><strong>getChildrenWithClassNameRecursively</strong></a>(self, className)</dt><dd><tt>Get&nbsp;the&nbsp;children&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;class&nbsp;name&nbsp;recursively.</tt></dd></dl>
+<dl><dt><a name="CSVElement-getChildNodesByLocalNameRecursively"><strong>getChildNodesByLocalNameRecursively</strong></a>(self, localName)</dt><dd><tt>Get&nbsp;the&nbsp;childNodes&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;class&nbsp;name&nbsp;recursively.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-getCopy"><strong>getCopy</strong></a>(self, idSuffix, parent)</dt><dd><tt>Copy&nbsp;the&nbsp;xml&nbsp;element,&nbsp;set&nbsp;its&nbsp;dictionary&nbsp;and&nbsp;add&nbsp;it&nbsp;to&nbsp;the&nbsp;parent.</tt></dd></dl>
+<dl><dt><a name="CSVElement-getCopy"><strong>getCopy</strong></a>(self, idSuffix, parentNode)</dt><dd><tt>Copy&nbsp;the&nbsp;xml&nbsp;element,&nbsp;set&nbsp;its&nbsp;dictionary&nbsp;and&nbsp;add&nbsp;it&nbsp;to&nbsp;the&nbsp;parentNode.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-getCopyShallow"><strong>getCopyShallow</strong></a>(self, attributeDictionary<font color="#909090">=None</font>)</dt><dd><tt>Copy&nbsp;the&nbsp;xml&nbsp;element&nbsp;and&nbsp;set&nbsp;its&nbsp;dictionary&nbsp;and&nbsp;parent.</tt></dd></dl>
+<dl><dt><a name="CSVElement-getCopyShallow"><strong>getCopyShallow</strong></a>(self, attributeDictionary<font color="#909090">=None</font>)</dt><dd><tt>Copy&nbsp;the&nbsp;xml&nbsp;element&nbsp;and&nbsp;set&nbsp;its&nbsp;dictionary&nbsp;and&nbsp;parentNode.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-getFirstChildWithClassName"><strong>getFirstChildWithClassName</strong></a>(self, className)</dt><dd><tt>Get&nbsp;the&nbsp;first&nbsp;child&nbsp;which&nbsp;has&nbsp;the&nbsp;given&nbsp;class&nbsp;name.</tt></dd></dl>
+<dl><dt><a name="CSVElement-getFirstChildByLocalName"><strong>getFirstChildByLocalName</strong></a>(self, localName)</dt><dd><tt>Get&nbsp;the&nbsp;first&nbsp;childNode&nbsp;which&nbsp;has&nbsp;the&nbsp;given&nbsp;class&nbsp;name.</tt></dd></dl>
 
 <dl><dt><a name="CSVElement-getIDSuffix"><strong>getIDSuffix</strong></a>(self, elementIndex<font color="#909090">=None</font>)</dt><dd><tt>Get&nbsp;the&nbsp;id&nbsp;suffix&nbsp;from&nbsp;the&nbsp;dictionary.</tt></dd></dl>
 
 <dl><dt><a name="CSVElement-getImportNameWithDot"><strong>getImportNameWithDot</strong></a>(self)</dt><dd><tt>Get&nbsp;import&nbsp;name&nbsp;with&nbsp;dot.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-getParentParseReplacedLine"><strong>getParentParseReplacedLine</strong></a>(self, line, lineStripped, parent)</dt><dd><tt>Parse&nbsp;replaced&nbsp;line&nbsp;and&nbsp;return&nbsp;the&nbsp;parent.</tt></dd></dl>
+<dl><dt><a name="CSVElement-getParentParseReplacedLine"><strong>getParentParseReplacedLine</strong></a>(self, line, lineStripped, parentNode)</dt><dd><tt>Parse&nbsp;replaced&nbsp;line&nbsp;and&nbsp;return&nbsp;the&nbsp;parentNode.</tt></dd></dl>
 
 <dl><dt><a name="CSVElement-getParser"><strong>getParser</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;parser.</tt></dd></dl>
 
@@ -122,7 +122,7 @@ Methods inherited from <a href="fabmetheus_utilities.xml_simple_reader.html#XMLE
 
 <dl><dt><a name="CSVElement-getRoot"><strong>getRoot</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;root&nbsp;element.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-getSubChildWithID"><strong>getSubChildWithID</strong></a>(self, idReference)</dt><dd><tt>Get&nbsp;the&nbsp;child&nbsp;which&nbsp;has&nbsp;the&nbsp;idReference.</tt></dd></dl>
+<dl><dt><a name="CSVElement-getSubChildWithID"><strong>getSubChildWithID</strong></a>(self, idReference)</dt><dd><tt>Get&nbsp;the&nbsp;childNode&nbsp;which&nbsp;has&nbsp;the&nbsp;idReference.</tt></dd></dl>
 
 <dl><dt><a name="CSVElement-getTagKeys"><strong>getTagKeys</strong></a>(self)</dt><dd><tt>Get&nbsp;stripped&nbsp;tag&nbsp;keys.</tt></dd></dl>
 
@@ -148,11 +148,11 @@ Methods inherited from <a href="fabmetheus_utilities.xml_simple_reader.html#XMLE
 
 <dl><dt><a name="CSVElement-printAllVariablesRoot"><strong>printAllVariablesRoot</strong></a>(self)</dt><dd><tt>Print&nbsp;all&nbsp;variables&nbsp;and&nbsp;the&nbsp;root&nbsp;variables.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-removeChildrenFromIDNameParent"><strong>removeChildrenFromIDNameParent</strong></a>(self)</dt><dd><tt>Remove&nbsp;the&nbsp;children&nbsp;from&nbsp;the&nbsp;id&nbsp;and&nbsp;name&nbsp;dictionaries&nbsp;and&nbsp;the&nbsp;children&nbsp;list.</tt></dd></dl>
+<dl><dt><a name="CSVElement-removeChildNodesFromIDNameParent"><strong>removeChildNodesFromIDNameParent</strong></a>(self)</dt><dd><tt>Remove&nbsp;the&nbsp;childNodes&nbsp;from&nbsp;the&nbsp;id&nbsp;and&nbsp;name&nbsp;dictionaries&nbsp;and&nbsp;the&nbsp;childNodes.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-removeFromIDNameParent"><strong>removeFromIDNameParent</strong></a>(self)</dt><dd><tt>Remove&nbsp;this&nbsp;from&nbsp;the&nbsp;id&nbsp;and&nbsp;name&nbsp;dictionaries&nbsp;and&nbsp;the&nbsp;children&nbsp;of&nbsp;the&nbsp;parent.</tt></dd></dl>
+<dl><dt><a name="CSVElement-removeFromIDNameParent"><strong>removeFromIDNameParent</strong></a>(self)</dt><dd><tt>Remove&nbsp;this&nbsp;from&nbsp;the&nbsp;id&nbsp;and&nbsp;name&nbsp;dictionaries&nbsp;and&nbsp;the&nbsp;childNodes&nbsp;of&nbsp;the&nbsp;parentNode.</tt></dd></dl>
 
-<dl><dt><a name="CSVElement-setParentAddToChildren"><strong>setParentAddToChildren</strong></a>(self, parent)</dt><dd><tt>Set&nbsp;the&nbsp;parent&nbsp;and&nbsp;add&nbsp;this&nbsp;to&nbsp;its&nbsp;children.</tt></dd></dl>
+<dl><dt><a name="CSVElement-setParentAddToChildNodes"><strong>setParentAddToChildNodes</strong></a>(self, parentNode)</dt><dd><tt>Set&nbsp;the&nbsp;parentNode&nbsp;and&nbsp;add&nbsp;this&nbsp;to&nbsp;its&nbsp;childNodes.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

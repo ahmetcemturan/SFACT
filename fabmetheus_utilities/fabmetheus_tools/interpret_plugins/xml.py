@@ -104,23 +104,23 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getCarving(fileName=''):
-	"""Get the carving for the xml file."""
+	"Get the carving for the xml file."
 	xmlText = archive.getFileText(fileName)
 	if xmlText == '':
 		return None
 	xmlParser = XMLSimpleReader( fileName, None, xmlText )
-	lowerClassName = xmlParser.getRoot().className.lower()
-	pluginModule = archive.getModuleWithDirectoryPath( getPluginsDirectoryPath(), lowerClassName )
-	if pluginModule is None:
+	lowerLocalName = xmlParser.getRoot().localName.lower()
+	pluginModule = archive.getModuleWithDirectoryPath( getPluginsDirectoryPath(), lowerLocalName )
+	if pluginModule == None:
 		return None
 	return pluginModule.getCarvingFromParser( xmlParser )
 
 def getPluginsDirectoryPath():
-	"""Get the plugins directory path."""
+	"Get the plugins directory path."
 	return archive.getAbsoluteFrozenFolderPath( __file__, 'xml_plugins')
 
 def main():
-	"""Display the inset dialog."""
+	"Display the inset dialog."
 	if len(sys.argv) > 1:
 		getCarving(' '.join(sys.argv[1 :]))
 

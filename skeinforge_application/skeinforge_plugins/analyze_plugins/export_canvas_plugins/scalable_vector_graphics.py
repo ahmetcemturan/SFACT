@@ -24,17 +24,17 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed asSFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return ScalableVectorGraphicsRepository()
 
 def parseLineReplace( firstWordTable, line, output ):
-	"""Parse the line and replace it if the first word of the line is in the first word table."""
+	"Parse the line and replace it if the first word of the line is in the first word table."
 	firstWord = gcodec.getFirstWordFromLine(line)
 	if firstWord in firstWordTable:
 		line = firstWordTable[ firstWord ]
@@ -42,16 +42,16 @@ def parseLineReplace( firstWordTable, line, output ):
 
 
 class ScalableVectorGraphicsRepository:
-	"""A class to handle the export settings."""
+	"A class to handle the export settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository(
 			'skeinforge_application.skeinforge_plugins.analyze_plugins.export_canvas_plugins.scalable_vector_graphics.html', self)
 		self.fileExtension = settings.StringSetting().getFromValue('File Extension:', self, '')
 		self.svgViewer = settings.StringSetting().getFromValue('SVG Viewer:', self, 'webbrowser')
 
 	def addCanvasLineToOutput( self, canvasLinesOutput, objectIDNumber ):
-		"""Add the canvas line to the output."""
+		"Add the canvas line to the output."
 		coordinates = self.canvas.coords( objectIDNumber )
 		xBegin = coordinates[0] - self.boxW
 		xEnd = coordinates[2] - self.boxW
@@ -64,7 +64,7 @@ class ScalableVectorGraphicsRepository:
 		canvasLinesOutput.write(line + '\n')
 
 	def execute(self):
-		"""Export the canvas as an svg file."""
+		"Export the canvas as an svg file."
 		svgFileName = archive.getFilePathWithUnderscoredBasename( self.fileName, self.suffix )
 		boundingBox = self.canvas.bbox( settings.Tkinter.ALL ) # tuple (w, n, e, s)
 		self.boxW = boundingBox[0]
@@ -113,7 +113,7 @@ class ScalableVectorGraphicsRepository:
 			print('http://www.imagemagick.org/script/index.php')
 
 	def getCanvasLinesOutput(self):
-		"""Add the canvas line to the output."""
+		"Add the canvas line to the output."
 		canvasLinesOutput = cStringIO.StringIO()
 		objectIDNumbers = self.canvas.find_all()
 		for objectIDNumber in objectIDNumbers:
@@ -122,7 +122,7 @@ class ScalableVectorGraphicsRepository:
 		return canvasLinesOutput.getvalue()
 
 	def setCanvasFileNameSuffix( self, canvas, fileName, suffix ):
-		"""Set the canvas and initialize the execute title."""
+		"Set the canvas and initialize the execute title."
 		self.canvas = canvas
 		self.executeTitle = 'Convert to Scalable Vector Graphics'
 		self.fileName = fileName
@@ -130,8 +130,8 @@ class ScalableVectorGraphicsRepository:
 
 
 def main():
-	"""Display the file or directory dialog."""
-	settings.startMainLoopFromConstructor( getNewRepository() )
+	"Display the file or directory dialog."
+	settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

@@ -21,6 +21,9 @@ The export manual page is at:<br>
 <br />
 <a href="#Operation">Operation</a><br />
 <a href="#Settings">Settings</a><br />
+&nbsp;&nbsp;<a href="#Add Descriptive Extension">Add Descriptive Extension</a><br />
+&nbsp;&nbsp;<a href="#Add Profile Extension">Add Profile Extension</a><br />
+&nbsp;&nbsp;<a href="#Add Timestamp Extension">Add Timestamp Extension</a><br />
 &nbsp;&nbsp;<a href="#Also Send Output To">Also Send Output To</a><br />
 &nbsp;&nbsp;<a href="#Comment Choice">Comment Choice</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Do Not Delete Comments">Do Not Delete Comments</a><br />
@@ -40,11 +43,47 @@ The default 'Activate Export' checkbox is on.  When it is on, the functions desc
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
 
+<a name="Add Descriptive Extension" id="Add Descriptive Extension"></a><h3>Add Descriptive Extension</h3>
+
+Default is off.<br>
+ <br>
+When selected, key profile values will be added as an extension to the gcode file.  For example:<br>
+test.04hx06w_03fill_2cx2r_33EL.gcode<br>
+ <br>
+would mean:<br>
+ <br>
+* . (Carve section.)<br>
+* 04h = 'Layer Thickness (mm):' 0.4<br>
+* x<br>
+* 06w = 0.6 width i.e. 0.4 times 'Perimeter Width over Thickness (ratio):' 1.5<br>
+* _ (Fill section.)<br>
+* 03fill = 'Infill Solidity (ratio):' 0.3<br>
+* _ (Multiply section; if there is one column and one row then this section is not shown.)<br>
+* 2c = 'Number of Columns (integer):' 2<br>
+* x<br>
+* 2r = 'Number of Rows (integer):' 2.<br>
+* _ (Speed section.)<br>
+* 33EL = 'Feed Rate (mm/s):' 33.0 and 'Flow Rate Setting (float):' 33.0.  If either value has a positive value after the decimal place then this is also shown, but if it is zero it is hidden.  Also, if the values differ (which they shouldn't with 5D volumetrics) then each should be displayed separately.  For example, 35.2E30L = 'Feed Rate (mm/s):' 35.2 and 'Flow Rate Setting (float):' 30.0.<br>
+ <br>
+<a name="Add Profile Extension" id="Add Profile Extension"></a><h3>Add Profile Extension</h3>
+
+Default is off.<br>
+ <br>
+When selected, the current profile will be added to the file extension.  For example:<br>
+test.my_profile_name.gcode<br>
+ <br>
+<a name="Add Timestamp Extension" id="Add Timestamp Extension"></a><h3>Add Timestamp Extension</h3>
+
+Default is off.<br>
+ <br>
+When selected, the current date and time is added as an extension in format YYYYmmdd_HHMMSS (so it is sortable if one has many files).  For example:<br>
+test.my_profile_name.20110613_220113.gcode<br>
+ <br>
 <a name="Also Send Output To" id="Also Send Output To"></a><h3>Also Send Output To</h3>
 
 Default is empty.<br>
  <br>
-Defines the output name for sending to a file or pipe.  A common choice is sys.stdout to print the output in the shell screen.  Another common choice is sys.stderr.  With the empty default, nothing will be done.  If the value is anything else, the output will be written to that file name.<br>
+Defines the output name for sending to a file or pipe.  A common choice is stdout to print the output in the shell screen.  Another common choice is stderr.  With the empty default, nothing will be done.  If the value is anything else, the output will be written to that file name.<br>
  <br>
 <a name="Comment Choice" id="Comment Choice"></a><h3>Comment Choice</h3>
 
@@ -182,12 +221,19 @@ The export tool has created the file:<br>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-getCraftedTextFromText"><strong>getCraftedTextFromText</strong></a>(gcodeText, repository<font color="#909090">=None</font>)</dt><dd><tt>Export&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;text.</tt></dd></dl>
+ <dl><dt><a name="-getDescriptionCarve"><strong>getDescriptionCarve</strong></a>(lines)</dt><dd><tt>Get&nbsp;the&nbsp;description&nbsp;for&nbsp;carve.</tt></dd></dl>
+ <dl><dt><a name="-getDescriptionFill"><strong>getDescriptionFill</strong></a>(lines)</dt><dd><tt>Get&nbsp;the&nbsp;description&nbsp;for&nbsp;fill.</tt></dd></dl>
+ <dl><dt><a name="-getDescriptionMultiply"><strong>getDescriptionMultiply</strong></a>(lines)</dt><dd><tt>Get&nbsp;the&nbsp;description&nbsp;for&nbsp;multiply.</tt></dd></dl>
+ <dl><dt><a name="-getDescriptionSpeed"><strong>getDescriptionSpeed</strong></a>(lines)</dt><dd><tt>Get&nbsp;the&nbsp;description&nbsp;for&nbsp;speed.</tt></dd></dl>
+ <dl><dt><a name="-getDescriptiveExtension"><strong>getDescriptiveExtension</strong></a>(gcodeText)</dt><dd><tt>Get&nbsp;the&nbsp;descriptive&nbsp;extension.</tt></dd></dl>
  <dl><dt><a name="-getDistanceGcode"><strong>getDistanceGcode</strong></a>(exportText)</dt><dd><tt>Get&nbsp;gcode&nbsp;lines&nbsp;with&nbsp;distance&nbsp;variable&nbsp;added.</tt></dd></dl>
+ <dl><dt><a name="-getFirstValue"><strong>getFirstValue</strong></a>(gcodeText, word)</dt><dd><tt>Get&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;first&nbsp;line&nbsp;which&nbsp;starts&nbsp;with&nbsp;the&nbsp;given&nbsp;word.</tt></dd></dl>
  <dl><dt><a name="-getNewRepository"><strong>getNewRepository</strong></a>()</dt><dd><tt>Get&nbsp;new&nbsp;repository.</tt></dd></dl>
  <dl><dt><a name="-getReplaceableExportGcode"><strong>getReplaceableExportGcode</strong></a>(nameOfReplaceFile, replaceableExportGcode)</dt><dd><tt>Get&nbsp;text&nbsp;with&nbsp;strings&nbsp;replaced&nbsp;according&nbsp;to&nbsp;replace.csv&nbsp;file.</tt></dd></dl>
  <dl><dt><a name="-getSelectedPluginModule"><strong>getSelectedPluginModule</strong></a>(plugins)</dt><dd><tt>Get&nbsp;the&nbsp;selected&nbsp;plugin&nbsp;module.</tt></dd></dl>
+ <dl><dt><a name="-getSettingString"><strong>getSettingString</strong></a>(lines, procedureName, settingNameStart)</dt><dd><tt>Get&nbsp;the&nbsp;setting&nbsp;value&nbsp;from&nbsp;the&nbsp;lines,&nbsp;return&nbsp;None&nbsp;if&nbsp;there&nbsp;is&nbsp;no&nbsp;setting&nbsp;starting&nbsp;with&nbsp;that&nbsp;name.</tt></dd></dl>
  <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Display&nbsp;the&nbsp;export&nbsp;dialog.</tt></dd></dl>
- <dl><dt><a name="-sendOutputTo"><strong>sendOutputTo</strong></a>(text, toValue)</dt><dd><tt>Send&nbsp;output&nbsp;to&nbsp;a&nbsp;file&nbsp;or&nbsp;a&nbsp;standard&nbsp;output.</tt></dd></dl>
+ <dl><dt><a name="-sendOutputTo"><strong>sendOutputTo</strong></a>(outputTo, text)</dt><dd><tt>Send&nbsp;output&nbsp;to&nbsp;a&nbsp;file&nbsp;or&nbsp;a&nbsp;standard&nbsp;output.</tt></dd></dl>
  <dl><dt><a name="-writeOutput"><strong>writeOutput</strong></a>(fileName, shouldAnalyze<font color="#909090">=True</font>)</dt><dd><tt>Export&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;file.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -197,6 +243,7 @@ The export tool has created the file:<br>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><strong>__author__</strong> = 'Enrique Perez (perez_enrique@yahoo.com)'<br>
+<strong>__credits__</strong> = 'Gary Hodgson &lt;http://garyhodgson.com/reprap/2011/06/hacking-skeinforge-export-module/&gt;'<br>
 <strong>__date__</strong> = '$Date: 2008/21/04 $'<br>
 <strong>__license__</strong> = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'<br>
 <strong>absolute_import</strong> = _Feature((2, 5, 0, 'alpha', 1), (2, 7, 0, 'alpha', 0), 16384)</td></tr></table><p>
@@ -206,5 +253,12 @@ The export tool has created the file:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
     
 <tr><td bgcolor="#7799ee"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%">Enrique&nbsp;Perez&nbsp;(perez_enrique@yahoo.com)</td></tr></table>
+<td width="100%">Enrique&nbsp;Perez&nbsp;(perez_enrique@yahoo.com)</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#7799ee">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Credits</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#7799ee"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Gary&nbsp;Hodgson&nbsp;&lt;<a href="http://garyhodgson.com/reprap/2011/06/hacking-skeinforge-export-module/">http://garyhodgson.com/reprap/2011/06/hacking-skeinforge-export-module/</a>&gt;</td></tr></table>
 </body></html>

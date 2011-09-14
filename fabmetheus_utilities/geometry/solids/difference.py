@@ -20,20 +20,20 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def convertXMLElement(geometryOutput, xmlElement):
-	"""Convert the xml element to a difference xml element."""
+	"Convert the xml element to a difference xml element."
 	group.convertContainerXMLElement(geometryOutput, xmlElement, Difference())
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	evaluate.processArchivable(Difference, xmlElement)
 
 
 class Difference( boolean_solid.BooleanSolid ):
-	"""A difference object."""
+	"A difference object."
 	def getLoopsFromObjectLoopsList(self, importRadius, visibleObjectLoopsList):
-		"""Get loops from visible object loops list."""
+		"Get loops from visible object loops list."
 		return self.getDifference(importRadius, visibleObjectLoopsList)
 
-	def getXMLClassName(self):
-		"""Get xml class name."""
+	def getXMLLocalName(self):
+		"Get xml class name."
 		return self.__class__.__name__.lower()

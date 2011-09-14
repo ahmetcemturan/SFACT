@@ -25,10 +25,10 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getLinkedXMLElement(idSuffix, parent, target):
-	"""Get xmlElement with identifiers, importName and parent."""
+def getLinkedXMLElement(idSuffix, parentNode, target):
+	'Get xmlElement with identifiers, importName and parentNode.'
 	linkedXMLElement = xml_simple_reader.XMLElement()
-	linkedXMLElement.importName = parent.importName
+	linkedXMLElement.importName = parentNode.importName
 	euclidean.overwriteDictionary(target.attributeDictionary, ['id', 'name', 'quantity'], linkedXMLElement.attributeDictionary)
 	linkedXMLElement.addSuffixToID(idSuffix)
 	tagKeys = target.getTagKeys()
@@ -36,29 +36,29 @@ def getLinkedXMLElement(idSuffix, parent, target):
 	tagKeys.sort()
 	tags = ', '.join(tagKeys)
 	linkedXMLElement.attributeDictionary['tags'] = tags
-	linkedXMLElement.setParentAddToChildren(parent)
+	linkedXMLElement.setParentAddToChildNodes(parentNode)
 	linkedXMLElement.addToIdentifierDictionaryIFIdentifierExists()
 	return linkedXMLElement
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return DisjoinDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	processXMLElementByDerivation(None, xmlElement)
 
 def processXMLElementByDerivation(derivation, xmlElement):
-	"""Process the xml element by derivation."""
-	if derivation is None:
+	'Process the xml element by derivation.'
+	if derivation == None:
 		derivation = DisjoinDerivation(xmlElement)
 	targetXMLElement = derivation.targetXMLElement
-	if targetXMLElement is None:
+	if targetXMLElement == None:
 		print('Warning, disjoin could not get target for:')
 		print(xmlElement)
 		return
 	xmlObject = targetXMLElement.xmlObject
-	if xmlObject is None:
+	if xmlObject == None:
 		print('Warning, processXMLElementByDerivation in disjoin could not get xmlObject for:')
 		print(targetXMLElement)
 		print(derivation.xmlElement)
@@ -70,13 +70,13 @@ def processXMLElementByDerivation(derivation, xmlElement):
 		print(targetXMLElement)
 		print(derivation.xmlElement)
 		return
-	xmlElement.className = 'group'
+	xmlElement.localName = 'group'
 	xmlElement.getXMLProcessor().processXMLElement(xmlElement)
 	matrix.getBranchMatrixSetXMLElement(targetXMLElement)
 	targetChainMatrix = matrix.Matrix(xmlObject.getMatrixChainTetragrid())
 	minimumZ = boolean_geometry.getMinimumZ(xmlObject)
 	z = minimumZ + 0.5 * derivation.sheetThickness
-	zoneArrangement = triangle_mesh.ZoneArrangement(derivation.extrusionHeight, transformedVertexes)
+	zoneArrangement = triangle_mesh.ZoneArrangement(derivation.layerThickness, transformedVertexes)
 	oldVisibleString = targetXMLElement.attributeDictionary['visible']
 	targetXMLElement.attributeDictionary['visible'] = True
 	loops = boolean_geometry.getEmptyZLoops([xmlObject], derivation.importRadius, False, z, zoneArrangement)
@@ -99,21 +99,21 @@ def processXMLElementByDerivation(derivation, xmlElement):
 	cubeElement.attributeDictionary['inradius'] = str(inradius)
 	if not centerVector3.getIsDefault():
 		cubeElement.attributeDictionary['translate.'] = str(centerVector3)
-	cubeElement.className = 'cube'
+	cubeElement.localName = 'cube'
 	cubeElement.importName = differenceElement.importName
-	cubeElement.setParentAddToChildren(differenceElement)
+	cubeElement.setParentAddToChildNodes(differenceElement)
 	difference.processXMLElement(differenceElement)
 
 
 class DisjoinDerivation:
-	"""Class to hold disjoin variables."""
+	"Class to hold disjoin variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.importRadius = setting.getImportRadius(xmlElement)
-		self.extrusionHeight = setting.getLayerThickness(xmlElement)
+		self.layerThickness = setting.getLayerThickness(xmlElement)
 		self.sheetThickness = setting.getSheetThickness(xmlElement)
 		self.targetXMLElement = evaluate.getXMLElementByKey('target', xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this DisjoinDerivation."""
+		"Get the string representation of this DisjoinDerivation."
 		return str(self.__dict__)

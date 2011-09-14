@@ -17,14 +17,14 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def processElse(xmlElement):
-	"""Process the else statement."""
+	"Process the else statement."
 	functions = xmlElement.getXMLProcessor().functions
 	if len(functions) < 1:
 		print('Warning, "else" element is not in a function in processElse in else.py for:')
 		print(xmlElement)
 		return
-	functions[-1].processChildren(xmlElement)
+	functions[-1].processChildNodes(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	pass

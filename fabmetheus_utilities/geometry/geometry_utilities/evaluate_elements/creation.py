@@ -20,7 +20,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def _getAccessibleAttribute(attributeName, xmlElement):
-	"""Get the accessible attribute."""
+	'Get the accessible attribute.'
 	functionName = attributeName[len('get') :].lower()
 	if functionName not in evaluate.globalCreationDictionary:
 		print('Warning, functionName not in globalCreationDictionary in _getAccessibleAttribute in creation for:')
@@ -28,7 +28,7 @@ def _getAccessibleAttribute(attributeName, xmlElement):
 		print(xmlElement)
 		return None
 	pluginModule = archive.getModuleWithPath(evaluate.globalCreationDictionary[functionName])
-	if pluginModule is None:
+	if pluginModule == None:
 		print('Warning, _getAccessibleAttribute in creation can not get a pluginModule for:')
 		print(functionName)
 		print(xmlElement)
@@ -37,18 +37,18 @@ def _getAccessibleAttribute(attributeName, xmlElement):
 
 
 class Creation:
-	"""Class to handle a creation."""
+	'Class to handle a creation.'
 	def __init__(self, pluginModule, xmlElement):
-		"""Initialize."""
+		'Initialize.'
 		self.pluginModule = pluginModule
 		self.xmlElement = xmlElement
 
 	def __repr__(self):
-		"""Get the string representation of this creation."""
+		"Get the string representation of this creation."
 		return self.xmlElement
 
 	def getCreation(self, *arguments):
-		"""Get creation."""
+		"Get creation."
 		dictionary = {'_fromCreationEvaluator': 'true'}
 		firstArgument = None
 		if len(arguments) > 0:
