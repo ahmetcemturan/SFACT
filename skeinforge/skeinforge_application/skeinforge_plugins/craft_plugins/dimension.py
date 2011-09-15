@@ -138,15 +138,15 @@ class DimensionRepository:
 		settings.LabelDisplay().getFromName('- Fighting Oooze -', self )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Filament Retraction Settings -', self )
-		self.retractionDistance = settings.FloatSpin().getFromValue( 0.00, 'Retraction Distance (millimeters):', self, 3.00, 1.00 )
-		self.restartExtraDistance = settings.FloatSpin().getFromValue( -0.50, 'Restart Extra Distance (millimeters):', self, 0.50, 0.00 )
+		#self.retractionDistance = settings.FloatSpin().getFromValue( 0.00, 'Retraction Distance (millimeters):', self, 3.00, 1.00 )
+		#self.restartExtraDistance = settings.FloatSpin().getFromValue( -0.50, 'Restart Extra Distance (millimeters):', self, 0.50, 0.00 )
 		self.oozeRate = settings.FloatSpin().getFromValue( 0, 'Oozerate (mm/min):', self, 200, 75 )
 		self.extruderRetractionSpeed = settings.FloatSpin().getFromValue( 5.0, 'Extruder Retraction Speed (mm/s):', self, 50.0, 15.0 )
-		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- When to retract ? -', self )
-		self.retractWhenCrossing = settings.BooleanSetting().getFromValue('Force to retract when crossing over spaces', self, True)
-		self.minimumExtrusionForRetraction = settings.FloatSpin().getFromValue(0.0, 'Minimum Extrusion before Retraction (millimeters):', self, 2.0, 1.0)
-		self.minimumTravelForRetraction = settings.FloatSpin().getFromValue(0.0, 'Minimum Travelmove after Retraction (millimeters):', self, 2.0, 1.0)
+		#settings.LabelSeparator().getFromRepository(self)
+		#settings.LabelDisplay().getFromName('- When to retract ? -', self )
+		#self.retractWhenCrossing = settings.BooleanSetting().getFromValue('Force to retract when crossing over spaces', self, True)
+		#self.minimumExtrusionForRetraction = settings.FloatSpin().getFromValue(0.0, 'Minimum Extrusion before Retraction (millimeters):', self, 2.0, 1.0)
+		#self.minimumTravelForRetraction = settings.FloatSpin().getFromValue(0.0, 'Minimum Travelmove after Retraction (millimeters):', self, 2.0, 1.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Firmware Related Stuff -', self )
 		extrusionDistanceFormatLatentStringVar = settings.LatentStringVar()
@@ -197,12 +197,12 @@ class DimensionSkein:
 		filamentRadius = 0.5 * repository.filamentDiameter.value
 		xSectionCorrector = repository.MeasuredXSection.value
 		filamentPackingArea = math.pi * filamentRadius * filamentRadius * repository.filamentPackingDensity.value
-		self.minimumExtrusionForRetraction = self.repository.minimumExtrusionForRetraction.value
-		self.minimumTravelForRetraction = self.repository.minimumTravelForRetraction.value
-		self.doubleMinimumTravelForRetraction = self.minimumTravelForRetraction + self.minimumTravelForRetraction
+		self.minimumExtrusionForRetraction = 0 #self.repository.minimumExtrusionForRetraction.value
+		self.minimumTravelForRetraction = 0 # self.repository.minimumTravelForRetraction.value
+		self.doubleMinimumTravelForRetraction = 0#self.minimumTravelForRetraction + self.minimumTravelForRetraction
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
-		if self.repository.retractWhenCrossing.value:
+		if 1==1: # self.repository.retractWhenCrossing.value:
 			self.parseBoundaries()
 		self.calibrationFactor = 1
 		if repository.activateCalibration.value:
@@ -266,7 +266,7 @@ class DimensionSkein:
 			if firstWord == 'G1':
 				if isActive:
 					location = gcodec.getLocationFromSplitLine(location, splitLine)
-					if self.repository.retractWhenCrossing.value:
+					if 1==1:#self.repository.retractWhenCrossing.value:
 						locationEnclosureIndex = self.getSmallestEnclosureIndex(location.dropAxis())
 						if locationEnclosureIndex != self.getSmallestEnclosureIndex(self.oldLocation.dropAxis()):
 							return None
