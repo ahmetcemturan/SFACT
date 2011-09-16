@@ -267,7 +267,7 @@ def getBridgeDirection( belowLoops, layerLoops, layerThickness ):
 		for pointIndex in xrange(len(loop)):
 			previousIndex = ( pointIndex + len(loop) - 1 ) % len(loop)
 			bridgeRotation += getOverhangDirection( belowOutsetLoops, loop[ previousIndex ], loop[pointIndex] )
-	if abs( bridgeRotation ) < 0.75 * layerThickness:
+	if abs( bridgeRotation ) < 0.7853 * layerThickness:
 		return None
 	else:
 		bridgeRotation /= abs( bridgeRotation )

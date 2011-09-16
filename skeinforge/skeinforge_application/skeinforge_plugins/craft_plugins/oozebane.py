@@ -485,7 +485,7 @@ class OozebaneSkein:
 	def setAfterStartupFlowRates( self, afterStartupRatio ):
 		"Set the after startup flow rates."
 		afterStartupRatio = min( 1.0, afterStartupRatio )
-		afterStartupRatio = max( 0.0, afterStartupRatio )
+		afterStartupRatio = max( 0.0, afterStartupRatio )#TODO WAS 0
 		self.afterStartupDistance = afterStartupRatio * self.getActiveFeedRateRatio() * self.oozebaneRepository.afterStartupDistance.value
 		self.afterStartupDistances = []
 		self.afterStartupFlowRate = 1.0
@@ -555,7 +555,7 @@ class OozebaneSkein:
 	def setEarlyShutdownFlowRates( self, earlyShutdownRatio ):
 		"Set the extrusion width."
 		earlyShutdownRatio = min( 1.0, earlyShutdownRatio )
-		earlyShutdownRatio = max( 0.0, earlyShutdownRatio )
+		earlyShutdownRatio = max( 0.2, earlyShutdownRatio )#TODO WAS 0
 		self.earlyShutdownDistance = earlyShutdownRatio * self.getActiveFeedRateRatio() * self.oozebaneRepository.earlyShutdownDistance.value
 		self.earlyShutdownDistances = []
 		self.earlyShutdownFlowRates = []

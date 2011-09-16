@@ -197,8 +197,8 @@ class DimensionSkein:
 		filamentRadius = 0.5 * repository.filamentDiameter.value
 		xSectionCorrector = repository.MeasuredXSection.value
 		filamentPackingArea = math.pi * filamentRadius * filamentRadius * repository.filamentPackingDensity.value
-		self.minimumExtrusionForRetraction = 0 #self.repository.minimumExtrusionForRetraction.value
-		self.minimumTravelForRetraction = 0 # self.repository.minimumTravelForRetraction.value
+		#self.minimumExtrusionForRetraction = 0 #self.repository.minimumExtrusionForRetraction.value
+		#self.minimumTravelForRetraction = 0 # self.repository.minimumTravelForRetraction.value
 		self.doubleMinimumTravelForRetraction = 0#self.minimumTravelForRetraction + self.minimumTravelForRetraction
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
@@ -304,12 +304,12 @@ class DimensionSkein:
 		self.distanceToNextThread = self.getDistanceToNextThread(lineIndex)
 		#print ('distanceToNextThread',distanceToNextThread)
 		#print ('totalExtrusionDistance',self.totalExtrusionDistance)
-		if self.distanceToNextThread == None or self.distanceToNextThread <= self.minimumTravelForRetraction:
-			return 1.0
-		elif  self.totalExtrusionDistance <= self.minimumExtrusionForRetraction:
-			return self.totalExtrusionDistance/self.minimumExtrusionForRetraction
-		elif self.distanceToNextThread >= self.doubleMinimumTravelForRetraction:
-			return 1.0
+		#if self.distanceToNextThread == None or self.distanceToNextThread <= self.minimumTravelForRetraction:
+		#	return 1.0
+		#elif  self.totalExtrusionDistance <= self.minimumExtrusionForRetraction:
+		#	return self.totalExtrusionDistance/self.minimumExtrusionForRetraction
+		#elif self.distanceToNextThread >= self.doubleMinimumTravelForRetraction:
+		#	return 1.0
 #		self.retractionRatio = self.getRetractionRatio(lineIndex)
 		return 1.0#(self.distanceToNextThread - self.minimumTravelForRetraction) / self.minimumTravelForRetraction
 

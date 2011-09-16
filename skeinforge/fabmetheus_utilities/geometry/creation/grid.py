@@ -76,7 +76,7 @@ def getGeometryOutputByArguments(arguments, xmlElement):
 
 def getHexagonalGrid(diameter, loopsComplex, maximumComplex, minimumComplex, zigzag):
 	'Get hexagonal grid.'
-	diameter = complex(diameter.real, math.sqrt(0.75) * diameter.imag)
+	diameter = complex(diameter.real, math.sqrt(0.7853) * diameter.imag)#todo try with 0.7853 was .75
 	demiradius = 0.25 * diameter
 	xRadius = 0.5 * diameter.real
 	xStart = minimumComplex.real - demiradius.real
@@ -113,7 +113,7 @@ def getRandomGrid(derivation, diameter, loopsComplex, maximumComplex, minimumCom
 	gridPath = []
 	diameterReciprocal = complex(1.0 / diameter.real, 1.0 / diameter.imag)
 	diameterSquared = diameter.real * diameter.real + diameter.imag * diameter.imag
-	elements = int(math.ceil(derivation.packingDensity * euclidean.getAreaLoops(loopsComplex) / diameterSquared / math.sqrt(0.75)))
+	elements = int(math.ceil(derivation.packingDensity * euclidean.getAreaLoops(loopsComplex) / diameterSquared / math.sqrt(0.7853)))#todo was 0.75
 	elements = evaluate.getEvaluatedInt(elements, 'elements', xmlElement)
 	failedPlacementAttempts = 0
 	pixelDictionary = {}

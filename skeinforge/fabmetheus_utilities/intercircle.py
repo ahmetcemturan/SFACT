@@ -70,7 +70,7 @@ def addEndCap(begin, end, points, radius):
 
 def addHalfPath(path, points, radius, thresholdRatio=0.9):
 	'Add the points from every point on a half path and between points.'
-	lessThanRadius = 0.75 * radius
+	lessThanRadius = 0.7853 * radius
 	for pointIndex in xrange(len(path) - 1):
 		begin = path[pointIndex]
 		center = path[pointIndex + 1]

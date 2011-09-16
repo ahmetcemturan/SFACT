@@ -410,6 +410,7 @@ def createExtraFillLoops(nestedRing, radius, shouldExtraLoopsBeAdded):
 	'Create extra fill loops.'
 	for innerNestedRing in nestedRing.innerNestedRings:
 		createFillForSurroundings(innerNestedRing.innerNestedRings, radius, shouldExtraLoopsBeAdded)
+		print('radius 413', radius)
 	allFillLoops = getExtraFillLoops(nestedRing.getLoopsToBeFilled(), radius)
 	if len(allFillLoops) < 1:
 		return
@@ -422,6 +423,7 @@ def createFillForSurroundings(nestedRings, radius, shouldExtraLoopsBeAdded):
 	'Create extra fill loops for surrounding loops.'
 	for nestedRing in nestedRings:
 		createExtraFillLoops(nestedRing, radius, shouldExtraLoopsBeAdded)
+		print('radius 426', radius)
 
 def getAdditionalLength( path, point, pointIndex ):
 	'Get the additional length added by inserting a point into a path.'
@@ -460,10 +462,12 @@ def getClosestOppositeIntersectionPaths( yIntersectionPaths ):
 def getExtraFillLoops(loops, radius):
 	'Get extra loops between inside and outside loops. Extra perimeters'
 	greaterThanRadius = radius /0.7853  #todo was  *1.4 ACT (radius /0.7853)  how much the tight spots are covered by the extra loops
+	print('radius 465',radius)
 	extraFillLoops = []
 	centers = intercircle.getCentersFromPoints(intercircle.getPointsFromLoops(loops, greaterThanRadius), greaterThanRadius)
 	for center in centers:
 		inset = intercircle.getSimplifiedInsetFromClockwiseLoop(center, radius)
+		print('inset 470', inset )
 		if intercircle.isLargeSameDirection(inset, center, radius):
 			if euclidean.getIsInFilledRegion(loops, euclidean.getLeftPoint(inset)):
 				inset.reverse()
@@ -577,6 +581,7 @@ def insertGridPointPairs( gridPoint, gridPointInsetX, gridPoints, intersectionPa
 
 def insertGridPointPairWithLinePath( gridPoint, gridPointInsetX, gridPoints, isJunctionWide, linePath, paths, pixelTable, yIntersectionPath, width ):
 	'Insert a pair of points around the grid point is is junction wide, otherwise inset one point.'
+	print ('insertGridPointPairWithLinePath')
 	if len( linePath ) < 1:
 		return
 	if gridPoint in gridPoints:
@@ -907,6 +912,7 @@ class FillSkein:
 		pixelTable = {}
 		arounds = []
 		betweenWidth = (self.repository.infillWidthOverThickness.value * self.perimeterWidth *(0.7853)) #- 0.0866#todo *0.5 is the distance between the outer loops..
+		print('betweenwidth 912',betweenWidth, )
 		self.layerExtrusionWidth = self.infillWidth # spacing between fill lines
 		layerFillInset = self.fillInset  # the distance between perimeter incl loops and the fill pattern
 		rotatedLayer = self.rotatedLayers[layerIndex]
@@ -1146,7 +1152,7 @@ class FillSkein:
 		for nestedRing in nestedRings:
 			planeRotatedLoop = euclidean.getPointsRoundZAxis(reverseRotation, nestedRing.boundary)
 			rotatedCarve.append(planeRotatedLoop)
-		outsetRadius = float(abs(layerDelta)) * self.layerThickness #todo investigate was  * self.layerThickness  was float(abs(layerDelta)) * self.layerThickness
+		outsetRadius = float(abs(layerDelta)) * self.perimeterWidth #todo investigate was   float(abs(layerDelta)) * self.layerThickness
 		rotatedCarve = intercircle.getInsetSeparateLoopsFromLoops(-outsetRadius, rotatedCarve)
 		surroundingCarves.append(rotatedCarve)
 
@@ -1203,7 +1209,8 @@ class FillSkein:
 			print('Warning, nothing will be done because self.perimeterWidth in getCraftedGcode in FillSkein was None.')
 			return ''
 		self.betweenWidth = self.perimeterWidth * self.repository.infillWidthOverThickness.value *(0.7853)
-		self.fillInset = self.infillWidth / self.repository.infillPerimeterOverlap.value#todo was :self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
+		print('bw1209',self.betweenWidth)
+		self.fillInset = self.infillWidth / self.repository.infillPerimeterOverlap.value #todo was :self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value
 		self.infillSolidity = repository.infillSolidity.value
 		if self.isGridToBeExtruded():
 			self.setGridVariables(repository)
