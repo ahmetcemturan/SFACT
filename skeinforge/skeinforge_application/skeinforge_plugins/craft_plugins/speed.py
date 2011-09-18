@@ -139,27 +139,32 @@ class SpeedRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Speed')
 		self.activateSpeed = settings.BooleanSetting().getFromValue('Activate Speed:', self, True )
 		self.addFlowRate = settings.BooleanSetting().getFromValue('Add Flow Rate:', self, True )
+		self.addAccelerationRate = settings.BooleanSetting().getFromValue('Add Acceleration Rate:', self, False )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Main Feedrate Settings -', self )
-		self.feedRatePerSecond = settings.FloatSpin().getFromValue( 20.0, 'Main Feed Rate (mm/s):', self, 140.0, 60.0 )
+		self.feedRatePerSecond = settings.FloatSpin().getFromValue( 20, 'Main Feed Rate (mm/s):', self, 140, 60 )
 		self.flowRateSetting = settings.FloatSpin().getFromValue( 0.5, 'Main Flow Rate  (scaler):', self, 1.5, 1.0 )
+		self.AccelerationRateSetting = settings.FloatSpin().getFromValue( 500, 'Main Acceleration Rate for Extruder  (mm/s2):', self, 10000, 1300 )
 		self.orbitalFeedRateOverOperatingFeedRate = settings.FloatSpin().getFromValue( 0.1, 'Feed Rate ratio for Orbiting move (ratio):', self, 0.9, 0.5 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Perimeter Printing -', self )
-		self.perimeterFeedRateOverOperatingFeedRate =  settings.FloatSpin().getFromValue( 20.0, 'Perimeter Feed Rate (mm/s):', self, 80.0, 30.0 )
+		self.perimeterFeedRateOverOperatingFeedRate =  settings.FloatSpin().getFromValue( 20, 'Perimeter Feed Rate (mm/s):', self, 80, 30 )
 		self.perimeterFlowRateOverOperatingFlowRate = settings.FloatSpin().getFromValue( 0.5, 'Perimeter Flow Rate (scaler):', self, 1.5, 1.0 )
+		self.perimeterAccelerationRate = settings.FloatSpin().getFromValue( 5, 'Perimeter Acceleration Rate for Extruder (mm/s2):', self, 10000, 50 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Bridge Layers -', self )
 		self.bridgeFeedRateMultiplier = settings.FloatSpin().getFromValue( 0.5, 'Bridge Feed Rate (ratio to Perim.feed):', self, 1.5, 1.0 )
 		self.bridgeFlowRateMultiplier  = settings.FloatSpin().getFromValue( 0.5, 'Bridge Flow Rate (scaler):', self, 1.3, 1.0 )
+		self.bridgeAccelerationRate  = settings.FloatSpin().getFromValue( 10, 'Bridge Acceleration Rate for Extruder(mm/s2):', self, 10000, 1000 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Perimeter -', self )
 		settings.LabelSeparator().getFromRepository(self)
-		self.travelFeedRatePerSecond = settings.FloatSpin().getFromValue( 40.0, 'Travel Feed Rate (mm/s):', self, 200.0, 130.0 )
+		self.travelFeedRatePerSecond = settings.FloatSpin().getFromValue( 40, 'Travel Feed Rate (mm/s):', self, 300, 130 )
 		settings.LabelDisplay().getFromName('- Duty Cyle for DC extruders only -', self )
 		self.dutyCycleAtBeginning = settings.FloatSpin().getFromValue( 0.0, 'Duty Cyle at Beginning (portion):', self, 1.0, 1.0 )
 		self.dutyCycleAtEnding = settings.FloatSpin().getFromValue( 0.0, 'Duty Cyle at Ending (portion):', self, 1.0, 0.0 )
 		self.executeTitle = 'Speed'
+
 
 	def execute(self):
 		"Speed button has been clicked."
@@ -179,6 +184,7 @@ class SpeedSkein:
 		self.lineIndex = 0
 		self.lines = None
 		self.oldFlowRateString = None
+		self.oldAccelerationRateString = None
 
 	def addFlowRateLineIfNecessary(self):
 		"Add flow rate line."
@@ -186,6 +192,13 @@ class SpeedSkein:
 		if flowRateString != self.oldFlowRateString:
 			self.distanceFeedRate.addLine('M108 S' + flowRateString )
 		self.oldFlowRateString = flowRateString
+
+	def addAccelerationRateLineIfNecessary(self): #todo delete if not working
+		"Add Acceleration rate line."
+		AccelerationRateString = self.getAccelerationRateString()
+		if AccelerationRateString != self.oldAccelerationRateString:
+			self.distanceFeedRate.addLine('M201 E' + AccelerationRateString )
+		self.oldAccelerationRateString = AccelerationRateString
 
 	def addParameterString( self, firstWord, parameterWord ):
 		"Add parameter string."
@@ -221,6 +234,19 @@ class SpeedSkein:
 			flowRate = self.repository.perimeterFlowRateOverOperatingFlowRate.value * self.repository.perimeterFeedRateOverOperatingFeedRate.value
 		return euclidean.getFourSignificantFigures( flowRate )
 
+	def getAccelerationRateString(self):
+		"Get the Acceleration rate string."
+
+		if not self.repository.addAccelerationRate.value:
+			return None
+		AccelerationRate = self.repository.AccelerationRateSetting.value
+		if self.isBridgeLayer:
+			AccelerationRate = self.repository.bridgeAccelerationRate.value
+		if self.isPerimeterPath:
+			AccelerationRate = self.repository.perimeterAccelerationRate.value
+		return euclidean.getFourSignificantFigures( AccelerationRate )
+
+
 	def getSpeededLine(self, line, splitLine):
 		'Get gcode line with feed rate.'
 		if gcodec.getIndexOfStartingWithSecond('F', splitLine) > 0:
@@ -233,6 +259,7 @@ class SpeedSkein:
 		if not self.isExtruderActive:
 			feedRateMinute = self.repository.travelFeedRatePerSecond.value * 60
 		self.addFlowRateLineIfNecessary()
+		self.addAccelerationRateLineIfNecessary()
 		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line, splitLine)
 
 	def parseInitialization(self):
@@ -282,6 +309,7 @@ class SpeedSkein:
 		elif firstWord == '(<layer>':
 			self.isBridgeLayer = False
 			self.addFlowRateLineIfNecessary()
+			self.addAccelerationRateLineIfNecessary()
 		elif firstWord == '(<perimeter>' or firstWord == '(<perimeterPath>)':
 			self.isPerimeterPath = True
 		elif firstWord == '(</perimeter>)' or firstWord == '(</perimeterPath>)':

@@ -111,8 +111,9 @@ class StatisticRepository:
 		self.machineTime = settings.FloatSpin().getFromValue( 0.0, 'Machine Time ($/hour):', self, 5.0, 1.0 )
 		self.material = settings.FloatSpin().getFromValue( 0.0, 'Material ($/kg):', self, 40.0, 20.0 )
 		settings.LabelSeparator().getFromRepository(self)
-		self.calculatedPrintTime = settings.FloatSpin().getFromValue( 0, 'Calculated Print Time (seconds):', self,100000, 1 )
-		self.realPrintTime = settings.FloatSpin().getFromValue( 0, 'Real Print Time (seconds):', self,100000, 1 )
+		self.calculatedPrintTime = settings.IntSpin().getFromValue( 0, 'Calculated Print Time (seconds):', self,100000, 1 )
+		self.realPrintTime = settings.IntSpin().getFromValue( 0, 'Real Print Time (seconds):', self,100000, 1 )
+		self.accelerationRate = settings.IntSpin().getFromValue( 0, 'Firmware acceleration rate (mm/s2):', self,100000, 1000 )
 		self.totalCommandsEntered = settings.FloatSpin().getFromValue( 0, 'Total Command Count:', self,100000, 1 )
 		settings.LabelSeparator().getFromRepository(self)
 		self.density = settings.FloatSpin().getFromValue( 500.0, 'Density (kg/m3):', self, 2000.0, 1000.0 )
@@ -202,11 +203,14 @@ class StatisticSkein:
 		volumeExtruded = extrusionXSection * self.totalDistanceExtruded / 1000
 		mass = (volumeExtruded /1000)* repository.density.value
 		self.delay = (repository.realPrintTime.value - repository.calculatedPrintTime.value ) / repository.totalCommandsEntered.value
-		self.estimatedBuildTime = self.delay * self.totalCommandcount + self.totalBuildTime
+		buildQuadraticVolume = int( extent.x )*int( extent.y )*int( extent.z )
+		
+		self.estimatedBuildTime =  (self.totalDistanceTraveled / self.totalCommandcount / averageFeedRate +((averageFeedRate*0.75/ repository.accelerationRate.value) /2))*self.totalCommandcount/60  # self.delay * self.totalCommandcount + self.totalBuildTime
 		machineTimeCost = repository.machineTime.value * self.estimatedBuildTime / 3600.0
 		self.filamentInOutRatio = filamentCrossSectionArea / ((((self.layerThickness+self.perimeterWidth)/4)*((self.layerThickness+self.perimeterWidth)/4)*math.pi))
 		self.totalDistanceFilament = self.totalDistanceExtruded
-		averageFeedRate = self.totalDistanceTraveled / self.estimatedBuildTime
+		averageFeedRate = self.totalDistanceTraveled / self.totalBuildTime
+		averageFeedRateEst = self.totalDistanceTraveled / self.estimatedBuildTime
 		materialCost = repository.material.value * mass /1000
 		self.addLine(' ')
 		self.addLine( "Procedures used (in sequence.." )
@@ -219,14 +223,13 @@ class StatisticSkein:
 		self.addLine( "Z%s%s mm and ends at %s mm, for a height of %s mm." % ( axisString, int( roundedLow.z ), int( roundedHigh.z ), int( extent.z ) ) )
 		self.addLine(' ')
 		self.addLine('Statistics')
-
 		self.addLine( "Distance traveled is %s m." % euclidean.getThreeSignificantFigures( self.totalDistanceTraveled/1000 ) )
 		self.addLine( "Distance extruded is %s m." % euclidean.getThreeSignificantFigures( self.totalDistanceExtruded/1000 ) )
 		if self.extruderSpeed != None:
 			self.addLine( "Extruder speed is %s" % euclidean.getThreeSignificantFigures( self.extruderSpeed ) )
 		self.addLine( "Extruder was extruding %s percent of the time." % euclidean.getThreeSignificantFigures( 100.0 * self.totalDistanceExtruded / self.totalDistanceTraveled ) )
 		self.addLine( "Extruder was toggled %s times." % self.extruderToggled )
-		self.addLine( "Feed rate average is %s mm/s, (%s mm/min)." % ( euclidean.getThreeSignificantFigures( averageFeedRate ), euclidean.getThreeSignificantFigures( 60.0 * averageFeedRate ) ) )
+		self.addLine( "Feed rate average is %s mm/s, (%s mm/min)." % ( euclidean.getThreeSignificantFigures(averageFeedRateEst ), euclidean.getThreeSignificantFigures( 60.0 * averageFeedRateEst ) ) )
 		self.addLine( "A Total of %s commands will be executed." %  self.totalCommandcount)
 		self.addLine(' ')
 		self.addLine('Time')

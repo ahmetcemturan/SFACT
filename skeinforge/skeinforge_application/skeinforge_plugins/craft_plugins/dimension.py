@@ -202,8 +202,8 @@ class DimensionSkein:
 		self.doubleMinimumTravelForRetraction = 0#self.minimumTravelForRetraction + self.minimumTravelForRetraction
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
-		if 1==1: # self.repository.retractWhenCrossing.value:
-			self.parseBoundaries()
+		#if self.repository.retractWhenCrossing.value:
+		self.parseBoundaries()
 		self.calibrationFactor = 1
 		if repository.activateCalibration.value:
 			self.calibrationFactor = (((self.layerThickness**2/4)*math.pi)+self.layerThickness*(xSectionCorrector -self.layerThickness))/(((self.layerThickness**2/4)*math.pi)+self.layerThickness *(self.perimeterWidth-self.layerThickness))
@@ -266,10 +266,10 @@ class DimensionSkein:
 			if firstWord == 'G1':
 				if isActive:
 					location = gcodec.getLocationFromSplitLine(location, splitLine)
-					if 1==1:#self.repository.retractWhenCrossing.value:
-						locationEnclosureIndex = self.getSmallestEnclosureIndex(location.dropAxis())
-						if locationEnclosureIndex != self.getSmallestEnclosureIndex(self.oldLocation.dropAxis()):
-							return None
+					#if self.repository.retractWhenCrossing.value:
+					locationEnclosureIndex = self.getSmallestEnclosureIndex(location.dropAxis())
+					if locationEnclosureIndex != self.getSmallestEnclosureIndex(self.oldLocation.dropAxis()):
+						return None
 					locationMinusOld = location - self.oldLocation
 					xyTravel = abs(locationMinusOld.dropAxis())
 					zTravelMultiplied = locationMinusOld.z * self.zDistanceRatio
@@ -311,8 +311,9 @@ class DimensionSkein:
 		#elif self.distanceToNextThread >= self.doubleMinimumTravelForRetraction:
 		#	return 1.0
 #		self.retractionRatio = self.getRetractionRatio(lineIndex)
-		return 1.0#(self.distanceToNextThread - self.minimumTravelForRetraction) / self.minimumTravelForRetraction
-
+		#return (self.distanceToNextThread - self.minimumTravelForRetraction) / self.minimumTravelForRetraction
+		return 1.00
+		
 	def getSmallestEnclosureIndex(self, point):
 		'Get the index of the smallest boundary loop which encloses the point.'
 		boundaryLayer = self.boundaryLayers[self.layerIndex]
@@ -320,12 +321,12 @@ class DimensionSkein:
 			if euclidean.isPointInsideLoop(loop, point):
 				return loopIndex
 		return None
-	def addFlowRateLineIfNecessary(self):
-		"Add flow rate line."
-		flowRateString = self.newFlowrate
-		if flowRateString != self.oldFlowRateString:
-			self.distanceFeedRate.addLine('M108 S' + flowRateString )
-		self.oldFlowRateString = flowRateString
+#	def addFlowRateLineIfNecessary(self):
+#		"Add flow rate line."
+#		flowRateString = self.newFlowrate
+#		if flowRateString != self.oldFlowRateString:
+#			self.distanceFeedRate.addLine('M108 S' + flowRateString )
+#		self.oldFlowRateString = flowRateString
 
 	def parseBoundaries(self):
 		'Parse the boundaries and add them to the boundary layers.'
@@ -379,7 +380,7 @@ class DimensionSkein:
 		'Parse a gcode line and add it to the dimension skein.'
 		line = self.lines[lineIndex].lstrip()
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
-		self.newFlowrate = str (round(self.flowRate * self.flowScaleSixty,0) )
+#		self.newFlowrate = str (round(self.flowRate * self.flowScaleSixty,0) )
 		if len(splitLine) < 1:
 			return
 		firstWord = splitLine[0]
@@ -410,7 +411,7 @@ class DimensionSkein:
 			#print('dtnt ttnt ted rr efr',self.distanceToNextThread , self.timeToNextThread , self.totalExtrusionDistance,self.retractionRatio , self.autoRetractDistance)
 		elif firstWord == 'M108':
 			self.flowRate = float( splitLine[1][1 :] )
-		self.addFlowRateLineIfNecessary()
+		#self.addFlowRateLineIfNecessary()
 		#self.distanceFeedRate.addLine('M108 S' + newFlowrate)
 		self.distanceFeedRate.addLine(line)
 
