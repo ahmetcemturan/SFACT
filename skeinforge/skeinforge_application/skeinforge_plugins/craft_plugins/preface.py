@@ -170,7 +170,7 @@ class PrefaceSkein:
 		"Add initialization gcode to the output."
 		self.addFromUpperLowerFile(self.repository.nameOfStartFile.value) # Add a start file if it exists.
 		self.distanceFeedRate.addTagBracketedLine('creation', 'skeinforge') # GCode formatted comment
-		absoluteFilePathUntilDot = os.path.abspath(__file__)[: os.path.abspath(__file__).rfind('.')]
+#		absoluteFilePathUntilDot = os.path.abspath(__file__)[: os.path.abspath(__file__).rfind('.')]
 #		if absoluteFilePathUntilDot == '/home/enrique/Desktop/backup/babbleold/script/reprap/fabmetheus/skeinforge_application/skeinforge_plugins/craft_plugins/preface': #is this script on Enrique's computer?
 #			archive.writeFileText(archive.getVersionFileName(), date.today().isoformat().replace('-', '.')[2 :])
 		versionText = archive.getFileText(archive.getVersionFileName())

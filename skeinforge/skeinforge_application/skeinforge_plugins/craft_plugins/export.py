@@ -346,7 +346,7 @@ class ExportRepository:
 			self.exportPlugins.append(exportPlugin)
 		self.fileExtension = settings.StringSetting().getFromValue('File Extension (gcode):', self, 'gcode')
 		self.nameOfReplaceFile = settings.StringSetting().getFromValue('Name of Replace File:', self, 'replace.csv')
-		self.savePenultimateGcode = settings.BooleanSetting().getFromValue('Save Penultimate Gcode', self, False)
+		self.savePenultimateGcode = settings.BooleanSetting().getFromValue('Save Penultimate Gcode', self, True)
 #		settings.LabelDisplay().getFromName(' ', self)
 #		settings.LabelDisplay().getFromName('--Profile Sharing and Archiving--', self)
 #		self.archiveProfile = settings.BooleanSetting().getFromValue('Archive Used Profile As Zip', self, False)

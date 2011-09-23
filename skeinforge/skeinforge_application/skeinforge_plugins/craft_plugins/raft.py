@@ -845,27 +845,27 @@ class RaftSkein:
 		if self.operatingJump != None:
 			z += self.operatingJump
 		flowRate = self.oldFlowRateInput
-		print(self.oldFlowRateInput, flowRate)
+		#print(self.oldFlowRateInput, flowRate)
 		temperature = self.objectNextLayersTemperature
 		if self.layerIndex == 0:
 			if self.isExtruderActive:
 				if self.isPerimeterPath:
 					feedRateMinuteMultiplied = self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value * 60
 					flowRate = self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value * self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value
-					print('854' ,flowRate,self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value , self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value )
+					#print('854' ,flowRate,self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value , self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value )
 					temperature = self.objectFirstLayerPerimeterTemperature
 				else:
 					feedRateMinuteMultiplied = self.repository.objectFirstLayerFeedRateInfillMultiplier.value * 60
 					flowRate = self.repository.objectFirstLayerFlowRateInfillMultiplier.value * self.repository.objectFirstLayerFeedRateInfillMultiplier.value
-					print('859' ,flowRate,self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value , self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value )
+					#print('859' ,flowRate,self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value , self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value )
 					temperature = self.objectFirstLayerInfillTemperature
 			else:
 				feedRateMinuteMultiplied = self.objectFirstLayerTravelSpeed * 60
-				print('863',flowRate,self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value , self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value )
+				#print('863',flowRate,self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value , self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value )
 
 		self.addFlowRateValueIfDifferent(flowRate)
 		self.addTemperatureLineIfDifferent(temperature)
-		print('867',flowRate,self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value , self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value )
+		#print('867',flowRate,self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value , self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value )
 		return self.distanceFeedRate.getLinearGcodeMovementWithFeedRate(feedRateMinuteMultiplied, location.dropAxis(), z)
 
 	def getStepsUntilEnd( self, begin, end, stepSize ):

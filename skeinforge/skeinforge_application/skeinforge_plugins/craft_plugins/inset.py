@@ -247,7 +247,7 @@ class InsetRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Inset', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Inset')
 #		self.addCustomCodeForTemperatureReading = settings.BooleanSetting().getFromValue('Add Custom Code for Temperature Reading', self, True )
-		self.bridgeWidthMultiplier = settings.FloatSpin().getFromValue( 0.7, 'Bridge Width Multiplier (ratio):', self, 2.0, 1.7  )
+		self.bridgeWidthMultiplier = settings.FloatSpin().getFromValue( 0.7, 'Bridge Width Multiplier (ratio):', self, 2.0, 1.0  )
 		self.nozzleDiameter = settings.FloatSpin().getFromValue( 0.1, 'Nozzle Diameter(mm):', self, 1.0, 0.50 )
 		self.loopOrderChoice = settings.MenuButtonDisplay().getFromName('In case of Conflict Solve:', self )
 		self.loopOrderAscendingArea = settings.MenuRadio().getFromMenuButtonDisplay( self.loopOrderChoice, 'Prefer Loops', self, True )
@@ -344,7 +344,7 @@ class InsetSkein:
 		alreadyFilledArounds = []
 		halfWidth = self.halfPerimeterWidth * 0.7853 #todo was without 0,7853
 		if rotatedLoopLayer.rotation != None:
-			halfWidth = self.repository.bridgeWidthMultiplier.value * (2* self.repository.nozzleDiameter.value - self.layerThickness) / 2
+			halfWidth = self.repository.bridgeWidthMultiplier.value * ((2* self.repository.nozzleDiameter.value - self.layerThickness) / 2) * 0.7853
 			self.distanceFeedRate.addTagBracketedLine('bridgeRotation', rotatedLoopLayer.rotation)
 		extrudateLoops = intercircle.getInsetLoopsFromLoops(halfWidth, rotatedLoopLayer.loops)
 		triangle_mesh.sortLoopsInOrderOfArea(not self.repository.loopOrderAscendingArea.value, extrudateLoops)
