@@ -117,10 +117,7 @@ class ClipSkein:
 	def addGcodeFromThreadZ( self, thread, z ):
 		"Add a gcode thread to the output."
 		if len(thread) > 0 :
-		#	if self.layerIndex > 0:
-			self.distanceFeedRate.addGcodeMovementZWithFeedRate( self.travelFeedRateMinute, thread[0], z )#todo was ( self.travelFeedRateMinute, thread[0], z )
-		#	if self.layerIndex <= 0 :
-		#		self.distanceFeedRate.addGcodeMovementZWithFeedRate( self.objectFirstLayerTravelSpeed, thread[0], z )#
+			self.distanceFeedRate.addGcodeMovementZWithFeedRate( self.travelFeedRateMinute, thread[0], z )
 		else:
 			print( "zero length vertex positions array which was skipped over, this should never happen" )
 		if len(thread) < 2:

@@ -115,6 +115,7 @@ class MultiplyRepository:
 		self.numberOfColumns = settings.IntSpin().getFromValue(1, 'Number of Columns (integer):', self, 10, 1)
 		self.numberOfRows = settings.IntSpin().getFromValue(1, 'Number of Rows (integer):', self, 10, 1)
 		settings.LabelSeparator().getFromRepository(self)
+		self.reverseSequenceEveryOddLayer = settings.BooleanSetting().getFromValue('Reverse Sequence every Odd Layer', self, False)
 		self.separationOverPerimeterWidth = settings.FloatSpin().getFromValue(
 			5.0, 'Separation over Perimeter Width (ratio):', self, 25.0, 15.0)
 		self.executeTitle = 'Multiply'
@@ -161,7 +162,7 @@ class MultiplySkein:
 		offset = self.centerOffset - self.arrayCenter - self.shapeCenter
 		for rowIndex in xrange(self.repository.numberOfRows.value):
 			yRowOffset = float(rowIndex) * self.extentPlusSeparation.imag
-			if self.layerIndex % 2 == 1:
+			if self.layerIndex % 2 == 1 and self.repository.reverseSequenceEveryOddLayer.value:
 				yRowOffset = self.arrayExtent.imag - yRowOffset
 			for columnIndex in xrange(self.repository.numberOfColumns.value):
 				xColumnOffset = float(columnIndex) * self.extentPlusSeparation.real

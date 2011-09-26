@@ -1367,12 +1367,12 @@ class FillSkein:
 
 	def setGridVariables( self, repository ):
 		'Set the grid variables.'
-		self.gridInset = 1# self.infillWidth /0.7853#1.2 * self.infillWidth
-		self.gridRadius = 1#self.infillWidth / self.infillSolidity
+		self.gridInset = 1.2 * self.infillWidth
+		self.gridRadius = self.infillWidth / self.infillSolidity
 		self.gridXStepSize = 2.0 * self.gridRadius
-		self.offsetMultiplier = self.gridRadius
+ 		self.offsetMultiplier = self.gridRadius
 		if self.repository.infillPatternGridHexagonal.value:
-			self.gridXStepSize = self.gridRadius / 0.7853 #4.0 / 3.0 * self.gridRadius
+			self.gridXStepSize = 4.0 / 3.0 * self.gridRadius
 			self.offsetMultiplier =  1.5 * self.gridXStepSize
 		if self.repository.infillPatternGridCircular.value:
 			self.gridRadius += self.gridRadius

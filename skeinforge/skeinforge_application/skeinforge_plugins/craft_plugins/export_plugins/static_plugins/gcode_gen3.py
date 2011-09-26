@@ -69,6 +69,7 @@ class GcodeSmallSkein:
 		self.lastZString = None
 		self.output = cStringIO.StringIO()
 
+
 	def getCraftedGcode( self, gcodeText ):
 		"""Parse gcode text and store the gcode."""
 		lines = getTextLines(gcodeText)
@@ -102,6 +103,7 @@ class GcodeSmallSkein:
 			self.output.write(' F50')
 			self.output.write('\n')
 			self.output.write('G1')
+		if feedRateString is not None :
 			self.output.write(' F' + feedRateString )
 			self.output.write('\n')                  
 		
