@@ -180,25 +180,25 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def display( filename = ''):
-	"""Parse a gcode file and display the commands.  If no filename is specified, parse all the gcode files which are not log files in this folder."""
+	"Parse a gcode file and display the commands.  If no filename is specified, parse all the gcode files which are not log files in this folder."
 	if filename == '':
 		displayFiles( getGCodeFilesWhichAreNotLogFiles() )
 		return
 	displayFile( filename )
 
 def displayFile( filename ):
-	"""Parse a gcode file and display the commands."""
+	"Parse a gcode file and display the commands."
 	print('File ' + filename + ' is being displayed.')
 	fileText = archive.getFileText( filename )
 	gcodec.writeFileMessageSuffix( filename, displayText(fileText), 'The gcode log file is saved as ', '_log')
 
 def displayFiles( filenames ):
-	"""Parse gcode files and display the commands."""
+	"Parse gcode files and display the commands."
 	for filename in filenames:
 		displayFile( filename )
 
 def displayText(gcodeText):
-	"""Parse a gcode text and display the commands."""
+	"Parse a gcode text and display the commands."
 	skein = displaySkein()
 	skein.parseText(gcodeText)
 	return skein.output
@@ -232,16 +232,16 @@ def extrudeText(gcodeText):
 	return skein.output
 
 def getGCodeFilesWhichAreNotLogFiles():
-	"""Get gcode files which are not log files."""
+	"Get gcode files which are not log files."
 	return archive.getFilesWithFileTypeWithoutWords('gcode', ['_log'] )
 
 def getIntegerString(number):
-	"""Get integer as string."""
+	"Get integer as string."
 	return str( int(number) )
 
 
 class displaySkein:
-	"""A class to display a gcode skein of extrusions."""
+	"A class to display a gcode skein of extrusions."
 	def __init__(self):
 		self.extruderActive = 0
 		self.feedrateMinute = 200.0
@@ -249,17 +249,17 @@ class displaySkein:
 		self.output = ''
 
 	def addToOutput(self, line):
-		"""Add line with a newline at the end to the output."""
+		"Add line with a newline at the end to the output."
 		print(line)
 		self.output += line + '\n'
 
 	def evaluateCommand( self, command ):
-		"""Add an extruder command to the output."""
+		"Add an extruder command to the output."
 		self.addToOutput( command )
 
 	def helicalMove( self, isCounterclockwise, splitLine ):
-		"""Parse a helical move gcode line and send the commands to the extruder."""
-		if self.oldLocation is None:
+		"Parse a helical move gcode line and send the commands to the extruder."
+		if self.oldLocation == None:
 			return
 		location = Vector3( self.oldLocation )
 		self.setFeedrate(splitLine)
@@ -301,14 +301,14 @@ class displaySkein:
 		self.oldLocation = location
 
 	def homeReset(self):
-		"""Send all axies to home position. Wait until arrival."""
+		"Send all axies to home position. Wait until arrival."
 		homeCommandString = 'reprap.cartesian.homeReset(' + getIntegerString( self.feedrateMinute ) + ', True )'
 		self.evaluateCommand( homeCommandString )
 
 	def linearMove( self, splitLine ):
-		"""Parse a linear move gcode line and send the commands to the extruder."""
+		"Parse a linear move gcode line and send the commands to the extruder."
 		location = Vector3()
-		if self.oldLocation is not None:
+		if self.oldLocation != None:
 			location = self.oldLocation
 		self.setFeedrate(splitLine)
 		setPointToSplitLine( location, splitLine )
@@ -316,7 +316,7 @@ class displaySkein:
 		self.oldLocation = location
 
 	def moveExtruder(self, location):
-		"""Seek to location. Wait until arrival."""
+		"Seek to location. Wait until arrival."
 		moveSpeedString = getIntegerString( self.feedrateMinute )
 		xMoveString = getIntegerString(location.x)
 		yMoveString = getIntegerString(location.y)
@@ -325,7 +325,7 @@ class displaySkein:
 		self.evaluateCommand( moveCommandString )
 
 	def parseGCode(self, lines):
-		"""Parse gcode and send the commands to the extruder."""
+		"Parse gcode and send the commands to the extruder."
 		self.evaluateCommand('reprap.serial = serial.Serial(0, 19200, timeout = 60)')	# Initialise serial port, here the first port (0) is used.
 		self.evaluateCommand('reprap.cartesian.x.active = True')	# These devices are present in network, will automatically scan in the future.
 		self.evaluateCommand('reprap.cartesian.y.active = True')
@@ -343,7 +343,7 @@ class displaySkein:
 		self.evaluateCommand('reprap.cartesian.free()')	# Shut off power to all motors.
 
 	def parseLine(self, line):
-		"""Parse a gcode line and send the command to the extruder."""
+		"Parse a gcode line and send the command to the extruder."
 		self.addToOutput(line)
 		splitLine = line.split(' ')
 		if len(splitLine) < 1:
@@ -364,25 +364,25 @@ class displaySkein:
 			self.oldActiveLocation = None
 
 	def parseText( self, text ):
-		"""Parse a gcode text and evaluate the commands."""
+		"Parse a gcode text and evaluate the commands."
 		textLines = getTextLines(text)
 		self.parseGCode( textLines )
 
 	def setFeedrate( self, splitLine ):
-		"""Set the feedrate to the gcode split line."""
+		"Set the feedrate to the gcode split line."
 		indexOfF = getIndexOfStartingWithSecond( "F", splitLine )
 		if indexOfF > 0:
 			self.feedrateMinute = getDoubleAfterFirstLetter( splitLine[indexOfF] )
 
 
 class extrudeSkein( displaySkein ):
-	"""A class to extrude a gcode skein of extrusions."""
+	"A class to extrude a gcode skein of extrusions."
 	def evaluateCommand( self, command ):
 		"""Add an extruder command to the output and evaluate the extruder command.
 		Display the entire command, but only evaluate the command after the first equal sign."""
 		self.addToOutput( command )
 		firstEqualIndex = command.find('=')
-		exec command
+		exec( command )
 
 
 print('Extrude has been imported.')

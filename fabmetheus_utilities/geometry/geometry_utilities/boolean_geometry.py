@@ -33,7 +33,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getEmptyZLoops(archivableObjects, importRadius, shouldPrintWarning, z, zoneArrangement):
-	"""Get loops at empty z level."""
+	'Get loops at empty z level.'
 	emptyZ = zoneArrangement.getEmptyZ(z)
 	visibleObjects = evaluate.getVisibleObjects(archivableObjects)
 	visibleObjectLoopsList = boolean_solid.getVisibleObjectLoopsList(importRadius, visibleObjects, emptyZ)
@@ -48,35 +48,35 @@ def getEmptyZLoops(archivableObjects, importRadius, shouldPrintWarning, z, zoneA
 	return loops
 
 def getMinimumZ(geometryObject):
-	"""Get the minimum of the minimum z of the archivableObjects and the object."""
+	'Get the minimum of the minimum z of the archivableObjects and the object.'
 	booleanGeometry = BooleanGeometry()
 	booleanGeometry.archivableObjects = geometryObject.archivableObjects
 	booleanGeometry.importRadius = setting.getImportRadius(geometryObject.xmlElement)
-	booleanGeometry.extrusionHeight = setting.getLayerThickness(geometryObject.xmlElement)
+	booleanGeometry.layerThickness = setting.getLayerThickness(geometryObject.xmlElement)
 	archivableMinimumZ = booleanGeometry.getMinimumZ()
 	geometryMinimumZ = geometryObject.getMinimumZ()
-	if archivableMinimumZ is None and geometryMinimumZ is None:
+	if archivableMinimumZ == None and geometryMinimumZ == None:
 		return None
-	if archivableMinimumZ is None:
+	if archivableMinimumZ == None:
 		return geometryMinimumZ
-	if geometryMinimumZ is None:
+	if geometryMinimumZ == None:
 		return archivableMinimumZ
 	return min(archivableMinimumZ, geometryMinimumZ)
 
 
 class BooleanGeometry:
-	"""A boolean geometry scene."""
+	'A boolean geometry scene.'
 	def __init__(self):
-		"""Add empty lists."""
+		'Add empty lists.'
 		self.archivableObjects = []
 		self.belowLoops = []
 		self.infillInDirectionOfBridge = False
 		self.importRadius = 0.6
-		self.extrusionHeight = 0.4
+		self.layerThickness = 0.4
 		self.rotatedLoopLayers = []
 
 	def __repr__(self):
-		"""Get the string representation of this carving."""
+		'Get the string representation of this carving.'
 		xmlElement = None
 		if len(self.archivableObjects) > 0:
 			xmlElement = self.archivableObjects[0].xmlElement
@@ -85,24 +85,24 @@ class BooleanGeometry:
 		return xml_simple_writer.getEndGeometryXMLString(output)
 
 	def addXML(self, depth, output):
-		"""Add xml for this object."""
+		'Add xml for this object.'
 		xml_simple_writer.addXMLFromObjects( depth, self.archivableObjects, output )
 
 	def getCarveCornerMaximum(self):
-		"""Get the corner maximum of the vertexes."""
+		'Get the corner maximum of the vertexes.'
 		return self.cornerMaximum
 
 	def getCarveCornerMinimum(self):
-		"""Get the corner minimum of the vertexes."""
+		'Get the corner minimum of the vertexes.'
 		return self.cornerMinimum
 
 	def getCarveLayerThickness(self):
-		"""Get the layer thickness."""
-		return self.extrusionHeight
+		'Get the layer thickness.'
+		return self.layerThickness
 
 	def getCarveRotatedBoundaryLayers(self):
-		"""Get the rotated boundary layers."""
-		if self.getMinimumZ() is None:
+		'Get the rotated boundary layers.'
+		if self.getMinimumZ() == None:
 			return []
 		z = self.minimumZ + self.halfHeight
 		while z < self.maximumZ:
@@ -124,25 +124,25 @@ class BooleanGeometry:
 		return []
 
 	def getFabmetheusXML(self):
-		"""Return the fabmetheus XML."""
+		'Return the fabmetheus XML.'
 		if len(self.archivableObjects) > 0:
 			return self.archivableObjects[0].xmlElement.getParser().getOriginalRoot()
 		return None
 
 	def getInterpretationSuffix(self):
-		"""Return the suffix for a boolean carving."""
+		'Return the suffix for a boolean carving.'
 		return 'xml'
 
 	def getMatrix4X4(self):
-		"""Get the matrix4X4."""
+		'Get the matrix4X4.'
 		return None
 
 	def getMatrixChainTetragrid(self):
-		"""Get the matrix chain tetragrid."""
+		'Get the matrix chain tetragrid.'
 		return None
 
 	def getMinimumZ(self):
-		"""Get the minimum z."""
+		'Get the minimum z.'
 		vertexes = []
 		for visibleObject in evaluate.getVisibleObjects(self.archivableObjects):
 			vertexes += visibleObject.getTransformedVertexes()
@@ -153,24 +153,24 @@ class BooleanGeometry:
 		for vertex in vertexes:
 			self.maximumZ = max(self.maximumZ, vertex.z)
 			self.minimumZ = min(self.minimumZ, vertex.z)
-		self.zoneArrangement = triangle_mesh.ZoneArrangement(self.extrusionHeight, vertexes)
-		self.halfHeight = 0.5 * self.extrusionHeight
+		self.zoneArrangement = triangle_mesh.ZoneArrangement(self.layerThickness, vertexes)
+		self.halfHeight = 0.5 * self.layerThickness
 		self.setActualMinimumZ()
 		return self.minimumZ
 
 	def getNumberOfEmptyZLoops(self, z):
-		"""Get number of empty z loops."""
+		'Get number of empty z loops.'
 		return len(getEmptyZLoops(self.archivableObjects, self.importRadius, False, z, self.zoneArrangement))
 
 	def getZAddExtruderPaths(self, z):
-		"""Get next z and add extruder loops."""
+		'Get next z and add extruder loops.'
 		settings.printProgress(len(self.rotatedLoopLayers), 'slice')
 		rotatedLoopLayer = euclidean.RotatedLoopLayer(z)
 		rotatedLoopLayer.loops = getEmptyZLoops(self.archivableObjects, self.importRadius, True, z, self.zoneArrangement)
 		return triangle_mesh.getZAddExtruderPathsBySolidCarving(rotatedLoopLayer, self, z)
 
 	def setActualMinimumZ(self):
-		"""Get the actual minimum z at the lowest rotated boundary layer."""
+		'Get the actual minimum z at the lowest rotated boundary layer.'
 		halfHeightOverMyriad = 0.0001 * self.halfHeight
 		while self.minimumZ < self.maximumZ:
 			if self.getNumberOfEmptyZLoops(self.minimumZ + halfHeightOverMyriad) > 0:
@@ -184,20 +184,20 @@ class BooleanGeometry:
 						increment = -increment
 				self.minimumZ = round(self.minimumZ, -int(round(math.log10(halfHeightOverMyriad) + 1.5)))
 				return
-			self.minimumZ += self.extrusionHeight
+			self.minimumZ += self.layerThickness
 
 	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
-		"""Set the infill in direction of bridge."""
+		'Set the infill in direction of bridge.'
 		self.infillInDirectionOfBridge = infillInDirectionOfBridge
 
-	def setCarveLayerThickness( self, extrusionHeight ):
-		"""Set the layer thickness."""
-		self.extrusionHeight = extrusionHeight
+	def setCarveLayerThickness( self, layerThickness ):
+		'Set the layer thickness.'
+		self.layerThickness = layerThickness
 
 	def setCarveImportRadius( self, importRadius ):
-		"""Set the import radius."""
+		'Set the import radius.'
 		self.importRadius = importRadius
 
 	def setCarveIsCorrectMesh( self, isCorrectMesh ):
-		"""Set the is correct mesh flag."""
+		'Set the is correct mesh flag.'
 		self.isCorrectMesh = isCorrectMesh

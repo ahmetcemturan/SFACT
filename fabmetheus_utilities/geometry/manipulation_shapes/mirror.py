@@ -27,7 +27,7 @@ globalExecutionOrder = 200
 
 
 def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
-	"""Get equated geometryOutput."""
+	'Get equated geometryOutput.'
 	flippedGeometryOutput = triangle_mesh.getGeometryOutputCopy(geometryOutput)
 	flip.flipPoints(matrix.getVertexes(flippedGeometryOutput), prefix, xmlElement)
 	if flip.getShouldReverse(prefix, xmlElement):
@@ -37,10 +37,10 @@ def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
 	return {'union' : {'shapes' : [flippedGeometryOutput, geometryOutput]}}
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get flipped paths."""
+	'Get flipped paths.'
 	return [loop + flip.getFlippedLoop(euclidean.getPathCopy(loop), prefix, xmlElement)]
 
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	solid.processXMLElementByFunctions(getManipulatedGeometryOutput, getManipulatedPaths, xmlElement)

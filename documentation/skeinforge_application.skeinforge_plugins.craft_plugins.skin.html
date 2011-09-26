@@ -13,7 +13,9 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.scale.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.skirt.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Skin is a script to smooth the surface skin as described at:<br>
+Skin is a script to smooth the surface skin of an object by replacing the perimeter surface with a surface printed at half the carve<br>
+height. This gives the impression that the object was carved at a much thinner height giving a high-quality finish, but still prints <br>
+in a relatively short time. The process is described at:<br>
 <a href="http://adventuresin3-dprinting.blogspot.com/2011/05/skinning.html">http://adventuresin3-dprinting.blogspot.com/2011/05/skinning.html</a><br>
  <br>
 The skin manual page is at:<br>
@@ -22,12 +24,38 @@ The skin manual page is at:<br>
  <br>
 <br />
 <a href="#Operation">Operation</a><br />
+<a href="#Settings">Settings</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Clip Over Perimeter Width">Clip Over Perimeter Width</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layer From">Layer From</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Tips">Tips</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
 
 The default 'Activate Skin' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.<br>
+ <br>
+<a name="Settings" id="Settings"></a><h2>Settings</h2>
+<hr>
+
+<a name="Clip Over Perimeter Width" id="Clip Over Perimeter Width"></a><h4>Clip Over Perimeter Width</h4>
+
+Default is 0.1.<br>
+ <br>
+Defines the ratio of the amount each end of the loop is clipped over the perimeter width.  The total gap will therefore be twice the clip.  If the ratio is too high loops will have a gap, if the ratio is too low there will be a bulge at the loop ends.<br>
+ <br>
+<a name="Layer From" id="Layer From"></a><h4>Layer From</h4>
+
+Default is one.<br>
+ <br>
+Defines which layer of the print the skinning process starts from. It is not wise to set this to zero, skinning the bottom layer is likely to cause the bottom perimeter not to adhere well to the print surface.<br>
+ <br>
+<a name="Tips" id="Tips"></a><h4>Tips</h4>
+
+Due to the very small Z-axis moves skinning can generate as it prints the perimeter, it can cause the Z-axis speed to be limited by the Limit plug-in, if you have it enabled. This can cause some printers to pause excessively during each layer change. To overcome this, ensure that the Z-axis max speed in the Limit tool is set to an appropriate value for your printer, e.g. 10mm/s<br>
+ <br>
+Since Skin prints two half-height perimeter layers for each layer, printing the perimeter last causes the print head to travel down from the current print height. Depending on the shape of your extruder nozzle, you may get higher quality prints if you print the perimeters first, so the print head always travels up.  This is set via the Thread Sequence Choice setting in the Fill tool.<br>
+ <br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>
@@ -107,7 +135,11 @@ The skin tool has created the file:<br>
 
 <dl><dt><a name="SkinSkein-addFlowRateLine"><strong>addFlowRateLine</strong></a>(self, flowRate)</dt><dd><tt>Add&nbsp;a&nbsp;flow&nbsp;rate&nbsp;line.</tt></dd></dl>
 
+<dl><dt><a name="SkinSkein-addInfillOutlines"><strong>addInfillOutlines</strong></a>(self, feedRate, infillOutlines, z)</dt><dd><tt>Add&nbsp;the&nbsp;infill&nbsp;outlines&nbsp;to&nbsp;the&nbsp;gcode.</tt></dd></dl>
+
 <dl><dt><a name="SkinSkein-addPerimeterLoop"><strong>addPerimeterLoop</strong></a>(self, thread, z)</dt><dd><tt>Add&nbsp;the&nbsp;perimeter&nbsp;loop&nbsp;to&nbsp;the&nbsp;gcode.</tt></dd></dl>
+
+<dl><dt><a name="SkinSkein-addSkinnedInfill"><strong>addSkinnedInfill</strong></a>(self)</dt><dd><tt>Add&nbsp;skinned&nbsp;infill.</tt></dd></dl>
 
 <dl><dt><a name="SkinSkein-addSkinnedPerimeter"><strong>addSkinnedPerimeter</strong></a>(self)</dt><dd><tt>Add&nbsp;skinned&nbsp;perimeter.</tt></dd></dl>
 
@@ -115,9 +147,13 @@ The skin tool has created the file:<br>
 
 <dl><dt><a name="SkinSkein-getCraftedGcode"><strong>getCraftedGcode</strong></a>(self, gcodeText, repository)</dt><dd><tt>Parse&nbsp;gcode&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;skin&nbsp;gcode.</tt></dd></dl>
 
+<dl><dt><a name="SkinSkein-parseBoundaries"><strong>parseBoundaries</strong></a>(self)</dt><dd><tt>Parse&nbsp;the&nbsp;boundaries&nbsp;and&nbsp;add&nbsp;them&nbsp;to&nbsp;the&nbsp;boundary&nbsp;layers.</tt></dd></dl>
+
 <dl><dt><a name="SkinSkein-parseInitialization"><strong>parseInitialization</strong></a>(self)</dt><dd><tt>Parse&nbsp;gcode&nbsp;initialization&nbsp;and&nbsp;store&nbsp;the&nbsp;parameters.</tt></dd></dl>
 
 <dl><dt><a name="SkinSkein-parseLine"><strong>parseLine</strong></a>(self, line)</dt><dd><tt>Parse&nbsp;a&nbsp;gcode&nbsp;line&nbsp;and&nbsp;add&nbsp;it&nbsp;to&nbsp;the&nbsp;skin&nbsp;skein.</tt></dd></dl>
+
+<dl><dt><a name="SkinSkein-setInfill"><strong>setInfill</strong></a>(self)</dt><dd><tt>Set&nbsp;the&nbsp;infill&nbsp;to&nbsp;an&nbsp;empty&nbsp;list&nbsp;if&nbsp;the&nbsp;layerIndex&nbsp;is&nbsp;above&nbsp;layersFromBottom&nbsp;and&nbsp;there&nbsp;is&nbsp;nothing&nbsp;above.</tt></dd></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -138,7 +174,7 @@ The skin tool has created the file:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><strong>__author__</strong> = 'Enrique Perez (perez_enrique@yahoo.com)'<br>
+<td width="100%"><strong>__author__</strong> = 'Enrique Perez (perez_enrique aht yahoo.com) &amp; James Blackwell (jim_blag ahht hotmail.com)'<br>
 <strong>__date__</strong> = '$Date: 2008/21/04 $'<br>
 <strong>__license__</strong> = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'<br>
 <strong>absolute_import</strong> = _Feature((2, 5, 0, 'alpha', 1), (2, 7, 0, 'alpha', 0), 16384)</td></tr></table><p>
@@ -148,5 +184,5 @@ The skin tool has created the file:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
     
 <tr><td bgcolor="#7799ee"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%">Enrique&nbsp;Perez&nbsp;(perez_enrique@yahoo.com)</td></tr></table>
+<td width="100%">Enrique&nbsp;Perez&nbsp;(perez_enrique&nbsp;aht&nbsp;yahoo.com)&nbsp;&amp;&nbsp;James&nbsp;Blackwell&nbsp;(jim_blag&nbsp;ahht&nbsp;hotmail.com)</td></tr></table>
 </body></html>

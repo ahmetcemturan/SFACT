@@ -25,7 +25,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getArcPath(xmlElement):
-	"""Get the arc path.rx ry x-axis-rotation large-arc-flag sweep-flag"""
+	"Get the arc path.rx ry x-axis-rotation large-arc-flag sweep-flag"
 	begin = xmlElement.getPreviousVertex(Vector3())
 	end = evaluate.getVector3FromXMLElement(xmlElement)
 	largeArcFlag = evaluate.getEvaluatedBoolean(True, 'largeArcFlag', xmlElement)
@@ -47,5 +47,5 @@ def getArcPath(xmlElement):
 	return path
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
-	xmlElement.parent.xmlObject.vertexes += getArcPath(xmlElement)
+	"Process the xml element."
+	xmlElement.parentNode.xmlObject.vertexes += getArcPath(xmlElement)

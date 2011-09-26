@@ -21,16 +21,16 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return WriteDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	processXMLElementByDerivation(None, xmlElement)
 
 def processXMLElementByDerivation(derivation, xmlElement):
-	"""Process the xml element by derivation."""
-	if derivation is None:
+	'Process the xml element by derivation.'
+	if derivation == None:
 		derivation = WriteDerivation(xmlElement)
 	if len(derivation.targets) < 1:
 		print('Warning, processXMLElement in write could not get targets for:')
@@ -41,9 +41,9 @@ def processXMLElementByDerivation(derivation, xmlElement):
 		writeXMLElement(derivation, fileNames, target)
 
 def writeXMLElement(derivation, fileNames, target):
-	"""Write a quantity of the target."""
+	"Write a quantity of the target."
 	xmlObject = target.xmlObject
-	if xmlObject is None:
+	if xmlObject == None:
 		print('Warning, writeTarget in write could not get xmlObject for:')
 		print(target)
 		print(derivation.xmlElement)
@@ -63,7 +63,7 @@ def writeXMLElement(derivation, fileNames, target):
 		writeXMLObject(absoluteFolderDirectory, derivation, fileNames, target, xmlObject)
 
 def writeXMLObject(absoluteFolderDirectory, derivation, fileNames, target, xmlObject):
-	"""Write one instance of the xmlObject."""
+	"Write one instance of the xmlObject."
 	extension = evaluate.getEvaluatedString(xmlObject.getFabricationExtension(), 'extension', derivation.xmlElement)
 	fileNameRoot = derivation.fileName
 	if fileNameRoot == '':
@@ -86,9 +86,9 @@ def writeXMLObject(absoluteFolderDirectory, derivation, fileNames, target, xmlOb
 
 
 class WriteDerivation:
-	"""Class to hold write variables."""
+	"Class to hold write variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.addLayerTemplate = evaluate.getEvaluatedBoolean(False, 'addLayerTemplate', xmlElement)
 		self.fileName = evaluate.getEvaluatedString('', 'file', xmlElement)
 		self.folderName = evaluate.getEvaluatedString('', 'folder', xmlElement)
@@ -98,5 +98,5 @@ class WriteDerivation:
 		self.xmlElement = xmlElement
 
 	def __repr__(self):
-		"""Get the string representation of this WriteDerivation."""
+		"Get the string representation of this WriteDerivation."
 		return str(self.__dict__)

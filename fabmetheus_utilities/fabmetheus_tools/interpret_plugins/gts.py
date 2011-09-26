@@ -36,7 +36,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getFromGNUTriangulatedSurfaceText( gnuTriangulatedSurfaceText, triangleMesh ):
-	"""Initialize from a GNU Triangulated Surface Text."""
+	"Initialize from a GNU Triangulated Surface Text."
 	if gnuTriangulatedSurfaceText == '':
 		return None
 	lines = archive.getTextLines( gnuTriangulatedSurfaceText )
@@ -76,5 +76,5 @@ def getFromGNUTriangulatedSurfaceText( gnuTriangulatedSurfaceText, triangleMesh 
 	return triangleMesh
 
 def getCarving(fileName):
-	"""Get the carving for the gts file."""
+	"Get the carving for the gts file."
 	return getFromGNUTriangulatedSurfaceText( archive.getFileText(fileName), triangle_mesh.TriangleMesh() )

@@ -32,7 +32,7 @@ globalMathConstantDictionary = {
 
 
 def _getAccessibleAttribute(attributeName):
-	"""Get the accessible attribute."""
+	'Get the accessible attribute.'
 	if attributeName in globalMathConstantDictionary:
 		return globalMathConstantDictionary[attributeName]
 	if attributeName in globalNativeFunctionSet:
@@ -43,47 +43,47 @@ def _getAccessibleAttribute(attributeName):
 
 
 def getAbs(value):
-	"""Get the abs."""
+	'Get the abs.'
 	return abs(value)
 
 def getBoolean(value):
-	"""Get the boolean."""
+	'Get the boolean.'
 	return bool(value)
 
 def getDivmod(x, y):
-	"""Get the divmod."""
+	'Get the divmod.'
 	return divmod(x, y)
 
 def getFloat(value):
-	"""Get the float."""
+	'Get the float.'
 	return float(value)
 
 def getHex(value):
-	"""Get the hex."""
+	'Get the hex.'
 	return hex(value)
 
 def getInt(value):
-	"""Get the int."""
+	'Get the int.'
 	return int(value)
 
 def getLong(value):
-	"""Get the long."""
+	'Get the long.'
 	return long(value)
 
 def getMax(first, second):
-	"""Get the max."""
+	'Get the max.'
 	return max(first, second)
 
 def getMin(first, second):
-	"""Get the min."""
+	'Get the min.'
 	return min(first, second)
 
 def getRound(value):
-	"""Get the round."""
+	'Get the round.'
 	return round(value)
 
 def getString(value):
-	"""Get the string."""
+	'Get the string.'
 	return str(value)
 
 

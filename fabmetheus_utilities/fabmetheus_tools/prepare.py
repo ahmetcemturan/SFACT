@@ -18,19 +18,19 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def prepareWikify():
-	"""Remove generated files, then wikify the file comments."""
+	'Remove generated files, then wikify the file comments.'
 	removeGeneratedFiles()
 	wikifier.main()
 	removeZip()
 
 def removeCSVFile(csvFilePath):
-	"""Remove csv file."""
+	'Remove csv file.'
 	if 'alterations' in csvFilePath and 'example_' not in csvFilePath:
 		os.remove(csvFilePath)
 		print('removeGeneratedFiles deleted ' + csvFilePath)
 
 def removeGcodeFile(gcodeFilePath):
-	"""Remove gcode file."""
+	'Remove gcode file.'
 	if 'alterations' not in gcodeFilePath:
 		os.remove(gcodeFilePath)
 		print('removeGeneratedFiles deleted ' + gcodeFilePath)
@@ -40,7 +40,7 @@ def removeGcodeFile(gcodeFilePath):
 		print('removeGeneratedFiles deleted ' + gcodeFilePath)
 
 def removeGeneratedFiles():
-	"""Remove generated files."""
+	'Remove generated files.'
 	csvFilePaths = archive.getFilesWithFileTypesWithoutWordsRecursively(['csv'])
 	for csvFilePath in csvFilePaths:
 		removeCSVFile(csvFilePath)
@@ -56,31 +56,30 @@ def removeGeneratedFiles():
 	archive.removeBackupFilesByTypes(['gcode', 'svg', 'xml'])
 
 def removeSVGFile(svgFilePath):
-	"""Remove svg file."""
+	'Remove svg file.'
 	if archive.getEndsWithList(svgFilePath, ['_bottom.svg', '_carve.svg', '_chop.svg', '_cleave.svg', '_scale.svg', '_vectorwrite.svg']):
 		os.remove(svgFilePath)
 		print('removeGeneratedFiles deleted ' + svgFilePath)
 
 def removeXMLFile(xmlFilePath):
-	"""Remove xml file."""
+	'Remove xml file.'
 	if archive.getEndsWithList(xmlFilePath, ['_interpret.xml']):
 		os.remove(xmlFilePath)
 		print('removeGeneratedFiles deleted ' + xmlFilePath)
 
 def removeZip():
-	"""Remove the zip file, then generate a new one.zip -r reprap_python_beanshell * -x \*.pyc \*~"""
+	'Remove the zip file, then generate a new one.zip -r reprap_python_beanshell * -x \*.pyc \*~'
 	zipName = 'reprap_python_beanshell'
 	zipNameExtension = zipName + '.zip'
 	if zipNameExtension in os.listdir(os.getcwd()):
 		os.remove(zipNameExtension)
 	shellCommand = 'zip -r %s * -x \*.pyc \*~' % zipName
-	commandResult = os.system(shellCommand)
-	if commandResult != 0:
+	if os.system(shellCommand) != 0:
 		print('Failed to execute the following command in removeZip in prepare.')
 		print(shellCommand)
 
 def main():
-	"""Run main function."""
+	'Run main function.'
 	prepareWikify()
 
 if __name__ == "__main__":

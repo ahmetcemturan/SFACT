@@ -42,6 +42,7 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from datetime import date
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 from fabmetheus_utilities.svg_reader import SVGReader
 from fabmetheus_utilities.vector3 import Vector3
@@ -55,42 +56,44 @@ from fabmetheus_utilities import xml_simple_writer
 from skeinforge_application.skeinforge_utilities import skeinforge_craft
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
+import cStringIO
+import os
 import sys
+import time
 
 
-
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getCraftedText(fileName, svgText='', repository=None):
-	"""Bottom and convert an svg file or svgText."""
+	"Bottom and convert an svg file or svgText."
 	return getCraftedTextFromText(fileName, archive.getTextIfEmpty(fileName, svgText), repository)
 
 def getCraftedTextFromText(fileName, svgText, repository=None):
-	"""Bottom and convert an svgText."""
+	"Bottom and convert an svgText."
 	if gcodec.isProcedureDoneOrFileIsEmpty(svgText, 'bottom'):
 		return svgText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(BottomRepository())
 	if not repository.activateBottom.value:
 		return svgText
 	return BottomSkein().getCraftedGcode(fileName, repository, svgText)
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return BottomRepository()
 
 def writeOutput(fileName, shouldAnalyze=True):
-	"""Bottom the carving."""
+	'Bottom the carving.'
 	skeinforge_craft.writeSVGTextWithNounMessage(fileName, BottomRepository(), shouldAnalyze)
 
 
 class BottomRepository:
-	"""A class to handle the bottom settings."""
+	"A class to handle the bottom settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository(
 			'skeinforge_application.skeinforge_plugins.craft_plugins.bottom.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName(
@@ -103,52 +106,52 @@ class BottomRepository:
 		self.executeTitle = 'Bottom'
 
 	def execute(self):
-		"""Bottom button has been clicked."""
+		"Bottom button has been clicked."
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
 		for fileName in fileNames:
 			writeOutput(fileName)
 
 
 class BottomSkein:
-	"""A class to bottom a skein of extrusions."""
+	"A class to bottom a skein of extrusions."
 	def getCraftedGcode(self, fileName, repository, svgText):
-		"""Parse svgText and store the bottom svgText."""
+		"Parse svgText and store the bottom svgText."
 		svgReader = SVGReader()
 		svgReader.parseSVG('', svgText)
-		if svgReader.sliceDictionary is None:
+		if svgReader.sliceDictionary == None:
 			print('Warning, nothing will be done because the sliceDictionary could not be found getCraftedGcode in preface.')
 			return ''
 		decimalPlacesCarried = int(svgReader.sliceDictionary['decimalPlacesCarried'])
-		extrusionHeight = float(svgReader.sliceDictionary['extrusionHeight'])
-		extrusionWidth = float(svgReader.sliceDictionary['extrusionWidth'])
+		layerThickness = float(svgReader.sliceDictionary['layerThickness'])
+		perimeterWidth = float(svgReader.sliceDictionary['perimeterWidth'])
 		rotatedLoopLayers = svgReader.rotatedLoopLayers
 		zMinimum = 987654321.0
 		for rotatedLoopLayer in rotatedLoopLayers:
 			zMinimum = min(rotatedLoopLayer.z, zMinimum)
-		deltaZ = repository.altitude.value + repository.additionalHeightOverLayerThickness.value * extrusionHeight - zMinimum
+		deltaZ = repository.altitude.value + repository.additionalHeightOverLayerThickness.value * layerThickness - zMinimum
 		for rotatedLoopLayer in rotatedLoopLayers:
 			rotatedLoopLayer.z += deltaZ
 		cornerMaximum = Vector3(-912345678.0, -912345678.0, -912345678.0)
 		cornerMinimum = Vector3(912345678.0, 912345678.0, 912345678.0)
-		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, extrusionHeight, rotatedLoopLayers)
+		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, rotatedLoopLayers)
 		svgWriter = svg_writer.SVGWriter(
 			True,
 			cornerMaximum,
 			cornerMinimum,
 			decimalPlacesCarried,
-			extrusionHeight,
-			extrusionWidth)
+			layerThickness,
+			perimeterWidth)
 		commentElement = svg_writer.getCommentElement(svgReader.root)
 		procedureNameString = svgReader.sliceDictionary['procedureName'] + ',bottom'
 		return svgWriter.getReplacedSVGTemplate(fileName, procedureNameString, rotatedLoopLayers, commentElement)
 
 
 def main():
-	"""Display the bottom dialog."""
+	"Display the bottom dialog."
 	if len(sys.argv) > 1:
 		writeOutput(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

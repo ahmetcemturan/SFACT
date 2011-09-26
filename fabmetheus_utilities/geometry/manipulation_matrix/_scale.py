@@ -23,30 +23,30 @@ globalExecutionOrder = 340
 
 
 def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
-	"""Get equated geometryOutput."""
+	"Get equated geometryOutput."
 	scalePoints( matrix.getVertexes(geometryOutput), prefix, xmlElement )
 	return geometryOutput
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get equated paths."""
+	"Get equated paths."
 	scalePoints( loop, prefix, xmlElement )
 	return [loop]
 
 def manipulateXMLElement(target, xmlElement):
-	"""Manipulate the xml element."""
+	"Manipulate the xml element."
 	scaleTetragrid = matrix.getScaleTetragrid('', xmlElement)
-	if scaleTetragrid is None:
+	if scaleTetragrid == None:
 		print('Warning, scaleTetragrid was None in scale so nothing will be done for:')
 		print(xmlElement)
 		return
 	matrix.setAttributeDictionaryToMultipliedTetragrid(scaleTetragrid, target)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	solid.processXMLElementByFunction( manipulateXMLElement, xmlElement)
 
 def scalePoints(points, prefix, xmlElement):
-	"""Scale the points."""
+	"Scale the points."
 	scaleDefaultVector3 = Vector3(1.0, 1.0, 1.0)
 	scaleVector3 = matrix.getCumulativeVector3Remove(scaleDefaultVector3.copy(), prefix, xmlElement)
 	if scaleVector3 == scaleDefaultVector3:

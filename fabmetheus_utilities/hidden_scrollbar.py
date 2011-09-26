@@ -9,9 +9,9 @@ import __init__
 try:
 	import Tkinter
 	class HiddenScrollbar(Tkinter.Scrollbar):
-		"""A class to hide the scrollbar if it is not needed."""
+		'A class to hide the scrollbar if it is not needed.'
 		def set(self, lo, hi):
-			"""Add to grid is needed, remove if not."""
+			'Add to grid is needed, remove if not.'
 			if float(lo) <= 0.0 and float(hi) >= 1.0:
 				self.grid_remove()
 				self.visible = False

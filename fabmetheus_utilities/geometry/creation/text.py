@@ -21,8 +21,8 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	"Get vector3 vertexes from attribute dictionary."
+	if derivation == None:
 		derivation = TextDerivation(xmlElement)
 	if derivation.textString == '':
 		print('Warning, textString is empty in getGeometryOutput in text for:')
@@ -38,23 +38,23 @@ def getGeometryOutput(derivation, xmlElement):
 	return geometryOutput
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	"Get vector3 vertexes from attribute dictionary by arguments."
 	evaluate.setAttributeDictionaryByArguments(['text', 'fontSize', 'fontFamily'], arguments, xmlElement)
 	return getGeometryOutput(None, xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return TextDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class TextDerivation:
-	"""Class to hold text variables."""
+	"Class to hold text variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.fontFamily = evaluate.getEvaluatedString('Gentium Basic Regular', 'font-family', xmlElement)
 		self.fontFamily = evaluate.getEvaluatedString(self.fontFamily, 'fontFamily', xmlElement)
 		self.fontSize = evaluate.getEvaluatedFloat(12.0, 'font-size', xmlElement)
@@ -63,5 +63,5 @@ class TextDerivation:
 		self.textString = evaluate.getEvaluatedString(self.textString, 'text', xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this TextDerivation."""
+		"Get the string representation of this TextDerivation."
 		return str(self.__dict__)

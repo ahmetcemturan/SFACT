@@ -27,19 +27,19 @@ import __init__
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return skeinforge_polyfile.PolyfileRepository()
 
 
 def main():
-	"""Display the file or directory dialog."""
-	settings.startMainLoopFromConstructor( getNewRepository() )
+	"Display the file or directory dialog."
+	settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

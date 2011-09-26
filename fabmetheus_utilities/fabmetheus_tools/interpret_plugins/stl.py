@@ -33,7 +33,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addFacesGivenBinary( stlData, triangleMesh, vertexIndexTable ):
-	"""Add faces given stl binary."""
+	"Add faces given stl binary."
 	numberOfVertexes = ( len( stlData ) - 84 ) / 50
 	vertexes = []
 	for vertexIndex in xrange( numberOfVertexes ):
@@ -44,7 +44,7 @@ def addFacesGivenBinary( stlData, triangleMesh, vertexIndexTable ):
 	addFacesGivenVertexes( triangleMesh, vertexIndexTable, vertexes )
 
 def addFacesGivenText( stlText, triangleMesh, vertexIndexTable ):
-	"""Add faces given stl text."""
+	"Add faces given stl text."
 	lines = archive.getTextLines( stlText )
 	vertexes = []
 	for line in lines:
@@ -53,12 +53,12 @@ def addFacesGivenText( stlText, triangleMesh, vertexIndexTable ):
 	addFacesGivenVertexes( triangleMesh, vertexIndexTable, vertexes )
 
 def addFacesGivenVertexes( triangleMesh, vertexIndexTable, vertexes ):
-	"""Add faces given stl text."""
+	"Add faces given stl text."
 	for vertexIndex in xrange( 0, len(vertexes), 3 ):
 		triangleMesh.faces.append( getFaceGivenLines( triangleMesh, vertexIndex, vertexIndexTable, vertexes ) )
 
 def getCarving(fileName=''):
-	"""Get the triangle mesh for the stl file."""
+	"Get the triangle mesh for the stl file."
 	if fileName == '':
 		return None
 	stlData = archive.getFileText(fileName, True, 'rb')
@@ -76,7 +76,7 @@ def getCarving(fileName=''):
 	return triangleMesh
 
 def getFaceGivenLines( triangleMesh, vertexStartIndex, vertexIndexTable, vertexes ):
-	"""Add face given line index and lines."""
+	"Add face given line index and lines."
 	faceGivenLines = face.Face()
 	faceGivenLines.index = len( triangleMesh.faces )
 	for vertexIndex in xrange( vertexStartIndex, vertexStartIndex + 3 ):
@@ -91,21 +91,21 @@ def getFaceGivenLines( triangleMesh, vertexStartIndex, vertexIndexTable, vertexe
 	return faceGivenLines
 
 def getFloat(floatString):
-	"""Get the float, replacing commas if necessary because an inferior program is using a comma instead of a point for the decimal point."""
+	"Get the float, replacing commas if necessary because an inferior program is using a comma instead of a point for the decimal point."
 	try:
 		return float(floatString)
 	except:
 		return float( floatString.replace(',', '.') )
 
 def getFloatGivenBinary( byteIndex, stlData ):
-	"""Get vertex given stl vertex line."""
+	"Get vertex given stl vertex line."
 	return unpack('f', stlData[ byteIndex : byteIndex + 4 ] )[0]
 
 def getVertexGivenBinary( byteIndex, stlData ):
-	"""Get vertex given stl vertex line."""
+	"Get vertex given stl vertex line."
 	return Vector3( getFloatGivenBinary( byteIndex, stlData ), getFloatGivenBinary( byteIndex + 4, stlData ), getFloatGivenBinary( byteIndex + 8, stlData ) )
 
 def getVertexGivenLine(line):
-	"""Get vertex given stl vertex line."""
+	"Get vertex given stl vertex line."
 	splitLine = line.split()
 	return Vector3( getFloat(splitLine[1]), getFloat( splitLine[2] ), getFloat( splitLine[3] ) )

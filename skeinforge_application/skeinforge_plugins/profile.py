@@ -21,13 +21,13 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import os
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def addSubmenus( craftTypeName, menu, pluginFileName, pluginPath, profileRadioVar ):
-	"""Add a tool plugin menu."""
+	"Add a tool plugin menu."
 	submenu = settings.Tkinter.Menu( menu, tearoff = 0 )
 	menu.add_cascade( label = pluginFileName.capitalize(), menu = submenu )
 	settings.ToolDialog().addPluginToMenu( submenu, pluginPath )
@@ -40,7 +40,7 @@ def addSubmenus( craftTypeName, menu, pluginFileName, pluginPath, profileRadioVa
 		ProfileMenuRadio( pluginFileName, submenu, profileName, profileRadioVar, value )
 
 def addToProfileMenu( menu ):
-	"""Add a profile menu."""
+	"Add a profile menu."
 	settings.ToolDialog().addPluginToMenu( menu, __file__[ : __file__.rfind('.') ] )
 	menu.add_separator()
 	directoryPath = skeinforge_profile.getPluginsDirectoryPath()
@@ -51,18 +51,18 @@ def addToProfileMenu( menu ):
 		addSubmenus( craftTypeName, menu, pluginFileName, os.path.join( directoryPath, pluginFileName ), profileRadioVar )
 
 def addToMenu( master, menu, repository, window ):
-	"""Add a tool plugin menu."""
+	"Add a tool plugin menu."
 	ProfileMenuSaveListener( menu, window )
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return skeinforge_profile.ProfileRepository()
 
 
 class ProfileMenuRadio:
-	"""A class to display a profile menu radio button."""
+	"A class to display a profile menu radio button."
 	def __init__( self, profilePluginFileName, menu, name, radioVar, value ):
-		"""Create a profile menu radio."""
+		"Create a profile menu radio."
 		self.activate = False
 		self.menu = menu
 		self.name = name
@@ -77,7 +77,7 @@ class ProfileMenuRadio:
 		self.activate = True
 
 	def clickRadio(self):
-		"""Workaround for Tkinter bug, invoke and set the value when clicked."""
+		"Workaround for Tkinter bug, invoke and set the value when clicked."
 		if not self.activate:
 			return
 		self.radioVar.set( self.profileJoinName )
@@ -94,22 +94,22 @@ class ProfileMenuRadio:
 
 
 class ProfileMenuSaveListener:
-	"""A class to update a profile menu."""
+	"A class to update a profile menu."
 	def __init__( self, menu, window ):
-		"""Set the menu."""
+		"Set the menu."
 		self.menu = menu
 		addToProfileMenu( menu )
 		euclidean.addElementToListDictionaryIfNotThere( self, window, settings.globalProfileSaveListenerListTable )
 
 	def save(self):
-		"""Profile has been saved and profile menu should be updated."""
+		"Profile has been saved and profile menu should be updated."
 		settings.deleteMenuItems( self.menu )
 		addToProfileMenu( self.menu )
 
 
 def main():
-	"""Display the profile dialog."""
-	settings.startMainLoopFromConstructor( getNewRepository() )
+	"Display the profile dialog."
+	settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

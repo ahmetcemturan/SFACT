@@ -23,35 +23,35 @@ globalExecutionOrder = 380
 
 
 def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
-	"""Get equated geometryOutput."""
+	"Get equated geometryOutput."
 	translatePoints( matrix.getVertexes(geometryOutput), prefix, xmlElement )
 	return geometryOutput
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get equated paths."""
+	"Get equated paths."
 	translatePoints( loop, prefix, xmlElement )
 	return [loop]
 
 def manipulateXMLElement(target, xmlElement):
-	"""Manipulate the xml element."""
+	"Manipulate the xml element."
 	translateTetragrid = matrix.getTranslateTetragrid('', xmlElement)
-	if translateTetragrid is None:
+	if translateTetragrid == None:
 		print('Warning, translateTetragrid was None in translate so nothing will be done for:')
 		print(xmlElement)
 		return
 	matrix.setAttributeDictionaryToMultipliedTetragrid(translateTetragrid, target)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	solid.processXMLElementByFunction(manipulateXMLElement, xmlElement)
 
 def translateNegativesPositives(negatives, positives, translation):
-	"""Translate the negatives and postives."""
+	'Translate the negatives and postives.'
 	euclidean.translateVector3Path(matrix.getVertexes(negatives), translation)
 	euclidean.translateVector3Path(matrix.getVertexes(positives), translation)
 
 def translatePoints(points, prefix, xmlElement):
-	"""Translate the points."""
+	"Translate the points."
 	translateVector3 = matrix.getCumulativeVector3Remove(Vector3(), prefix, xmlElement)
 	if abs(translateVector3) > 0.0:
 		euclidean.translateVector3Path(points, translateVector3)

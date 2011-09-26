@@ -20,16 +20,16 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def convertXMLElement(geometryOutput, xmlElement):
-	"""Convert the xml element to an intersection xml element."""
+	"Convert the xml element to an intersection xml element."
 	group.convertContainerXMLElement(geometryOutput, xmlElement, Intersection())
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	evaluate.processArchivable(Intersection, xmlElement)
 
 
 class Intersection(difference.Difference):
-	"""An intersection object."""
+	"An intersection object."
 	def getLoopsFromObjectLoopsList(self, importRadius, visibleObjectLoopsList):
-		"""Get loops from visible object loops list."""
+		"Get loops from visible object loops list."
 		return self.getIntersection(importRadius, visibleObjectLoopsList)

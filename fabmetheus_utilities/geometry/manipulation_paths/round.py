@@ -24,7 +24,7 @@ globalExecutionOrder = 40
 
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get round loop."""
+	"Get round loop."
 	if len(loop) < 3:
 		return [loop]
 	radius = lineation.getRadiusByPrefix(prefix, sideLength, xmlElement)
@@ -40,7 +40,7 @@ def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
 	return [euclidean.getLoopWithoutCloseSequentialPoints(close, roundLoop)]
 
 def getRoundPath( begin, center, close, end, radius, sidesPerRadian ):
-	"""Get round path."""
+	"Get round path."
 	beginComplex = begin.dropAxis()
 	centerComplex = center.dropAxis()
 	endComplex = end.dropAxis()
@@ -79,5 +79,5 @@ def getRoundPath( begin, center, close, end, radius, sidesPerRadian ):
 	return roundPath + [ endBevel ]
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)

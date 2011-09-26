@@ -2,7 +2,7 @@
 <!--Written in KDevelop (http://www.kdevelop.org/)-->
 <svg baseProfile='full' contentScriptType='text/ecmascript' contentStyleType='text/css' height='17106.9754px' onload='init()' preserveAspectRatio='xMidYMid meet' version='1.0' width='516.0px' xmlns='http://www.w3.org/2000/svg' xmlns:inkscape='http://www.inkscape.org/namespaces/inkscape' xmlns:slice='http://www.reprap.org/slice' xmlns:xlink='http://www.w3.org/1999/xlink' zoomAndPan='magnify'>
 	<metadata>
-		<slice:layers id='sliceData' controlBoxHeight='720' controlBoxWidth='240' decimalPlacesCarried='4' extrusionHeight='0.4' margin='20' marginTop='60' maxX='50.4306' maxY='22.1224' maxZ='10.0' minX='-50.4225' minY='-150.4395' minZ='0.0' extrusionWidth='0.72' procedureName='carve' svgMinWidth='516' template='svg_layer' textHeight='22.5' unitScale='3.7' version='0.1' yAxisPointingUpward='true' />
+		<slice:layers id='sliceData' controlBoxHeight='720' controlBoxWidth='240' decimalPlacesCarried='4' layerThickness='0.4' margin='20' marginTop='60' maxX='50.4306' maxY='22.1224' maxZ='10.0' minX='-50.4225' minY='-150.4395' minZ='0.0' perimeterWidth='0.72' procedureName='carve' svgMinWidth='516' template='svg_layer' textHeight='22.5' unitScale='3.7' version='0.1' yAxisPointingUpward='true' />
 	</metadata>
 	<script type='text/ecmascript' ><![CDATA[
 globalMetadata = document.getElementsByTagNameNS('http://www.reprap.org/slice', 'layers')[0];
@@ -476,7 +476,7 @@ function viewScroll() {
 			</g>
 			<g transform='translate(20, 640)'>
 				<text >Statistics</text>
-				<text id='extrusionHeightIso' y='20' >Layer Thickness: 0.4 mm</text>
+				<text id='layerThicknessIso' y='20' >Layer Thickness: 0.4 mm</text>
 				<text id='numberOfLayersIso' y='40' >Number of Layers: 25</text>
 				<text id='volumeIso' y='60' >Volume: 150.9346 cm3</text>
 			</g>
@@ -519,7 +519,7 @@ function viewScroll() {
 			</g>
 			<g transform='translate(20, 640)'>
 				<text >Statistics</text>
-				<text id='extrusionHeightLayer' y='20' >Layer Thickness: 0.4 mm</text>
+				<text id='layerThicknessLayer' y='20' >Layer Thickness: 0.4 mm</text>
 				<text id='numberOfLayersLayer' y='40' >Number of Layers: 25</text>
 				<text id='volumeLayer' y='60' >Volume: 150.9346 cm3</text>
 			</g>
@@ -554,7 +554,7 @@ function viewScroll() {
 			</g>
 			<g transform='translate(20, 640)'>
 				<text >Statistics</text>
-				<text id='extrusionHeightScroll' y='20' >Layer Thickness: 0.4 mm</text>
+				<text id='layerThicknessScroll' y='20' >Layer Thickness: 0.4 mm</text>
 				<text id='numberOfLayersScroll' y='40' >Number of Layers: 25</text>
 				<text id='volumeScroll' y='60' >Volume: 150.9346 cm3</text>
 			</g>

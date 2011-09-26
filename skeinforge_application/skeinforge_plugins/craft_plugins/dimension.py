@@ -74,51 +74,54 @@ The dimension tool has created the file:
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from datetime import date
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 from fabmetheus_utilities.geometry.solids import triangle_mesh
 from fabmetheus_utilities import archive
 from fabmetheus_utilities import euclidean
 from fabmetheus_utilities import gcodec
+from fabmetheus_utilities import intercircle
 from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_craft
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import math
+import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getCraftedText( fileName, gcodeText = '', repository=None):
-	"""Dimension a gcode file or text."""
+	'Dimension a gcode file or text.'
 	return getCraftedTextFromText( archive.getTextIfEmpty(fileName, gcodeText), repository )
 
 def getCraftedTextFromText(gcodeText, repository=None):
-	"""Dimension a gcode text."""
+	'Dimension a gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'dimension'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( DimensionRepository() )
 	if not repository.activateDimension.value:
 		return gcodeText
 	return DimensionSkein().getCraftedGcode(gcodeText, repository)
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return DimensionRepository()
 
 def writeOutput(fileName, shouldAnalyze=True):
-	"""Dimension a gcode file."""
+	'Dimension a gcode file.'
 	skeinforge_craft.writeChainTextWithNounMessage(fileName, 'dimension', shouldAnalyze)
 
 
 class DimensionRepository:
-	"""A class to handle the dimension settings."""
+	'A class to handle the dimension settings.'
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		'Set the default settings, execute title & settings fileName.'
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.dimension.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Dimension', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Dimension')
@@ -135,34 +138,35 @@ class DimensionRepository:
 		settings.LabelDisplay().getFromName('- Fighting Oooze -', self )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Filament Retraction Settings -', self )
-		self.retractionDistance = settings.FloatSpin().getFromValue( 0.00, 'Retraction Distance (millimeters):', self, 3.00, 1.00 )
-		self.restartExtraDistance = settings.FloatSpin().getFromValue( -0.50, 'Restart Extra Distance (millimeters):', self, 0.50, 0.00 )
+		#self.retractionDistance = settings.FloatSpin().getFromValue( 0.00, 'Retraction Distance (millimeters):', self, 3.00, 1.00 )
+		#self.restartExtraDistance = settings.FloatSpin().getFromValue( -0.50, 'Restart Extra Distance (millimeters):', self, 0.50, 0.00 )
+		self.oozeRate = settings.FloatSpin().getFromValue( 0, 'Oozerate (mm/min):', self, 200, 75 )
 		self.extruderRetractionSpeed = settings.FloatSpin().getFromValue( 5.0, 'Extruder Retraction Speed (mm/s):', self, 50.0, 15.0 )
-		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- When to retract ? -', self )
-		self.retractWhenCrossing = settings.BooleanSetting().getFromValue('Force to retract when crossing over spaces', self, True)
-		self.minimumExtrusionForRetraction = settings.FloatSpin().getFromValue(0.0, 'Minimum Extrusion before Retraction (millimeters):', self, 2.0, 1.0)
-		self.minimumTravelForRetraction = settings.FloatSpin().getFromValue(0.0, 'Minimum Travelmove after Retraction (millimeters):', self, 2.0, 1.0)
+		#settings.LabelSeparator().getFromRepository(self)
+		#settings.LabelDisplay().getFromName('- When to retract ? -', self )
+		#self.retractWhenCrossing = settings.BooleanSetting().getFromValue('Force to retract when crossing over spaces', self, True)
+		#self.minimumExtrusionForRetraction = settings.FloatSpin().getFromValue(0.0, 'Minimum Extrusion before Retraction (millimeters):', self, 2.0, 1.0)
+		#self.minimumTravelForRetraction = settings.FloatSpin().getFromValue(0.0, 'Minimum Travelmove after Retraction (millimeters):', self, 2.0, 1.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Firmware Related Stuff -', self )
 		extrusionDistanceFormatLatentStringVar = settings.LatentStringVar()
 		self.extrusionDistanceFormatChoiceLabel = settings.LabelDisplay().getFromName('Extrusion Values should be: ', self )
-		settings.Radio().getFromRadio( extrusionDistanceFormatLatentStringVar, 'in Absolute units (Sprinter, Marlin, SJFW, FiveD , a.o.)', self, True )
-		self.relativeExtrusionDistance = settings.Radio().getFromRadio( extrusionDistanceFormatLatentStringVar, 'in Relative units (Teacup a.o.)', self, False )
+		settings.Radio().getFromRadio( extrusionDistanceFormatLatentStringVar, 'in Absolute units', self, True )
+		self.relativeExtrusionDistance = settings.Radio().getFromRadio( extrusionDistanceFormatLatentStringVar, 'in Relative units', self, False )
 		settings.LabelSeparator().getFromRepository(self)
 		self.executeTitle = 'Dimension'
 
 	def execute(self):
-		"""Dimension button has been clicked."""
+		'Dimension button has been clicked.'
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
 		for fileName in fileNames:
 			writeOutput(fileName)
 
 
 class DimensionSkein:
-	"""A class to dimension a skein of extrusions."""
+	'A class to dimension a skein of extrusions.'
 	def __init__(self):
-		"""Initialize."""
+		'Initialize.'
 		self.absoluteDistanceMode = True
 		self.boundaryLayers = []
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
@@ -170,58 +174,62 @@ class DimensionSkein:
 		self.isExtruderActive = False
 		self.layerIndex = -1
 		self.lineIndex = 0
-		self.maximumZTravelFeedRate = None
+		self.maximumZTravelFeedRatePerSecond = None
 		self.oldLocation = None
 		self.operatingFlowRate = None
 		self.retractionRatio = 1.0
 		self.totalExtrusionDistance = 0.0
-		self.travelFeedRate = None
+		self.travelFeedRatePerSecond = None
 		self.zDistanceRatio = 5.0
+		self.oldFlowRateString = None
+		self.autoRetractDistance = 0
+		self.timeToNextThread = None
 
 	def addLinearMoveExtrusionDistanceLine( self, extrusionDistance ):
-		"""Get the extrusion distance string from the extrusion distance."""
-
-
+		'Get the extrusion distance string from the extrusion distance.'
 		self.distanceFeedRate.output.write('G1 F%s\n' % self.extruderRetractionSpeedMinuteString )
 		self.distanceFeedRate.output.write('G1%s\n' % self.getExtrusionDistanceStringFromExtrusionDistance( extrusionDistance ) )
 		self.distanceFeedRate.output.write('G1 F%s\n' % self.distanceFeedRate.getRounded( self.feedRateMinute ) )
 
 	def getCraftedGcode(self, gcodeText, repository):
-		"""Parse gcode text and store the dimension gcode."""
+		'Parse gcode text and store the dimension gcode.'
 		self.repository = repository
 		filamentRadius = 0.5 * repository.filamentDiameter.value
 		xSectionCorrector = repository.MeasuredXSection.value
 		filamentPackingArea = math.pi * filamentRadius * filamentRadius * repository.filamentPackingDensity.value
-		self.minimumExtrusionForRetraction = self.repository.minimumExtrusionForRetraction.value
-		self.minimumTravelForRetraction = self.repository.minimumTravelForRetraction.value
-		self.doubleMinimumTravelForRetraction = self.minimumTravelForRetraction + self.minimumTravelForRetraction
+		#self.minimumExtrusionForRetraction = 0 #self.repository.minimumExtrusionForRetraction.value
+		#self.minimumTravelForRetraction = 0 # self.repository.minimumTravelForRetraction.value
+		self.doubleMinimumTravelForRetraction = 0#self.minimumTravelForRetraction + self.minimumTravelForRetraction
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
-		if self.repository.retractWhenCrossing.value:
-			self.parseBoundaries()
+		#if self.repository.retractWhenCrossing.value:
+		self.parseBoundaries()
 		self.calibrationFactor = 1
 		if repository.activateCalibration.value:
-			self.calibrationFactor = (((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight*(xSectionCorrector -self.extrusionHeight))/(((self.extrusionHeight/2)*(self.extrusionHeight/2)*math.pi)+self.extrusionHeight *(self.extrusionWidth-self.extrusionHeight))
+			self.calibrationFactor = (((self.layerThickness**2/4)*math.pi)+self.layerThickness*(xSectionCorrector -self.layerThickness))/(((self.layerThickness**2/4)*math.pi)+self.layerThickness *(self.perimeterWidth-self.layerThickness))
 		self.newfilamentPackingDensity = repository.filamentPackingDensity.value * self.calibrationFactor
 		print('****************Filament Packing Density (For Calibration)**********************:')
-		print( self.newfilamentPackingDensity )
-		self.flowScaleSixty = 60.0 * ((((self.extrusionHeight+self.extrusionWidth)/4) ** 2 * math.pi )/filamentPackingArea) / self.calibrationFactor
+		print( 'Filament Packing Density (For Calibration) STEPPER EXTRUDERS ONLY :', self.newfilamentPackingDensity )
+		print('****************Filament Packing Density (For Calibration)**********************')
+		self.flowScaleSixty = 60.0 * ((((self.layerThickness+self.perimeterWidth)/4) ** 2 * math.pi )/filamentPackingArea) / self.calibrationFactor
+		#print ('filamentPackingArea self.calibrationFactor',filamentPackingArea ,self.calibrationFactor)
 		if self.calibrationFactor is None:
-			print('Mesaured extrusion width cant be 0, either un-check calibration or set mewsured width to what you have measured!')			
-		if self.operatingFlowRate is None:
+			print('Measured extrusion width cant be 0, either un-check calibration or set measured width to what you have measured!')
+		if self.operatingFlowRate == None:
 			print('There is no operatingFlowRate so dimension will do nothing.')
 			return gcodeText
-		self.restartDistance = self.repository.retractionDistance.value + self.repository.restartExtraDistance.value
+#		self.restartDistance = self.autoRetractDistance #self.repository.retractionDistance.value# + (self.repository.restartExtraDistance.value) *self.autoRetractDistance
+#		((self.restartDistance * self.retractionRatio) - (self.restartDistance * self.retractionRatio)* self.autoRetractDistance)
 		self.extruderRetractionSpeedMinuteString = self.distanceFeedRate.getRounded(60.0 * self.repository.extruderRetractionSpeed.value)
-		if self.maximumZTravelFeedRate is not None and self.travelFeedRate is not None:
-			self.zDistanceRatio = self.travelFeedRate / self.maximumZTravelFeedRate
+		if self.maximumZTravelFeedRatePerSecond != None and self.travelFeedRatePerSecond != None:
+			self.zDistanceRatio = self.travelFeedRatePerSecond / self.maximumZTravelFeedRatePerSecond
 		for lineIndex in xrange(self.lineIndex, len(self.lines)):
 			self.parseLine( lineIndex )
 		return self.distanceFeedRate.output.getvalue()
 
 	def getDimensionedArcMovement(self, line, splitLine):
-		"""Get a dimensioned arc movement."""
-		if self.oldLocation is None:
+		'Get a dimensioned arc movement.'
+		if self.oldLocation == None:
 			return line
 		relativeLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.oldLocation += relativeLocation
@@ -229,25 +237,25 @@ class DimensionSkein:
 		return line + self.getExtrusionDistanceString(distance, splitLine)
 
 	def getDimensionedLinearMovement( self, line, splitLine ):
-		"""Get a dimensioned linear movement."""
+		'Get a dimensioned linear movement.'
 		distance = 0.0
 		if self.absoluteDistanceMode:
 			location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
-			if self.oldLocation is not None:
+			if self.oldLocation != None:
 				distance = abs( location - self.oldLocation )
 			self.oldLocation = location
 		else:
-			if self.oldLocation is None:
+			if self.oldLocation == None:
 				print('Warning: There was no absolute location when the G91 command was parsed, so the absolute location will be set to the origin.')
-			#				self.oldLocation = Vector3()
+				self.oldLocation = Vector3() #todo why was it  commented in sfact?
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
 			distance = abs( location )
 			self.oldLocation += location
 		return line + self.getExtrusionDistanceString( distance, splitLine )
 
 	def getDistanceToNextThread(self, lineIndex):
-		"""Get the travel distance to the next thread."""
-		if self.oldLocation is None:
+		'Get the travel distance to the next thread.'
+		if self.oldLocation == None:
 			return None
 		isActive = False
 		location = self.oldLocation
@@ -258,13 +266,15 @@ class DimensionSkein:
 			if firstWord == 'G1':
 				if isActive:
 					location = gcodec.getLocationFromSplitLine(location, splitLine)
-					if self.repository.retractWhenCrossing.value:
-						locationEnclosureIndex = self.getSmallestEnclosureIndex(location.dropAxis())
-						if locationEnclosureIndex != self.getSmallestEnclosureIndex(self.oldLocation.dropAxis()):
-							return None
+					#if self.repository.retractWhenCrossing.value:
+					locationEnclosureIndex = self.getSmallestEnclosureIndex(location.dropAxis())
+					if locationEnclosureIndex != self.getSmallestEnclosureIndex(self.oldLocation.dropAxis()):
+						return None
 					locationMinusOld = location - self.oldLocation
 					xyTravel = abs(locationMinusOld.dropAxis())
 					zTravelMultiplied = locationMinusOld.z * self.zDistanceRatio
+					self.timeToNextThread = math.sqrt(xyTravel * xyTravel + zTravelMultiplied * zTravelMultiplied)/ self.feedRateMinute*60
+					self.autoRetractDistance = self.timeToNextThread * abs(self.repository.oozeRate.value)/60
 					return math.sqrt(xyTravel * xyTravel + zTravelMultiplied * zTravelMultiplied)
 			elif firstWord == 'M101':
 				isActive = True
@@ -273,7 +283,7 @@ class DimensionSkein:
 		return None
 
 	def getExtrusionDistanceString( self, distance, splitLine ):
-		"""Get the extrusion distance string."""
+		'Get the extrusion distance string.'
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
 		if not self.isExtruderActive:
 			return ''
@@ -281,37 +291,45 @@ class DimensionSkein:
 			return ''
 		scaledFlowRate = self.flowRate * self.flowScaleSixty
 		return self.getExtrusionDistanceStringFromExtrusionDistance(scaledFlowRate / self.feedRateMinute * distance)
+
 	def getExtrusionDistanceStringFromExtrusionDistance( self, extrusionDistance ):
-		"""Get the extrusion distance string from the extrusion distance."""
+		'Get the extrusion distance string from the extrusion distance.'
 		if self.repository.relativeExtrusionDistance.value:
 			return ' E' + self.distanceFeedRate.getRounded( extrusionDistance )
 		self.totalExtrusionDistance += extrusionDistance
 		return ' E' + self.distanceFeedRate.getRounded( self.totalExtrusionDistance )
 
-
 	def getRetractionRatio(self, lineIndex):
-		"""Get the retraction ratio."""
-		distanceToNextThread = self.getDistanceToNextThread(lineIndex)
-		if  self.totalExtrusionDistance <= self.minimumExtrusionForRetraction:
-			return self.totalExtrusionDistance/self.minimumExtrusionForRetraction
-		if distanceToNextThread is None:
-			return 1.0
-		if distanceToNextThread >= self.doubleMinimumTravelForRetraction:
-			return 1.0
-		if distanceToNextThread <= self.minimumTravelForRetraction:
-			return 0.0
-		return (distanceToNextThread - self.minimumTravelForRetraction) / self.minimumTravelForRetraction
-
+		'Get the retraction ratio.'
+		self.distanceToNextThread = self.getDistanceToNextThread(lineIndex)
+		#print ('distanceToNextThread',distanceToNextThread)
+		#print ('totalExtrusionDistance',self.totalExtrusionDistance)
+		#if self.distanceToNextThread == None or self.distanceToNextThread <= self.minimumTravelForRetraction:
+		#	return 1.0
+		#elif  self.totalExtrusionDistance <= self.minimumExtrusionForRetraction:
+		#	return self.totalExtrusionDistance/self.minimumExtrusionForRetraction
+		#elif self.distanceToNextThread >= self.doubleMinimumTravelForRetraction:
+		#	return 1.0
+#		self.retractionRatio = self.getRetractionRatio(lineIndex)
+		#return (self.distanceToNextThread - self.minimumTravelForRetraction) / self.minimumTravelForRetraction
+		return 1.00
+		
 	def getSmallestEnclosureIndex(self, point):
-		"""Get the index of the smallest boundary loop which encloses the point."""
+		'Get the index of the smallest boundary loop which encloses the point.'
 		boundaryLayer = self.boundaryLayers[self.layerIndex]
 		for loopIndex, loop in enumerate(boundaryLayer.loops):
 			if euclidean.isPointInsideLoop(loop, point):
 				return loopIndex
 		return None
+#	def addFlowRateLineIfNecessary(self):
+#		"Add flow rate line."
+#		flowRateString = self.newFlowrate
+#		if flowRateString != self.oldFlowRateString:
+#			self.distanceFeedRate.addLine('M108 S' + flowRateString )
+#		self.oldFlowRateString = flowRateString
 
 	def parseBoundaries(self):
-		"""Parse the boundaries and add them to the boundary layers."""
+		'Parse the boundaries and add them to the boundary layers.'
 		boundaryLoop = None
 		boundaryLayer = None
 		for line in self.lines[self.lineIndex :]:
@@ -321,7 +339,7 @@ class DimensionSkein:
 				boundaryLoop = None
 			elif firstWord == '(<boundaryPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if boundaryLoop is None:
+				if boundaryLoop == None:
 					boundaryLoop = []
 					boundaryLayer.loops.append(boundaryLoop)
 				boundaryLoop.append(location.dropAxis())
@@ -332,7 +350,7 @@ class DimensionSkein:
 			triangle_mesh.sortLoopsInOrderOfArea(False, boundaryLayer.loops)
 
 	def parseInitialization(self):
-		"""Parse gcode initialization and store the parameters."""
+		'Parse gcode initialization and store the parameters.'
 		for self.lineIndex in xrange(len(self.lines)):
 			line = self.lines[self.lineIndex]
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
@@ -341,27 +359,28 @@ class DimensionSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addLine('(<procedureName> dimension </procedureName>)')
 				return
-			elif firstWord == '(<extrusionHeight>':
-				self.extrusionHeight = float(splitLine[1])
+			elif firstWord == '(<layerThickness>':
+				self.layerThickness = float(splitLine[1])
 			elif firstWord == '(<maximumZDrillFeedRatePerSecond>':
-				self.maximumZTravelFeedRate = float(splitLine[1])
-			elif firstWord == '(<maximumZTravelFeedRate>':
-				self.maximumZTravelFeedRate = float(splitLine[1])
+				self.maximumZTravelFeedRatePerSecond = float(splitLine[1])
+			elif firstWord == '(<maximumZTravelFeedRatePerSecond>':
+				self.maximumZTravelFeedRatePerSecond = float(splitLine[1])
 			elif firstWord == '(<operatingFeedRatePerSecond>':
 				self.feedRateMinute = 60.0 * float(splitLine[1])
 			elif firstWord == '(<operatingFlowRate>':
 				self.operatingFlowRate = float(splitLine[1])
 				self.flowRate = self.operatingFlowRate
-			elif firstWord == '(<extrusionWidth>':
-				self.extrusionWidth = float(splitLine[1])
-			elif firstWord == '(<travelFeedRate>':
-				self.travelFeedRate = float(splitLine[1])
+			elif firstWord == '(<perimeterWidth>':
+				self.perimeterWidth = float(splitLine[1])
+			elif firstWord == '(<travelFeedRatePerSecond>':
+				self.travelFeedRatePerSecond = float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine( self, lineIndex ):
-		"""Parse a gcode line and add it to the dimension skein."""
+		'Parse a gcode line and add it to the dimension skein.'
 		line = self.lines[lineIndex].lstrip()
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
+#		self.newFlowrate = str (round(self.flowRate * self.flowScaleSixty,0) )
 		if len(splitLine) < 1:
 			return
 		firstWord = splitLine[0]
@@ -374,28 +393,35 @@ class DimensionSkein:
 		elif firstWord == 'G91':
 			self.absoluteDistanceMode = False
 		elif firstWord == '(<layer>':
+			if not self.repository.relativeExtrusionDistance.value:
+				self.distanceFeedRate.addLine('M82')
+			else: self.distanceFeedRate.addLine('M83')
 			self.layerIndex += 1
 		elif firstWord == 'M101':
-			self.addLinearMoveExtrusionDistanceLine(self.restartDistance * self.retractionRatio)
+			self.addLinearMoveExtrusionDistanceLine((self.autoRetractDistance )) #(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
 			if not self.repository.relativeExtrusionDistance.value:
 				self.distanceFeedRate.addLine('G92 E0')
 				self.totalExtrusionDistance = 0.0
 			self.isExtruderActive = True
 		elif firstWord == 'M103':
 			self.retractionRatio = self.getRetractionRatio(lineIndex)
-			self.addLinearMoveExtrusionDistanceLine(-self.repository.retractionDistance.value * self.retractionRatio)
+			self.addLinearMoveExtrusionDistanceLine(-self.autoRetractDistance )
+			#retractionDistance = -self.repository.retractionDistance.value * self.retractionRatio
 			self.isExtruderActive = False
+			#print('dtnt ttnt ted rr efr',self.distanceToNextThread , self.timeToNextThread , self.totalExtrusionDistance,self.retractionRatio , self.autoRetractDistance)
 		elif firstWord == 'M108':
 			self.flowRate = float( splitLine[1][1 :] )
+		#self.addFlowRateLineIfNecessary()
+		#self.distanceFeedRate.addLine('M108 S' + newFlowrate)
 		self.distanceFeedRate.addLine(line)
 
 
 def main():
-	"""Display the dimension dialog."""
+	'Display the dimension dialog.'
 	if len(sys.argv) > 1:
 		writeOutput(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == '__main__':
 	main()

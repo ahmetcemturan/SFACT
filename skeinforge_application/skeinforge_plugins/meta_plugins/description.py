@@ -24,28 +24,28 @@ from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return DescriptionRepository()
 
 
 class DescriptionRepository:
-	"""A class to handle the description settings."""
+	"A class to handle the description settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.meta_plugins.description.html', self)
 		description = 'Write your description of the profile here.\n\nSuggested format is a description, followed by a link to the profile post or web page.'
 		self.descriptionText = settings.TextSetting().getFromValue('Description Text:', self, description )
 
 
 def main():
-	"""Display the file or directory dialog."""
-	settings.startMainLoopFromConstructor( getNewRepository() )
+	"Display the file or directory dialog."
+	settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

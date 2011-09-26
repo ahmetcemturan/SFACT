@@ -25,39 +25,39 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	"Get vector3 vertexes from attribute dictionary."
+	if derivation == None:
 		derivation = DrillDerivation(xmlElement)
 	negatives = []
 	teardrop.addNegativesByRadius(derivation.end, negatives, derivation.radius, derivation.start, xmlElement)
 	return solid.getGeometryOutputByManipulation(negatives[0], xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	"Get vector3 vertexes from attribute dictionary by arguments."
 	evaluate.setAttributeDictionaryByArguments(['radius', 'start', 'end'], arguments, xmlElement)
 	return getGeometryOutput(None, xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return DrillDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	solid.processXMLElementByGeometry(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class DrillDerivation:
-	"""Class to hold drill variables."""
+	"Class to hold drill variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.end = evaluate.getVector3ByPrefix(Vector3(0.0, 0.0, 1.0), 'end', xmlElement)
 		self.start = evaluate.getVector3ByPrefix(Vector3(), 'start', xmlElement)
 		self.radius = lineation.getFloatByPrefixBeginEnd('radius', 'diameter', 1.0, xmlElement)
 		size = evaluate.getEvaluatedFloat(None, 'size', xmlElement)
-		if size is not None:
+		if size != None:
 			self.radius = 0.5 * size
 		self.xmlElement = xmlElement
 
 	def __repr__(self):
-		"""Get the string representation of this DrillDerivation."""
+		"Get the string representation of this DrillDerivation."
 		return str(self.__dict__)

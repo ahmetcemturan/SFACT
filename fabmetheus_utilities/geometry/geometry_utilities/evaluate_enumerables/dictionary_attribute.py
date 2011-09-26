@@ -17,7 +17,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def _getAccessibleAttribute(attributeName, dictionaryObject):
-	"""Get the accessible attribute."""
+	'Get the accessible attribute.'
 	if attributeName in globalNativeFunctionSet:
 		return getattr(dictionaryObject, attributeName, None)
 	if attributeName in globalGetAccessibleAttributeSet:
@@ -27,17 +27,17 @@ def _getAccessibleAttribute(attributeName, dictionaryObject):
 
 
 class DictionaryAttribute:
-	"""Class to handle a dictionary."""
+	'Class to handle a dictionary.'
 	def __init__(self, dictionaryObject):
-		"""Initialize."""
+		'Initialize.'
 		self.dictionaryObject = dictionaryObject
 
 	def __repr__(self):
-		"""Get the dictionary representation of this DictionaryAttribute."""
+		"Get the dictionary representation of this DictionaryAttribute."
 		return str(self.dictionaryObject)
 
 	def count(self, value):
-		"""Get the count."""
+		'Get the count.'
 		countTotal = 0
 		for key, iteratorValue in self.dictionaryObject.iteritems():
 			if iteratorValue == value:
@@ -45,7 +45,7 @@ class DictionaryAttribute:
 		return countTotal
 
 	def delete(self, arguments):
-		"""Get the delete dictionary."""
+		'Get the delete dictionary.'
 		if arguments.__class__ != list:
 			del self.dictionaryObject[arguments]
 			return self.dictionaryObject
@@ -60,38 +60,38 @@ class DictionaryAttribute:
 		return self.dictionaryObject
 
 	def getIsIn(self, value):
-		"""Determine if the value is in."""
+		'Determine if the value is in.'
 		return value in self.dictionaryObject
 
 	def getIsNotIn(self, value):
-		"""Determine if the value is in."""
+		'Determine if the value is in.'
 		return not(value in self.dictionaryObject)
 
 	def getLength(self):
-		"""Get the length."""
+		'Get the length.'
 		return len(self.dictionaryObject)
 
 	def getMax(self):
-		"""Get the max."""
+		'Get the max.'
 		return max(self.dictionaryObject)
 
 	def getMin(self):
-		"""Get the min."""
+		'Get the min.'
 		return min(self.dictionaryObject)
 
 	def index(self, value):
-		"""Get the index element."""
+		'Get the index element.'
 		for key, iteratorValue in self.dictionaryObject.iteritems():
 			if iteratorValue == value:
 				return key
 		raise ValueError('Value (%s) not found in index in DictionaryAttribute for (%s).' % (value, self.dictionaryObject))
 
 	def length(self):
-		"""Get the length."""
+		'Get the length.'
 		return len(self.dictionaryObject)
 
 	def set(self, itemIndex, value):
-		"""Set value."""
+		'Set value.'
 		self.dictionaryObject[itemIndex] = value
 		return self.dictionaryObject
 

@@ -24,32 +24,32 @@ globalExecutionOrder = 360
 
 
 def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
-	"""Get equated geometryOutput."""
+	'Get equated geometryOutput.'
 	rotatePoints(matrix.getVertexes(geometryOutput), prefix, xmlElement)
 	return geometryOutput
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get equated paths."""
+	'Get equated paths.'
 	rotatePoints(loop, prefix, xmlElement)
 	return [loop]
 
 def manipulateXMLElement(target, xmlElement):
-	"""Manipulate the xml element."""
+	'Manipulate the xml element.'
 	rotateTetragrid = matrix.getRotateTetragrid('', xmlElement)
-	if rotateTetragrid is None:
+	if rotateTetragrid == None:
 		print('Warning, rotateTetragrid was None in rotate so nothing will be done for:')
 		print(xmlElement)
 		return
 	matrix.setAttributeDictionaryToMultipliedTetragrid(rotateTetragrid, target)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	solid.processXMLElementByFunction(manipulateXMLElement, xmlElement)
 
 def rotatePoints(points, prefix, xmlElement):
-	"""Rotate the points."""
+	'Rotate the points.'
 	rotateTetragrid = matrix.getRotateTetragrid(prefix, xmlElement)
-	if rotateTetragrid is None:
+	if rotateTetragrid == None:
 		print('Warning, rotateTetragrid was None in rotate so nothing will be done for:')
 		print(xmlElement)
 		return

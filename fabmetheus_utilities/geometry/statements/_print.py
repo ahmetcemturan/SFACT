@@ -21,17 +21,17 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getLocalDictionary( attributeDictionaryKey, xmlElement):
-	"""Get the local dictionary."""
+	"Get the local dictionary."
 	xmlProcessor = xmlElement.getXMLProcessor()
 	if len( xmlProcessor.functions ) < 1:
 		return None
 	return xmlProcessor.functions[-1].localDictionary
 
 def printAttributeDictionaryKey( attributeDictionaryKey, xmlElement):
-	"""Print the attributeDictionaryKey."""
+	"Print the attributeDictionaryKey."
 	if attributeDictionaryKey.lower() == '_localdictionary':
 		localDictionary = getLocalDictionary( attributeDictionaryKey, xmlElement)
-		if localDictionary is not None:
+		if localDictionary != None:
 			localDictionaryKeys = localDictionary.keys()
 			attributeValue = xmlElement.attributeDictionary[attributeDictionaryKey]
 			if attributeValue != '':
@@ -50,7 +50,7 @@ def printAttributeDictionaryKey( attributeDictionaryKey, xmlElement):
 	print('%s: %s' % ( attributeDictionaryKey, evaluatedValue ) )
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	if len(xmlElement.text) > 1:
 		print(xmlElement.text)
 		return

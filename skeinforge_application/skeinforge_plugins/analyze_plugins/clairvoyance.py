@@ -1,12 +1,12 @@
 """
 This page is in the table of contents.
-Clairvoyance is a script to open the gcode file with an outside program.
+Clairvoyance is an analyze plugin to open the gcode file with an outside program.
 
 The clairvoyance manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Clairvoyance
 
 ==Operation==
-The default 'Activate Clairvoyance' checkbox is on.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Clairvoyance' checkbox is on, when clairvoyance is run directly.
+The default 'Activate Clairvoyance' checkbox is off.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Clairvoyance' checkbox is on, when clairvoyance is run directly.
 
 ==Settings==
 ===Gcode Program===
@@ -26,37 +26,33 @@ The file is opened by an outside program
 
 """
 
+
 from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
-from fabmetheus_utilities.vector3 import Vector3
 from fabmetheus_utilities import archive
-from fabmetheus_utilities import euclidean
-from fabmetheus_utilities import gcodec
 from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
-import cStringIO
-import math
 import subprocess
 import sys
 import traceback
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return ClairvoyanceRepository()
 
 def getWindowAnalyzeFile(fileName, repository=None):
-	"""Open penultimate file with outside program."""
+	'Open penultimate file with outside program.'
 	print('')
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(ClairvoyanceRepository())
 	gcodeProgram = repository.gcodeProgram.value
 	if gcodeProgram == '':
@@ -82,10 +78,9 @@ def getWindowAnalyzeFile(fileName, repository=None):
 		print('Error traceback is the following:')
 		traceback.print_exc(file=sys.stdout)
 		print('')
-		return
 
 def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWritten, gcodeText=''):
-	"""Open penultimate file with outside program given text."""
+	'Open penultimate file with outside program given text.'
 	repository = settings.getReadRepository(ClairvoyanceRepository())
 	if repository.activateClairvoyance.value:
 		if not filePenultimateWritten:
@@ -94,9 +89,9 @@ def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWr
 
 
 class ClairvoyanceRepository:
-	"""A class to handle the clairvoyance settings."""
+	'A class to handle the clairvoyance settings.'
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		'Set the default settings, execute title & settings fileName.'
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.analyze_plugins.clairvoyance.html', self)
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Clairvoyance')
 		self.activateClairvoyance = settings.BooleanSetting().getFromValue('Activate Clairvoyance', self, False)
@@ -106,18 +101,18 @@ class ClairvoyanceRepository:
 		self.executeTitle = 'Clairvoyance'
 
 	def execute(self):
-		"""Write button has been clicked."""
+		'Write button has been clicked.'
 		fileNames = skeinforge_polyfile.getFileOrGcodeDirectory( self.fileNameInput.value, self.fileNameInput.wasCancelled, ['_comment'] )
 		for fileName in fileNames:
 			getWindowAnalyzeFile(fileName)
 
 
 def main():
-	"""Display the clairvoyance dialog."""
+	'Display the clairvoyance dialog.'
 	if len(sys.argv) > 1:
 		getWindowAnalyzeFile(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == '__main__':
 	main()

@@ -18,24 +18,24 @@ from fabmetheus_utilities import euclidean
 from fabmetheus_utilities import settings
 import math
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getBoundedLatitude( latitude ):
-	"""Get the bounded latitude.later get rounded"""
+	"Get the bounded latitude.later get rounded"
 	return round( min( 179.9, max( 0.1, latitude ) ), 1 )
 
 def getNewMouseTool():
-	"""Get a new mouse tool."""
+	"Get a new mouse tool."
 	return ViewpointRotate()
 
 
 class LatitudeLongitude:
-	"""A latitude and longitude."""
+	"A latitude and longitude."
 	def __init__( self, buttonOnePressedCanvasCoordinate, newCoordinate, skeinWindow, shift ):
-		"""Set the latitude and longitude."""
+		"Set the latitude and longitude."
 		buttonOnePressedCentered = skeinWindow.getCenteredScreened( buttonOnePressedCanvasCoordinate )
 		buttonOnePressedRadius = abs( buttonOnePressedCentered )
 		buttonOnePressedComplexMirror = complex( buttonOnePressedCentered.real, - buttonOnePressedCentered.imag )
@@ -57,17 +57,17 @@ class LatitudeLongitude:
 
 
 class ViewpointRotate( MouseToolBase ):
-	"""Display the line when it is clicked."""
+	"Display the line when it is clicked."
 	def button1( self, event, shift = False ):
-		"""Print line text and connection line."""
+		"Print line text and connection line."
 		self.destroyEverything()
 		x = self.canvas.canvasx(event.x)
 		y = self.canvas.canvasy(event.y)
 		self.buttonOnePressedCanvasCoordinate = complex(x, y)
 
 	def buttonRelease1( self, event, shift = False ):
-		"""The left button was released, <ButtonRelease-1> function."""
-		if self.buttonOnePressedCanvasCoordinate is None:
+		"The left button was released, <ButtonRelease-1> function."
+		if self.buttonOnePressedCanvasCoordinate == None:
 			return
 		x = self.canvas.canvasx(event.x)
 		y = self.canvas.canvasy(event.y)
@@ -75,7 +75,7 @@ class ViewpointRotate( MouseToolBase ):
 		self.moveViewpointGivenCoordinates( buttonOneReleasedCanvasCoordinate, shift, self.buttonOnePressedCanvasCoordinate )
 
 	def destroyEverything(self):
-		"""Destroy items."""
+		"Destroy items."
 		self.buttonOnePressedCanvasCoordinate = None
 		self.keyStartCanvasCoordinate = None
 		self.relativeLatitude = 0.0
@@ -83,53 +83,53 @@ class ViewpointRotate( MouseToolBase ):
 		self.canvas.delete('mouse_item')
 
 	def getMoveCoordinate(self):
-		"""Get the movement coordinate from the class relative latitude and longitude."""
+		"Get the movement coordinate from the class relative latitude and longitude."
 		motionRadius = ( 0.75 + self.relativeLatitude ) * self.window.getCanvasRadius()
 		return self.window.getScreenComplex( motionRadius * euclidean.getWiddershinsUnitPolar( self.relativeLongitude ) )
 
 	def keyPressDown(self, event):
-		"""The down arrow was pressed."""
+		"The down arrow was pressed."
 		self.keyPressStart()
 		self.relativeLatitude -= math.radians(1.0)
 		self.keyPressMotion()
 
 	def keyPressLeft(self, event):
-		"""The left arrow was pressed."""
+		"The left arrow was pressed."
 		self.keyPressStart()
 		self.relativeLongitude += math.radians(1.0)
 		self.keyPressMotion()
 
 	def keyPressMotion(self):
-		"""Move the motion viewpoint for the class key press coordinates."""
+		"Move the motion viewpoint for the class key press coordinates."
 		self.motionGivenCoordinates( self.getMoveCoordinate(), False, self.keyStartCanvasCoordinate )
 
 	def keyPressReturn(self, event):
-		"""The return key was pressed."""
-		if self.keyStartCanvasCoordinate is None:
+		"The return key was pressed."
+		if self.keyStartCanvasCoordinate == None:
 			return
 		self.moveViewpointGivenCoordinates( self.getMoveCoordinate(), False, self.keyStartCanvasCoordinate )
 
 	def keyPressRight(self, event):
-		"""The right arrow was pressed."""
+		"The right arrow was pressed."
 		self.keyPressStart()
 		self.relativeLongitude -= math.radians(1.0)
 		self.keyPressMotion()
 
 	def keyPressStart(self):
-		"""If necessary, destroy everything and calculate the keyStartCanvasCoordinate."""
-		if self.keyStartCanvasCoordinate is None:
+		"If necessary, destroy everything and calculate the keyStartCanvasCoordinate."
+		if self.keyStartCanvasCoordinate == None:
 			self.destroyEverything()
 			self.keyStartCanvasCoordinate = self.window.getScreenComplex( complex( 0.0, 0.75 * self.window.getCanvasRadius() ) )
 
 	def keyPressUp(self, event):
-		"""The up arrow was pressed."""
+		"The up arrow was pressed."
 		self.keyPressStart()
 		self.relativeLatitude += math.radians(1.0)
 		self.keyPressMotion()
 
 	def motion( self, event, shift = False ):
-		"""Move the motion viewpoint if the mouse was moved."""
-		if self.buttonOnePressedCanvasCoordinate is None:
+		"Move the motion viewpoint if the mouse was moved."
+		if self.buttonOnePressedCanvasCoordinate == None:
 			return
 		x = self.canvas.canvasx(event.x)
 		y = self.canvas.canvasy(event.y)
@@ -137,7 +137,7 @@ class ViewpointRotate( MouseToolBase ):
 		self.motionGivenCoordinates( motionCoordinate, shift, self.buttonOnePressedCanvasCoordinate )
 
 	def motionGivenCoordinates( self, motionCoordinate, shift, startCoordinate ):
-		"""Move the motion viewpoint given the motion coordinates."""
+		"Move the motion viewpoint given the motion coordinates."
 		latitudeLongitude = LatitudeLongitude( startCoordinate, motionCoordinate, self.window, shift )
 		viewVectors = euclidean.ProjectiveSpace().getByLatitudeLongitude( latitudeLongitude.latitude, latitudeLongitude.longitude )
 		motionCentered = self.window.getCentered( motionCoordinate )
@@ -185,7 +185,7 @@ class ViewpointRotate( MouseToolBase ):
 			self.window.getDrawnColoredLineMotion( self.window.positiveAxisLineZ, viewVectors, self.repository.widthOfAxisPositiveSide.value )
 
 	def moveViewpointGivenCoordinates( self, moveCoordinate, shift, startCoordinate ):
-		"""Move the viewpoint given the move coordinates."""
+		"Move the viewpoint given the move coordinates."
 		if abs( startCoordinate - moveCoordinate ) < 3:
 			startCoordinate = None
 			self.canvas.delete('mouse_item')

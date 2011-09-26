@@ -25,9 +25,9 @@ globalExecutionOrder = 400
 
 
 def bottomXMLElement(derivation, target):
-	"""Bottom target."""
+	"Bottom target."
 	xmlObject = target.xmlObject
-	if xmlObject is None:
+	if xmlObject == None:
 		print('Warning, bottomTarget in bottom could not get xmlObject for:')
 		print(target)
 		print(derivation.xmlElement)
@@ -44,14 +44,14 @@ def bottomXMLElement(derivation, target):
 	matrix.setXMLElementDictionaryMatrix(targetMatrix, target)
 
 def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
-	"""Get bottomed geometryOutput."""
+	'Get bottomed geometryOutput.'
 	derivation = BottomDerivation(prefix, xmlElement)
 	copyShallow = xmlElement.getCopyShallow()
 	solid.processXMLElementByGeometry(geometryOutput, copyShallow)
 	targetMatrix = matrix.getBranchMatrixSetXMLElement(xmlElement)
 	matrix.setXMLElementDictionaryMatrix(targetMatrix, copyShallow)
 	minimumZ = boolean_geometry.getMinimumZ(copyShallow.xmlObject)
-	copyShallow.parent.xmlObject.archivableObjects.remove(copyShallow.xmlObject)
+	copyShallow.parentNode.xmlObject.archivableObjects.remove(copyShallow.xmlObject)
 	lift = derivation.altitude - minimumZ
 	vertexes = matrix.getVertexes(geometryOutput)
 	for vertex in vertexes:
@@ -59,7 +59,7 @@ def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
 	return geometryOutput
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get flipped paths."""
+	'Get flipped paths.'
 	if len(loop) < 1:
 		return [[]]
 	derivation = BottomDerivation(prefix, xmlElement)
@@ -71,16 +71,16 @@ def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
 	return [loop]
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return BottomDerivation('', xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	processXMLElementByDerivation(None, xmlElement)
 
 def processXMLElementByDerivation(derivation, xmlElement):
-	"""Process the xml element by derivation."""
-	if derivation is None:
+	'Process the xml element by derivation.'
+	if derivation == None:
 		derivation = BottomDerivation('', xmlElement)
 	targets = evaluate.getXMLElementsByKey('target', xmlElement)
 	if len(targets) < 1:
@@ -92,17 +92,17 @@ def processXMLElementByDerivation(derivation, xmlElement):
 
 
 class BottomDerivation:
-	"""Class to hold bottom variables."""
+	"Class to hold bottom variables."
 	def __init__(self, prefix, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.altitude = evaluate.getEvaluatedFloat(0.0, prefix + 'altitude', xmlElement)
 		self.liftPath = evaluate.getEvaluatedBoolean(True, prefix + 'liftPath', xmlElement)
 		self.xmlElement = xmlElement
 
 	def __repr__(self):
-		"""Get the string representation of this BottomDerivation."""
+		"Get the string representation of this BottomDerivation."
 		return str(self.__dict__)
 
 	def getAdditionalPathLift(self):
-		"""Get path lift."""
+		"Get path lift."
 		return 0.5 * setting.getLayerThickness(self.xmlElement) * float(self.liftPath)

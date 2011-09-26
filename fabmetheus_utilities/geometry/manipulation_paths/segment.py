@@ -22,7 +22,7 @@ globalExecutionOrder = 60
 
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get segment loop."""
+	"Get segment loop."
 	if len(loop) < 3:
 		return [loop]
 	path = evaluate.getPathByPrefix(getSegmentPathDefault(), prefix, xmlElement)
@@ -34,7 +34,7 @@ def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
 		path = path[: : -1]
 		for point in path:
 			point.x = 1.0 - point.x
-			if segmentCenter is None:
+			if segmentCenter == None:
 				point.y = - point.y
 	segmentLoop = []
 	startEnd = StartEnd(len(loop), prefix, xmlElement)
@@ -46,7 +46,7 @@ def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
 	return [euclidean.getLoopWithoutCloseSequentialPoints( close, segmentLoop)]
 
 def getRadialPath( begin, end, path, segmentCenter ):
-	"""Get radial path."""
+	"Get radial path."
 	beginComplex = begin.dropAxis()
 	endComplex = end.dropAxis()
 	segmentCenterComplex = segmentCenter.dropAxis()
@@ -70,24 +70,24 @@ def getRadialPath( begin, end, path, segmentCenter ):
 	return radialPath
 
 def getSegmentPath( loop, path, pointIndex, segmentCenter ):
-	"""Get segment path."""
+	"Get segment path."
 	centerBegin = loop[pointIndex]
 	centerEnd = loop[(pointIndex + 1) % len(loop)]
 	centerEndMinusBegin = centerEnd - centerBegin
 	if abs( centerEndMinusBegin ) <= 0.0:
 		return [ centerBegin ]
-	if segmentCenter is not None:
+	if segmentCenter != None:
 		return getRadialPath( centerBegin, centerEnd, path, segmentCenter )
 	begin = loop[(pointIndex + len(loop) - 1) % len(loop)]
 	end = loop[ ( pointIndex + 2 ) % len(loop) ]
 	return getWedgePath( begin, centerBegin, centerEnd, centerEndMinusBegin, end, path )
 
 def getSegmentPathDefault():
-	"""Get segment path default."""
+	"Get segment path default."
 	return [ Vector3(), Vector3( 0.0, 1.0 ) ]
 
 def getXNormalizedVector3Path(path):
-	"""Get path where the x ranges from 0 to 1."""
+	"Get path where the x ranges from 0 to 1."
 	if len(path) < 1:
 		return path
 	minimumX = path[0].x
@@ -103,7 +103,7 @@ def getXNormalizedVector3Path(path):
 	return path
 
 def getWedgePath( begin, centerBegin, centerEnd, centerEndMinusBegin, end, path ):
-	"""Get segment path."""
+	"Get segment path."
 	beginComplex = begin.dropAxis()
 	centerBeginComplex = centerBegin.dropAxis()
 	centerEndComplex = centerEnd.dropAxis()
@@ -129,20 +129,20 @@ def getWedgePath( begin, centerBegin, centerEnd, centerEndMinusBegin, end, path 
 	return wedgePath
 
 def getWiddershinsAverageByVector3( centerMinusBeginComplex, endMinusCenterComplex ):
-	"""Get the normalized average of the widdershins vectors."""
+	"Get the normalized average of the widdershins vectors."
 	centerMinusBeginWiddershins = Vector3( - centerMinusBeginComplex.imag, centerMinusBeginComplex.real )
 	endMinusCenterWiddershins = Vector3( - endMinusCenterComplex.imag, endMinusCenterComplex.real )
 	return ( centerMinusBeginWiddershins + endMinusCenterWiddershins ).getNormalized()
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
 
 
 class StartEnd:
-	"""Class to get a start through end range."""
+	'Class to get a start through end range.'
 	def __init__(self, modulo, prefix, xmlElement):
-		"""Initialize."""
+		"Initialize."
 		self.start = evaluate.getEvaluatedInt(0, prefix + 'start', xmlElement)
 		self.extent = evaluate.getEvaluatedInt(modulo - self.start, prefix + 'extent', xmlElement)
 		self.end = evaluate.getEvaluatedInt(self.start + self.extent, prefix + 'end', xmlElement)
@@ -151,5 +151,5 @@ class StartEnd:
 			self.end += modulo * (self.revolutions - 1)
 
 	def __repr__(self):
-		"""Get the string representation of this StartEnd."""
+		"Get the string representation of this StartEnd."
 		return '%s, %s, %s' % (self.start, self.end, self.revolutions)

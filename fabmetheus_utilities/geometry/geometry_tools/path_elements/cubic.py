@@ -23,10 +23,10 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getCubicPath(xmlElement):
-	"""Get the cubic path."""
+	"Get the cubic path."
 	end = evaluate.getVector3FromXMLElement(xmlElement)
 	previousXMLElement = xmlElement.getPreviousXMLElement()
-	if previousXMLElement is None:
+	if previousXMLElement == None:
 		print('Warning, can not get previousXMLElement in getCubicPath in cubic for:')
 		print(xmlElement)
 		return [end]
@@ -38,21 +38,21 @@ def getCubicPath(xmlElement):
 	controlPoint1 = evaluate.getVector3ByPrefix(None, 'controlPoint1', xmlElement)
 	if len(evaluatedControlPoints) == 1:
 		controlPoint1 = evaluatedControlPoints[0]
-	if controlPoint0 is None:
+	if controlPoint0 == None:
 		oldControlPoint = evaluate.getVector3ByPrefixes(['controlPoint','controlPoint1'], None, previousXMLElement)
-		if oldControlPoint is None:
+		if oldControlPoint == None:
 			oldControlPoints = evaluate.getTransformedPathByKey([], 'controlPoints', previousXMLElement)
 			if len(oldControlPoints) > 0:
 				oldControlPoint = oldControlPoints[-1]
-		if oldControlPoint is None:
+		if oldControlPoint == None:
 			oldControlPoint = end
 		controlPoint0 = begin + begin - oldControlPoint
 	return getCubicPathByBeginEnd(begin, [controlPoint0, controlPoint1], end, xmlElement)
 
 def getCubicPathByBeginEnd(begin, controlPoints, end, xmlElement):
-	"""Get the cubic path by begin and end."""
+	"Get the cubic path by begin and end."
 	return svg_reader.getCubicPoints(begin, controlPoints, end, lineation.getNumberOfBezierPoints(begin, end, xmlElement))
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
-	xmlElement.parent.xmlObject.vertexes += getCubicPath(xmlElement)
+	"Process the xml element."
+	xmlElement.parentNode.xmlObject.vertexes += getCubicPath(xmlElement)

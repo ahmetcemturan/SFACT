@@ -20,18 +20,18 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 class Heading:
-	"""A class to hold the heading and subheadings."""
+	'A class to hold the heading and subheadings.'
 	def __init__(self, depth=0):
-		"""Initialize."""
+		'Initialize.'
 		self.depth = depth
 
 	def addToOutput(self, output):
-		"""Add to the output."""
+		'Add to the output.'
 		line = '&nbsp;&nbsp;' * self.depth + '<a href="#%s">%s</a><br />\n' % (self.name, self.name)
 		output.write(line)
 
 	def getFromLine(self, headingLineTable, line):
-		"""Get the heading from a line."""
+		'Get the heading from a line.'
 		heading = 'h%s' % (self.depth + 2)
 		nextLine = '\n<hr>\n'
 		if self.depth > 0:
@@ -44,7 +44,7 @@ class Heading:
 
 
 def addToHeadings(headingLineTable, headings, line):
-	"""Add the line to the headings."""
+	'Add the line to the headings.'
 	for depth in xrange(4, -1, -1):
 		equalSymbolLength = depth + 2
 		if line[: equalSymbolLength] == '=' * equalSymbolLength:
@@ -52,7 +52,7 @@ def addToHeadings(headingLineTable, headings, line):
 			return
 
 def getNavigationHypertext(fileText, transferredFileNameIndex, transferredFileNames):
-	"""Get the hypertext help with navigation lines."""
+	'Get the hypertext help with navigation lines.'
 	helpTextEnd = fileText.find('</p>')
 	helpTextStart = fileText.find('<p>')
 	helpText = fileText[helpTextStart : helpTextEnd]
@@ -88,18 +88,18 @@ def getNavigationHypertext(fileText, transferredFileNameIndex, transferredFileNa
 	return fileText[: helpTextStart] + helpText + fileText[helpTextEnd :]
 
 def getNavigationLine(contentsLinkText, previousLinkText, nextLinkText):
-	"""Get the wrapped pydoc hypertext help."""
+	'Get the wrapped pydoc hypertext help.'
 	return '<p>\n%s / %s / %s\n</p>\n' % (previousLinkText, nextLinkText, contentsLinkText)
 
 def getNextLinkText(hypertextFiles, nextIndex):
-	"""Get the next link text."""
+	'Get the next link text.'
 	nextFileName = 'contents.html'
 	if nextIndex < len(hypertextFiles):
 		nextFileName = hypertextFiles[nextIndex]
 	return '<a href="%s">Next</a>' % nextFileName
 
 def getWrappedHypertext(fileText, hypertextFileIndex, hypertextFiles):
-	"""Get the wrapped pydoc hypertext help."""
+	'Get the wrapped pydoc hypertext help.'
 	helpTextEnd = fileText.find('</p>')
 	if helpTextEnd < 0:
 		print('Failed to find the helpTextEnd in getWrappedHypertext in docwrap.')
@@ -111,7 +111,7 @@ def getWrappedHypertext(fileText, hypertextFileIndex, hypertextFiles):
 	return fileText[: helpTextStart] + helpText + fileText[helpTextEnd :]
 
 def readWriteDeleteHypertextHelp(documentDirectoryPath, hypertextFileIndex, hypertextFiles, transferredFileNames):
-	"""Read the pydoc hypertext help documents, write them in the documentation folder then delete the originals."""
+	'Read the pydoc hypertext help documents, write them in the documentation folder then delete the originals.'
 	fileName = os.path.basename(hypertextFiles[hypertextFileIndex])
 	print('readWriteDeleteHypertextHelp ' + fileName)
 	filePath = os.path.join(documentDirectoryPath, fileName)
@@ -124,7 +124,7 @@ def readWriteDeleteHypertextHelp(documentDirectoryPath, hypertextFileIndex, hype
 	os.remove(fileName)
 
 def readWriteNavigationHelp(documentDirectoryPath, transferredFileNameIndex, transferredFileNames):
-	"""Read the hypertext help documents, and add the navigation lines to them."""
+	'Read the hypertext help documents, and add the navigation lines to them.'
 	fileName = os.path.basename(transferredFileNames[transferredFileNameIndex])
 	print('readWriteNavigationHelp ' + fileName)
 	filePath = os.path.join(documentDirectoryPath, fileName)
@@ -133,14 +133,14 @@ def readWriteNavigationHelp(documentDirectoryPath, transferredFileNameIndex, tra
 	archive.writeFileText(filePath, fileText)
 
 def removeFilesInDirectory(directoryPath):
-	"""Remove all the files in a directory."""
+	'Remove all the files in a directory.'
 	fileNames = os.listdir(directoryPath)
 	for fileName in fileNames:
 		filePath = os.path.join(directoryPath, fileName)
 		os.remove(filePath)
 
 def writeContentsFile(documentDirectoryPath, hypertextFiles):
-	"""Write the contents file."""
+	'Write the contents file.'
 	output = cStringIO.StringIO()
 	output.write('<html>\n  <head>\n    <title>Contents</title>\n  </head>\n  <body>\n')
 	navigationLine = getNavigationLine('Contents', 'Previous', getNextLinkText(hypertextFiles, 0))
@@ -153,7 +153,7 @@ def writeContentsFile(documentDirectoryPath, hypertextFiles):
 	archive.writeFileText(filePath, output.getvalue())
 
 def writeContentsLine(hypertextFile, output):
-	"""Write a line of the contents file."""
+	'Write a line of the contents file.'
 	summarizedFileName = hypertextFile[: hypertextFile.rfind('.')]
 	numberOfDots = summarizedFileName.count('.')
 	prefixSpaces = '&nbsp;&nbsp;' * numberOfDots
@@ -163,7 +163,7 @@ def writeContentsLine(hypertextFile, output):
 	output.write('%s<a href="%s">%s</a><br>\n' % (prefixSpaces, hypertextFile, capitalizedSummarizedFileName))
 
 def writeHypertext():
-	"""Run pydoc, then read, write and delete each of the files."""
+	'Run pydoc, then read, write and delete each of the files.'
 	shellCommand = 'pydoc -w ./'
 	commandResult = os.system(shellCommand)
 	if commandResult != 0:
@@ -192,7 +192,7 @@ def writeHypertext():
 
 
 def main():
-	"""Display the craft dialog."""
+	'Display the craft dialog.'
 	writeHypertext()
 
 if __name__ == '__main__':

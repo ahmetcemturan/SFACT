@@ -30,20 +30,20 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addHeightsByBitmap(heights, textLines):
-	"""Add heights by bitmap."""
+	'Add heights by bitmap.'
 	for line in textLines[3:]:
 		for integerWord in line.split():
 			heights.append(float(integerWord))
 
 def addHeightsByGraymap(heights, textLines):
-	"""Add heights by graymap."""
+	'Add heights by graymap.'
 	divisor = float(textLines[3])
 	for line in textLines[4:]:
 		for integerWord in line.split():
 			heights.append(float(integerWord) / divisor)
 
 def getAddIndexedHeightGrid(heightGrid, minimumXY, step, top, vertexes):
-	"""Get and add an indexed heightGrid."""
+	'Get and add an indexed heightGrid.'
 	indexedHeightGrid = []
 	for rowIndex, row in enumerate(heightGrid):
 		indexedRow = []
@@ -57,7 +57,7 @@ def getAddIndexedHeightGrid(heightGrid, minimumXY, step, top, vertexes):
 	return indexedHeightGrid
 
 def getAddIndexedSegmentedPerimeter(heightGrid, maximumXY, minimumXY, step, vertexes, z=0.0):
-	"""Get and add an indexed segmented perimeter."""
+	'Get and add an indexed segmented perimeter.'
 	indexedSegmentedPerimeter = []
 	firstRow = heightGrid[0]
 	columnOffset = minimumXY.real
@@ -88,7 +88,7 @@ def getAddIndexedSegmentedPerimeter(heightGrid, maximumXY, minimumXY, step, vert
 	return indexedSegmentedPerimeter
 
 def getGeometryOutput(xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
+	'Get vector3 vertexes from attribute dictionary.'
 	derivation = HeightmapDerivation(xmlElement)
 	heightGrid = derivation.heightGrid
 	if derivation.fileName != '':
@@ -96,12 +96,12 @@ def getGeometryOutput(xmlElement):
 	return getGeometryOutputByHeightGrid(derivation, heightGrid, xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	'Get vector3 vertexes from attribute dictionary by arguments.'
 	evaluate.setAttributeDictionaryByArguments(['file', 'start'], arguments, xmlElement)
 	return getGeometryOutput(xmlElement)
 
 def getGeometryOutputByHeightGrid(derivation, heightGrid, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
+	'Get vector3 vertexes from attribute dictionary.'
 	numberOfColumns = len(heightGrid)
 	if numberOfColumns < 2:
 		print('Warning, in getGeometryOutputByHeightGrid in heightmap there are fewer than two rows for:')
@@ -137,7 +137,7 @@ def getGeometryOutputByHeightGrid(derivation, heightGrid, xmlElement):
 	return triangle_mesh.getGeometryOutputByFacesVertexes(faces, vertexes)
 
 def getHeightGrid(fileName):
-	"""Get heightGrid by fileName."""
+	'Get heightGrid by fileName.'
 	if 'models/' not in fileName:
 		print('Warning, models/ was not in the absolute file path, so for security nothing will be done for:')
 		print(xmlElement)
@@ -175,11 +175,11 @@ def getHeightGrid(fileName):
 	return heightGrid
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return HeightmapDerivation(xmlElement)
 
 def getRaisedHeightGrid(heightGrid, start):
-	"""Get heightGrid raised above start."""
+	'Get heightGrid raised above start.'
 	raisedHeightGrid = []
 	remainingHeight = 1.0 - start
 	for row in heightGrid:
@@ -191,14 +191,14 @@ def getRaisedHeightGrid(heightGrid, start):
 	return raisedHeightGrid
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	solid.processXMLElementByGeometry(getGeometryOutput(xmlElement), xmlElement)
 
 
 class HeightmapDerivation:
-	"""Class to hold heightmap variables."""
+	'Class to hold heightmap variables.'
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.fileName = evaluate.getEvaluatedString('', 'file', xmlElement)
 		self.heightGrid = evaluate.getEvaluatedValue([], 'heightGrid', xmlElement)
 		self.inradius = evaluate.getVector3ByPrefixes(['demisize', 'inradius'], Vector3(10.0, 10.0, 5.0), xmlElement)
@@ -206,5 +206,5 @@ class HeightmapDerivation:
 		self.start = evaluate.getEvaluatedFloat(0.0, 'start', xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this HeightmapDerivation."""
+		'Get the string representation of this HeightmapDerivation.'
 		return euclidean.getDictionaryString(self.__dict__)

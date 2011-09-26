@@ -21,33 +21,33 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getCraftSequence():
-	"""Get the winding craft sequence."""
+	"Get the winding craft sequence."
 	return 'cleave preface coil flow feed home lash fillet limit unpause export'.split()
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return WindingRepository()
 
 
 class WindingRepository:
-	"""A class to handle the winding settings."""
+	"A class to handle the winding settings."
 	def __init__(self):
-		"""Set the default settings, execute title & settings fileName."""
+		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsSetCraftProfile( getCraftSequence(), 'free_wire', self, 'skeinforge_plugins.profile_plugins.winding.html')
 
 
 def main():
-	"""Display the export dialog."""
+	"Display the export dialog."
 	if len(sys.argv) > 1:
 		writeOutput(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

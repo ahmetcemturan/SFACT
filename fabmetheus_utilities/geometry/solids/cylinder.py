@@ -24,7 +24,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addCylinder(faces, inradius, sides, topOverBottom, vertexes):
-	"""Add cylinder by inradius."""
+	'Add cylinder by inradius.'
 	polygonBottom = euclidean.getComplexPolygonByComplexRadius(complex(inradius.x, inradius.y), sides)
 	polygonTop = polygonBottom
 	if topOverBottom <= 0.0:
@@ -37,7 +37,7 @@ def addCylinder(faces, inradius, sides, topOverBottom, vertexes):
 	triangle_mesh.addPillarByLoops(faces, bottomTopPolygon)
 
 def addCylinderOutputByEndStart(endZ, inradiusComplex, outputs, sides, start, topOverBottom=1.0):
-	"""Add cylinder triangle mesh by endZ, inradius and start."""
+	'Add cylinder triangle mesh by endZ, inradius and start.'
 	inradius = Vector3(inradiusComplex.real, inradiusComplex.imag, 0.5 * abs(endZ - start.z))
 	cylinderOutput = getGeometryOutput(inradius, sides, topOverBottom)
 	vertexes = matrix.getVertexes(cylinderOutput)
@@ -49,30 +49,30 @@ def addCylinderOutputByEndStart(endZ, inradiusComplex, outputs, sides, start, to
 	outputs.append(cylinderOutput)
 
 def getGeometryOutput(inradius, sides, topOverBottom):
-	"""Get cylinder triangle mesh by inradius."""
+	'Get cylinder triangle mesh by inradius.'
 	faces = []
 	vertexes = []
 	addCylinder(faces, inradius, sides, topOverBottom, vertexes)
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	evaluate.processArchivable(Cylinder, xmlElement)
 
 
 class Cylinder( cube.Cube ):
-	"""A cylinder object."""
+	'A cylinder object.'
 	def __init__(self):
-		"""Add empty lists."""
+		'Add empty lists.'
 		cube.Cube.__init__(self)
 
 	def createShape(self):
-		"""Create the shape."""
+		'Create the shape.'
 		sides = evaluate.getSidesMinimumThreeBasedOnPrecision(max(self.inradius.x, self.inradius.y), self.xmlElement )
 		addCylinder(self.faces, self.inradius, sides, self.topOverBottom, self.vertexes, self.xmlElement)
 
 	def setToXMLElement(self, xmlElement):
-		"""Set to xmlElement."""
+		'Set to xmlElement.'
 		attributeDictionary = xmlElement.attributeDictionary
 		self.inradius = evaluate.getVector3ByPrefixes(['demisize', 'inradius', 'radius'], Vector3(1.0, 1.0, 1.0), xmlElement)
 		self.inradius = evaluate.getVector3ByMultiplierPrefixes(2.0, ['diameter', 'size'], self.inradius, xmlElement)

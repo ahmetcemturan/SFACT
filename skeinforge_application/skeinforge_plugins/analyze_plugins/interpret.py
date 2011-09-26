@@ -27,28 +27,28 @@ from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
 def getNewRepository():
-	"""Get new repository."""
+	'Get new repository.'
 	return fabmetheus_interpret.InterpretRepository()
 
 def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWritten, gcodeText=''):
-	"""Write file interpretation, if activate interpret is selected."""
-	repository = settings.getReadRepository( getNewRepository() )
+	"Write file interpretation, if activate interpret is selected."
+	repository = settings.getReadRepository(getNewRepository())
 	if repository.activateInterpret.value:
 		fabmetheus_interpret.getWindowAnalyzeFile(fileName)
 
 
 def main():
-	"""Display the interpret dialog."""
+	"Display the interpret dialog."
 	if len(sys.argv) > 1:
 		fabmetheus_interpret.getWindowAnalyzeFile(' '.join(sys.argv[1 :]))
 	else:
-		settings.startMainLoopFromConstructor( getNewRepository() )
+		settings.startMainLoopFromConstructor(getNewRepository())
 
 if __name__ == "__main__":
 	main()

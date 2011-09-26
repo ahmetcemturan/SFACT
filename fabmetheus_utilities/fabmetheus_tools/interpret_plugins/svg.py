@@ -32,82 +32,82 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getCarving(fileName=''):
-	"""Get the triangle mesh for the gts file."""
+	'Get the triangle mesh for the gts file.'
 	carving = SVGCarving()
 	carving.parseSVG(fileName, archive.getFileText(fileName))
 	return carving
 
 
 class SVGCarving:
-	"""An svg carving."""
+	'An svg carving.'
 	def __init__(self):
-		"""Add empty lists."""
-		self.extrusionHeight = 1.0
+		'Add empty lists.'
+		self.layerThickness = 1.0
 		self.maximumZ = - 987654321.0
 		self.minimumZ = 987654321.0
 		self.svgReader = SVGReader()
 
 	def __repr__(self):
-		"""Get the string representation of this carving."""
+		'Get the string representation of this carving.'
 		return self.getCarvedSVG()
 
 	def addXML(self, depth, output):
-		"""Add xml for this object."""
+		'Add xml for this object.'
 		xml_simple_writer.addXMLFromObjects(depth, self.svgReader.rotatedLoopLayers, output)
 
 	def getCarveCornerMaximum(self):
-		"""Get the corner maximum of the vertexes."""
+		'Get the corner maximum of the vertexes.'
 		return self.cornerMaximum
 
 	def getCarveCornerMinimum(self):
-		"""Get the corner minimum of the vertexes."""
+		'Get the corner minimum of the vertexes.'
 		return self.cornerMinimum
 
 	def getCarvedSVG(self):
-		"""Get the carved svg text."""
+		'Get the carved svg text.'
 		return svg_writer.getSVGByLoopLayers(True, self, self.svgReader.rotatedLoopLayers)
 
 	def getCarveLayerThickness(self):
-		"""Get the layer thickness."""
-		return self.extrusionHeight
+		'Get the layer thickness.'
+		return self.layerThickness
 
 	def getCarveRotatedBoundaryLayers(self):
-		"""Get the rotated boundary layers."""
+		'Get the rotated boundary layers.'
 		return self.svgReader.rotatedLoopLayers
 
 	def getFabmetheusXML(self):
-		"""Return the fabmetheus XML."""
+		'Return the fabmetheus XML.'
 		return None
 
 	def getInterpretationSuffix(self):
-		"""Return the suffix for a carving."""
+		'Return the suffix for a carving.'
 		return 'svg'
 
 	def parseSVG(self, fileName, svgText):
-		"""Parse SVG text and store the layers."""
+		'Parse SVG text and store the layers.'
 		if svgText == '':
 			return
 		self.fileName = fileName
 		self.svgReader.parseSVG(fileName, svgText)
-		self.extrusionHeight = euclidean.getFloatDefaultByDictionary(
-			self.extrusionHeight, self.svgReader.sliceDictionary, 'extrusionHeight')
+		self.layerThickness = euclidean.getFloatDefaultByDictionary(
+			self.layerThickness, self.svgReader.sliceDictionary, 'layerThickness')
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, self.maximumZ)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, self.minimumZ)
 		svg_writer.setSVGCarvingCorners(
-			self.cornerMaximum, self.cornerMinimum, self.extrusionHeight, self.svgReader.rotatedLoopLayers)
+			self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.svgReader.rotatedLoopLayers)
 
 	def setCarveInfillInDirectionOfBridge(self, infillInDirectionOfBridge):
-		"""Set the infill in direction of bridge."""
+		'Set the infill in direction of bridge.'
 		pass
 
-	def setCarveLayerThickness(self, extrusionHeight):
-		"""Set the layer thickness."""
-		self.extrusionHeight = extrusionHeight
+	def setCarveLayerThickness(self, layerThickness):
+		'Set the layer thickness.'
+		self.layerThickness = layerThickness
 
 	def setCarveImportRadius(self, importRadius):
-		"""Set the import radius."""
+		'Set the import radius.'
 		pass
 
 	def setCarveIsCorrectMesh(self, isCorrectMesh):
-		"""Set the is correct mesh flag."""
+		'Set the is correct mesh flag.'
 		pass

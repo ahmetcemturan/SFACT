@@ -21,23 +21,23 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	"Get vector3 vertexes from attribute dictionary."
+	if derivation == None:
 		derivation = ShaftDerivation(xmlElement)
 	shaftPath = getShaftPath(derivation.depthBottom, derivation.depthTop, derivation.radius, derivation.sides)
 	return lineation.getGeometryOutputByLoop(lineation.SideLoop(shaftPath), xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	"Get vector3 vertexes from attribute dictionary by arguments."
 	evaluate.setAttributeDictionaryByArguments(['radius', 'sides'], arguments, xmlElement)
 	return getGeometryOutput(None, xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return ShaftDerivation(xmlElement)
 
 def getShaftPath(depthBottom, depthTop, radius, sides):
-	"""Get shaft with the option of a flat on the top and/or bottom."""
+	'Get shaft with the option of a flat on the top and/or bottom.'
 	if radius <= 0.0:
 		return []
 	sideAngle = 2.0 * math.pi / float(abs(sides))
@@ -61,14 +61,14 @@ def getShaftPath(depthBottom, depthTop, radius, sides):
 	return shaftPath
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class ShaftDerivation:
-	"""Class to hold shaft variables."""
+	"Class to hold shaft variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.depthBottomOverRadius = evaluate.getEvaluatedFloat(0.0, 'depthBottomOverRadius', xmlElement)
 		self.depthTopOverRadius = evaluate.getEvaluatedFloat(0.0, 'depthOverRadius', xmlElement)
 		self.depthTopOverRadius = evaluate.getEvaluatedFloat(
@@ -82,5 +82,5 @@ class ShaftDerivation:
 		self.depthTop = evaluate.getEvaluatedFloat(self.depthTop, 'depthTop', xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this ShaftDerivation."""
+		"Get the string representation of this ShaftDerivation."
 		return str(self.__dict__)

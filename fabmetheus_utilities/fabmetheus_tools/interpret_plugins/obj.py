@@ -38,7 +38,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addFacesGivenText( objText, triangleMesh ):
-	"""Add faces given obj text."""
+	"Add faces given obj text."
 	lines = archive.getTextLines( objText )
 	for line in lines:
 		splitLine = line.split()
@@ -49,7 +49,7 @@ def addFacesGivenText( objText, triangleMesh ):
 			triangleMesh.faces.append( getFaceGivenLine( line, triangleMesh ) )
 
 def getFaceGivenLine( line, triangleMesh ):
-	"""Add face given line index and lines."""
+	"Add face given line index and lines."
 	faceGivenLine = face.Face()
 	faceGivenLine.index = len( triangleMesh.faces )
 	splitLine = line.split()
@@ -62,7 +62,7 @@ def getFaceGivenLine( line, triangleMesh ):
 	return faceGivenLine
 
 def getCarving(fileName=''):
-	"""Get the triangle mesh for the obj file."""
+	"Get the triangle mesh for the obj file."
 	if fileName == '':
 		return None
 	objText = archive.getFileText(fileName, True, 'rb')
@@ -73,6 +73,6 @@ def getCarving(fileName=''):
 	return triangleMesh
 
 def getVertexGivenLine(line):
-	"""Get vertex given obj vertex line."""
+	"Get vertex given obj vertex line."
 	splitLine = line.split()
 	return Vector3( float(splitLine[1]), float( splitLine[2] ), float( splitLine[3] ) )

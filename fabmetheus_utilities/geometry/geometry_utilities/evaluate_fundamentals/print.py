@@ -17,18 +17,18 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def _getAccessibleAttribute(attributeName):
-	"""Get the accessible attribute."""
+	'Get the accessible attribute.'
 	if attributeName in globalAccessibleAttributeDictionary:
 		return globalAccessibleAttributeDictionary[attributeName]
 	return None
 
 def continuous(valueString):
-	"""Print continuous."""
+	'Print continuous.'
 	sys.stdout.write(str(valueString))
 	return valueString
 
 def line(valueString):
-	"""Print line."""
+	'Print line.'
 	print(valueString)
 	return valueString
 

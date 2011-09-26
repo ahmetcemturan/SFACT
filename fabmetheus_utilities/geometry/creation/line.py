@@ -22,8 +22,8 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	"Get vector3 vertexes from attribute dictionary."
+	if derivation == None:
 		derivation = LineDerivation(xmlElement)
 	endMinusStart = derivation.end - derivation.start
 	endMinusStartLength = abs(endMinusStart)
@@ -35,14 +35,14 @@ def getGeometryOutput(derivation, xmlElement):
 		return None
 	typeStringTwoCharacters = derivation.typeString.lower()[: 2]
 	xmlElement.attributeDictionary['closed'] = str(derivation.closed)
-	if derivation.step is None and derivation.steps is None:
+	if derivation.step == None and derivation.steps == None:
 		return lineation.getGeometryOutputByLoop(lineation.SideLoop([derivation.start, derivation.end]), xmlElement)
 	loop = [derivation.start]
-	if derivation.step is not None and derivation.steps is not None:
+	if derivation.step != None and derivation.steps != None:
 		stepVector = derivation.step / endMinusStartLength * endMinusStart
 		derivation.end = derivation.start + stepVector * derivation.steps
 		return getGeometryOutputByStep(derivation.end, loop, derivation.steps, stepVector, xmlElement)
-	if derivation.step is None:
+	if derivation.step == None:
 		stepVector = endMinusStart / derivation.steps
 		return getGeometryOutputByStep(derivation.end, loop, derivation.steps, stepVector, xmlElement)
 	endMinusStartLengthOverStep = endMinusStartLength / derivation.step
@@ -70,12 +70,12 @@ def getGeometryOutput(derivation, xmlElement):
 	return lineation.getGeometryOutputByLoop(lineation.SideLoop(loop), xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	"Get vector3 vertexes from attribute dictionary by arguments."
 	evaluate.setAttributeDictionaryByArguments(['start', 'end', 'step'], arguments, xmlElement)
 	return getGeometryOutput(None, xmlElement)
 
 def getGeometryOutputByStep(end, loop, steps, stepVector, xmlElement):
-	"""Get line geometry output by the end, loop, steps and stepVector."""
+	"Get line geometry output by the end, loop, steps and stepVector."
 	stepsFloor = int(math.floor(abs(steps)))
 	for stepIndex in xrange(1, stepsFloor):
 		loop.append(loop[stepIndex - 1] + stepVector)
@@ -83,18 +83,18 @@ def getGeometryOutputByStep(end, loop, steps, stepVector, xmlElement):
 	return lineation.getGeometryOutputByLoop(lineation.SideLoop(loop), xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return LineDerivation(xmlElement)
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class LineDerivation:
-	"""Class to hold line variables."""
+	"Class to hold line variables."
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.closed = evaluate.getEvaluatedBoolean(False, 'closed', xmlElement)
 		self.end = evaluate.getVector3ByPrefix(Vector3(), 'end', xmlElement)
 		self.start = evaluate.getVector3ByPrefix(Vector3(), 'start', xmlElement)
@@ -104,5 +104,5 @@ class LineDerivation:
 		self.typeString = evaluate.getEvaluatedString('minimum', 'type', xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this LineDerivation."""
+		"Get the string representation of this LineDerivation."
 		return str(self.__dict__)

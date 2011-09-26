@@ -23,37 +23,37 @@ globalExecutionOrder = -100
 
 
 def equate(point, returnValue):
-	"""Get equation for rectangular."""
+	"Get equation for rectangular."
 	point.setToVector3(evaluate.getVector3ByDictionaryListValue(returnValue, point))
 
 def equatePoints(points, prefix, revolutions, xmlElement):
-	"""Equate the points."""
+	"Equate the points."
 	equateVertexesByFunction(equate, points, prefix, revolutions, xmlElement)
 	equateVertexesByFunction(equateX, points, prefix, revolutions, xmlElement)
 	equateVertexesByFunction(equateY, points, prefix, revolutions, xmlElement)
 	equateVertexesByFunction(equateZ, points, prefix, revolutions, xmlElement)
 
 def equateX(point, returnValue):
-	"""Get equation for rectangular x."""
+	"Get equation for rectangular x."
 	point.x = returnValue
 
 def equateY(point, returnValue):
-	"""Get equation for rectangular y."""
+	"Get equation for rectangular y."
 	point.y = returnValue
 
 def equateZ(point, returnValue):
-	"""Get equation for rectangular z."""
+	"Get equation for rectangular z."
 	point.z = returnValue
 
 def equateVertexesByFunction( equationFunction, points, prefix, revolutions, xmlElement ):
-	"""Get equated points by equation function."""
+	"Get equated points by equation function."
 	prefixedEquationName = prefix + equationFunction.__name__[ len('equate') : ].replace('Dot', '.').lower()
 	if prefixedEquationName not in xmlElement.attributeDictionary:
 		return
 	equationResult = EquationResult( prefixedEquationName, revolutions, xmlElement )
 	for point in points:
 		returnValue = equationResult.getReturnValue(point)
-		if returnValue is None:
+		if returnValue == None:
 			print('Warning, returnValue in alterVertexesByEquation in equation is None for:')
 			print(point)
 			print(xmlElement)
@@ -62,20 +62,20 @@ def equateVertexesByFunction( equationFunction, points, prefix, revolutions, xml
 #	equationResult.function.reset() #removeLater
 
 def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
-	"""Get equated geometryOutput."""
+	"Get equated geometryOutput."
 	equatePoints( matrix.getVertexes(geometryOutput), prefix, None, xmlElement )
 	return geometryOutput
 
 def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
-	"""Get equated paths."""
+	"Get equated paths."
 	equatePoints( loop, prefix, 0.0, xmlElement )
 	return [loop]
 
 
 class EquationResult:
-	"""Class to get equation results."""
+	"Class to get equation results."
 	def __init__(self, key, revolutions, xmlElement):
-		"""Initialize."""
+		"Initialize."
 		self.distance = 0.0
 		xmlElement.xmlObject = evaluate.getEvaluatorSplitWords(xmlElement.attributeDictionary[key])
 		self.function = evaluate.Function(xmlElement)
@@ -83,15 +83,15 @@ class EquationResult:
 		self.revolutions = revolutions
 
 	def getReturnValue(self, point):
-		"""Get return value."""
-		if self.function is None:
+		"Get return value."
+		if self.function == None:
 			return point
 		self.function.localDictionary['azimuth'] = math.degrees(math.atan2(point.y, point.x))
 		if len(self.points) > 0:
 			self.distance += abs(point - self.points[-1])
 		self.function.localDictionary['distance'] = self.distance
 		self.function.localDictionary['radius'] = abs(point.dropAxis())
-		if self.revolutions is not None:
+		if self.revolutions != None:
 			if len( self.points ) > 0:
 				self.revolutions += 0.5 / math.pi * euclidean.getAngleAroundZAxisDifference(point, self.points[-1])
 			self.function.localDictionary['revolutions'] = self.revolutions

@@ -28,7 +28,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addAssemblyCage(derivation, negatives, positives):
-	"""Add assembly linear bearing cage."""
+	'Add assembly linear bearing cage.'
 	addCageGroove(derivation, negatives, positives)
 	for pegCenterX in derivation.pegCenterXs:
 		addPositivePeg(derivation, positives, pegCenterX, -derivation.pegY)
@@ -45,7 +45,7 @@ def addAssemblyCage(derivation, negatives, positives):
 	positives += femalePositives
 
 def addCage(derivation, height, negatives, positives):
-	"""Add linear bearing cage."""
+	'Add linear bearing cage.'
 	copyShallow = derivation.xmlElement.getCopyShallow()
 	copyShallow.attributeDictionary['path'] = [Vector3(), Vector3(0.0, 0.0, height)]
 	extrudeDerivation = extrude.ExtrudeDerivation(copyShallow)
@@ -56,12 +56,12 @@ def addCage(derivation, height, negatives, positives):
 		addNegativeSphere(derivation, negatives, bearingCenterX)
 
 def addCageGroove(derivation, negatives, positives):
-	"""Add cage and groove."""
+	'Add cage and groove.'
 	addCage(derivation, derivation.demiheight, negatives, positives)
 	addGroove(derivation, negatives)
 
 def addGroove(derivation, negatives):
-	"""Add groove on each side of cage."""
+	'Add groove on each side of cage.'
 	bottom = derivation.demiheight - 0.5 * derivation.grooveWidth
 	outside = 1.0001 * derivation.demiwidth
 	top = derivation.demiheight
@@ -76,7 +76,7 @@ def addGroove(derivation, negatives):
 	extrude.addSymmetricXPaths(negatives, [leftGroove, rightGroove], derivation.demilength)
 
 def addNegativePeg(derivation, negatives, x, y):
-	"""Add negative cylinder at x and y."""
+	'Add negative cylinder at x and y.'
 	negativePegRadius = derivation.pegRadius + derivation.halfPegClearance
 	inradius = complex(negativePegRadius, negativePegRadius)
 	copyShallow = derivation.xmlElement.getCopyShallow()
@@ -85,14 +85,14 @@ def addNegativePeg(derivation, negatives, x, y):
 	cylinder.addCylinderOutputByEndStart(0.0, inradius, negatives, sides, start, derivation.topOverBottom)
 
 def addNegativeSphere(derivation, negatives, x):
-	"""Add negative sphere at x."""
+	'Add negative sphere at x.'
 	radius = Vector3(derivation.radiusPlusClearance, derivation.radiusPlusClearance, derivation.radiusPlusClearance)
 	sphereOutput = sphere.getGeometryOutput(radius, derivation.xmlElement.getCopyShallow())
 	euclidean.translateVector3Path(matrix.getVertexes(sphereOutput), Vector3(x, 0.0, derivation.demiheight))
 	negatives.append(sphereOutput)
 
 def addPositivePeg(derivation, positives, x, y):
-	"""Add positive cylinder at x and y."""
+	'Add positive cylinder at x and y.'
 	positivePegRadius = derivation.pegRadius - derivation.halfPegClearance
 	radius = complex(positivePegRadius, positivePegRadius)
 	copyShallow = derivation.xmlElement.getCopyShallow()
@@ -101,7 +101,7 @@ def addPositivePeg(derivation, positives, x, y):
 	peg.addPegOutput(derivation.pegBevel, endZ, positives, radius, start, derivation.topOverBottom, copyShallow)
 
 def getBearingCenterXs(bearingCenterX, numberOfSteps, stepX):
-	"""Get the bearing center x list."""
+	'Get the bearing center x list.'
 	bearingCenterXs = []
 	for stepIndex in xrange(numberOfSteps + 1):
 		bearingCenterXs.append(bearingCenterX)
@@ -109,7 +109,7 @@ def getBearingCenterXs(bearingCenterX, numberOfSteps, stepX):
 	return bearingCenterXs
 
 def getGeometryOutput(xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
+	'Get vector3 vertexes from attribute dictionary.'
 	derivation = LinearBearingCageDerivation(xmlElement)
 	negatives = []
 	positives = []
@@ -120,16 +120,16 @@ def getGeometryOutput(xmlElement):
 	return extrude.getGeometryOutputByNegativesPositives(negatives, positives, xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	'Get vector3 vertexes from attribute dictionary by arguments.'
 	evaluate.setAttributeDictionaryByArguments(['length', 'radius'], arguments, xmlElement)
 	return getGeometryOutput(xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return LinearBearingCageDerivation(xmlElement)
 
 def getPegCenterXs(numberOfSteps, pegCenterX, stepX):
-	"""Get the peg center x list."""
+	'Get the peg center x list.'
 	pegCenterXs = []
 	for stepIndex in xrange(numberOfSteps):
 		pegCenterXs.append(pegCenterX)
@@ -137,7 +137,7 @@ def getPegCenterXs(numberOfSteps, pegCenterX, stepX):
 	return pegCenterXs
 
 def getRoundedExtendedRectangle(radius, rectangleCenterX, sides):
-	"""Get the rounded extended rectangle."""
+	'Get the rounded extended rectangle.'
 	roundedExtendedRectangle = []
 	halfSides = int(sides / 2)
 	halfSidesPlusOne = abs(halfSides + 1)
@@ -160,14 +160,14 @@ def getRoundedExtendedRectangle(radius, rectangleCenterX, sides):
 	return roundedExtendedRectangle
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	solid.processXMLElementByGeometry(getGeometryOutput(xmlElement), xmlElement)
 
 
 class LinearBearingCageDerivation:
-	"""Class to hold linear bearing cage variables."""
+	'Class to hold linear bearing cage variables.'
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.length = evaluate.getEvaluatedFloat(50.0, 'length', xmlElement)
 		self.demilength = 0.5 * self.length
 		self.radius = lineation.getFloatByPrefixBeginEnd('radius', 'diameter', 5.0, xmlElement)
@@ -202,11 +202,11 @@ class LinearBearingCageDerivation:
 		self.rectangleCenterX = self.demiwidth - self.demilength
 
 	def __repr__(self):
-		"""Get the string representation of this LinearBearingCageDerivation."""
+		'Get the string representation of this LinearBearingCageDerivation.'
 		return str(self.__dict__)
 
 	def setAssemblyCage(self):
-		"""Set two piece assembly parameters."""
+		'Set two piece assembly parameters.'
 		self.grooveDepthOverRadius = evaluate.getEvaluatedFloat(0.15, 'grooveDepthOverRadius', self.xmlElement)
 		self.grooveDepth = self.grooveDepthOverRadius * self.radius
 		self.grooveDepth = evaluate.getEvaluatedFloat(self.grooveDepth, 'grooveDepth', self.xmlElement)

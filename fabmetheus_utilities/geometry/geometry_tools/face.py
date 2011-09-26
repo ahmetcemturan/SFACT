@@ -28,7 +28,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addFaces(geometryOutput, faces):
-	"""Add the faces."""
+	'Add the faces.'
 	if geometryOutput.__class__ == list:
 		for element in geometryOutput:
 			addFaces(element, faces)
@@ -44,16 +44,16 @@ def addFaces(geometryOutput, faces):
 			addFaces(geometryOutputValue, faces)
 
 def addGeometryList( faces, xmlElement ):
-	"""Add vertex elements to an xml element."""
+	"Add vertex elements to an xml element."
 	for face in faces:
 		faceElement = xml_simple_reader.XMLElement()
 		face.addToAttributeDictionary( faceElement.attributeDictionary )
-		faceElement.className = 'face'
-		faceElement.parent = xmlElement
-		xmlElement.children.append( faceElement )
+		faceElement.localName = 'face'
+		faceElement.parentNode = xmlElement
+		xmlElement.childNodes.append( faceElement )
 
 def getCommonVertexIndex( edgeFirst, edgeSecond ):
-	"""Get the vertex index that both edges have in common."""
+	"Get the vertex index that both edges have in common."
 	for edgeFirstVertexIndex in edgeFirst.vertexIndexes:
 		if edgeFirstVertexIndex == edgeSecond.vertexIndexes[0] or edgeFirstVertexIndex == edgeSecond.vertexIndexes[1]:
 			return edgeFirstVertexIndex
@@ -63,39 +63,39 @@ def getCommonVertexIndex( edgeFirst, edgeSecond ):
 	return 0
 
 def getFaces(geometryOutput):
-	"""Get the faces."""
+	'Get the faces.'
 	faces = []
 	addFaces(geometryOutput, faces)
 	return faces
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	face = Face()
-	face.index = len(xmlElement.parent.xmlObject.faces)
+	face.index = len(xmlElement.parentNode.xmlObject.faces)
 	for vertexIndexIndex in xrange(3):
 		face.vertexIndexes.append(evaluate.getEvaluatedInt(None, 'vertex' + str(vertexIndexIndex), xmlElement))
-	xmlElement.parent.xmlObject.faces.append(face)
+	xmlElement.parentNode.xmlObject.faces.append(face)
 
 
 class Edge:
-	"""An edge of a triangle mesh."""
+	"An edge of a triangle mesh."
 	def __init__(self):
-		"""Set the face indexes to None."""
+		"Set the face indexes to None."
 		self.faceIndexes = []
 		self.vertexIndexes = []
 		self.zMaximum = None
 		self.zMinimum = None
 	
 	def __repr__(self):
-		"""Get the string representation of this Edge."""
+		"Get the string representation of this Edge."
 		return str( self.index ) + ' ' + str( self.faceIndexes ) + ' ' + str(self.vertexIndexes)
 
 	def addFaceIndex( self, faceIndex ):
-		"""Add first None face index to input face index."""
+		"Add first None face index to input face index."
 		self.faceIndexes.append( faceIndex )
 
 	def getFromVertexIndexes( self, edgeIndex, vertexIndexes ):
-		"""Initialize from two vertex indices."""
+		"Initialize from two vertex indices."
 		self.index = edgeIndex
 		self.vertexIndexes = vertexIndexes[:]
 		self.vertexIndexes.sort()
@@ -103,33 +103,33 @@ class Edge:
 
 
 class Face:
-	"""A face of a triangle mesh."""
+	"A face of a triangle mesh."
 	def __init__(self):
-		"""Initialize."""
+		"Initialize."
 		self.edgeIndexes = []
 		self.index = None
 		self.vertexIndexes = []
 
 	def __repr__(self):
-		"""Get the string representation of this object info."""
+		"Get the string representation of this object info."
 		output = cStringIO.StringIO()
 		self.addXML( 2, output )
 		return output.getvalue()
 
 	def addToAttributeDictionary(self, attributeDictionary):
-		"""Add to the attribute dictionary."""
+		"Add to the attribute dictionary."
 		for vertexIndexIndex in xrange(len(self.vertexIndexes)):
 			vertexIndex = self.vertexIndexes[vertexIndexIndex]
 			attributeDictionary['vertex' + str(vertexIndexIndex)] = str(vertexIndex)
 
 	def addXML(self, depth, output):
-		"""Add the xml for this object."""
+		"Add the xml for this object."
 		attributeDictionary = {}
 		self.addToAttributeDictionary(attributeDictionary)
-		xml_simple_writer.addClosedXMLTag( attributeDictionary, 'face', depth, output )
+		xml_simple_writer.addClosedXMLTag( attributeDictionary, depth, 'face', output )
 
 	def copy(self):
-		"""Get the copy of this face."""
+		'Get the copy of this face.'
 		faceCopy = Face()
 		faceCopy.edgeIndexes = self.edgeIndexes[:]
 		faceCopy.index = self.index
@@ -137,7 +137,7 @@ class Face:
 		return faceCopy
 
 	def getFromEdgeIndexes( self, edgeIndexes, edges, faceIndex ):
-		"""Initialize from edge indices."""
+		"Initialize from edge indices."
 		if len(self.vertexIndexes) > 0:
 			return
 		self.index = faceIndex
@@ -151,7 +151,7 @@ class Face:
 		return self
 
 	def setEdgeIndexesToVertexIndexes( self, edges, edgeTable ):
-		"""Set the edge indexes to the vertex indexes."""
+		"Set the edge indexes to the vertex indexes."
 		if len(self.edgeIndexes) > 0:
 			return
 		for triangleIndex in xrange(3):

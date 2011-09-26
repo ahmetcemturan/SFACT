@@ -20,16 +20,16 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def convertXMLElement(geometryOutput, xmlElement):
-	"""Convert the xml element to a union xml element."""
+	'Convert the xml element to a union xml element.'
 	group.convertContainerXMLElement(geometryOutput, xmlElement, Union())
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	evaluate.processArchivable(Union, xmlElement)
 
 
 class Union(difference.Difference):
-	"""A difference object."""
+	'A difference object.'
 	def getLoopsFromObjectLoopsList(self, importRadius, visibleObjectLoopsList):
-		"""Get loops from visible object loops list."""
+		'Get loops from visible object loops list.'
 		return self.getUnion(importRadius, visibleObjectLoopsList)

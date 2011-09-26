@@ -21,7 +21,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addCube(faces, inradius, vertexes, xmlElement):
-	"""Add cube by inradius."""
+	'Add cube by inradius.'
 	square = [
 		complex(-inradius.x, -inradius.y),
 		complex(inradius.x, -inradius.y),
@@ -31,29 +31,29 @@ def addCube(faces, inradius, vertexes, xmlElement):
 	triangle_mesh.addPillarByLoops(faces, bottomTopSquare)
 
 def getGeometryOutput(inradius, xmlElement):
-	"""Get cube triangle mesh by inradius."""
+	'Get cube triangle mesh by inradius.'
 	faces = []
 	vertexes = []
 	addCube(faces, inradius, vertexes, xmlElement)
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	evaluate.processArchivable(Cube, xmlElement)
 
 
 class Cube(triangle_mesh.TriangleMesh):
-	"""A cube object."""
+	'A cube object.'
 	def addXMLSection(self, depth, output):
-		"""Add the xml section for this object."""
+		'Add the xml section for this object.'
 		pass
 
 	def createShape(self):
-		"""Create the shape."""
+		'Create the shape.'
 		addCube(self.faces, self.inradius, self.vertexes, self.xmlElement)
 
 	def setToXMLElement(self, xmlElement):
-		"""Set to xmlElement."""
+		'Set to xmlElement.'
 		attributeDictionary = xmlElement.attributeDictionary
 		self.inradius = evaluate.getVector3ByPrefixes(['demisize', 'inradius'], Vector3(1.0, 1.0, 1.0), xmlElement)
 		self.inradius = evaluate.getVector3ByMultiplierPrefix(2.0, 'size', self.inradius, xmlElement)

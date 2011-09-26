@@ -36,7 +36,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addLineAndNewlineIfNecessary(line, output):
-	"""Add the line and if the line does not end with a newline add a newline."""
+	'Add the line and if the line does not end with a newline add a newline.'
 	output.write(line)
 	if len(line) < 1:
 		return
@@ -44,16 +44,16 @@ def addLineAndNewlineIfNecessary(line, output):
 		output.write('\n')
 
 def addLinesToCString(cString, lines):
-	"""Add lines which have something to cStringIO."""
+	'Add lines which have something to cStringIO.'
 	for line in lines:
 		if line != '':
 			cString.write(line + '\n')
 
 def getArcDistance(relativeLocation, splitLine):
-	"""Get arc distance."""
+	'Get arc distance.'
 	halfPlaneLineDistance = 0.5 * abs(relativeLocation.dropAxis())
 	radius = getDoubleFromCharacterSplitLine('R', splitLine)
-	if radius is None:
+	if radius == None:
 		iFloat = getDoubleFromCharacterSplitLine('I', splitLine)
 		jFloat = getDoubleFromCharacterSplitLine('J', splitLine)
 		radius = abs(complex(iFloat, jFloat))
@@ -67,15 +67,15 @@ def getArcDistance(relativeLocation, splitLine):
 	return abs(complex(angle * radius, relativeLocation.z))
 
 def getDoubleAfterFirstLetter(word):
-	"""Get the double value of the word after the first letter."""
+	'Get the double value of the word after the first letter.'
 	return float(word[1 :])
 
 def getDoubleForLetter(letter, splitLine):
-	"""Get the double value of the word after the first occurence of the letter in the split line."""
+	'Get the double value of the word after the first occurence of the letter in the split line.'
 	return getDoubleAfterFirstLetter(splitLine[getIndexOfStartingWithSecond(letter, splitLine)])
 
 def getDoubleFromCharacterSplitLine(character, splitLine):
-	"""Get the double value of the string after the first occurence of the character in the split line."""
+	'Get the double value of the string after the first occurence of the character in the split line.'
 	indexOfCharacter = getIndexOfStartingWithSecond(character, splitLine)
 	if indexOfCharacter < 0:
 		return None
@@ -86,31 +86,31 @@ def getDoubleFromCharacterSplitLine(character, splitLine):
 		return None
 
 def getDoubleFromCharacterSplitLineValue(character, splitLine, value):
-	"""Get the double value of the string after the first occurence of the character in the split line, if it does not exist return the value."""
+	'Get the double value of the string after the first occurence of the character in the split line, if it does not exist return the value.'
 	splitLineFloat = getDoubleFromCharacterSplitLine(character, splitLine)
-	if splitLineFloat is None:
+	if splitLineFloat == None:
 		return value
 	return splitLineFloat
 
 def getFeedRateMinute(feedRateMinute, splitLine):
-	"""Get the feed rate per minute if the split line has a feed rate."""
+	'Get the feed rate per minute if the split line has a feed rate.'
 	indexOfF = getIndexOfStartingWithSecond('F', splitLine)
 	if indexOfF > 0:
 		return getDoubleAfterFirstLetter( splitLine[indexOfF] )
 	return feedRateMinute
 
 def getFirstWord(splitLine):
-	"""Get the first word of a split line."""
+	'Get the first word of a split line.'
 	if len(splitLine) > 0:
 		return splitLine[0]
 	return ''
 
 def getFirstWordFromLine(line):
-	"""Get the first word of a line."""
+	'Get the first word of a line.'
 	return getFirstWord(line.split())
 
 def getGcodeFileText(fileName, gcodeText):
-	"""Get the gcode text from a file if it the gcode text is empty and if the file is a gcode file."""
+	'Get the gcode text from a file if it the gcode text is empty and if the file is a gcode file.'
 	if gcodeText != '':
 		return gcodeText
 	if fileName.endswith('.gcode'):
@@ -118,7 +118,7 @@ def getGcodeFileText(fileName, gcodeText):
 	return ''
 
 def getIndexOfStartingWithSecond(letter, splitLine):
-	"""Get index of the first occurence of the given letter in the split line, starting with the second word.  Return - 1 if letter is not found"""
+	'Get index of the first occurence of the given letter in the split line, starting with the second word.  Return - 1 if letter is not found'
 	for wordIndex in xrange( 1, len(splitLine) ):
 		word = splitLine[ wordIndex ]
 		firstLetter = word[0]
@@ -127,7 +127,7 @@ def getIndexOfStartingWithSecond(letter, splitLine):
 	return - 1
 
 def getLineWithValueString(character, line, splitLine, valueString):
-	"""Get the line with a valueString."""
+	'Get the line with a valueString.'
 	roundedValueString = character + valueString
 	indexOfValue = getIndexOfStartingWithSecond(character, splitLine)
 	if indexOfValue == - 1:
@@ -136,8 +136,8 @@ def getLineWithValueString(character, line, splitLine, valueString):
 	return line.replace(word, roundedValueString)
 
 def getLocationFromSplitLine(oldLocation, splitLine):
-	"""Get the location from the split line."""
-	if oldLocation is None:
+	'Get the location from the split line.'
+	if oldLocation == None:
 		oldLocation = Vector3()
 	return Vector3(
 		getDoubleFromCharacterSplitLineValue('X', splitLine, oldLocation.x),
@@ -145,7 +145,7 @@ def getLocationFromSplitLine(oldLocation, splitLine):
 		getDoubleFromCharacterSplitLineValue('Z', splitLine, oldLocation.z))
 
 def getSplitLineBeforeBracketSemicolon(line):
-	"""Get the split line before a bracket or semicolon."""
+	'Get the split line before a bracket or semicolon.'
 	line = line.split(';')[0]
 	bracketIndex = line.find('(')
 	if bracketIndex > 0:
@@ -153,21 +153,21 @@ def getSplitLineBeforeBracketSemicolon(line):
 	return line.split()
 
 def getStringFromCharacterSplitLine(character, splitLine):
-	"""Get the string after the first occurence of the character in the split line."""
+	'Get the string after the first occurence of the character in the split line.'
 	indexOfCharacter = getIndexOfStartingWithSecond(character, splitLine)
 	if indexOfCharacter < 0:
 		return None
 	return splitLine[indexOfCharacter][1 :]
 
 def getWithoutBracketsEqualTab(line):
-	"""Get a string without the greater than sign, the bracket and less than sign, the equal sign or the tab."""
+	'Get a string without the greater than sign, the bracket and less than sign, the equal sign or the tab.'
 	line = line.replace('=', ' ')
 	line = line.replace('(<', '')
 	line = line.replace('>', '')
 	return line.replace('\t', '')
 
 def isProcedureDone(gcodeText, procedure):
-	"""Determine if the procedure has been done on the gcode text."""
+	'Determine if the procedure has been done on the gcode text.'
 	if gcodeText == '':
 		return False
 	lines = archive.getTextLines(gcodeText)
@@ -191,20 +191,20 @@ def isProcedureDone(gcodeText, procedure):
 	return False
 
 def isProcedureDoneOrFileIsEmpty(gcodeText, procedure):
-	"""Determine if the procedure has been done on the gcode text or the file is empty."""
+	'Determine if the procedure has been done on the gcode text or the file is empty.'
 	if gcodeText == '':
 		return True
 	return isProcedureDone(gcodeText, procedure)
 
 def getFirstWordIndexReverse(firstWord, lines, startIndex):
-	"""Parse gcode in reverse order until the first word if there is one, otherwise return -1."""
+	'Parse gcode in reverse order until the first word if there is one, otherwise return -1.'
 	for lineIndex in xrange(len(lines) - 1, startIndex - 1, -1):
 		if firstWord == getFirstWord(getSplitLineBeforeBracketSemicolon(lines[lineIndex])):
 			return lineIndex
 	return -1
 
 def isThereAFirstWord(firstWord, lines, startIndex):
-	"""Parse gcode until the first word if there is one."""
+	'Parse gcode until the first word if there is one.'
 	for lineIndex in xrange(startIndex, len(lines)):
 		line = lines[lineIndex]
 		splitLine = getSplitLineBeforeBracketSemicolon(line)
@@ -214,9 +214,9 @@ def isThereAFirstWord(firstWord, lines, startIndex):
 
 
 class BoundingRectangle:
-	"""A class to get the corners of a gcode text."""
+	'A class to get the corners of a gcode text.'
 	def getFromGcodeLines(self, lines, radius):
-		"""Parse gcode text and get the minimum and maximum corners."""
+		'Parse gcode text and get the minimum and maximum corners.'
 		self.cornerMaximum = complex(-987654321.0, -987654321.0)
 		self.cornerMinimum = complex(987654321.0, 987654321.0)
 		self.oldLocation = None
@@ -226,11 +226,11 @@ class BoundingRectangle:
 		return self
 
 	def isPointInside(self, point):
-		"""Determine if the point is inside the bounding rectangle."""
+		'Determine if the point is inside the bounding rectangle.'
 		return point.imag >= self.cornerMinimum.imag and point.imag <= self.cornerMaximum.imag and point.real >= self.cornerMinimum.real and point.real <= self.cornerMaximum.real
 
 	def parseCorner(self, line):
-		"""Parse a gcode line and use the location to update the bounding corners."""
+		'Parse a gcode line and use the location to update the bounding corners.'
 		splitLine = getSplitLineBeforeBracketSemicolon(line)
 		firstWord = getFirstWord(splitLine)
 		if firstWord == '(<boundaryPoint>':
@@ -246,14 +246,14 @@ class BoundingRectangle:
 
 
 class DistanceFeedRate:
-	"""A class to limit the z feed rate and round values."""
+	'A class to limit the z feed rate and round values.'
 	def __init__(self):
-		"""Initialize."""
+		'Initialize.'
 		self.decimalPlacesCarried = 3
 		self.output = cStringIO.StringIO()
 
 	def addGcodeFromFeedRateThreadZ(self, feedRateMinute, thread, travelFeedRateMinute, z):
-		"""Add a thread to the output."""
+		'Add a thread to the output.'
 		if len(thread) > 0:
 			self.addGcodeMovementZWithFeedRate(travelFeedRateMinute, thread[0], z)
 		else:
@@ -268,14 +268,14 @@ class DistanceFeedRate:
 		self.addLine('M103') # Turn extruder off.
 
 	def addGcodeFromLoop(self, loop, z):
-		"""Add the gcode loop."""
+		'Add the gcode loop.'
 		euclidean.addSurroundingLoopBeginning(self, loop, z)
 		self.addPerimeterBlock(loop, z)
 		self.addLine('(</boundaryPerimeter>)')
 		self.addLine('(</nestedRing>)')
 
 	def addGcodeFromThreadZ(self, thread, z):
-		"""Add a thread to the output."""
+		'Add a thread to the output.'
 		if len(thread) > 0:
 			self.addGcodeMovementZ(thread[0], z)
 		else:
@@ -290,24 +290,24 @@ class DistanceFeedRate:
 		self.addLine('M103') # Turn extruder off.
 
 	def addGcodeMovementZ(self, point, z):
-		"""Add a movement to the output."""
+		'Add a movement to the output.'
 		self.addLine(self.getLinearGcodeMovement(point, z))
 
 	def addGcodeMovementZWithFeedRate(self, feedRateMinute, point, z):
-		"""Add a movement to the output."""
+		'Add a movement to the output.'
 		self.addLine(self.getLinearGcodeMovementWithFeedRate(feedRateMinute, point, z))
 
 	def addLine(self, line):
-		"""Add a line of text and a newline to the output."""
+		'Add a line of text and a newline to the output.'
 		if len(line) > 0:
 			self.output.write(line + '\n')
 
 	def addLines(self, lines):
-		"""Add lines of text to the output."""
+		'Add lines of text to the output.'
 		addLinesToCString(self.output, lines)
 
 	def addLinesSetAbsoluteDistanceMode(self, lines):
-		"""Add lines of text to the output and ensure the absolute mode is set."""
+		'Add lines of text to the output and ensure the absolute mode is set.'
 		if len(lines) < 1:
 			return
 		if len(lines[0]) < 1:
@@ -327,11 +327,11 @@ class DistanceFeedRate:
 		self.addLine('(</alteration>)')
 
 	def addParameter(self, firstWord, parameter):
-		"""Add the parameter."""
+		'Add the parameter.'
 		self.addLine(firstWord + ' S' + euclidean.getRoundedToThreePlaces(parameter))
 
 	def addPerimeterBlock(self, loop, z):
-		"""Add the perimeter gcode block for the loop."""
+		'Add the perimeter gcode block for the loop.'
 		if len(loop) < 2:
 			return
 		if euclidean.isWiddershins(loop): # Indicate that a perimeter is beginning.
@@ -342,57 +342,53 @@ class DistanceFeedRate:
 		self.addLine('(</perimeter>)') # Indicate that a perimeter is beginning.
 
 	def addTagBracketedLine(self, tagName, value):
-		"""Add a begin tag, value and end tag."""
+		'Add a begin tag, value and end tag.'
 		self.addLine('(<%s> %s </%s>)' % (tagName, value, tagName))
 
 	def addTagRoundedLine(self, tagName, value):
-		"""Add a begin tag, rounded value and end tag."""
+		'Add a begin tag, rounded value and end tag.'
 		self.addLine('(<%s> %s </%s>)' % (tagName, self.getRounded(value), tagName))
 
 	def getBoundaryLine(self, location):
-		"""Get boundary gcode line."""
+		'Get boundary gcode line.'
 		return '(<boundaryPoint> X%s Y%s Z%s </boundaryPoint>)' % (self.getRounded(location.x), self.getRounded(location.y), self.getRounded(location.z))
 
 	def getFirstWordMovement(self, firstWord, location):
-		"""Get the start of the arc line."""
+		'Get the start of the arc line.'
 		return '%s X%s Y%s Z%s' % (firstWord, self.getRounded(location.x), self.getRounded(location.y), self.getRounded(location.z))
 
 	def getLinearGcodeMovement(self, point, z):
-		"""Get a linear gcode movement."""
+		'Get a linear gcode movement.'
 		return 'G1 X%s Y%s Z%s' % ( self.getRounded( point.real ), self.getRounded( point.imag ), self.getRounded(z) )
 
 	def getLinearGcodeMovementWithFeedRate(self, feedRateMinute, point, z):
-		"""Get a z limited gcode movement."""
+		'Get a z limited gcode movement.'
 		linearGcodeMovement = self.getLinearGcodeMovement(point, z)
-		if feedRateMinute is None:
+		if feedRateMinute == None:
 			return linearGcodeMovement
 		return linearGcodeMovement + ' F' + self.getRounded(feedRateMinute)
 
 	def getLineWithFeedRate(self, feedRateMinute, line, splitLine):
-		"""Get the line with a feed rate."""
+		'Get the line with a feed rate.'
 		return getLineWithValueString('F', line, splitLine, self.getRounded(feedRateMinute))
 
 	def getLineWithX(self, line, splitLine, x):
-		"""Get the line with an x."""
+		'Get the line with an x.'
 		return getLineWithValueString('X', line, splitLine, self.getRounded(x))
 
 	def getLineWithY(self, line, splitLine, y):
-		"""Get the line with a y."""
+		'Get the line with a y.'
 		return getLineWithValueString('Y', line, splitLine, self.getRounded(y))
 
 	def getLineWithZ(self, line, splitLine, z):
-		"""Get the line with a z."""
+		'Get the line with a z.'
 		return getLineWithValueString('Z', line, splitLine, self.getRounded(z))
 
-	def getLineWithE(self, line, splitLine, e):
-		"""Get the line with a e."""
-		return getLineWithValueString('E', line, splitLine, self.getRounded(e))
-
 	def getRounded(self, number):
-		"""Get number rounded to the number of carried decimal places as a string."""
+		'Get number rounded to the number of carried decimal places as a string.'
 		return euclidean.getRoundedToPlacesString(self.decimalPlacesCarried, number)
 
 	def parseSplitLine(self, firstWord, splitLine):
-		"""Parse gcode split line and store the parameters."""
+		'Parse gcode split line and store the parameters.'
 		if firstWord == '(<decimalPlacesCarried>':
 			self.decimalPlacesCarried = int(splitLine[1])

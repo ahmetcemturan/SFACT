@@ -76,21 +76,21 @@ class SNAPChecksum:
 		#byte i = (byte)(data ^ self.crc)
 		i = data ^ self.crc
 		self.crc = 0
-		if(i & 1) != 0:
+		if((i & 1) != 0):
 			self.crc ^= 0x5e
-		if(i & 2) != 0:
+		if((i & 2) != 0):
 			self.crc ^= 0xbc
-		if(i & 4) != 0:
+		if((i & 4) != 0):
 			self.crc ^= 0x61
-		if(i & 8) != 0:
+		if((i & 8) != 0):
 			self.crc ^= 0xc2
-		if(i & 0x10) != 0:
+		if((i & 0x10) != 0):
 			self.crc ^= 0x9d
-		if(i & 0x20) != 0:
+		if((i & 0x20) != 0):
 			self.crc ^= 0x23
-		if(i & 0x40) != 0:
+		if((i & 0x40) != 0):
 			self.crc ^= 0x46
-		if(i & 0x80) != 0:
+		if((i & 0x80) != 0):
 			self.crc ^= 0x8c
 		return data
 	def getResult(self):

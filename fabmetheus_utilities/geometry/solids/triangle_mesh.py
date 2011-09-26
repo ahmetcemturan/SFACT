@@ -30,7 +30,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addEdgePair( edgePairTable, edges, faceEdgeIndex, remainingEdgeIndex, remainingEdgeTable ):
-	"""Add edge pair to the edge pair table."""
+	'Add edge pair to the edge pair table.'
 	if faceEdgeIndex == remainingEdgeIndex:
 		return
 	if not faceEdgeIndex in remainingEdgeTable:
@@ -39,7 +39,7 @@ def addEdgePair( edgePairTable, edges, faceEdgeIndex, remainingEdgeIndex, remain
 	edgePairTable[ str( edgePair ) ] = edgePair
 
 def addFacesByConcaveLoop(faces, indexedLoop):
-	"""Add faces from a polygon which is concave."""
+	'Add faces from a polygon which is concave.'
 	if len(indexedLoop) < 3:
 		return
 	remainingLoop = indexedLoop[:]
@@ -47,7 +47,7 @@ def addFacesByConcaveLoop(faces, indexedLoop):
 		remainingLoop = getRemainingLoopAddFace(faces, remainingLoop)
 
 def addFacesByConvex(faces, indexedLoop):
-	"""Add faces from a convex polygon."""
+	'Add faces from a convex polygon.'
 	if len(indexedLoop) < 3:
 		return
 	indexBegin = indexedLoop[0].index
@@ -63,7 +63,7 @@ def addFacesByConvex(faces, indexedLoop):
 			faces.append(faceFromConvex)
 
 def addFacesByConvexBottomTopLoop(faces, indexedLoopBottom, indexedLoopTop):
-	"""Add faces from loops."""
+	'Add faces from loops.'
 	for indexedLoopIndex in xrange(max(len(indexedLoopBottom), len(indexedLoopTop))):
 		indexedLoopIndexEnd = (indexedLoopIndex + 1) % len(indexedLoopBottom)
 		indexedConvex = []
@@ -80,7 +80,7 @@ def addFacesByConvexBottomTopLoop(faces, indexedLoopBottom, indexedLoopTop):
 		addFacesByConvex(faces, indexedConvex)
 
 def addFacesByConvexLoops(faces, indexedLoops):
-	"""Add faces from loops."""
+	'Add faces from loops.'
 	if len(indexedLoops) < 2:
 		return
 	for indexedLoopsIndex in xrange(len(indexedLoops) - 2):
@@ -92,17 +92,17 @@ def addFacesByConvexLoops(faces, indexedLoops):
 	addFacesByConvexBottomTopLoop(faces, indexedLoopBottom, indexedLoopTop)
 
 def addFacesByConvexReversed(faces, indexedLoop):
-	"""Add faces from a reversed convex polygon."""
+	'Add faces from a reversed convex polygon.'
 	addFacesByConvex(faces, indexedLoop[: : -1])
 
 def addFacesByGrid(faces, grid):
-	"""Add faces from grid."""
+	'Add faces from grid.'
 	cellTopLoops = getIndexedCellLoopsFromIndexedGrid(grid)
 	for cellTopLoop in cellTopLoops:
 		addFacesByConvex(faces, cellTopLoop)
 
 def addFacesByLoop(faces, indexedLoop):
-	"""Add faces from a polygon which may be concave."""
+	'Add faces from a polygon which may be concave.'
 	if len(indexedLoop) < 3:
 		return
 	lastNormal = None
@@ -111,7 +111,7 @@ def addFacesByLoop(faces, indexedLoop):
 		end = indexedLoop[(pointIndex + 2) % len(indexedLoop)]
 		normal = euclidean.getNormalWeighted(point, center, end)
 		if abs(normal) > 0.0:
-			if lastNormal is not None:
+			if lastNormal != None:
 				if lastNormal.dot(normal) < 0.0:
 					addFacesByConcaveLoop(faces, indexedLoop)
 					return
@@ -125,16 +125,16 @@ def addFacesByLoop(faces, indexedLoop):
 	addFacesByConvex(faces, indexedLoop)
 
 def addFacesByLoopReversed(faces, indexedLoop):
-	"""Add faces from a reversed convex polygon."""
+	'Add faces from a reversed convex polygon.'
 	addFacesByLoop(faces, indexedLoop[: : -1])
 
 def addLoopToPointTable(loop, pointTable):
-	"""Add the points in the loop to the point table."""
+	'Add the points in the loop to the point table.'
 	for point in loop:
 		pointTable[point] = None
 
 def addPillarByLoops(faces, indexedLoops):
-	"""Add pillar by loops which may be concave."""
+	'Add pillar by loops which may be concave.'
 	if len(indexedLoops) < 1:
 		return
 	if len(indexedLoops[-1]) < 1:
@@ -145,7 +145,7 @@ def addPillarByLoops(faces, indexedLoops):
 	addFacesByLoop(faces, indexedLoops[-1])
 
 def addPillarFromConvexLoopsGrids(faces, indexedGrids, indexedLoops):
-	"""Add pillar from convex loops and grids."""
+	'Add pillar from convex loops and grids.'
 	cellBottomLoops = getIndexedCellLoopsFromIndexedGrid(indexedGrids[0])
 	for cellBottomLoop in cellBottomLoops:
 		addFacesByConvexReversed(faces, cellBottomLoop)
@@ -153,42 +153,42 @@ def addPillarFromConvexLoopsGrids(faces, indexedGrids, indexedLoops):
 	addFacesByGrid(faces, indexedGrids[-1])
 
 def addPillarFromConvexLoopsGridTop(faces, indexedGridTop, indexedLoops):
-	"""Add pillar from convex loops and grid top."""
+	'Add pillar from convex loops and grid top.'
 	addFacesByLoopReversed(faces, indexedLoops[0])
 	addFacesByConvexLoops(faces, indexedLoops)
 	addFacesByGrid(faces, indexedGridTop)
 
 def addPointsAtZ(edgePair, points, radius, vertexes, z):
-	"""Add point complexes on the segment between the edge intersections with z."""
+	'Add point complexes on the segment between the edge intersections with z.'
 	carveIntersectionFirst = getCarveIntersectionFromEdge(edgePair.edges[0], vertexes, z)
 	carveIntersectionSecond = getCarveIntersectionFromEdge(edgePair.edges[1], vertexes, z)
 	# threshold radius above 0.8 can create extra holes on Screw Holder, 0.7 should be safe for everything
 	intercircle.addPointsFromSegment(carveIntersectionFirst, carveIntersectionSecond, points, radius, 0.7)
 
 def addSymmetricXPath(outputs, path, x):
-	"""Add x path output to outputs."""
+	'Add x path output to outputs.'
 	vertexes = []
 	loops = [getSymmetricXLoop(path, vertexes, -x), getSymmetricXLoop(path, vertexes, x)]
 	outputs.append(getPillarOutput(loops))
 
 def addSymmetricXPaths(outputs, paths, x):
-	"""Add x paths outputs to outputs."""
+	'Add x paths outputs to outputs.'
 	for path in paths:
 		addSymmetricXPath(outputs, path, x)
 
 def addSymmetricYPath(outputs, path, y):
-	"""Add y path output to outputs."""
+	'Add y path output to outputs.'
 	vertexes = []
 	loops = [getSymmetricYLoop(path, vertexes, -y), getSymmetricYLoop(path, vertexes, y)]
 	outputs.append(getPillarOutput(loops))
 
 def addSymmetricYPaths(outputs, paths, y):
-	"""Add y paths outputs to outputs."""
+	'Add y paths outputs to outputs.'
 	for path in paths:
 		addSymmetricYPath(outputs, path, y)
 
 def addWithLeastLength(importRadius, loops, point):
-	"""Insert a point into a loop, at the index at which the loop would be shortest."""
+	'Insert a point into a loop, at the index at which the loop would be shortest.'
 	close = importRadius + importRadius
 	shortestAdditionalLength = close
 	shortestLoop = None
@@ -202,19 +202,19 @@ def addWithLeastLength(importRadius, loops, point):
 						shortestAdditionalLength = additionalLoopLength
 						shortestLoop = loop
 						shortestPointIndex = pointIndex
-	if shortestPointIndex is not None:
+	if shortestPointIndex != None:
 		shortestLoop.insert( shortestPointIndex, point )
 
 def convertXMLElement(geometryOutput, xmlElement):
-	"""Convert the xml element to a TriangleMesh xml element."""
+	'Convert the xml element to a TriangleMesh xml element.'
 	xmlElement.linkObject(TriangleMesh())
 	matrix.getBranchMatrixSetXMLElement(xmlElement)
 	vertex.addGeometryList(geometryOutput['vertex'], xmlElement)
 	face.addGeometryList(geometryOutput['face'], xmlElement)
-	xmlElement.getXMLProcessor().processChildren(xmlElement)
+	xmlElement.getXMLProcessor().processChildNodes(xmlElement)
 
 def getAddIndexedGrid( grid, vertexes, z ):
-	"""Get and add an indexed grid."""
+	'Get and add an indexed grid.'
 	indexedGrid = []
 	for row in grid:
 		indexedRow = []
@@ -226,7 +226,7 @@ def getAddIndexedGrid( grid, vertexes, z ):
 	return indexedGrid
 
 def getAddIndexedLoop(loop, vertexes, z):
-	"""Get and add an indexed loop."""
+	'Get and add an indexed loop.'
 	indexedLoop = []
 	for index in xrange(len(loop)):
 		pointComplex = loop[index]
@@ -236,7 +236,7 @@ def getAddIndexedLoop(loop, vertexes, z):
 	return indexedLoop
 
 def getAddIndexedLoops( loop, vertexes, zList ):
-	"""Get and add indexed loops."""
+	'Get and add indexed loops.'
 	indexedLoops = []
 	for z in zList:
 		indexedLoop = getAddIndexedLoop( loop, vertexes, z )
@@ -244,17 +244,17 @@ def getAddIndexedLoops( loop, vertexes, zList ):
 	return indexedLoops
 
 def getAdditionalLoopLength(loop, point, pointIndex):
-	"""Get the additional length added by inserting a point into a loop."""
+	'Get the additional length added by inserting a point into a loop.'
 	afterPoint = loop[pointIndex]
 	beforePoint = loop[(pointIndex + len(loop) - 1) % len(loop)]
 	return abs(point - beforePoint) + abs(point - afterPoint) - abs(afterPoint - beforePoint)
 
-def getBridgeDirection( belowLoops, layerLoops, extrusionHeight ):
-	"""Get span direction for the majority of the overhanging extrusion perimeter, if any."""
+def getBridgeDirection( belowLoops, layerLoops, layerThickness ):
+	'Get span direction for the majority of the overhanging extrusion perimeter, if any.'
 	if len( belowLoops ) < 1:
 		return None
 	belowOutsetLoops = []
-	overhangInset = 1.875 * extrusionHeight
+	overhangInset = 1.875 * layerThickness
 	slightlyGreaterThanOverhang = 1.1 * overhangInset
 	for loop in belowLoops:
 		centers = intercircle.getCentersFromLoopDirection( True, loop, slightlyGreaterThanOverhang )
@@ -267,15 +267,15 @@ def getBridgeDirection( belowLoops, layerLoops, extrusionHeight ):
 		for pointIndex in xrange(len(loop)):
 			previousIndex = ( pointIndex + len(loop) - 1 ) % len(loop)
 			bridgeRotation += getOverhangDirection( belowOutsetLoops, loop[ previousIndex ], loop[pointIndex] )
-	if abs( bridgeRotation ) < 0.75 * extrusionHeight:
+	if abs( bridgeRotation ) < 0.7853 * layerThickness:
 		return None
 	else:
 		bridgeRotation /= abs( bridgeRotation )
 		return cmath.sqrt( bridgeRotation )
 
-def getBridgeLoops( extrusionHeight, loop ):
-	"""Get the inset bridge loops from the loop."""
-	halfWidth = 1.5 * extrusionHeight
+def getBridgeLoops( layerThickness, loop ):
+	'Get the inset bridge loops from the loop.'
+	halfWidth = 1.5 * layerThickness
 	slightlyGreaterThanHalfWidth = 1.1 * halfWidth
 	extrudateLoops = []
 	centers = intercircle.getCentersFromLoop( loop, slightlyGreaterThanHalfWidth )
@@ -288,7 +288,7 @@ def getBridgeLoops( extrusionHeight, loop ):
 	return extrudateLoops
 
 def getCarveIntersectionFromEdge(edge, vertexes, z):
-	"""Get the complex where the carve intersects the edge."""
+	'Get the complex where the carve intersects the edge.'
 	firstVertex = vertexes[ edge.vertexIndexes[0] ]
 	firstVertexComplex = firstVertex.dropAxis()
 	secondVertex = vertexes[ edge.vertexIndexes[1] ]
@@ -298,7 +298,7 @@ def getCarveIntersectionFromEdge(edge, vertexes, z):
 	return zMinusFirst * ( secondVertexComplex - firstVertexComplex ) / up + firstVertexComplex
 
 def getDescendingAreaLoops(allPoints, corners, importRadius):
-	"""Get descending area loops which include most of the points."""
+	'Get descending area loops which include most of the points.'
 	loops = intercircle.getCentersFromPoints(allPoints, importRadius)
 	descendingAreaLoops = []
 	sortLoopsInOrderOfArea(True, loops)
@@ -312,11 +312,11 @@ def getDescendingAreaLoops(allPoints, corners, importRadius):
 	return getLoopsWithCorners(corners, importRadius, descendingAreaLoops, pointDictionary)
 
 def getDescendingAreaOrientedLoops(allPoints, corners, importRadius):
-	"""Get descending area oriented loops which include most of the points."""
+	'Get descending area oriented loops which include most of the points.'
 	return getOrientedLoops(getDescendingAreaLoops(allPoints, corners, importRadius))
 
 def getDoubledRoundZ( overhangingSegment, segmentRoundZ ):
-	"""Get doubled plane angle around z of the overhanging segment."""
+	'Get doubled plane angle around z of the overhanging segment.'
 	endpoint = overhangingSegment[0]
 	roundZ = endpoint.point - endpoint.otherEndpoint.point
 	roundZ *= segmentRoundZ
@@ -328,11 +328,11 @@ def getDoubledRoundZ( overhangingSegment, segmentRoundZ ):
 	return roundZ * roundZ / roundZLength
 
 def getGeometryOutputByFacesVertexes(faces, vertexes):
-	"""Get geometry output dictionary by faces and vertexes."""
+	'Get geometry output dictionary by faces and vertexes.'
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
 def getGeometryOutputCopy(object):
-	"""Get the geometry output copy."""
+	'Get the geometry output copy.'
 	objectClass = object.__class__
 	if objectClass == dict:
 		objectCopy = {}
@@ -349,7 +349,7 @@ def getGeometryOutputCopy(object):
 	return object
 
 def getIndexedCellLoopsFromIndexedGrid( grid ):
-	"""Get indexed cell loops from an indexed grid."""
+	'Get indexed cell loops from an indexed grid.'
 	indexedCellLoops = []
 	for rowIndex in xrange( len( grid ) - 1 ):
 		rowBottom = grid[ rowIndex ]
@@ -365,7 +365,7 @@ def getIndexedCellLoopsFromIndexedGrid( grid ):
 	return indexedCellLoops
 
 def getIndexedLoopFromIndexedGrid( indexedGrid ):
-	"""Get indexed loop from around the indexed grid."""
+	'Get indexed loop from around the indexed grid.'
 	indexedLoop = indexedGrid[0][:]
 	for row in indexedGrid[1 : -1]:
 		indexedLoop.append( row[-1] )
@@ -375,7 +375,7 @@ def getIndexedLoopFromIndexedGrid( indexedGrid ):
 	return indexedLoop
 
 def getInsetPoint( loop, tinyRadius ):
-	"""Get the inset vertex."""
+	'Get the inset vertex.'
 	pointIndex = getWideAnglePointIndex(loop)
 	point = loop[ pointIndex % len(loop) ]
 	afterPoint = loop[(pointIndex + 1) % len(loop)]
@@ -389,7 +389,7 @@ def getInsetPoint( loop, tinyRadius ):
 	return point + midpointNormalized * tinyRadius
 
 def getIsPointCloseInline(close, loop, point, pointIndex):
-	"""Insert a point into a loop, at the index at which the loop would be shortest."""
+	'Insert a point into a loop, at the index at which the loop would be shortest.'
 	afterCenterComplex = loop[pointIndex]
 	if abs(afterCenterComplex - point) > close:
 		return False
@@ -403,7 +403,7 @@ def getIsPointCloseInline(close, loop, point, pointIndex):
 	return isInline(point, beforeCenterComplex, beforeEndComplex)
 
 def getIsPathEntirelyOutsideTriangle(begin, center, end, vector3Path):
-	"""Determine if a path is entirely outside another loop."""
+	'Determine if a path is entirely outside another loop.'
 	loop = [begin.dropAxis(), center.dropAxis(), end.dropAxis()]
 	for vector3 in vector3Path:
 		point = vector3.dropAxis()
@@ -412,7 +412,7 @@ def getIsPathEntirelyOutsideTriangle(begin, center, end, vector3Path):
 	return True
 
 def getLoopsFromCorrectMesh( edges, faces, vertexes, z ):
-	"""Get loops from a carve of a correct mesh."""
+	'Get loops from a carve of a correct mesh.'
 	remainingEdgeTable = getRemainingEdgeTable(edges, vertexes, z)
 	remainingValues = remainingEdgeTable.values()
 	for edge in remainingValues:
@@ -447,7 +447,7 @@ def getLoopsFromCorrectMesh( edges, faces, vertexes, z ):
 #	return remainingLoops
 
 def getLoopsFromUnprovenMesh(edges, faces, importRadius, vertexes, z):
-	"""Get loops from a carve of an unproven mesh."""
+	'Get loops from a carve of an unproven mesh.'
 	edgePairTable = {}
 	corners = []
 	remainingEdgeTable = getRemainingEdgeTable(edges, vertexes, z)
@@ -467,7 +467,7 @@ def getLoopsFromUnprovenMesh(edges, faces, importRadius, vertexes, z):
 	return getDescendingAreaLoops(allPoints, corners, importRadius)
 
 def getLoopsWithCorners(corners, importRadius, loops, pointTable):
-	"""Add corners to the loops."""
+	'Add corners to the loops.'
 	for corner in corners:
 		if corner not in pointTable:
 			addWithLeastLength(importRadius, loops, corner)
@@ -475,7 +475,7 @@ def getLoopsWithCorners(corners, importRadius, loops, pointTable):
 	return euclidean.getSimplifiedLoops(loops, importRadius)
 
 def getNextEdgeIndexAroundZ( edge, faces, remainingEdgeTable ):
-	"""Get the next edge index in the mesh carve."""
+	'Get the next edge index in the mesh carve.'
 	for faceIndex in edge.faceIndexes:
 		face = faces[ faceIndex ]
 		for edgeIndex in face.edgeIndexes:
@@ -484,7 +484,7 @@ def getNextEdgeIndexAroundZ( edge, faces, remainingEdgeTable ):
 	return - 1
 
 def getOrientedLoops(loops):
-	"""Orient the loops which must be in descending order."""
+	'Orient the loops which must be in descending order.'
 	for loopIndex, loop in enumerate(loops):
 		leftPoint = euclidean.getLeftPoint(loop)
 		isInFilledRegion = euclidean.getIsInFilledRegion(loops[: loopIndex] + loops[loopIndex + 1 :], leftPoint)
@@ -493,7 +493,7 @@ def getOrientedLoops(loops):
 	return loops
 
 def getOverhangDirection( belowOutsetLoops, segmentBegin, segmentEnd ):
-	"""Add to span direction from the endpoint segments which overhang the layer below."""
+	'Add to span direction from the endpoint segments which overhang the layer below.'
 	segment = segmentEnd - segmentBegin
 	normalizedSegment = euclidean.getNormalized( complex( segment.real, segment.imag ) )
 	segmentYMirror = complex(normalizedSegment.real, -normalizedSegment.imag)
@@ -514,7 +514,7 @@ def getOverhangDirection( belowOutsetLoops, segmentBegin, segmentEnd ):
 	return overhangDirection
 
 def getOverlapRatio( loop, pointTable ):
-	"""Get the overlap ratio between the loop and the point table."""
+	'Get the overlap ratio between the loop and the point table.'
 	numberOfOverlaps = 0
 	for point in loop:
 		if point in pointTable:
@@ -522,7 +522,7 @@ def getOverlapRatio( loop, pointTable ):
 	return float( numberOfOverlaps ) / float(len(loop))
 
 def getPath( edges, pathIndexes, loop, z ):
-	"""Get the path from the edge intersections."""
+	'Get the path from the edge intersections.'
 	path = []
 	for pathIndexIndex in xrange( len( pathIndexes ) ):
 		pathIndex = pathIndexes[ pathIndexIndex ]
@@ -532,24 +532,24 @@ def getPath( edges, pathIndexes, loop, z ):
 	return path
 
 def getPillarOutput(loops):
-	"""Get pillar output."""
+	'Get pillar output.'
 	faces = []
 	vertexes = getUniqueVertexes(loops)
 	addPillarByLoops(faces, loops)
 	return getGeometryOutputByFacesVertexes(faces, vertexes)
 
 def getPillarsOutput(loopLists):
-	"""Get pillars output."""
+	'Get pillars output.'
 	pillarsOutput = []
 	for loopList in loopLists:
 		pillarsOutput.append(getPillarOutput(loopList))
 	return getUnifiedOutput(pillarsOutput)
 
 def getRemainingEdgeTable(edges, vertexes, z):
-	"""Get the remaining edge hashtable."""
+	'Get the remaining edge hashtable.'
 	remainingEdgeTable = {}
 	if len(edges) > 0:
-		if edges[0].zMinimum is None:
+		if edges[0].zMinimum == None:
 			for edge in edges:
 				setEdgeMaximumMinimum(edge, vertexes)
 	for edgeIndex in xrange(len(edges)):
@@ -559,7 +559,7 @@ def getRemainingEdgeTable(edges, vertexes, z):
 	return remainingEdgeTable
 
 def getRemainingLoopAddFace(faces, remainingLoop):
-	"""Get the remaining loop and add face."""
+	'Get the remaining loop and add face.'
 	for indexedVertexIndex, indexedVertex in enumerate(remainingLoop):
 		nextIndex = (indexedVertexIndex + 1) % len(remainingLoop)
 		previousIndex = (indexedVertexIndex + len(remainingLoop) - 1) % len(remainingLoop)
@@ -579,7 +579,7 @@ def getRemainingLoopAddFace(faces, remainingLoop):
 	return []
 
 def getSharedFace( firstEdge, faces, secondEdge ):
-	"""Get the face which is shared by two edges."""
+	'Get the face which is shared by two edges.'
 	for firstEdgeFaceIndex in firstEdge.faceIndexes:
 		for secondEdgeFaceIndex in secondEdge.faceIndexes:
 			if firstEdgeFaceIndex == secondEdgeFaceIndex:
@@ -587,7 +587,7 @@ def getSharedFace( firstEdge, faces, secondEdge ):
 	return None
 
 def getSymmetricXLoop(path, vertexes, x):
-	"""Get symmetrix x loop."""
+	'Get symmetrix x loop.'
 	loop = []
 	for point in path:
 		vector3Index = Vector3Index(len(vertexes), x, point.real, point.imag)
@@ -596,7 +596,7 @@ def getSymmetricXLoop(path, vertexes, x):
 	return loop
 
 def getSymmetricYLoop(path, vertexes, y):
-	"""Get symmetrix y loop."""
+	'Get symmetrix y loop.'
 	loop = []
 	for point in path:
 		vector3Index = Vector3Index(len(vertexes), point.real, y, point.imag)
@@ -605,7 +605,7 @@ def getSymmetricYLoop(path, vertexes, y):
 	return loop
 
 def getUnifiedOutput(outputs):
-	"""Get unified output."""
+	'Get unified output.'
 	if len(outputs) < 1:
 		return {}
 	if len(outputs) == 1:
@@ -613,7 +613,7 @@ def getUnifiedOutput(outputs):
 	return {'union' : {'shapes' : outputs}}
 
 def getUniqueVertexes(loops):
-	"""Get unique vertexes."""
+	'Get unique vertexes.'
 	vertexDictionary = {}
 	uniqueVertexes = []
 	for loop in loops:
@@ -631,7 +631,7 @@ def getUniqueVertexes(loops):
 	return uniqueVertexes
 
 def getWideAnglePointIndex(loop):
-	"""Get a point index which has a wide enough angle, most point indexes have a wide enough angle, this is just to make sure."""
+	'Get a point index which has a wide enough angle, most point indexes have a wide enough angle, this is just to make sure.'
 	dotProductMinimum = 9999999.9
 	widestPointIndex = 0
 	for pointIndex in xrange(len(loop)):
@@ -649,20 +649,20 @@ def getWideAnglePointIndex(loop):
 	return widestPointIndex
 
 def getZAddExtruderPathsBySolidCarving(rotatedLoopLayer, solidCarving, z):
-	"""Get next z and add extruder loops by solid carving."""
+	'Get next z and add extruder loops by solid carving.'
 	solidCarving.rotatedLoopLayers.append(rotatedLoopLayer)
-	nextZ = z + solidCarving.extrusionHeight
+	nextZ = z + solidCarving.layerThickness
 	if not solidCarving.infillInDirectionOfBridge:
 		return nextZ
 	allExtrudateLoops = []
 	for loop in rotatedLoopLayer.loops:
-		allExtrudateLoops += getBridgeLoops(solidCarving.extrusionHeight, loop)
-	rotatedLoopLayer.rotation = getBridgeDirection(solidCarving.belowLoops, allExtrudateLoops, solidCarving.extrusionHeight)
+		allExtrudateLoops += getBridgeLoops(solidCarving.layerThickness, loop)
+	rotatedLoopLayer.rotation = getBridgeDirection(solidCarving.belowLoops, allExtrudateLoops, solidCarving.layerThickness)
 	solidCarving.belowLoops = allExtrudateLoops
 	return nextZ
 
 def isInline( beginComplex, centerComplex, endComplex ):
-	"""Determine if the three complex points form a line."""
+	'Determine if the three complex points form a line.'
 	centerBeginComplex = beginComplex - centerComplex
 	centerEndComplex = endComplex - centerComplex
 	centerBeginLength = abs( centerBeginComplex )
@@ -674,7 +674,7 @@ def isInline( beginComplex, centerComplex, endComplex ):
 	return euclidean.getDotProduct( centerBeginComplex, centerEndComplex ) < -0.999
 
 def isPathAdded( edges, faces, loops, remainingEdgeTable, vertexes, z ):
-	"""Get the path indexes around a triangle mesh carve and add the path to the flat loops."""
+	'Get the path indexes around a triangle mesh carve and add the path to the flat loops.'
 	if len( remainingEdgeTable ) < 1:
 		return False
 	pathIndexes = []
@@ -694,11 +694,11 @@ def isPathAdded( edges, faces, loops, remainingEdgeTable, vertexes, z ):
 	return True
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	evaluate.processArchivable(TriangleMesh, xmlElement)
 
 def setEdgeMaximumMinimum(edge, vertexes):
-	"""Set the edge maximum and minimum."""
+	'Set the edge maximum and minimum.'
 	beginIndex = edge.vertexIndexes[0]
 	endIndex = edge.vertexIndexes[1]
 	if beginIndex >= len(vertexes) or endIndex >= len(vertexes):
@@ -713,22 +713,22 @@ def setEdgeMaximumMinimum(edge, vertexes):
 	edge.zMaximum = max(beginZ, endZ)
 
 def sortLoopsInOrderOfArea(isDescending, loops):
-	"""Sort the loops in the order of area according isDescending."""
+	'Sort the loops in the order of area according isDescending.'
 	loops.sort(key=euclidean.getAreaLoopAbsolute, reverse=isDescending)
 
 
 class EdgePair:
 	def __init__(self):
-		"""Pair of edges on a face."""
+		'Pair of edges on a face.'
 		self.edgeIndexes = []
 		self.edges = []
 
 	def __repr__(self):
-		"""Get the string representation of this EdgePair."""
+		'Get the string representation of this EdgePair.'
 		return str( self.edgeIndexes )
 
 	def getFromIndexesEdges( self, edgeIndexes, edges ):
-		"""Initialize from edge indices."""
+		'Initialize from edge indices.'
 		self.edgeIndexes = edgeIndexes[:]
 		self.edgeIndexes.sort()
 		for edgeIndex in self.edgeIndexes:
@@ -737,9 +737,9 @@ class EdgePair:
 
 
 class TriangleMesh( group.Group ):
-	"""A triangle mesh."""
+	'A triangle mesh.'
 	def __init__(self):
-		"""Add empty lists."""
+		'Add empty lists.'
 		group.Group.__init__(self)
 		self.belowLoops = []
 		self.infillInDirectionOfBridge = False
@@ -753,28 +753,28 @@ class TriangleMesh( group.Group ):
 		self.vertexes = []
 
 	def addXMLSection(self, depth, output):
-		"""Add the xml section for this object."""
+		'Add the xml section for this object.'
 		xml_simple_writer.addXMLFromVertexes( depth, output, self.vertexes )
 		xml_simple_writer.addXMLFromObjects( depth, self.faces, output )
 
 	def getCarveCornerMaximum(self):
-		"""Get the corner maximum of the vertexes."""
+		'Get the corner maximum of the vertexes.'
 		return self.cornerMaximum
 
 	def getCarveCornerMinimum(self):
-		"""Get the corner minimum of the vertexes."""
+		'Get the corner minimum of the vertexes.'
 		return self.cornerMinimum
 
 	def getCarveLayerThickness(self):
-		"""Get the layer thickness."""
-		return self.extrusionHeight
+		'Get the layer thickness.'
+		return self.layerThickness
 
 	def getCarveRotatedBoundaryLayers(self):
-		"""Get the rotated boundary layers."""
-		if self.getMinimumZ() is None:
+		'Get the rotated boundary layers.'
+		if self.getMinimumZ() == None:
 			return []
-		halfHeight = 0.5 * self.extrusionHeight
-		self.zoneArrangement = ZoneArrangement(self.extrusionHeight, self.getTransformedVertexes())
+		halfHeight = 0.5 * self.layerThickness
+		self.zoneArrangement = ZoneArrangement(self.layerThickness, self.getTransformedVertexes())
 		layerTop = self.cornerMaximum.z - halfHeight * 0.5
 		z = self.cornerMinimum.z + halfHeight
 		while z < layerTop:
@@ -782,24 +782,24 @@ class TriangleMesh( group.Group ):
 		return self.rotatedLoopLayers
 
 	def getFabmetheusXML(self):
-		"""Return the fabmetheus XML."""
+		'Return the fabmetheus XML.'
 		return None
 
 	def getGeometryOutput(self):
-		"""Get geometry output dictionary."""
+		'Get geometry output dictionary.'
 		return getGeometryOutputByFacesVertexes(self.faces, self.vertexes)
 
 	def getInterpretationSuffix(self):
-		"""Return the suffix for a triangle mesh."""
+		'Return the suffix for a triangle mesh.'
 		return 'xml'
 
 	def getLoops(self, importRadius, z):
-		"""Get loops sliced through shape."""
+		'Get loops sliced through shape.'
 		self.importRadius = importRadius
 		return self.getLoopsFromMesh(z)
 
 	def getLoopsFromMesh( self, z ):
-		"""Get loops from a carve of a mesh."""
+		'Get loops from a carve of a mesh.'
 		originalLoops = []
 		self.setEdgesForAllFaces()
 		if self.isCorrectMesh:
@@ -811,7 +811,7 @@ class TriangleMesh( group.Group ):
 		return getOrientedLoops(loops)
 
 	def getMinimumZ(self):
-		"""Get the minimum z."""
+		'Get the minimum z.'
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, -987654321.0)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, 987654321.0)
 		transformedVertexes = self.getTransformedVertexes()
@@ -823,72 +823,72 @@ class TriangleMesh( group.Group ):
 		return self.cornerMinimum.z
 
 	def getTransformedVertexes(self):
-		"""Get all transformed vertexes."""
-		if self.xmlElement is None:
+		'Get all transformed vertexes.'
+		if self.xmlElement == None:
 			return self.vertexes
 		chainTetragrid = self.getMatrixChainTetragrid()
 		if self.oldChainTetragrid != chainTetragrid:
 			self.oldChainTetragrid = chainTetragrid
 			self.transformedVertexes = None
-		if self.transformedVertexes is None:
+		if self.transformedVertexes == None:
 			if len(self.edges) > 0:
 				self.edges[0].zMinimum = None
 			self.transformedVertexes = matrix.getTransformedVector3s(chainTetragrid, self.vertexes)
 		return self.transformedVertexes
 
 	def getTriangleMeshes(self):
-		"""Get all triangleMeshes."""
+		'Get all triangleMeshes.'
 		return [self]
 
 	def getVertexes(self):
-		"""Get all vertexes."""
+		'Get all vertexes.'
 		self.transformedVertexes = None
 		return self.vertexes
 
 	def getZAddExtruderPaths(self, z):
-		"""Get next z and add extruder loops."""
+		'Get next z and add extruder loops.'
 		settings.printProgress(len(self.rotatedLoopLayers), 'slice')
 		rotatedLoopLayer = euclidean.RotatedLoopLayer(z)
 		rotatedLoopLayer.loops = self.getLoopsFromMesh(self.zoneArrangement.getEmptyZ(z))
 		return getZAddExtruderPathsBySolidCarving(rotatedLoopLayer, self, z)
 
 	def liftByMinimumZ(self, minimumZ):
-		"""Lift the triangle mesh to the altitude."""
+		'Lift the triangle mesh to the altitude.'
 		altitude = evaluate.getEvaluatedFloat(None, 'altitude', self.xmlElement)
-		if altitude is None:
+		if altitude == None:
 			return
 		lift = altitude - minimumZ
 		for vertex in self.vertexes:
 			vertex.z += lift
 
 	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
-		"""Set the infill in direction of bridge."""
+		'Set the infill in direction of bridge.'
 		self.infillInDirectionOfBridge = infillInDirectionOfBridge
 
-	def setCarveLayerThickness( self, extrusionHeight ):
-		"""Set the layer thickness."""
-		self.extrusionHeight = extrusionHeight
+	def setCarveLayerThickness( self, layerThickness ):
+		'Set the layer thickness.'
+		self.layerThickness = layerThickness
 
 	def setCarveImportRadius( self, importRadius ):
-		"""Set the import radius."""
+		'Set the import radius.'
 		self.importRadius = importRadius
 
 	def setCarveIsCorrectMesh( self, isCorrectMesh ):
-		"""Set the is correct mesh flag."""
+		'Set the is correct mesh flag.'
 		self.isCorrectMesh = isCorrectMesh
 
 	def setEdgesForAllFaces(self):
-		"""Set the face edges of all the faces."""
+		'Set the face edges of all the faces.'
 		edgeTable = {}
 		for face in self.faces:
 			face.setEdgeIndexesToVertexIndexes( self.edges, edgeTable )
 
 
 class ZoneArrangement:
-	"""A zone arrangement."""
-	def __init__(self, extrusionHeight, vertexes):
-		"""Initialize the zone interval and the zZone table."""
-		self.zoneInterval = extrusionHeight / math.sqrt(len(vertexes)) / 1000.0
+	'A zone arrangement.'
+	def __init__(self, layerThickness, vertexes):
+		'Initialize the zone interval and the zZone table.'
+		self.zoneInterval = layerThickness / math.sqrt(len(vertexes)) / 1000.0
 		self.zZoneSet = set()
 		for point in vertexes:
 			zoneIndexFloat = point.z / self.zoneInterval
@@ -896,7 +896,7 @@ class ZoneArrangement:
 			self.zZoneSet.add(math.ceil(zoneIndexFloat ))
 
 	def getEmptyZ(self, z):
-		"""Get the first z which is not in the zone table."""
+		'Get the first z which is not in the zone table.'
 		zoneIndex = round(z / self.zoneInterval)
 		if zoneIndex not in self.zZoneSet:
 			return z

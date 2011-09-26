@@ -17,13 +17,13 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	"Process the xml element."
 	functions = xmlElement.getXMLProcessor().functions
 	if len(functions) < 1:
 		return
 	function = functions[-1]
 	function.shouldReturn = True
-	if xmlElement.xmlObject is None:
+	if xmlElement.xmlObject == None:
 		if 'return' in xmlElement.attributeDictionary:
 			value = xmlElement.attributeDictionary['return']
 			xmlElement.xmlObject = evaluate.getEvaluatorSplitWords(value)

@@ -24,7 +24,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 def addPegOutput(bevel, endZ, outputs, radius, start, topOverBottom, xmlElement):
-	"""Add beveled cylinder to outputs given bevel, endZ, radius and start."""
+	'Add beveled cylinder to outputs given bevel, endZ, radius and start.'
 	height = abs(start.z - endZ)
 	bevelStartRatio = max(1.0 - bevel / height, 0.5)
 	oneMinusBevelStartRatio = 1.0 - bevelStartRatio
@@ -41,8 +41,8 @@ def addPegOutput(bevel, endZ, outputs, radius, start, topOverBottom, xmlElement)
 	cylinder.addCylinderOutputByEndStart(endZ, capRadius, outputs, sides, capStart, capTopOverBottom)
 
 def getGeometryOutput(derivation, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary."""
-	if derivation is None:
+	'Get vector3 vertexes from attribute dictionary.'
+	if derivation == None:
 		derivation = PegDerivation(xmlElement)
 	positives = []
 	radius = complex(derivation.radius, derivation.radius)
@@ -50,16 +50,16 @@ def getGeometryOutput(derivation, xmlElement):
 	return extrude.getGeometryOutputByNegativesPositives([], positives, xmlElement)
 
 def getGeometryOutputByArguments(arguments, xmlElement):
-	"""Get vector3 vertexes from attribute dictionary by arguments."""
+	'Get vector3 vertexes from attribute dictionary by arguments.'
 	evaluate.setAttributeDictionaryByArguments(['radius', 'endZ', 'start'], arguments, xmlElement)
 	return getGeometryOutput(None, xmlElement)
 
 def getNewDerivation(xmlElement):
-	"""Get new derivation."""
+	'Get new derivation.'
 	return PegDerivation(xmlElement)
 
 def getTopAddBiconicOutput(bottomRadians, height, outputs, radius, sides, start, tipRadius, topRadians):
-	"""Get top and add biconic cylinder to outputs."""
+	'Get top and add biconic cylinder to outputs.'
 	radiusMaximum = max(radius.real, radius.imag)
 	topRadiusMaximum = radiusMaximum - height * math.tan(bottomRadians)
 	trunkEndZ = start.z + height
@@ -75,14 +75,14 @@ def getTopAddBiconicOutput(bottomRadians, height, outputs, radius, sides, start,
 	return capEndZ
 
 def processXMLElement(xmlElement):
-	"""Process the xml element."""
+	'Process the xml element.'
 	solid.processXMLElementByGeometry(getGeometryOutput(None, xmlElement), xmlElement)
 
 
 class PegDerivation:
-	"""Class to hold peg variables."""
+	'Class to hold peg variables.'
 	def __init__(self, xmlElement):
-		"""Set defaults."""
+		'Set defaults.'
 		self.endZ = evaluate.getEvaluatedFloat(10.0, 'endZ', xmlElement)
 		self.start = evaluate.getVector3ByPrefix(Vector3(), 'start', xmlElement)
 		self.radius = lineation.getFloatByPrefixBeginEnd('radius', 'diameter', 2.0, xmlElement)
@@ -97,5 +97,5 @@ class PegDerivation:
 		self.clearance = evaluate.getEvaluatedFloat(self.clearance, 'clearance', xmlElement)
 
 	def __repr__(self):
-		"""Get the string representation of this PegDerivation."""
+		'Get the string representation of this PegDerivation.'
 		return str(self.__dict__)
