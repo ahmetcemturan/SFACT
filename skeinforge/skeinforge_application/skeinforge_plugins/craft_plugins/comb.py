@@ -380,7 +380,7 @@ class CombSkein:
 				self.combInset = 0.7 * perimeterWidth
 				self.betweenInset = 0.4 * perimeterWidth
 				self.uTurnWidth = 0.5 * self.betweenInset
-			elif firstWord == '(<travelFeedRatePerSecond>':
+			elif firstWord == '(<travelFeedRate>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 

@@ -231,7 +231,7 @@ class WipeSkein:
 				return
 			elif firstWord == '(<perimeterWidth>':
 				self.absolutePerimeterWidth = abs(float(splitLine[1]))
-			elif firstWord == '(<travelFeedRatePerSecond>':
+			elif firstWord == '(<travelFeedRate>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
