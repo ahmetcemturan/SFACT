@@ -1,0 +1,15 @@
+Format is tab separated statistic settings.
+_Name                          	Value
+WindowPosition	700+0
+Activate Statistic	True
+Filament Diameter:	2.8
+Machine Time ($/hour):	1.0
+Material ($/kg):	20.0
+Calculated Print Time (seconds):	1
+Real Print Time (seconds):	1
+Firmware acceleration rate (mm/s2):	1000
+Total Command Count:	1
+Density (kg/m3):	1000.0
+Open File to Generate Statistics for	
+Print Statistics	True
+Save Statistics	False

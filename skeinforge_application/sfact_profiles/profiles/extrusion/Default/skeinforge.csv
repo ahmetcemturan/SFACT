@@ -1,0 +1,9 @@
+Format is tab separated skeinforge settings.
+_Name                          	Value
+WindowPosition	399+0
+Open File for Skeinforge	C:/Users/Ahmet/STL/Calibration/vertex.STL
+analyze	False
+craft	True
+help	False
+meta	False
+profile	False
