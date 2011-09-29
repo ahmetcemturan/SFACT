@@ -79,7 +79,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 
 <dl><dt><a name="Path-createShape"><strong>createShape</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;shape.</tt></dd></dl>
 
-<dl><dt><a name="Path-getAttributeDictionary"><strong>getAttributeDictionary</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
+<dl><dt><a name="Path-getAttributes"><strong>getAttributes</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
 
 <dl><dt><a name="Path-getComplexTransformedPathLists"><strong>getComplexTransformedPathLists</strong></a>(self)</dt><dd><tt>Get&nbsp;complex&nbsp;transformed&nbsp;path&nbsp;lists.</tt></dd></dl>
 
@@ -99,7 +99,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 
 <dl><dt><a name="Path-getXMLLocalName"><strong>getXMLLocalName</strong></a>(self)</dt><dd><tt>Get&nbsp;xml&nbsp;local&nbsp;name.</tt></dd></dl>
 
-<dl><dt><a name="Path-setToXMLElement"><strong>setToXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Set&nbsp;the&nbsp;shape&nbsp;of&nbsp;this&nbsp;carvable&nbsp;object&nbsp;info.</tt></dd></dl>
+<dl><dt><a name="Path-setToElementNode"><strong>setToElementNode</strong></a>(self, elementNode)</dt><dd><tt>Set&nbsp;the&nbsp;shape&nbsp;of&nbsp;this&nbsp;carvable&nbsp;object&nbsp;info.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -111,7 +111,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 <td colspan=2><tt>An&nbsp;svg&nbsp;carving.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="SVGFabricationCarving-__init__"><strong>__init__</strong></a>(self, addLayerTemplate, xmlElement)</dt><dd><tt>Add&nbsp;empty&nbsp;lists.</tt></dd></dl>
+<dl><dt><a name="SVGFabricationCarving-__init__"><strong>__init__</strong></a>(self, addLayerTemplate, elementNode)</dt><dd><tt>Add&nbsp;empty&nbsp;lists.</tt></dd></dl>
 
 <dl><dt><a name="SVGFabricationCarving-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;carving.</tt></dd></dl>
 
@@ -148,11 +148,11 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-convertXMLElement"><strong>convertXMLElement</strong></a>(geometryOutput, xmlElement)</dt><dd><tt>Convert&nbsp;the&nbsp;xml&nbsp;element&nbsp;by&nbsp;geometryOutput.</tt></dd></dl>
- <dl><dt><a name="-convertXMLElementByPath"><strong>convertXMLElementByPath</strong></a>(geometryOutput, xmlElement)</dt><dd><tt>Convert&nbsp;the&nbsp;xml&nbsp;element&nbsp;to&nbsp;a&nbsp;path&nbsp;xml&nbsp;element.</tt></dd></dl>
- <dl><dt><a name="-convertXMLElementRenameByPaths"><strong>convertXMLElementRenameByPaths</strong></a>(geometryOutput, xmlElement)</dt><dd><tt>Convert&nbsp;the&nbsp;xml&nbsp;element&nbsp;to&nbsp;a&nbsp;path&nbsp;xml&nbsp;element&nbsp;and&nbsp;add&nbsp;paths.</tt></dd></dl>
- <dl><dt><a name="-createLinkPath"><strong>createLinkPath</strong></a>(xmlElement)</dt><dd><tt>Create&nbsp;and&nbsp;link&nbsp;a&nbsp;path&nbsp;object.</tt></dd></dl>
- <dl><dt><a name="-processXMLElement"><strong>processXMLElement</strong></a>(xmlElement)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-convertElementNode"><strong>convertElementNode</strong></a>(elementNode, geometryOutput)</dt><dd><tt>Convert&nbsp;the&nbsp;xml&nbsp;element&nbsp;by&nbsp;geometryOutput.</tt></dd></dl>
+ <dl><dt><a name="-convertElementNodeByPath"><strong>convertElementNodeByPath</strong></a>(elementNode, geometryOutput)</dt><dd><tt>Convert&nbsp;the&nbsp;xml&nbsp;element&nbsp;to&nbsp;a&nbsp;path&nbsp;xml&nbsp;element.</tt></dd></dl>
+ <dl><dt><a name="-convertElementNodeRenameByPaths"><strong>convertElementNodeRenameByPaths</strong></a>(elementNode, geometryOutput)</dt><dd><tt>Convert&nbsp;the&nbsp;xml&nbsp;element&nbsp;to&nbsp;a&nbsp;path&nbsp;xml&nbsp;element&nbsp;and&nbsp;add&nbsp;paths.</tt></dd></dl>
+ <dl><dt><a name="-createLinkPath"><strong>createLinkPath</strong></a>(elementNode)</dt><dd><tt>Create&nbsp;and&nbsp;link&nbsp;a&nbsp;path&nbsp;object.</tt></dd></dl>
+ <dl><dt><a name="-processElementNode"><strong>processElementNode</strong></a>(elementNode)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

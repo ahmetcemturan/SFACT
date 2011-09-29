@@ -113,23 +113,6 @@ def getFilePathWithUnderscoredBasename(fileName, suffix):
 	suffixReplacedBaseName = os.path.basename(suffixFileName).replace(' ', '_')
 	return os.path.join(suffixDirectoryName, suffixReplacedBaseName)
 
-def getFileText(fileName, printWarning=True, readMode='r'):
-	'Get the entire text of a file.'
-	try:
-		file = open(fileName, readMode)
-		fileText = file.read()
-		file.close()
-		return fileText
-	except IOError:
-		if printWarning:
-			print('The file ' + fileName + ' does not exist.')
-	return ''
-
-def getFileTextInFileDirectory(fileInDirectory, fileName, readMode='r'):
-	'Get the entire text of a file in the directory of the file in directory.'
-	absoluteFilePathInFileDirectory = os.path.join(os.path.dirname(fileInDirectory), fileName)
-	return getFileText(absoluteFilePathInFileDirectory, True, readMode)
-
 def getFilesWithFileTypesWithoutWords(fileTypes, words = [], fileInDirectory=''):
 	'Get files which have a given file type, but with do not contain a word in a list.'
 	filesWithFileTypes = []
@@ -158,6 +141,23 @@ def getFilesWithFileTypeWithoutWords(fileType, words = [], fileInDirectory=''):
 			filesWithFileType.append(filePath)
 	filesWithFileType.sort()
 	return filesWithFileType
+
+def getFileText(fileName, printWarning=True, readMode='r'):
+	'Get the entire text of a file.'
+	try:
+		file = open(fileName, readMode)
+		fileText = file.read()
+		file.close()
+		return fileText
+	except IOError:
+		if printWarning:
+			print('The file ' + fileName + ' does not exist.')
+	return ''
+
+def getFileTextInFileDirectory(fileInDirectory, fileName, readMode='r'):
+	'Get the entire text of a file in the directory of the file in directory.'
+	absoluteFilePathInFileDirectory = os.path.join(os.path.dirname(fileInDirectory), fileName)
+	return getFileText(absoluteFilePathInFileDirectory, True, readMode)
 
 def getFundamentalsPath(subName=''):
 	'Get the evaluate_fundamentals directory path.'

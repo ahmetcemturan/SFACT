@@ -3,6 +3,6 @@ _Name                          	Value
 WindowPosition	700+0
 Open File for Scale	
 Activate Scale to finetune print size (try to find the fault somewhere else..):	False
-XY Plane Scale (ratio):	1.0
-Z Axis Scale (ratio):	1.0
+XY Plane Scale (ratio):	1.02
+Z Axis Scale (ratio):	1.04
 SVG Viewer:	webbrowser

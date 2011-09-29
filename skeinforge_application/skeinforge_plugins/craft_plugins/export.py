@@ -72,7 +72,7 @@ Default is replace.csv.
 
 When export is exporting the code, if there is a tab separated file  with the name of the "Name of Replace File" setting, it will replace the string in the first column by its replacement in the second column.  If there is nothing in the second column, the first column string will be deleted, if this leads to an empty line, the line will be deleted.  If there are replacement columns after the second, they will be added as extra lines of text.  There is an example file replace_example.csv to demonstrate the tab separated format, which can be edited in a text editor or a spreadsheet.
 
-Export looks for the alteration file in the alterations folder in the .skeinforge folder in the home directory.  Export does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
+Export looks for the alteration file in the alterations folder in the sfact_profiles folder in the home directory.  Export does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
 
 ===Save Penultimate Gcode===
 Default is off.
@@ -309,6 +309,7 @@ def writeOutput(fileName, shouldAnalyze=True):
 	print('It took %s to export the file.' % euclidean.getDurationString(time.time() - startTime))
 	return window
 
+
 class ExportRepository:
 	'A class to handle the export settings.'
 	def __init__(self):
@@ -413,7 +414,7 @@ class ExportSkein:
 		if firstWord == '(<crafting>)':
 			self.crafting = True
 		if firstWord == '(</extruderInitialization>)':
-			self.addLine('(<procedureName> export </procedureName>)')
+			self.addLine(gcodec.getTagBracketedProcedure('export'))
 		if firstWord != 'G1' and firstWord != 'G2' and firstWord != 'G3' :
 			self.addLine(line)
 			return
@@ -424,6 +425,7 @@ class ExportSkein:
 		line = self.getLineWithTruncatedNumber('J', line, splitLine)
 		line = self.getLineWithTruncatedNumber('R', line, splitLine)
 		self.addLine(line)
+
 
 def main():
 	'Display the export dialog.'

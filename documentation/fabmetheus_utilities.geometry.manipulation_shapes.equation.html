@@ -42,7 +42,7 @@
 <td colspan=2><tt>Class&nbsp;to&nbsp;get&nbsp;equation&nbsp;results.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="EquationResult-__init__"><strong>__init__</strong></a>(self, key, revolutions, xmlElement)</dt><dd><tt>Initialize.</tt></dd></dl>
+<dl><dt><a name="EquationResult-__init__"><strong>__init__</strong></a>(self, elementNode, key, revolutions)</dt><dd><tt>Initialize.</tt></dd></dl>
 
 <dl><dt><a name="EquationResult-getReturnValue"><strong>getReturnValue</strong></a>(self, point)</dt><dd><tt>Get&nbsp;return&nbsp;value.</tt></dd></dl>
 
@@ -54,13 +54,13 @@
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-equate"><strong>equate</strong></a>(point, returnValue)</dt><dd><tt>Get&nbsp;equation&nbsp;for&nbsp;rectangular.</tt></dd></dl>
- <dl><dt><a name="-equatePoints"><strong>equatePoints</strong></a>(points, prefix, revolutions, xmlElement)</dt><dd><tt>Equate&nbsp;the&nbsp;points.</tt></dd></dl>
- <dl><dt><a name="-equateVertexesByFunction"><strong>equateVertexesByFunction</strong></a>(equationFunction, points, prefix, revolutions, xmlElement)</dt><dd><tt>Get&nbsp;equated&nbsp;points&nbsp;by&nbsp;equation&nbsp;function.</tt></dd></dl>
+ <dl><dt><a name="-equatePoints"><strong>equatePoints</strong></a>(elementNode, points, prefix, revolutions)</dt><dd><tt>Equate&nbsp;the&nbsp;points.</tt></dd></dl>
+ <dl><dt><a name="-equateVertexesByFunction"><strong>equateVertexesByFunction</strong></a>(elementNode, equationFunction, points, prefix, revolutions)</dt><dd><tt>Get&nbsp;equated&nbsp;points&nbsp;by&nbsp;equation&nbsp;function.</tt></dd></dl>
  <dl><dt><a name="-equateX"><strong>equateX</strong></a>(point, returnValue)</dt><dd><tt>Get&nbsp;equation&nbsp;for&nbsp;rectangular&nbsp;x.</tt></dd></dl>
  <dl><dt><a name="-equateY"><strong>equateY</strong></a>(point, returnValue)</dt><dd><tt>Get&nbsp;equation&nbsp;for&nbsp;rectangular&nbsp;y.</tt></dd></dl>
  <dl><dt><a name="-equateZ"><strong>equateZ</strong></a>(point, returnValue)</dt><dd><tt>Get&nbsp;equation&nbsp;for&nbsp;rectangular&nbsp;z.</tt></dd></dl>
- <dl><dt><a name="-getManipulatedGeometryOutput"><strong>getManipulatedGeometryOutput</strong></a>(geometryOutput, prefix, xmlElement)</dt><dd><tt>Get&nbsp;equated&nbsp;geometryOutput.</tt></dd></dl>
- <dl><dt><a name="-getManipulatedPaths"><strong>getManipulatedPaths</strong></a>(close, loop, prefix, sideLength, xmlElement)</dt><dd><tt>Get&nbsp;equated&nbsp;paths.</tt></dd></dl>
+ <dl><dt><a name="-getManipulatedGeometryOutput"><strong>getManipulatedGeometryOutput</strong></a>(elementNode, geometryOutput, prefix)</dt><dd><tt>Get&nbsp;equated&nbsp;geometryOutput.</tt></dd></dl>
+ <dl><dt><a name="-getManipulatedPaths"><strong>getManipulatedPaths</strong></a>(close, elementNode, loop, prefix, sideLength)</dt><dd><tt>Get&nbsp;equated&nbsp;paths.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

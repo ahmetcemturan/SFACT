@@ -21,10 +21,10 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getGeometryOutput(derivation, xmlElement):
+def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
 	if derivation == None:
-		derivation = CircleDerivation(xmlElement)
+		derivation = CircleDerivation(elementNode)
 	angleTotal = math.radians(derivation.start)
 	loop = []
 	sidesCeiling = int(math.ceil(abs(derivation.sides) * derivation.extent / 360.0))
@@ -34,49 +34,47 @@ def getGeometryOutput(derivation, xmlElement):
 	spiral = lineation.Spiral(derivation.spiral, 0.5 * sideAngle / math.pi)
 	for side in xrange(sidesCeiling + 1):
 		unitPolar = euclidean.getWiddershinsUnitPolar(angleTotal)
-		x = unitPolar.real * derivation.circularizedRadius.real
-		y = unitPolar.imag * derivation.circularizedRadius.imag
+		x = unitPolar.real * derivation.radiusArealized.real
+		y = unitPolar.imag * derivation.radiusArealized.imag
 		vertex = spiral.getSpiralPoint(unitPolar, Vector3(x, y))
 		angleTotal += sideAngle
 		loop.append(vertex)
-	radiusMaximum = 0.000001 * max(derivation.circularizedRadius.real, derivation.circularizedRadius.imag)
+	radiusMaximum = 0.000001 * max(derivation.radiusArealized.real, derivation.radiusArealized.imag)
 	loop = euclidean.getLoopWithoutCloseEnds(radiusMaximum, loop)
-	sideLength = sideAngle * lineation.getRadiusAverage(derivation.circularizedRadius)
-	lineation.setClosedAttribute(derivation.revolutions, xmlElement)
-	return lineation.getGeometryOutputByLoop(lineation.SideLoop(loop, sideAngle, sideLength), xmlElement)
+	sideLength = sideAngle * lineation.getRadiusAverage(derivation.radiusArealized)
+	lineation.setClosedAttribute(elementNode, derivation.revolutions)
+	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(loop, sideAngle, sideLength))
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	"Get vector3 vertexes from attribute dictionary by arguments."
-	evaluate.setAttributeDictionaryByArguments(['radius', 'start', 'end', 'revolutions'], arguments, xmlElement)
-	return getGeometryOutput(None, xmlElement)
+	evaluate.setAttributesByArguments(['radius', 'start', 'end', 'revolutions'], arguments, elementNode)
+	return getGeometryOutput(None, elementNode)
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return CircleDerivation(xmlElement)
+	return CircleDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
+	path.convertElementNode(elementNode, getGeometryOutput(None, elementNode))
 
 
 class CircleDerivation:
 	"Class to hold circle variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.radius = lineation.getRadiusComplex(complex(1.0, 1.0), xmlElement)
-		self.sides = evaluate.getEvaluatedFloat(None, 'sides', xmlElement)
+		self.radius = lineation.getRadiusComplex(elementNode, complex(1.0, 1.0))
+		self.sides = evaluate.getEvaluatedFloat(None, elementNode, 'sides')
 		if self.sides == None:
 			radiusMaximum = max(self.radius.real, self.radius.imag)
-			self.sides = evaluate.getSidesMinimumThreeBasedOnPrecisionSides(radiusMaximum, xmlElement)
-		self.circularizedRadius = self.radius
-		if evaluate.getEvaluatedBoolean(False, 'areaRadius', xmlElement):
-			self.circularizedRadius *= euclidean.getAreaRadiusMultiplier(self.sides)
-		self.start = evaluate.getEvaluatedFloat(0.0, 'start', xmlElement)
-		end = evaluate.getEvaluatedFloat(360.0, 'end', xmlElement)
-		self.revolutions = evaluate.getEvaluatedFloat(1.0, 'revolutions', xmlElement)
-		self.extent = evaluate.getEvaluatedFloat(end - self.start, 'extent', xmlElement)
+			self.sides = evaluate.getSidesMinimumThreeBasedOnPrecisionSides(elementNode, radiusMaximum)
+		self.radiusArealized = evaluate.getRadiusArealizedBasedOnAreaRadius(elementNode, self.radius, self.sides)
+		self.start = evaluate.getEvaluatedFloat(0.0, elementNode, 'start')
+		end = evaluate.getEvaluatedFloat(360.0, elementNode, 'end')
+		self.revolutions = evaluate.getEvaluatedFloat(1.0, elementNode, 'revolutions')
+		self.extent = evaluate.getEvaluatedFloat(end - self.start, elementNode, 'extent')
 		self.extent += 360.0 * (self.revolutions - 1.0)
-		self.spiral = evaluate.getVector3ByPrefix(None, 'spiral', xmlElement)
+		self.spiral = evaluate.getVector3ByPrefix(None, elementNode, 'spiral')
 
 	def __repr__(self):
 		"Get the string representation of this CircleDerivation."

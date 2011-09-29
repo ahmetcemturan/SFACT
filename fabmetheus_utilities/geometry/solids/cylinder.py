@@ -8,6 +8,7 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from fabmetheus_utilities.geometry.creation import lineation
 from fabmetheus_utilities.geometry.creation import solid
 from fabmetheus_utilities.geometry.geometry_utilities import evaluate
 from fabmetheus_utilities.geometry.geometry_utilities import matrix
@@ -55,9 +56,13 @@ def getGeometryOutput(inradius, sides, topOverBottom):
 	addCylinder(faces, inradius, sides, topOverBottom, vertexes)
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
-def processXMLElement(xmlElement):
+def getTopOverBottom(angle, endZ, inradiusComplex, startZ):
+	'Get topOverBottom by angle in radians, endZ, inradius and start.'
+	return max(1.0 - abs(endZ - startZ) * math.tan(angle) / lineation.getRadiusAverage(inradiusComplex), 0.0)
+
+def processElementNode(elementNode):
 	'Process the xml element.'
-	evaluate.processArchivable(Cylinder, xmlElement)
+	evaluate.processArchivable(Cylinder, elementNode)
 
 
 class Cylinder( cube.Cube ):
@@ -68,23 +73,27 @@ class Cylinder( cube.Cube ):
 
 	def createShape(self):
 		'Create the shape.'
-		sides = evaluate.getSidesMinimumThreeBasedOnPrecision(max(self.inradius.x, self.inradius.y), self.xmlElement )
-		addCylinder(self.faces, self.inradius, sides, self.topOverBottom, self.vertexes, self.xmlElement)
+		sides = evaluate.getSidesMinimumThreeBasedOnPrecision(self.elementNode, max(self.inradius.x, self.inradius.y))
+		if self.elementNode.getCascadeBoolean(False, 'radiusAreal'):
+			radiusArealizedMultiplier = euclidean.getRadiusArealizedMultiplier(sides)
+			self.inradius.x *= radiusArealizedMultiplier
+			self.inradius.y *= radiusArealizedMultiplier
+		addCylinder(self.faces, self.inradius, sides, self.topOverBottom, self.vertexes)
 
-	def setToXMLElement(self, xmlElement):
-		'Set to xmlElement.'
-		attributeDictionary = xmlElement.attributeDictionary
-		self.inradius = evaluate.getVector3ByPrefixes(['demisize', 'inradius', 'radius'], Vector3(1.0, 1.0, 1.0), xmlElement)
-		self.inradius = evaluate.getVector3ByMultiplierPrefixes(2.0, ['diameter', 'size'], self.inradius, xmlElement)
-		self.inradius.z = 0.5 * evaluate.getEvaluatedFloat(self.inradius.z + self.inradius.z, 'height', xmlElement)
-		self.topOverBottom = evaluate.getEvaluatedFloat(1.0, 'topOverBottom', xmlElement )
-		self.xmlElement = xmlElement
-		if 'inradius' in attributeDictionary:
-			del attributeDictionary['inradius']
-		attributeDictionary['height'] = self.inradius.z + self.inradius.z
-		attributeDictionary['radius.x'] = self.inradius.x
-		attributeDictionary['radius.y'] = self.inradius.y
-		attributeDictionary['topOverBottom'] = self.topOverBottom
+	def setToElementNode(self, elementNode):
+		'Set to elementNode.'
+		attributes = elementNode.attributes
+		self.elementNode = elementNode
+		self.inradius = evaluate.getVector3ByPrefixes(elementNode, ['demisize', 'inradius', 'radius'], Vector3(1.0, 1.0, 1.0))
+		self.inradius = evaluate.getVector3ByMultiplierPrefixes(elementNode, 2.0, ['diameter', 'size'], self.inradius)
+		self.inradius.z = 0.5 * evaluate.getEvaluatedFloat(self.inradius.z + self.inradius.z, elementNode, 'height')
+		self.topOverBottom = evaluate.getEvaluatedFloat(1.0, elementNode, 'topOverBottom')
+		if 'inradius' in attributes:
+			del attributes['inradius']
+		attributes['height'] = self.inradius.z + self.inradius.z
+		attributes['radius.x'] = self.inradius.x
+		attributes['radius.y'] = self.inradius.y
+		attributes['topOverBottom'] = self.topOverBottom
 		self.createShape()
 		self.liftByMinimumZ(-self.inradius.z)
-		solid.processArchiveRemoveSolid(self.getGeometryOutput(), xmlElement)
+		solid.processArchiveRemoveSolid(elementNode, self.getGeometryOutput())

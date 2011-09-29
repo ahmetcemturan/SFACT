@@ -20,21 +20,21 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getGeometryOutput(derivation, xmlElement):
+def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
 	if derivation == None:
-		derivation = ShaftDerivation(xmlElement)
+		derivation = ShaftDerivation(elementNode)
 	shaftPath = getShaftPath(derivation.depthBottom, derivation.depthTop, derivation.radius, derivation.sides)
-	return lineation.getGeometryOutputByLoop(lineation.SideLoop(shaftPath), xmlElement)
+	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(shaftPath))
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	"Get vector3 vertexes from attribute dictionary by arguments."
-	evaluate.setAttributeDictionaryByArguments(['radius', 'sides'], arguments, xmlElement)
-	return getGeometryOutput(None, xmlElement)
+	evaluate.setAttributesByArguments(['radius', 'sides'], arguments, elementNode)
+	return getGeometryOutput(None, elementNode)
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return ShaftDerivation(xmlElement)
+	return ShaftDerivation(elementNode)
 
 def getShaftPath(depthBottom, depthTop, radius, sides):
 	'Get shaft with the option of a flat on the top and/or bottom.'
@@ -60,26 +60,26 @@ def getShaftPath(depthBottom, depthTop, radius, sides):
 		shaftPath.reverse()
 	return shaftPath
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
+	path.convertElementNode(elementNode, getGeometryOutput(None, elementNode))
 
 
 class ShaftDerivation:
 	"Class to hold shaft variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.depthBottomOverRadius = evaluate.getEvaluatedFloat(0.0, 'depthBottomOverRadius', xmlElement)
-		self.depthTopOverRadius = evaluate.getEvaluatedFloat(0.0, 'depthOverRadius', xmlElement)
+		self.depthBottomOverRadius = evaluate.getEvaluatedFloat(0.0, elementNode, 'depthBottomOverRadius')
+		self.depthTopOverRadius = evaluate.getEvaluatedFloat(0.0, elementNode, 'depthOverRadius')
 		self.depthTopOverRadius = evaluate.getEvaluatedFloat(
-			self.depthTopOverRadius, 'depthTopOverRadius', xmlElement)
-		self.radius = evaluate.getEvaluatedFloat(1.0, 'radius', xmlElement)
-		self.sides = evaluate.getEvaluatedInt(4, 'sides', xmlElement)
+			self.depthTopOverRadius, elementNode, 'depthTopOverRadius')
+		self.radius = evaluate.getEvaluatedFloat(1.0, elementNode, 'radius')
+		self.sides = evaluate.getEvaluatedInt(4, elementNode, 'sides')
 		self.depthBottom = self.radius * self.depthBottomOverRadius
-		self.depthBottom = evaluate.getEvaluatedFloat(self.depthBottom, 'depthBottom', xmlElement)
+		self.depthBottom = evaluate.getEvaluatedFloat(self.depthBottom, elementNode, 'depthBottom')
 		self.depthTop = self.radius * self.depthTopOverRadius
-		self.depthTop = evaluate.getEvaluatedFloat(self.depthTop, 'depth', xmlElement)
-		self.depthTop = evaluate.getEvaluatedFloat(self.depthTop, 'depthTop', xmlElement)
+		self.depthTop = evaluate.getEvaluatedFloat(self.depthTop, elementNode, 'depth')
+		self.depthTop = evaluate.getEvaluatedFloat(self.depthTop, elementNode, 'depthTop')
 
 	def __repr__(self):
 		"Get the string representation of this ShaftDerivation."

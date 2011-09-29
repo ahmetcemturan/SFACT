@@ -35,6 +35,7 @@ Nophead wrote an excellent article on how to set the filament parameters:<br>
 &nbsp;&nbsp;<a href="#Filament">Filament</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Filament Diameter">Filament Diameter</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Filament Packing Density">Filament Packing Density</a><br />
+&nbsp;&nbsp;<a href="#Retract Within Island">Retract Within Island</a><br />
 &nbsp;&nbsp;<a href="#Retraction Distance">Retraction Distance</a><br />
 &nbsp;&nbsp;<a href="#Restart Extra Distance">Restart Extra Distance</a><br />
 <a href="#Examples">Examples</a><br />
@@ -82,6 +83,12 @@ Defines the effective filament packing density.<br>
 The default value is so low for ABS because ABS is relatively soft and with a pinch wheel extruder the teeth of the pinch dig in farther, so it sees a smaller effective diameter.  With a hard plastic like PLA the teeth of the pinch wheel don't dig in as far, so it sees a larger effective diameter, so feeds faster, so for PLA the value should be around 0.97.  This is with Wade's hobbed bolt.  The effect is less significant with larger pinch wheels.<br>
  <br>
 Overall, you'll have to find the optimal filament packing density by experiment.<br>
+ <br>
+<a name="Retract Within Island" id="Retract Within Island"></a><h3>Retract Within Island</h3>
+
+Default is off.<br>
+ <br>
+When selected, retraction will work even when the next thread is within the same island.  If it is not selected, retraction will only work when crossing a boundary.<br>
  <br>
 <a name="Retraction Distance" id="Retraction Distance"></a><h3>Retraction Distance</h3>
 

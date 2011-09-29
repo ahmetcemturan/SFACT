@@ -9,7 +9,7 @@ from __future__ import absolute_import
 import __init__
 
 from fabmetheus_utilities.geometry.solids import triangle_mesh
-from fabmetheus_utilities.xml_simple_reader import XMLSimpleReader
+from fabmetheus_utilities.xml_simple_reader import DocumentNode
 from fabmetheus_utilities import archive
 from fabmetheus_utilities import euclidean
 from fabmetheus_utilities import gcodec
@@ -123,19 +123,19 @@ def getArcComplexes(begin, end, largeArcFlag, radius, sweepFlag, xAxisRotation):
 	arcComplexes.append(end)
 	return arcComplexes
 
-def getChainMatrixSVG(matrixSVG, xmlElement):
+def getChainMatrixSVG(elementNode, matrixSVG):
 	"Get chain matrixSVG by svgElement."
-	matrixSVG = matrixSVG.getOtherTimesSelf(getMatrixSVG(xmlElement).tricomplex)
-	if xmlElement.parentNode != None:
-		matrixSVG = getChainMatrixSVG(matrixSVG, xmlElement.parentNode)
+	matrixSVG = matrixSVG.getOtherTimesSelf(getMatrixSVG(elementNode).tricomplex)
+	if elementNode.parentNode != None:
+		matrixSVG = getChainMatrixSVG(elementNode.parentNode, matrixSVG)
 	return matrixSVG
 
-def getChainMatrixSVGIfNecessary(xmlElement, yAxisPointingUpward):
+def getChainMatrixSVGIfNecessary(elementNode, yAxisPointingUpward):
 	"Get chain matrixSVG by svgElement and yAxisPointingUpward."
 	matrixSVG = MatrixSVG()
 	if yAxisPointingUpward:
 		return matrixSVG
-	return getChainMatrixSVG(matrixSVG, xmlElement)
+	return getChainMatrixSVG(elementNode, matrixSVG)
 
 def getCubicPoint( along, begin, controlPoints, end ):
 	'Get the cubic point.'
@@ -179,13 +179,13 @@ def getLabelString(dictionary):
 			return dictionary[key]
 	return ''
 
-def getMatrixSVG(xmlElement):
+def getMatrixSVG(elementNode):
 	"Get matrixSVG by svgElement."
 	matrixSVG = MatrixSVG()
-	if 'transform' not in xmlElement.attributeDictionary:
+	if 'transform' not in elementNode.attributes:
 		return matrixSVG
 	transformWords = []
-	for transformWord in xmlElement.attributeDictionary['transform'].replace(')', '(').split('('):
+	for transformWord in elementNode.attributes['transform'].replace(')', '(').split('('):
 		transformWordStrip = transformWord.strip()
 		if transformWordStrip != '': # workaround for split(character) bug which leaves an extra empty element
 			transformWords.append(transformWordStrip)
@@ -229,24 +229,24 @@ def getRightStripMinusSplit(lineString):
 		lineString = lineString.replace('- ', '-')
 	return lineString.split()
 
-def getStrokeRadius(xmlElement):
+def getStrokeRadius(elementNode):
 	"Get the stroke radius."
-	return 0.5 * getRightStripAlphabetPercent(getStyleValue('1.0', 'stroke-width', xmlElement))
+	return 0.5 * getRightStripAlphabetPercent(getStyleValue('1.0', elementNode, 'stroke-width'))
 
-def getStyleValue(defaultValue, key, xmlElement):
+def getStyleValue(defaultValue, elementNode, key):
 	"Get the stroke value string."
-	if 'style' in xmlElement.attributeDictionary:
-		line = xmlElement.attributeDictionary['style']
+	if 'style' in elementNode.attributes:
+		line = elementNode.attributes['style']
 		strokeIndex = line.find(key)
 		if strokeIndex > -1:
 			words = line[strokeIndex :].replace(':', ' ').replace(';', ' ').split()
 			if len(words) > 1:
 				return words[1]
-	if key in xmlElement.attributeDictionary:
-		return xmlElement.attributeDictionary[key]
-	if xmlElement.parentNode == None:
+	if key in elementNode.attributes:
+		return elementNode.attributes[key]
+	if elementNode.parentNode == None:
 		return defaultValue
-	return getStyleValue(defaultValue, key, xmlElement.parentNode)
+	return getStyleValue(defaultValue, elementNode.parentNode, key)
 
 def getTextComplexLoops(fontFamily, fontSize, text, yAxisPointingUpward=True):
 	"Get text as complex loops."
@@ -259,24 +259,24 @@ def getTextComplexLoops(fontFamily, fontSize, text, yAxisPointingUpward=True):
 		horizontalAdvanceX += glyph.horizontalAdvanceX
 	return textComplexLoops
 
-def getTransformedFillOutline(loop, xmlElement, yAxisPointingUpward):
+def getTransformedFillOutline(elementNode, loop, yAxisPointingUpward):
 	"Get the loops if fill is on, otherwise get the outlines."
 	fillOutlineLoops = None
-	if getStyleValue('none', 'fill', xmlElement).lower() == 'none':
-		fillOutlineLoops = intercircle.getAroundsFromLoop(loop, getStrokeRadius(xmlElement))
+	if getStyleValue('none', elementNode, 'fill').lower() == 'none':
+		fillOutlineLoops = intercircle.getAroundsFromLoop(loop, getStrokeRadius(elementNode))
 	else:
 		fillOutlineLoops = [loop]
-	return getChainMatrixSVGIfNecessary(xmlElement, yAxisPointingUpward).getTransformedPaths(fillOutlineLoops)
+	return getChainMatrixSVGIfNecessary(elementNode, yAxisPointingUpward).getTransformedPaths(fillOutlineLoops)
 
-def getTransformedOutlineByPath(path, xmlElement, yAxisPointingUpward):
+def getTransformedOutlineByPath(elementNode, path, yAxisPointingUpward):
 	"Get the outline from the path."
-	aroundsFromPath = intercircle.getAroundsFromPath(path, getStrokeRadius(xmlElement))
-	return getChainMatrixSVGIfNecessary(xmlElement, yAxisPointingUpward).getTransformedPaths(aroundsFromPath)
+	aroundsFromPath = intercircle.getAroundsFromPath(path, getStrokeRadius(elementNode))
+	return getChainMatrixSVGIfNecessary(elementNode, yAxisPointingUpward).getTransformedPaths(aroundsFromPath)
 
-def getTransformedOutlineByPaths(paths, xmlElement, yAxisPointingUpward):
+def getTransformedOutlineByPaths(elementNode, paths, yAxisPointingUpward):
 	"Get the outline from the paths."
-	aroundsFromPaths = intercircle.getAroundsFromPaths(paths, getStrokeRadius(xmlElement))
-	return getChainMatrixSVGIfNecessary(xmlElement, yAxisPointingUpward).getTransformedPaths(aroundsFromPaths)
+	aroundsFromPaths = intercircle.getAroundsFromPaths(paths, getStrokeRadius(elementNode))
+	return getChainMatrixSVGIfNecessary(elementNode, yAxisPointingUpward).getTransformedPaths(aroundsFromPaths)
 
 def getTricomplexmatrix(transformWords):
 	"Get matrixSVG by transformWords."
@@ -324,14 +324,14 @@ def getTricomplextranslate(transformWords):
 	translate = euclidean.getComplexByWords(transformWords)
 	return [complex(1.0, 0.0), complex(0.0, 1.0), translate]
 
-def processSVGElementcircle( svgReader, xmlElement ):
-	"Process xmlElement by svgReader."
-	attributeDictionary = xmlElement.attributeDictionary
-	center = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributeDictionary, 'cx', 'cy')
-	radius = euclidean.getFloatDefaultByDictionary( 0.0, attributeDictionary, 'r')
+def processSVGElementcircle( elementNode, svgReader ):
+	"Process elementNode by svgReader."
+	attributes = elementNode.attributes
+	center = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributes, 'cx', 'cy')
+	radius = euclidean.getFloatDefaultByDictionary( 0.0, attributes, 'r')
 	if radius == 0.0:
 		print('Warning, in processSVGElementcircle in svgReader radius is zero in:')
-		print(attributeDictionary)
+		print(attributes)
 		return
 	global globalNumberOfCirclePoints
 	global globalSideAngle
@@ -340,16 +340,16 @@ def processSVGElementcircle( svgReader, xmlElement ):
 	for side in xrange( globalNumberOfCirclePoints ):
 		unitPolar = euclidean.getWiddershinsUnitPolar( float(side) * globalSideAngle )
 		loop.append( center + radius * unitPolar )
-	rotatedLoopLayer.loops += getTransformedFillOutline(loop, xmlElement, svgReader.yAxisPointingUpward)
+	rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 
-def processSVGElementellipse( svgReader, xmlElement ):
-	"Process xmlElement by svgReader."
-	attributeDictionary = xmlElement.attributeDictionary
-	center = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributeDictionary, 'cx', 'cy')
-	radius = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributeDictionary, 'rx', 'ry')
+def processSVGElementellipse( elementNode, svgReader ):
+	"Process elementNode by svgReader."
+	attributes = elementNode.attributes
+	center = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributes, 'cx', 'cy')
+	radius = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributes, 'rx', 'ry')
 	if radius.real == 0.0 or radius.imag == 0.0:
 		print('Warning, in processSVGElementellipse in svgReader radius is zero in:')
-		print(attributeDictionary)
+		print(attributes)
 		return
 	global globalNumberOfCirclePoints
 	global globalSideAngle
@@ -358,92 +358,92 @@ def processSVGElementellipse( svgReader, xmlElement ):
 	for side in xrange( globalNumberOfCirclePoints ):
 		unitPolar = euclidean.getWiddershinsUnitPolar( float(side) * globalSideAngle )
 		loop.append( center + complex( unitPolar.real * radius.real, unitPolar.imag * radius.imag ) )
-	rotatedLoopLayer.loops += getTransformedFillOutline(loop, xmlElement, svgReader.yAxisPointingUpward)
+	rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 
-def processSVGElementg(svgReader, xmlElement):
-	'Process xmlElement by svgReader.'
-	if 'id' not in xmlElement.attributeDictionary:
+def processSVGElementg(elementNode, svgReader):
+	'Process elementNode by svgReader.'
+	if 'id' not in elementNode.attributes:
 		return
-	idString = xmlElement.attributeDictionary['id']
-	if 'beginningOfControlSection' in xmlElement.attributeDictionary:
-		if xmlElement.attributeDictionary['beginningOfControlSection'].lower()[: 1] == 't':
+	idString = elementNode.attributes['id']
+	if 'beginningOfControlSection' in elementNode.attributes:
+		if elementNode.attributes['beginningOfControlSection'].lower()[: 1] == 't':
 			svgReader.stopProcessing = True
 		return
 	idStringLower = idString.lower()
 	zIndex = idStringLower.find('z:')
 	if zIndex < 0:
-		idStringLower = getLabelString(xmlElement.attributeDictionary)
+		idStringLower = getLabelString(elementNode.attributes)
 		zIndex = idStringLower.find('z:')
 	if zIndex < 0:
 		return
 	floatFromValue = euclidean.getFloatFromValue(idStringLower[zIndex + len('z:') :].strip())
 	if floatFromValue != None:
 		svgReader.z = floatFromValue
-	svgReader.bridgeRotation = euclidean.getComplexDefaultByDictionary( None, xmlElement.attributeDictionary, 'bridgeRotation')
+	svgReader.bridgeRotation = euclidean.getComplexDefaultByDictionary( None, elementNode.attributes, 'bridgeRotation')
 
-def processSVGElementline(svgReader, xmlElement):
-	"Process xmlElement by svgReader."
-	begin = euclidean.getComplexDefaultByDictionaryKeys(complex(), xmlElement.attributeDictionary, 'x1', 'y1')
-	end = euclidean.getComplexDefaultByDictionaryKeys(complex(), xmlElement.attributeDictionary, 'x2', 'y2')
+def processSVGElementline(elementNode, svgReader):
+	"Process elementNode by svgReader."
+	begin = euclidean.getComplexDefaultByDictionaryKeys(complex(), elementNode.attributes, 'x1', 'y1')
+	end = euclidean.getComplexDefaultByDictionaryKeys(complex(), elementNode.attributes, 'x2', 'y2')
 	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
-	rotatedLoopLayer.loops += getTransformedOutlineByPath([begin, end], xmlElement, svgReader.yAxisPointingUpward)
+	rotatedLoopLayer.loops += getTransformedOutlineByPath(elementNode, [begin, end], svgReader.yAxisPointingUpward)
 
-def processSVGElementpath( svgReader, xmlElement ):
-	"Process xmlElement by svgReader."
-	if 'd' not in xmlElement.attributeDictionary:
+def processSVGElementpath( elementNode, svgReader ):
+	"Process elementNode by svgReader."
+	if 'd' not in elementNode.attributes:
 		print('Warning, in processSVGElementpath in svgReader can not get a value for d in:')
-		print(xmlElement.attributeDictionary)
+		print(elementNode.attributes)
 		return
 	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
-	PathReader(rotatedLoopLayer.loops, xmlElement, svgReader.yAxisPointingUpward)
+	PathReader(elementNode, rotatedLoopLayer.loops, svgReader.yAxisPointingUpward)
 
-def processSVGElementpolygon( svgReader, xmlElement ):
-	"Process xmlElement by svgReader."
-	if 'points' not in xmlElement.attributeDictionary:
+def processSVGElementpolygon( elementNode, svgReader ):
+	"Process elementNode by svgReader."
+	if 'points' not in elementNode.attributes:
 		print('Warning, in processSVGElementpolygon in svgReader can not get a value for d in:')
-		print(xmlElement.attributeDictionary)
+		print(elementNode.attributes)
 		return
 	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
-	words = getRightStripMinusSplit(xmlElement.attributeDictionary['points'].replace(',', ' '))
+	words = getRightStripMinusSplit(elementNode.attributes['points'].replace(',', ' '))
 	loop = []
 	for wordIndex in xrange( 0, len(words), 2 ):
 		loop.append(euclidean.getComplexByWords(words[wordIndex :]))
-	rotatedLoopLayer.loops += getTransformedFillOutline(loop, xmlElement, svgReader.yAxisPointingUpward)
+	rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 
-def processSVGElementpolyline(svgReader, xmlElement):
-	"Process xmlElement by svgReader."
-	if 'points' not in xmlElement.attributeDictionary:
+def processSVGElementpolyline(elementNode, svgReader):
+	"Process elementNode by svgReader."
+	if 'points' not in elementNode.attributes:
 		print('Warning, in processSVGElementpolyline in svgReader can not get a value for d in:')
-		print(xmlElement.attributeDictionary)
+		print(elementNode.attributes)
 		return
 	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
-	words = getRightStripMinusSplit(xmlElement.attributeDictionary['points'].replace(',', ' '))
+	words = getRightStripMinusSplit(elementNode.attributes['points'].replace(',', ' '))
 	path = []
 	for wordIndex in xrange(0, len(words), 2):
 		path.append(euclidean.getComplexByWords(words[wordIndex :]))
-	rotatedLoopLayer.loops += getTransformedOutlineByPath(path, xmlElement, svgReader.yAxisPointingUpward)
+	rotatedLoopLayer.loops += getTransformedOutlineByPath(elementNode, path, svgReader.yAxisPointingUpward)
 
-def processSVGElementrect( svgReader, xmlElement ):
-	"Process xmlElement by svgReader."
-	attributeDictionary = xmlElement.attributeDictionary
-	height = euclidean.getFloatDefaultByDictionary( 0.0, attributeDictionary, 'height')
+def processSVGElementrect( elementNode, svgReader ):
+	"Process elementNode by svgReader."
+	attributes = elementNode.attributes
+	height = euclidean.getFloatDefaultByDictionary( 0.0, attributes, 'height')
 	if height == 0.0:
 		print('Warning, in processSVGElementrect in svgReader height is zero in:')
-		print(attributeDictionary)
+		print(attributes)
 		return
-	width = euclidean.getFloatDefaultByDictionary( 0.0, attributeDictionary, 'width')
+	width = euclidean.getFloatDefaultByDictionary( 0.0, attributes, 'width')
 	if width == 0.0:
 		print('Warning, in processSVGElementrect in svgReader width is zero in:')
-		print(attributeDictionary)
+		print(attributes)
 		return
-	center = euclidean.getComplexDefaultByDictionaryKeys(complex(), attributeDictionary, 'x', 'y')
+	center = euclidean.getComplexDefaultByDictionaryKeys(complex(), attributes, 'x', 'y')
 	inradius = 0.5 * complex( width, height )
-	cornerRadius = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributeDictionary, 'rx', 'ry')
+	cornerRadius = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributes, 'rx', 'ry')
 	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
 	if cornerRadius.real == 0.0 and cornerRadius.imag == 0.0:
 		inradiusMinusX = complex( - inradius.real, inradius.imag )
 		loop = [center + inradius, center + inradiusMinusX, center - inradius, center - inradiusMinusX]
-		rotatedLoopLayer.loops += getTransformedFillOutline(loop, xmlElement, svgReader.yAxisPointingUpward)
+		rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 		return
 	if cornerRadius.real == 0.0:
 		cornerRadius = complex( cornerRadius.imag, cornerRadius.imag )
@@ -472,18 +472,18 @@ def processSVGElementrect( svgReader, xmlElement ):
 	for cornerPoint in cornerPointsReversed:
 		loop.append( center + complex( cornerPoint.real, - cornerPoint.imag ) )
 	loop = euclidean.getLoopWithoutCloseSequentialPoints( 0.0001 * abs(inradius), loop )
-	rotatedLoopLayer.loops += getTransformedFillOutline(loop, xmlElement, svgReader.yAxisPointingUpward)
+	rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 
-def processSVGElementtext(svgReader, xmlElement):
-	"Process xmlElement by svgReader."
+def processSVGElementtext(elementNode, svgReader):
+	"Process elementNode by svgReader."
 	if svgReader.yAxisPointingUpward:
 		return
-	fontFamily = getStyleValue('Gentium Basic Regular', 'font-family', xmlElement)
-	fontSize = getRightStripAlphabetPercent(getStyleValue('12.0', 'font-size', xmlElement))
-	matrixSVG = getChainMatrixSVGIfNecessary(xmlElement, svgReader.yAxisPointingUpward)
+	fontFamily = getStyleValue('Gentium Basic Regular', elementNode, 'font-family')
+	fontSize = getRightStripAlphabetPercent(getStyleValue('12.0', elementNode, 'font-size'))
+	matrixSVG = getChainMatrixSVGIfNecessary(elementNode, svgReader.yAxisPointingUpward)
 	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
-	translate = euclidean.getComplexDefaultByDictionaryKeys(complex(), xmlElement.attributeDictionary, 'x', 'y')
-	for textComplexLoop in getTextComplexLoops(fontFamily, fontSize, xmlElement.text, svgReader.yAxisPointingUpward):
+	translate = euclidean.getComplexDefaultByDictionaryKeys(complex(), elementNode.attributes, 'x', 'y')
+	for textComplexLoop in getTextComplexLoops(fontFamily, fontSize, elementNode.getTextContent(), svgReader.yAxisPointingUpward):
 		translatedLoop = []
 		for textComplexPoint in textComplexLoop:
 			translatedLoop.append(textComplexPoint + translate )
@@ -496,40 +496,40 @@ class FontReader:
 		"Initialize."
 		self.fontFamily = fontFamily
 		self.glyphDictionary = {}
-		self.glyphXMLElementDictionary = {}
+		self.glyphElementNodeDictionary = {}
 		self.missingGlyph = None
 		fileName = os.path.join(getFontsDirectoryPath(), fontFamily + '.svg')
-		self.xmlParser = XMLSimpleReader(fileName, None, archive.getFileText(fileName))
-		self.fontXMLElement = self.xmlParser.getRoot().getFirstChildByLocalName('defs').getFirstChildByLocalName('font')
-		self.fontFaceXMLElement = self.fontXMLElement.getFirstChildByLocalName('font-face')
-		self.unitsPerEM = float(self.fontFaceXMLElement.attributeDictionary['units-per-em'])
-		glyphXMLElements = self.fontXMLElement.getChildNodesByLocalName('glyph')
-		for glyphXMLElement in glyphXMLElements:
-			self.glyphXMLElementDictionary[glyphXMLElement.attributeDictionary['unicode']] = glyphXMLElement
+		documentElement = DocumentNode(fileName, archive.getFileText(fileName)).getDocumentElement()
+		self.fontElementNode = documentElement.getFirstChildByLocalName('defs').getFirstChildByLocalName('font')
+		self.fontFaceElementNode = self.fontElementNode.getFirstChildByLocalName('font-face')
+		self.unitsPerEM = float(self.fontFaceElementNode.attributes['units-per-em'])
+		glyphElementNodes = self.fontElementNode.getChildNodesByLocalName('glyph')
+		for glyphElementNode in glyphElementNodes:
+			self.glyphElementNodeDictionary[glyphElementNode.attributes['unicode']] = glyphElementNode
 
 	def getGlyph(self, character, yAxisPointingUpward):
 		"Get the glyph for the character."
-		if character not in self.glyphXMLElementDictionary:
+		if character not in self.glyphElementNodeDictionary:
 			if self.missingGlyph == None:
-				missingGlyphXMLElement = self.fontXMLElement.getFirstChildByLocalName('missing-glyph')
-				self.missingGlyph = Glyph(self.unitsPerEM, missingGlyphXMLElement, yAxisPointingUpward)
+				missingGlyphElementNode = self.fontElementNode.getFirstChildByLocalName('missing-glyph')
+				self.missingGlyph = Glyph(missingGlyphElementNode, self.unitsPerEM, yAxisPointingUpward)
 			return self.missingGlyph
 		if character not in self.glyphDictionary:
-			self.glyphDictionary[character] = Glyph(self.unitsPerEM, self.glyphXMLElementDictionary[character], yAxisPointingUpward)
+			self.glyphDictionary[character] = Glyph(self.glyphElementNodeDictionary[character], self.unitsPerEM, yAxisPointingUpward)
 		return self.glyphDictionary[character]
 
 
 class Glyph:
 	"Class to handle a glyph."
-	def __init__(self, unitsPerEM, xmlElement, yAxisPointingUpward):
+	def __init__(self, elementNode, unitsPerEM, yAxisPointingUpward):
 		"Initialize."
-		self.horizontalAdvanceX = float(xmlElement.attributeDictionary['horiz-adv-x'])
+		self.horizontalAdvanceX = float(elementNode.attributes['horiz-adv-x'])
 		self.loops = []
 		self.unitsPerEM = unitsPerEM
-		xmlElement.attributeDictionary['fill'] = ''
-		if 'd' not in xmlElement.attributeDictionary:
+		elementNode.attributes['fill'] = ''
+		if 'd' not in elementNode.attributes:
 			return
-		PathReader(self.loops, xmlElement, yAxisPointingUpward)
+		PathReader(elementNode, self.loops, yAxisPointingUpward)
 
 	def getSizedAdvancedLoops(self, fontSize, horizontalAdvanceX, yAxisPointingUpward=True):
 		"Get loops for font size, advanced horizontally."
@@ -598,16 +598,16 @@ class MatrixSVG:
 
 class PathReader:
 	"Class to read svg path."
-	def __init__(self, loops, xmlElement, yAxisPointingUpward):
+	def __init__(self, elementNode, loops, yAxisPointingUpward):
 		"Add to path string to loops."
 		self.controlPoints = None
+		self.elementNode = elementNode
 		self.loops = loops
 		self.oldPoint = None
 		self.outlinePaths = []
 		self.path = []
-		self.xmlElement = xmlElement
 		self.yAxisPointingUpward = yAxisPointingUpward
-		pathString = xmlElement.attributeDictionary['d'].replace(',', ' ')
+		pathString = elementNode.attributes['d'].replace(',', ' ')
 		global globalProcessPathWordDictionary
 		processPathWordDictionaryKeys = globalProcessPathWordDictionary.keys()
 		for processPathWordDictionaryKey in processPathWordDictionaryKeys:
@@ -619,7 +619,7 @@ class PathReader:
 				globalProcessPathWordDictionary[word](self)
 		if len(self.path) > 0:
 			self.outlinePaths.append(self.path)
-		self.loops += getTransformedOutlineByPaths(self.outlinePaths, xmlElement, yAxisPointingUpward)
+		self.loops += getTransformedOutlineByPaths(elementNode, self.outlinePaths, yAxisPointingUpward)
 
 	def addPathArc( self, end ):
 		"Add an arc to the path."
@@ -833,7 +833,7 @@ class PathReader:
 		self.controlPoints = None
 		if len(self.path) < 1:
 			return
-		self.loops.append(getChainMatrixSVGIfNecessary(self.xmlElement, self.yAxisPointingUpward).getTransformedPath(self.path))
+		self.loops.append(getChainMatrixSVGIfNecessary(self.elementNode, self.yAxisPointingUpward).getTransformedPath(self.path))
 		self.oldPoint = self.path[0]
 		self.path = []
 
@@ -874,38 +874,38 @@ class SVGReader:
 	def parseSVG(self, fileName, svgText):
 		"Parse SVG text and store the layers."
 		self.fileName = fileName
-		xmlParser = XMLSimpleReader(fileName, None, svgText)
-		self.root = xmlParser.getRoot()
-		if self.root == None:
-			print('Warning, root was None in parseSVG in SVGReader, so nothing will be done for:')
+		xmlParser = DocumentNode(fileName, svgText)
+		self.documentElement = xmlParser.getDocumentElement()
+		if self.documentElement == None:
+			print('Warning, documentElement was None in parseSVG in SVGReader, so nothing will be done for:')
 			print(fileName)
 			return
-		self.parseSVGByXMLElement(self.root)
+		self.parseSVGByElementNode(self.documentElement)
 
-	def parseSVGByXMLElement(self, xmlElement):
-		"Parse SVG by xmlElement."
-		self.sliceDictionary = svg_writer.getSliceDictionary(xmlElement)
+	def parseSVGByElementNode(self, elementNode):
+		"Parse SVG by elementNode."
+		self.sliceDictionary = svg_writer.getSliceDictionary(elementNode)
 		self.yAxisPointingUpward = euclidean.getBooleanFromDictionary(False, self.sliceDictionary, 'yAxisPointingUpward')
-		self.processXMLElement(xmlElement)
+		self.processElementNode(elementNode)
 		if not self.yAxisPointingUpward:
 			for rotatedLoopLayer in self.rotatedLoopLayers:
 				self.flipDirectLayer(rotatedLoopLayer)
 
-	def processXMLElement(self, xmlElement):
-		"Process the xml element."
+	def processElementNode(self, elementNode):
+		'Process the xml element.'
 		if self.stopProcessing:
 			return
-		lowerLocalName = xmlElement.localName.lower()
+		lowerLocalName = elementNode.getNodeName().lower()
 		global globalProcessSVGElementDictionary
 		if lowerLocalName in globalProcessSVGElementDictionary:
 			try:
-				globalProcessSVGElementDictionary[ lowerLocalName ](self, xmlElement)
+				globalProcessSVGElementDictionary[lowerLocalName](elementNode, self)
 			except:
-				print('Warning, in processXMLElement in svg_reader, could not process:')
-				print(xmlElement)
+				print('Warning, in processElementNode in svg_reader, could not process:')
+				print(elementNode)
 				traceback.print_exc(file=sys.stdout)
-		for childNode in xmlElement.childNodes:
-			self.processXMLElement( childNode )
+		for childNode in elementNode.childNodes:
+			self.processElementNode(childNode)
 
 
 globalFontFileNames = None

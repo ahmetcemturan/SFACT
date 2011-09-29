@@ -21,37 +21,37 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getGeometryOutput(derivation, xmlElement):
+def getGeometryOutput(derivation, elementNode):
 	'Get triangle mesh from attribute dictionary.'
 	if derivation == None:
-		derivation = ConcatenateDerivation(xmlElement)
+		derivation = ConcatenateDerivation(elementNode)
 	concatenatedList = euclidean.getConcatenatedList(derivation.target)[:]
 	if len(concatenatedList) == 0:
 		print('Warning, in concatenate there are no paths.')
-		print(xmlElement.attributeDictionary)
+		print(elementNode.attributes)
 		return None
-	if 'closed' not in xmlElement.attributeDictionary:
-		xmlElement.attributeDictionary['closed'] = 'true'
-	return lineation.getGeometryOutputByLoop(lineation.SideLoop(concatenatedList, None, None), xmlElement)
+	if 'closed' not in elementNode.attributes:
+		elementNode.attributes['closed'] = 'true'
+	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(concatenatedList, None, None))
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	'Get triangle mesh from attribute dictionary by arguments.'
-	return getGeometryOutput(None, xmlElement)
+	return getGeometryOutput(None, elementNode)
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return ConcatenateDerivation(xmlElement)
+	return ConcatenateDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
+	path.convertElementNode(elementNode, getGeometryOutput(None, elementNode))
 
 
 class ConcatenateDerivation:
 	'Class to hold concatenate variables.'
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Initialize.'
-		self.target = evaluate.getTransformedPathsByKey([], 'target', xmlElement)
+		self.target = evaluate.getTransformedPathsByKey([], elementNode, 'target')
 
 	def __repr__(self):
 		'Get the string representation of this ConcatenateDerivation.'

@@ -12,7 +12,7 @@ The default 'Activate Home' checkbox is on.  When it is on, the functions descri
 ===Name of Homing File===
 Default is homing.gcode.
 
-At the beginning of a each layer, home will add the commands of a gcode script with the name of the "Name of Homing File" setting, if one exists.  Home does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  Home looks for those files in the alterations folder in the .skeinforge folder in the home directory. If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
+At the beginning of a each layer, home will add the commands of a gcode script with the name of the "Name of Homing File" setting, if one exists.  Home does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  Home looks for those files in the alterations folder in the sfact_profiles folder in the home directory. If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
 
 ==Examples==
 The following examples home the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and home.py.
@@ -47,7 +47,7 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -115,11 +115,6 @@ class HomeSkein:
 		closeToEnd.z = self.highestZ
 		self.distanceFeedRate.addLine( self.distanceFeedRate.getLinearGcodeMovementWithFeedRate( self.travelFeedRateMinute, closeToEnd.dropAxis(), closeToEnd.z ) )
 
-	def addHopUp(self, location):
-		"Add hop to highest point."
-		locationUp = Vector3( location.x, location.y, self.highestZ )
-		self.distanceFeedRate.addLine( self.distanceFeedRate.getLinearGcodeMovementWithFeedRate( self.travelFeedRateMinute, locationUp.dropAxis(), locationUp.z ) )
-
 	def addHomeTravel( self, splitLine ):
 		"Add the home travel gcode."
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
@@ -137,6 +132,11 @@ class HomeSkein:
 		self.addFloat( self.oldLocation, location )
 		if self.extruderActive:
 			self.distanceFeedRate.addLine('M101')
+
+	def addHopUp(self, location):
+		"Add hop to highest point."
+		locationUp = Vector3( location.x, location.y, self.highestZ )
+		self.distanceFeedRate.addLine( self.distanceFeedRate.getLinearGcodeMovementWithFeedRate( self.travelFeedRateMinute, locationUp.dropAxis(), locationUp.z ) )
 
 	def getCraftedGcode( self, gcodeText, repository ):
 		"Parse gcode text and store the home gcode."
@@ -159,7 +159,7 @@ class HomeSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> home </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('home')
 				return
 			elif firstWord == '(<perimeterWidth>':
 				self.absolutePerimeterWidth = abs(float(splitLine[1]))

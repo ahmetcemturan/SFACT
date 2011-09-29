@@ -1,12 +1,12 @@
 """
 This page is in the table of contents.
-Comment is a script to comment a gcode file.
+Comment is an analyze plugin to comment a gcode file.
 
 The comment manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Comment
 
 ==Operation==
-The default 'Activate Comment' checkbox is off.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Comment' checkbox is on, when comment is run directly.
+The default 'Activate Comment' checkbox is off.  When it is on, the file will be commented when called from the skeinforge toolchain, when it is off, the file will not be commented when called from the toolchain.  The file will still be commented, whether or not the 'Activate Comment' checkbox is on, when comment is run directly.
 
 ==Gcodes==
 An explanation of the gcodes is at:
@@ -42,7 +42,7 @@ import cStringIO
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 

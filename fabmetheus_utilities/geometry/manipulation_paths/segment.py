@@ -21,15 +21,15 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 60
 
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get segment loop."
 	if len(loop) < 3:
 		return [loop]
-	path = evaluate.getPathByPrefix(getSegmentPathDefault(), prefix, xmlElement)
+	path = evaluate.getPathByPrefix(elementNode, getSegmentPathDefault(), prefix)
 	if path == getSegmentPathDefault():
 		return [loop]
 	path = getXNormalizedVector3Path(path)
-	segmentCenter = evaluate.getVector3ByPrefix(None, prefix + 'center', xmlElement)
+	segmentCenter = evaluate.getVector3ByPrefix(None, elementNode, prefix + 'center')
 	if euclidean.getIsWiddershinsByVector3(loop):
 		path = path[: : -1]
 		for point in path:
@@ -37,7 +37,7 @@ def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
 			if segmentCenter == None:
 				point.y = - point.y
 	segmentLoop = []
-	startEnd = StartEnd(len(loop), prefix, xmlElement)
+	startEnd = StartEnd(elementNode, len(loop), prefix)
 	for pointIndex in xrange(len(loop)):
 		if pointIndex >= startEnd.start and pointIndex < startEnd.end:
 			segmentLoop += getSegmentPath(loop, path, pointIndex, segmentCenter)
@@ -86,22 +86,6 @@ def getSegmentPathDefault():
 	"Get segment path default."
 	return [ Vector3(), Vector3( 0.0, 1.0 ) ]
 
-def getXNormalizedVector3Path(path):
-	"Get path where the x ranges from 0 to 1."
-	if len(path) < 1:
-		return path
-	minimumX = path[0].x
-	for point in path[1 :]:
-		minimumX = min( minimumX, point.x )
-	for point in path:
-		point.x -= minimumX
-	maximumX = path[0].x
-	for point in path[1 :]:
-		maximumX = max( maximumX, point.x )
-	for point in path:
-		point.x /= maximumX
-	return path
-
 def getWedgePath( begin, centerBegin, centerEnd, centerEndMinusBegin, end, path ):
 	"Get segment path."
 	beginComplex = begin.dropAxis()
@@ -134,19 +118,35 @@ def getWiddershinsAverageByVector3( centerMinusBeginComplex, endMinusCenterCompl
 	endMinusCenterWiddershins = Vector3( - endMinusCenterComplex.imag, endMinusCenterComplex.real )
 	return ( centerMinusBeginWiddershins + endMinusCenterWiddershins ).getNormalized()
 
-def processXMLElement(xmlElement):
+def getXNormalizedVector3Path(path):
+	"Get path where the x ranges from 0 to 1."
+	if len(path) < 1:
+		return path
+	minimumX = path[0].x
+	for point in path[1 :]:
+		minimumX = min( minimumX, point.x )
+	for point in path:
+		point.x -= minimumX
+	maximumX = path[0].x
+	for point in path[1 :]:
+		maximumX = max( maximumX, point.x )
+	for point in path:
+		point.x /= maximumX
+	return path
+
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)
 
 
 class StartEnd:
 	'Class to get a start through end range.'
-	def __init__(self, modulo, prefix, xmlElement):
+	def __init__(self, elementNode, modulo, prefix):
 		"Initialize."
-		self.start = evaluate.getEvaluatedInt(0, prefix + 'start', xmlElement)
-		self.extent = evaluate.getEvaluatedInt(modulo - self.start, prefix + 'extent', xmlElement)
-		self.end = evaluate.getEvaluatedInt(self.start + self.extent, prefix + 'end', xmlElement)
-		self.revolutions = evaluate.getEvaluatedInt(1, prefix + 'revolutions', xmlElement)
+		self.start = evaluate.getEvaluatedInt(0, elementNode, prefix + 'start')
+		self.extent = evaluate.getEvaluatedInt(modulo - self.start, elementNode, prefix + 'extent')
+		self.end = evaluate.getEvaluatedInt(self.start + self.extent, elementNode, prefix + 'end')
+		self.revolutions = evaluate.getEvaluatedInt(1, elementNode, prefix + 'revolutions')
 		if self.revolutions > 1:
 			self.end += modulo * (self.revolutions - 1)
 

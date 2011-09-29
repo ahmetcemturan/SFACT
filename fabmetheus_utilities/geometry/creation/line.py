@@ -21,87 +21,87 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getGeometryOutput(derivation, xmlElement):
+def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
 	if derivation == None:
-		derivation = LineDerivation(xmlElement)
+		derivation = LineDerivation(elementNode)
 	endMinusStart = derivation.end - derivation.start
 	endMinusStartLength = abs(endMinusStart)
 	if endMinusStartLength <= 0.0:
 		print('Warning, end is the same as start in getGeometryOutput in line for:')
 		print(derivation.start)
 		print(derivation.end)
-		print(xmlElement)
+		print(elementNode)
 		return None
 	typeStringTwoCharacters = derivation.typeString.lower()[: 2]
-	xmlElement.attributeDictionary['closed'] = str(derivation.closed)
+	elementNode.attributes['closed'] = str(derivation.closed)
 	if derivation.step == None and derivation.steps == None:
-		return lineation.getGeometryOutputByLoop(lineation.SideLoop([derivation.start, derivation.end]), xmlElement)
+		return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop([derivation.start, derivation.end]))
 	loop = [derivation.start]
 	if derivation.step != None and derivation.steps != None:
 		stepVector = derivation.step / endMinusStartLength * endMinusStart
 		derivation.end = derivation.start + stepVector * derivation.steps
-		return getGeometryOutputByStep(derivation.end, loop, derivation.steps, stepVector, xmlElement)
+		return getGeometryOutputByStep(elementNode, derivation.end, loop, derivation.steps, stepVector)
 	if derivation.step == None:
 		stepVector = endMinusStart / derivation.steps
-		return getGeometryOutputByStep(derivation.end, loop, derivation.steps, stepVector, xmlElement)
+		return getGeometryOutputByStep(elementNode, derivation.end, loop, derivation.steps, stepVector)
 	endMinusStartLengthOverStep = endMinusStartLength / derivation.step
 	if typeStringTwoCharacters == 'av':
 		derivation.steps = max(1.0, round(endMinusStartLengthOverStep))
 		stepVector = derivation.step / endMinusStartLength * endMinusStart
 		derivation.end = derivation.start + stepVector * derivation.steps
-		return getGeometryOutputByStep(derivation.end, loop, derivation.steps, stepVector, xmlElement)
+		return getGeometryOutputByStep(elementNode, derivation.end, loop, derivation.steps, stepVector)
 	if typeStringTwoCharacters == 'ma':
 		derivation.steps = math.ceil(endMinusStartLengthOverStep)
 		if derivation.steps < 1.0:
-			return lineation.getGeometryOutputByLoop(lineation.SideLoop([derivation.start, derivation.end]), xmlElement)
+			return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop([derivation.start, derivation.end]))
 		stepVector = endMinusStart / derivation.steps
-		return getGeometryOutputByStep(derivation.end, loop, derivation.steps, stepVector, xmlElement)
+		return getGeometryOutputByStep(elementNode, derivation.end, loop, derivation.steps, stepVector)
 	if typeStringTwoCharacters == 'mi':
 		derivation.steps = math.floor(endMinusStartLengthOverStep)
 		if derivation.steps < 1.0:
-			return lineation.getGeometryOutputByLoop(lineation.SideLoop(loop), xmlElement)
+			return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(loop))
 		stepVector = endMinusStart / derivation.steps
-		return getGeometryOutputByStep(derivation.end, loop, derivation.steps, stepVector, xmlElement)
+		return getGeometryOutputByStep(elementNode, derivation.end, loop, derivation.steps, stepVector)
 	print('Warning, the step type was not one of (average, maximum or minimum) in getGeometryOutput in line for:')
 	print(derivation.typeString)
-	print(xmlElement)
+	print(elementNode)
 	loop.append(derivation.end)
-	return lineation.getGeometryOutputByLoop(lineation.SideLoop(loop), xmlElement)
+	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(loop))
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	"Get vector3 vertexes from attribute dictionary by arguments."
-	evaluate.setAttributeDictionaryByArguments(['start', 'end', 'step'], arguments, xmlElement)
-	return getGeometryOutput(None, xmlElement)
+	evaluate.setAttributesByArguments(['start', 'end', 'step'], arguments, elementNode)
+	return getGeometryOutput(None, elementNode)
 
-def getGeometryOutputByStep(end, loop, steps, stepVector, xmlElement):
+def getGeometryOutputByStep(elementNode, end, loop, steps, stepVector):
 	"Get line geometry output by the end, loop, steps and stepVector."
 	stepsFloor = int(math.floor(abs(steps)))
 	for stepIndex in xrange(1, stepsFloor):
 		loop.append(loop[stepIndex - 1] + stepVector)
 	loop.append(end)
-	return lineation.getGeometryOutputByLoop(lineation.SideLoop(loop), xmlElement)
+	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(loop))
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return LineDerivation(xmlElement)
+	return LineDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
+	path.convertElementNode(elementNode, getGeometryOutput(None, elementNode))
 
 
 class LineDerivation:
 	"Class to hold line variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.closed = evaluate.getEvaluatedBoolean(False, 'closed', xmlElement)
-		self.end = evaluate.getVector3ByPrefix(Vector3(), 'end', xmlElement)
-		self.start = evaluate.getVector3ByPrefix(Vector3(), 'start', xmlElement)
-		self.step = evaluate.getEvaluatedFloat(None, 'step', xmlElement)
-		self.steps = evaluate.getEvaluatedFloat(None, 'steps', xmlElement)
+		self.closed = evaluate.getEvaluatedBoolean(False, elementNode, 'closed')
+		self.end = evaluate.getVector3ByPrefix(Vector3(), elementNode, 'end')
+		self.start = evaluate.getVector3ByPrefix(Vector3(), elementNode, 'start')
+		self.step = evaluate.getEvaluatedFloat(None, elementNode, 'step')
+		self.steps = evaluate.getEvaluatedFloat(None, elementNode, 'steps')
 		self.typeMenuRadioStrings = 'average maximum minimum'.split()
-		self.typeString = evaluate.getEvaluatedString('minimum', 'type', xmlElement)
+		self.typeString = evaluate.getEvaluatedString('minimum', elementNode, 'type')
 
 	def __repr__(self):
 		"Get the string representation of this LineDerivation."

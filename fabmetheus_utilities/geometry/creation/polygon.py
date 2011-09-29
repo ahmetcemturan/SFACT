@@ -21,10 +21,10 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getGeometryOutput(derivation, xmlElement):
+def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
 	if derivation == None:
-		derivation = PolygonDerivation(xmlElement)
+		derivation = PolygonDerivation(elementNode)
 	loop = []
 	spiral = lineation.Spiral(derivation.spiral, 0.5 * derivation.sideAngle / math.pi)
 	for side in xrange(derivation.start, derivation.start + derivation.extent + 1):
@@ -34,40 +34,40 @@ def getGeometryOutput(derivation, xmlElement):
 		loop.append(vertex)
 	loop = euclidean.getLoopWithoutCloseEnds(0.000001 * max(derivation.radius.real, derivation.radius.imag), loop)
 	sideLength = derivation.sideAngle * lineation.getRadiusAverage(derivation.radius)
-	lineation.setClosedAttribute(derivation.revolutions, xmlElement)
-	return lineation.getGeometryOutputByLoop(lineation.SideLoop(loop, derivation.sideAngle, sideLength), xmlElement)
+	lineation.setClosedAttribute(elementNode, derivation.revolutions)
+	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(loop, derivation.sideAngle, sideLength))
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	"Get vector3 vertexes from attribute dictionary by arguments."
-	evaluate.setAttributeDictionaryByArguments(['sides', 'radius'], arguments, xmlElement)
-	return getGeometryOutput(None, xmlElement)
+	evaluate.setAttributesByArguments(['sides', 'radius'], arguments, elementNode)
+	return getGeometryOutput(None, elementNode)
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return PolygonDerivation(xmlElement)
+	return PolygonDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
+	path.convertElementNode(elementNode, getGeometryOutput(None, elementNode))
 
 
 class PolygonDerivation:
 	"Class to hold polygon variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.sides = evaluate.getEvaluatedFloat(4.0, 'sides', xmlElement)
+		self.sides = evaluate.getEvaluatedFloat(4.0, elementNode, 'sides')
 		self.sideAngle = 2.0 * math.pi / self.sides
 		cosSide = math.cos(0.5 * self.sideAngle)
-		self.radius = lineation.getComplexByMultiplierPrefixes(cosSide, ['apothem', 'inradius'], complex(1.0, 1.0), xmlElement)
-		self.radius = lineation.getComplexByPrefixes(['demisize', 'radius'], self.radius, xmlElement)
-		self.radius = lineation.getComplexByMultiplierPrefixes(2.0, ['diameter', 'size'], self.radius, xmlElement)
+		self.radius = lineation.getComplexByMultiplierPrefixes(elementNode, cosSide, ['apothem', 'inradius'], complex(1.0, 1.0))
+		self.radius = lineation.getComplexByPrefixes(elementNode, ['demisize', 'radius'], self.radius)
+		self.radius = lineation.getComplexByMultiplierPrefixes(elementNode, 2.0, ['diameter', 'size'], self.radius)
 		self.sidesCeiling = int(math.ceil(abs(self.sides)))
-		self.start = evaluate.getEvaluatedInt(0, 'start', xmlElement)
-		end = evaluate.getEvaluatedInt(self.sidesCeiling, 'end', xmlElement)
-		self.revolutions = evaluate.getEvaluatedInt(1, 'revolutions', xmlElement)
-		self.extent = evaluate.getEvaluatedInt(end - self.start, 'extent', xmlElement)
+		self.start = evaluate.getEvaluatedInt(0, elementNode, 'start')
+		end = evaluate.getEvaluatedInt(self.sidesCeiling, elementNode, 'end')
+		self.revolutions = evaluate.getEvaluatedInt(1, elementNode, 'revolutions')
+		self.extent = evaluate.getEvaluatedInt(end - self.start, elementNode, 'extent')
 		self.extent += self.sidesCeiling * (self.revolutions - 1)
-		self.spiral = evaluate.getVector3ByPrefix(None, 'spiral', xmlElement)
+		self.spiral = evaluate.getVector3ByPrefix(None, elementNode, 'spiral')
 
 	def __repr__(self):
 		"Get the string representation of this PolygonDerivation."

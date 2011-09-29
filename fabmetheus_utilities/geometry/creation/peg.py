@@ -23,40 +23,39 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 
-def addPegOutput(bevel, endZ, outputs, radius, start, topOverBottom, xmlElement):
-	'Add beveled cylinder to outputs given bevel, endZ, radius and start.'
+def addPegOutput(bevel, endZ, outputs, radiusArealized, sides, start, topOverBottom):
+	'Add beveled cylinder to outputs given bevel, endZ, radiusArealized and start.'
 	height = abs(start.z - endZ)
 	bevelStartRatio = max(1.0 - bevel / height, 0.5)
 	oneMinusBevelStartRatio = 1.0 - bevelStartRatio
 	trunkEndZ = bevelStartRatio * endZ + oneMinusBevelStartRatio * start.z
 	trunkTopOverBottom = bevelStartRatio * topOverBottom + oneMinusBevelStartRatio
-	sides = evaluate.getSidesMinimumThreeBasedOnPrecision(max(radius.real, radius.imag), xmlElement )
-	cylinder.addCylinderOutputByEndStart(trunkEndZ, radius, outputs, sides, start, trunkTopOverBottom)
-	capRadius = radius * trunkTopOverBottom
+	cylinder.addCylinderOutputByEndStart(trunkEndZ, radiusArealized, outputs, sides, start, trunkTopOverBottom)
+	capRadius = radiusArealized * trunkTopOverBottom
 	capStart = bevelStartRatio * Vector3(start.x, start.y, endZ) + oneMinusBevelStartRatio * start
-	radiusMaximum = max(radius.real, radius.imag)
+	radiusMaximum = max(radiusArealized.real, radiusArealized.imag)
 	endRadiusMaximum = radiusMaximum * topOverBottom - bevel
 	trunkRadiusMaximum = radiusMaximum * trunkTopOverBottom
 	capTopOverBottom = endRadiusMaximum / trunkRadiusMaximum
 	cylinder.addCylinderOutputByEndStart(endZ, capRadius, outputs, sides, capStart, capTopOverBottom)
 
-def getGeometryOutput(derivation, xmlElement):
+def getGeometryOutput(derivation, elementNode):
 	'Get vector3 vertexes from attribute dictionary.'
 	if derivation == None:
-		derivation = PegDerivation(xmlElement)
+		derivation = PegDerivation(elementNode)
 	positives = []
-	radius = complex(derivation.radius, derivation.radius)
-	addPegOutput(derivation.bevel, derivation.endZ, positives, radius, derivation.start, derivation.topOverBottom, xmlElement)
-	return extrude.getGeometryOutputByNegativesPositives([], positives, xmlElement)
+	radiusArealized = complex(derivation.radiusArealized, derivation.radiusArealized)
+	addPegOutput(derivation.bevel, derivation.endZ, positives, radiusArealized, derivation.sides, derivation.start, derivation.topOverBottom)
+	return extrude.getGeometryOutputByNegativesPositives(elementNode, [], positives)
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	'Get vector3 vertexes from attribute dictionary by arguments.'
-	evaluate.setAttributeDictionaryByArguments(['radius', 'endZ', 'start'], arguments, xmlElement)
-	return getGeometryOutput(None, xmlElement)
+	evaluate.setAttributesByArguments(['radius', 'endZ', 'start'], arguments, elementNode)
+	return getGeometryOutput(None, elementNode)
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return PegDerivation(xmlElement)
+	return PegDerivation(elementNode)
 
 def getTopAddBiconicOutput(bottomRadians, height, outputs, radius, sides, start, tipRadius, topRadians):
 	'Get top and add biconic cylinder to outputs.'
@@ -74,27 +73,34 @@ def getTopAddBiconicOutput(bottomRadians, height, outputs, radius, sides, start,
 	cylinder.addCylinderOutputByEndStart(capEndZ, topRadiusComplex, outputs, sides, capStart, tipOverTop)
 	return capEndZ
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	solid.processXMLElementByGeometry(getGeometryOutput(None, xmlElement), xmlElement)
+	solid.processElementNodeByGeometry(elementNode, getGeometryOutput(None, elementNode))
+
+def setTopOverBottomByRadius(derivation, endZ, radius, startZ):
+	'Set the derivation topOverBottom by the angle of the elementNode, the endZ, float radius and startZ.'
+	angleDegrees = evaluate.getEvaluatedFloat(None, derivation.elementNode, 'angle')
+	if angleDegrees != None:
+		derivation.topOverBottom = cylinder.getTopOverBottom(math.radians(angleDegrees), endZ, complex(radius, radius), startZ)
 
 
 class PegDerivation:
 	'Class to hold peg variables.'
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.endZ = evaluate.getEvaluatedFloat(10.0, 'endZ', xmlElement)
-		self.start = evaluate.getVector3ByPrefix(Vector3(), 'start', xmlElement)
-		self.radius = lineation.getFloatByPrefixBeginEnd('radius', 'diameter', 2.0, xmlElement)
-		self.topOverBottom = evaluate.getEvaluatedFloat(0.8, 'topOverBottom', xmlElement)
-		self.xmlElement = xmlElement
+		self.bevelOverRadius = evaluate.getEvaluatedFloat(0.25, elementNode, 'bevelOverRadius')
+		self.clearanceOverRadius = evaluate.getEvaluatedFloat(0.0, elementNode, 'clearanceOverRadius')
+		self.elementNode = elementNode
+		self.endZ = evaluate.getEvaluatedFloat(10.0, elementNode, 'endZ')
+		self.start = evaluate.getVector3ByPrefix(Vector3(), elementNode, 'start')
+		self.radius = lineation.getFloatByPrefixBeginEnd(elementNode, 'radius', 'diameter', 2.0)
+		self.sides = evaluate.getSidesMinimumThreeBasedOnPrecision(elementNode, max(self.radius.real, self.radius.imag))
+		self.radiusArealized = evaluate.getRadiusArealizedBasedOnAreaRadius(elementNode, self.radius, self.sides)
+		self.topOverBottom = evaluate.getEvaluatedFloat(0.8, elementNode, 'topOverBottom')
+		setTopOverBottomByRadius(self, self.endZ, self.radiusArealized, self.start.z)
 		# Set derived variables.
-		self.bevelOverRadius = evaluate.getEvaluatedFloat(0.25, 'bevelOverRadius', xmlElement)
-		self.bevel = self.bevelOverRadius * self.radius
-		self.bevel = evaluate.getEvaluatedFloat(self.bevel, 'bevel', xmlElement)
-		self.clearanceOverRadius = evaluate.getEvaluatedFloat(0.0, 'clearanceOverRadius', xmlElement)
-		self.clearance = self.clearanceOverRadius * self.radius
-		self.clearance = evaluate.getEvaluatedFloat(self.clearance, 'clearance', xmlElement)
+		self.bevel = evaluate.getEvaluatedFloat(self.bevelOverRadius * self.radiusArealized, elementNode, 'bevel')
+		self.clearance = evaluate.getEvaluatedFloat(self.clearanceOverRadius * self.radiusArealized, elementNode, 'clearance')
 
 	def __repr__(self):
 		'Get the string representation of this PegDerivation.'

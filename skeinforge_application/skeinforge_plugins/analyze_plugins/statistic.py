@@ -1,6 +1,6 @@
 """
 This page is in the table of contents.
-Statistic is a script to generate statistics a gcode file.
+Statistic is an extremely valuable analyze plugin to print and/or save the statistics of the generated gcode.
 
 The statistic manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Statistic
@@ -41,7 +41,61 @@ Below are examples of statistic being used.  These examples are run in a termina
 This brings up the statistic dialog.
 
 > python statistic.py Screw Holder_penultimate.gcode
-The statistic file is saved as Screw_Holder_penultimate_statistic.txt
+Statistics are being generated for the file /home/enrique/Desktop/backup/babbleold/script/reprap/fabmetheus/models/Screw Holder_penultimate.gcode
+
+Cost
+Machine time cost is 0.31$.
+Material cost is 0.2$.
+Total cost is 0.51$.
+
+Extent
+X axis extrusion starts at 61 mm and ends at 127 mm, for a width of 65 mm.
+Y axis extrusion starts at 81 mm and ends at 127 mm, for a depth of 45 mm.
+Z axis extrusion starts at 0 mm and ends at 15 mm, for a height of 15 mm.
+
+Extruder
+Build time is 18 minutes 47 seconds.
+Distance extruded is 46558.4 mm.
+Distance traveled is 58503.3 mm.
+Extruder speed is 50.0
+Extruder was extruding 79.6 percent of the time.
+Extruder was toggled 1688 times.
+Operating flow rate is 9.8 mm3/s.
+Feed rate average is 51.9 mm/s, (3113.8 mm/min).
+
+Filament
+Cross section area is 0.2 mm2.
+Extrusion diameter is 0.5 mm.
+Extrusion fill density ratio is 0.68
+
+Material
+Mass extruded is 9.8 grams.
+Volume extruded is 9.1 cc.
+
+Meta
+Text has 33738 lines and a size of 1239.0 KB.
+Version is 11.09.28
+
+Procedures
+carve
+bottom
+preface
+inset
+fill
+multiply
+speed
+temperature
+raft
+skirt
+dimension
+bookend
+
+Profile
+UM-PLA-HighQuality
+
+Slice
+Layer thickness is 0.4 mm.
+Perimeter width is 0.72 mm.
 
 """
 
@@ -114,9 +168,10 @@ class StatisticRepository:
 		self.calculatedPrintTime = settings.IntSpin().getFromValue( 0, 'Calculated Print Time (seconds):', self,100000, 1 )
 		self.realPrintTime = settings.IntSpin().getFromValue( 0, 'Real Print Time (seconds):', self,100000, 1 )
 		self.accelerationRate = settings.IntSpin().getFromValue( 0, 'Firmware acceleration rate (mm/s2):', self,100000, 1000 )
+		self.extrusionDiameterOverThickness = settings.FloatSpin().getFromValue( 1.0, 'Extrusion Diameter over Thickness (ratio):', self, 1.5, 1.25 )
 		self.totalCommandsEntered = settings.FloatSpin().getFromValue( 0, 'Total Command Count:', self,100000, 1 )
 		settings.LabelSeparator().getFromRepository(self)
-		self.density = settings.FloatSpin().getFromValue( 500.0, 'Density (kg/m3):', self, 2000.0, 1000.0 )
+		self.density = settings.FloatSpin().getFromValue( 500.0, 'Density (kg/m3):', self, 2000.0, 1200.0 )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( [ ('Gcode text files', '*.gcode') ], 'Open File to Generate Statistics for', self, '')
 		self.printStatistics = settings.BooleanSetting().getFromValue('Print Statistics', self, True )
 		self.saveStatistics = settings.BooleanSetting().getFromValue('Save Statistics', self, False )
@@ -132,7 +187,7 @@ class StatisticRepository:
 class StatisticSkein:
 	"A class to get statistics for a gcode skein."
 	def __init__(self):
-#		self.extrusionDiameter = None
+		self.extrusionDiameter = None
 		self.oldLocation = None
 		self.operatingFeedRatePerSecond = None
 		self.output = cStringIO.StringIO()

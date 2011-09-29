@@ -67,7 +67,7 @@
 <td colspan=2><tt>Class&nbsp;to&nbsp;handle&nbsp;a&nbsp;glyph.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="Glyph-__init__"><strong>__init__</strong></a>(self, unitsPerEM, xmlElement, yAxisPointingUpward)</dt><dd><tt>Initialize.</tt></dd></dl>
+<dl><dt><a name="Glyph-__init__"><strong>__init__</strong></a>(self, elementNode, unitsPerEM, yAxisPointingUpward)</dt><dd><tt>Initialize.</tt></dd></dl>
 
 <dl><dt><a name="Glyph-getSizedAdvancedLoops"><strong>getSizedAdvancedLoops</strong></a>(self, fontSize, horizontalAdvanceX, yAxisPointingUpward<font color="#909090">=True</font>)</dt><dd><tt>Get&nbsp;loops&nbsp;for&nbsp;font&nbsp;size,&nbsp;advanced&nbsp;horizontally.</tt></dd></dl>
 
@@ -103,7 +103,7 @@
 <td colspan=2><tt>Class&nbsp;to&nbsp;read&nbsp;svg&nbsp;path.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="PathReader-__init__"><strong>__init__</strong></a>(self, loops, xmlElement, yAxisPointingUpward)</dt><dd><tt>Add&nbsp;to&nbsp;path&nbsp;string&nbsp;to&nbsp;loops.</tt></dd></dl>
+<dl><dt><a name="PathReader-__init__"><strong>__init__</strong></a>(self, elementNode, loops, yAxisPointingUpward)</dt><dd><tt>Add&nbsp;to&nbsp;path&nbsp;string&nbsp;to&nbsp;loops.</tt></dd></dl>
 
 <dl><dt><a name="PathReader-addPathArc"><strong>addPathArc</strong></a>(self, end)</dt><dd><tt>Add&nbsp;an&nbsp;arc&nbsp;to&nbsp;the&nbsp;path.</tt></dd></dl>
 
@@ -189,9 +189,9 @@
 
 <dl><dt><a name="SVGReader-parseSVG"><strong>parseSVG</strong></a>(self, fileName, svgText)</dt><dd><tt>Parse&nbsp;SVG&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;layers.</tt></dd></dl>
 
-<dl><dt><a name="SVGReader-parseSVGByXMLElement"><strong>parseSVGByXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Parse&nbsp;SVG&nbsp;by&nbsp;xmlElement.</tt></dd></dl>
+<dl><dt><a name="SVGReader-parseSVGByElementNode"><strong>parseSVGByElementNode</strong></a>(self, elementNode)</dt><dd><tt>Parse&nbsp;SVG&nbsp;by&nbsp;elementNode.</tt></dd></dl>
 
-<dl><dt><a name="SVGReader-processXMLElement"><strong>processXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
+<dl><dt><a name="SVGReader-processElementNode"><strong>processElementNode</strong></a>(self, elementNode)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -202,24 +202,24 @@
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-addFunctionsToDictionary"><strong>addFunctionsToDictionary</strong></a>(dictionary, functions, prefix)</dt><dd><tt>Add&nbsp;functions&nbsp;to&nbsp;dictionary.</tt></dd></dl>
  <dl><dt><a name="-getArcComplexes"><strong>getArcComplexes</strong></a>(begin, end, largeArcFlag, radius, sweepFlag, xAxisRotation)</dt><dd><tt>Get&nbsp;the&nbsp;arc&nbsp;complexes,&nbsp;procedure&nbsp;at&nbsp;<a href="http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes">http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes</a></tt></dd></dl>
- <dl><dt><a name="-getChainMatrixSVG"><strong>getChainMatrixSVG</strong></a>(matrixSVG, xmlElement)</dt><dd><tt>Get&nbsp;chain&nbsp;matrixSVG&nbsp;by&nbsp;svgElement.</tt></dd></dl>
- <dl><dt><a name="-getChainMatrixSVGIfNecessary"><strong>getChainMatrixSVGIfNecessary</strong></a>(xmlElement, yAxisPointingUpward)</dt><dd><tt>Get&nbsp;chain&nbsp;matrixSVG&nbsp;by&nbsp;svgElement&nbsp;and&nbsp;yAxisPointingUpward.</tt></dd></dl>
+ <dl><dt><a name="-getChainMatrixSVG"><strong>getChainMatrixSVG</strong></a>(elementNode, matrixSVG)</dt><dd><tt>Get&nbsp;chain&nbsp;matrixSVG&nbsp;by&nbsp;svgElement.</tt></dd></dl>
+ <dl><dt><a name="-getChainMatrixSVGIfNecessary"><strong>getChainMatrixSVGIfNecessary</strong></a>(elementNode, yAxisPointingUpward)</dt><dd><tt>Get&nbsp;chain&nbsp;matrixSVG&nbsp;by&nbsp;svgElement&nbsp;and&nbsp;yAxisPointingUpward.</tt></dd></dl>
  <dl><dt><a name="-getCubicPoint"><strong>getCubicPoint</strong></a>(along, begin, controlPoints, end)</dt><dd><tt>Get&nbsp;the&nbsp;cubic&nbsp;point.</tt></dd></dl>
  <dl><dt><a name="-getCubicPoints"><strong>getCubicPoints</strong></a>(begin, controlPoints, end, numberOfBezierPoints<font color="#909090">=22</font>)</dt><dd><tt>Get&nbsp;the&nbsp;cubic&nbsp;points.</tt></dd></dl>
  <dl><dt><a name="-getFontReader"><strong>getFontReader</strong></a>(fontFamily)</dt><dd><tt>Get&nbsp;the&nbsp;font&nbsp;reader&nbsp;for&nbsp;the&nbsp;fontFamily.</tt></dd></dl>
  <dl><dt><a name="-getFontsDirectoryPath"><strong>getFontsDirectoryPath</strong></a>()</dt><dd><tt>Get&nbsp;the&nbsp;fonts&nbsp;directory&nbsp;path.</tt></dd></dl>
  <dl><dt><a name="-getLabelString"><strong>getLabelString</strong></a>(dictionary)</dt><dd><tt>Get&nbsp;the&nbsp;label&nbsp;string&nbsp;for&nbsp;the&nbsp;dictionary.</tt></dd></dl>
- <dl><dt><a name="-getMatrixSVG"><strong>getMatrixSVG</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;matrixSVG&nbsp;by&nbsp;svgElement.</tt></dd></dl>
+ <dl><dt><a name="-getMatrixSVG"><strong>getMatrixSVG</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;matrixSVG&nbsp;by&nbsp;svgElement.</tt></dd></dl>
  <dl><dt><a name="-getQuadraticPoint"><strong>getQuadraticPoint</strong></a>(along, begin, controlPoint, end)</dt><dd><tt>Get&nbsp;the&nbsp;quadratic&nbsp;point.</tt></dd></dl>
  <dl><dt><a name="-getQuadraticPoints"><strong>getQuadraticPoints</strong></a>(begin, controlPoint, end, numberOfBezierPoints<font color="#909090">=22</font>)</dt><dd><tt>Get&nbsp;the&nbsp;quadratic&nbsp;points.</tt></dd></dl>
  <dl><dt><a name="-getRightStripAlphabetPercent"><strong>getRightStripAlphabetPercent</strong></a>(word)</dt><dd><tt>Get&nbsp;word&nbsp;with&nbsp;alphabet&nbsp;characters&nbsp;and&nbsp;the&nbsp;percent&nbsp;sign&nbsp;stripped&nbsp;from&nbsp;the&nbsp;right.</tt></dd></dl>
  <dl><dt><a name="-getRightStripMinusSplit"><strong>getRightStripMinusSplit</strong></a>(lineString)</dt><dd><tt>Get&nbsp;string&nbsp;with&nbsp;spaces&nbsp;after&nbsp;the&nbsp;minus&nbsp;sign&nbsp;stripped.</tt></dd></dl>
- <dl><dt><a name="-getStrokeRadius"><strong>getStrokeRadius</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;stroke&nbsp;radius.</tt></dd></dl>
- <dl><dt><a name="-getStyleValue"><strong>getStyleValue</strong></a>(defaultValue, key, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;stroke&nbsp;value&nbsp;string.</tt></dd></dl>
+ <dl><dt><a name="-getStrokeRadius"><strong>getStrokeRadius</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;stroke&nbsp;radius.</tt></dd></dl>
+ <dl><dt><a name="-getStyleValue"><strong>getStyleValue</strong></a>(defaultValue, elementNode, key)</dt><dd><tt>Get&nbsp;the&nbsp;stroke&nbsp;value&nbsp;string.</tt></dd></dl>
  <dl><dt><a name="-getTextComplexLoops"><strong>getTextComplexLoops</strong></a>(fontFamily, fontSize, text, yAxisPointingUpward<font color="#909090">=True</font>)</dt><dd><tt>Get&nbsp;text&nbsp;as&nbsp;complex&nbsp;loops.</tt></dd></dl>
- <dl><dt><a name="-getTransformedFillOutline"><strong>getTransformedFillOutline</strong></a>(loop, xmlElement, yAxisPointingUpward)</dt><dd><tt>Get&nbsp;the&nbsp;loops&nbsp;if&nbsp;fill&nbsp;is&nbsp;on,&nbsp;otherwise&nbsp;get&nbsp;the&nbsp;outlines.</tt></dd></dl>
- <dl><dt><a name="-getTransformedOutlineByPath"><strong>getTransformedOutlineByPath</strong></a>(path, xmlElement, yAxisPointingUpward)</dt><dd><tt>Get&nbsp;the&nbsp;outline&nbsp;from&nbsp;the&nbsp;path.</tt></dd></dl>
- <dl><dt><a name="-getTransformedOutlineByPaths"><strong>getTransformedOutlineByPaths</strong></a>(paths, xmlElement, yAxisPointingUpward)</dt><dd><tt>Get&nbsp;the&nbsp;outline&nbsp;from&nbsp;the&nbsp;paths.</tt></dd></dl>
+ <dl><dt><a name="-getTransformedFillOutline"><strong>getTransformedFillOutline</strong></a>(elementNode, loop, yAxisPointingUpward)</dt><dd><tt>Get&nbsp;the&nbsp;loops&nbsp;if&nbsp;fill&nbsp;is&nbsp;on,&nbsp;otherwise&nbsp;get&nbsp;the&nbsp;outlines.</tt></dd></dl>
+ <dl><dt><a name="-getTransformedOutlineByPath"><strong>getTransformedOutlineByPath</strong></a>(elementNode, path, yAxisPointingUpward)</dt><dd><tt>Get&nbsp;the&nbsp;outline&nbsp;from&nbsp;the&nbsp;path.</tt></dd></dl>
+ <dl><dt><a name="-getTransformedOutlineByPaths"><strong>getTransformedOutlineByPaths</strong></a>(elementNode, paths, yAxisPointingUpward)</dt><dd><tt>Get&nbsp;the&nbsp;outline&nbsp;from&nbsp;the&nbsp;paths.</tt></dd></dl>
  <dl><dt><a name="-getTricomplexTimesColumn"><strong>getTricomplexTimesColumn</strong></a>(firstTricomplex, otherColumn)</dt><dd><tt>Get&nbsp;this&nbsp;matrix&nbsp;multiplied&nbsp;by&nbsp;the&nbsp;otherColumn.</tt></dd></dl>
  <dl><dt><a name="-getTricomplexTimesOther"><strong>getTricomplexTimesOther</strong></a>(firstTricomplex, otherTricomplex)</dt><dd><tt>Get&nbsp;the&nbsp;first&nbsp;tricomplex&nbsp;multiplied&nbsp;by&nbsp;the&nbsp;other&nbsp;tricomplex.</tt></dd></dl>
  <dl><dt><a name="-getTricomplexmatrix"><strong>getTricomplexmatrix</strong></a>(transformWords)</dt><dd><tt>Get&nbsp;matrixSVG&nbsp;by&nbsp;transformWords.</tt></dd></dl>
@@ -228,15 +228,15 @@
  <dl><dt><a name="-getTricomplexskewX"><strong>getTricomplexskewX</strong></a>(transformWords)</dt><dd><tt>Get&nbsp;matrixSVG&nbsp;by&nbsp;transformWords.</tt></dd></dl>
  <dl><dt><a name="-getTricomplexskewY"><strong>getTricomplexskewY</strong></a>(transformWords)</dt><dd><tt>Get&nbsp;matrixSVG&nbsp;by&nbsp;transformWords.</tt></dd></dl>
  <dl><dt><a name="-getTricomplextranslate"><strong>getTricomplextranslate</strong></a>(transformWords)</dt><dd><tt>Get&nbsp;matrixSVG&nbsp;by&nbsp;transformWords.</tt></dd></dl>
- <dl><dt><a name="-processSVGElementcircle"><strong>processSVGElementcircle</strong></a>(svgReader, xmlElement)</dt><dd><tt>Process&nbsp;xmlElement&nbsp;by&nbsp;svgReader.</tt></dd></dl>
- <dl><dt><a name="-processSVGElementellipse"><strong>processSVGElementellipse</strong></a>(svgReader, xmlElement)</dt><dd><tt>Process&nbsp;xmlElement&nbsp;by&nbsp;svgReader.</tt></dd></dl>
- <dl><dt><a name="-processSVGElementg"><strong>processSVGElementg</strong></a>(svgReader, xmlElement)</dt><dd><tt>Process&nbsp;xmlElement&nbsp;by&nbsp;svgReader.</tt></dd></dl>
- <dl><dt><a name="-processSVGElementline"><strong>processSVGElementline</strong></a>(svgReader, xmlElement)</dt><dd><tt>Process&nbsp;xmlElement&nbsp;by&nbsp;svgReader.</tt></dd></dl>
- <dl><dt><a name="-processSVGElementpath"><strong>processSVGElementpath</strong></a>(svgReader, xmlElement)</dt><dd><tt>Process&nbsp;xmlElement&nbsp;by&nbsp;svgReader.</tt></dd></dl>
- <dl><dt><a name="-processSVGElementpolygon"><strong>processSVGElementpolygon</strong></a>(svgReader, xmlElement)</dt><dd><tt>Process&nbsp;xmlElement&nbsp;by&nbsp;svgReader.</tt></dd></dl>
- <dl><dt><a name="-processSVGElementpolyline"><strong>processSVGElementpolyline</strong></a>(svgReader, xmlElement)</dt><dd><tt>Process&nbsp;xmlElement&nbsp;by&nbsp;svgReader.</tt></dd></dl>
- <dl><dt><a name="-processSVGElementrect"><strong>processSVGElementrect</strong></a>(svgReader, xmlElement)</dt><dd><tt>Process&nbsp;xmlElement&nbsp;by&nbsp;svgReader.</tt></dd></dl>
- <dl><dt><a name="-processSVGElementtext"><strong>processSVGElementtext</strong></a>(svgReader, xmlElement)</dt><dd><tt>Process&nbsp;xmlElement&nbsp;by&nbsp;svgReader.</tt></dd></dl>
+ <dl><dt><a name="-processSVGElementcircle"><strong>processSVGElementcircle</strong></a>(elementNode, svgReader)</dt><dd><tt>Process&nbsp;elementNode&nbsp;by&nbsp;svgReader.</tt></dd></dl>
+ <dl><dt><a name="-processSVGElementellipse"><strong>processSVGElementellipse</strong></a>(elementNode, svgReader)</dt><dd><tt>Process&nbsp;elementNode&nbsp;by&nbsp;svgReader.</tt></dd></dl>
+ <dl><dt><a name="-processSVGElementg"><strong>processSVGElementg</strong></a>(elementNode, svgReader)</dt><dd><tt>Process&nbsp;elementNode&nbsp;by&nbsp;svgReader.</tt></dd></dl>
+ <dl><dt><a name="-processSVGElementline"><strong>processSVGElementline</strong></a>(elementNode, svgReader)</dt><dd><tt>Process&nbsp;elementNode&nbsp;by&nbsp;svgReader.</tt></dd></dl>
+ <dl><dt><a name="-processSVGElementpath"><strong>processSVGElementpath</strong></a>(elementNode, svgReader)</dt><dd><tt>Process&nbsp;elementNode&nbsp;by&nbsp;svgReader.</tt></dd></dl>
+ <dl><dt><a name="-processSVGElementpolygon"><strong>processSVGElementpolygon</strong></a>(elementNode, svgReader)</dt><dd><tt>Process&nbsp;elementNode&nbsp;by&nbsp;svgReader.</tt></dd></dl>
+ <dl><dt><a name="-processSVGElementpolyline"><strong>processSVGElementpolyline</strong></a>(elementNode, svgReader)</dt><dd><tt>Process&nbsp;elementNode&nbsp;by&nbsp;svgReader.</tt></dd></dl>
+ <dl><dt><a name="-processSVGElementrect"><strong>processSVGElementrect</strong></a>(elementNode, svgReader)</dt><dd><tt>Process&nbsp;elementNode&nbsp;by&nbsp;svgReader.</tt></dd></dl>
+ <dl><dt><a name="-processSVGElementtext"><strong>processSVGElementtext</strong></a>(elementNode, svgReader)</dt><dd><tt>Process&nbsp;elementNode&nbsp;by&nbsp;svgReader.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

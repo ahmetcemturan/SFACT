@@ -72,7 +72,7 @@ import os
 import sys
 import time
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __credits__ = 'Nophead <http://hydraraptor.blogspot.com/>'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
@@ -124,8 +124,8 @@ class SVGWriterVectorwrite( svg_writer.SVGWriter ):
 			pathString += self.getSVGStringForPath(path) + ' '
 		if len( pathString ) < 1:
 			return
-		pathXMLElementCopy = self.pathXMLElement.getCopy('', self.pathXMLElement.parentNode )
-		pathCopyDictionary = pathXMLElementCopy.attributeDictionary
+		pathElementNodeCopy = self.pathElementNode.getCopy('', self.pathElementNode.parentNode )
+		pathCopyDictionary = pathElementNodeCopy.attributes
 		pathCopyDictionary['d'] = pathString[ : - 1 ]
 		pathCopyDictionary['fill'] = 'none'
 		pathCopyDictionary['stroke'] = colorName
@@ -180,6 +180,7 @@ class ThreadLayer:
 		pointComplex = euclidean.getMinimum(euclidean.getMinimumByComplexPaths(self.outerPerimeters), pointComplex)
 		pointComplex = euclidean.getMinimum(euclidean.getMinimumByComplexPaths(self.paths), pointComplex)
 		vector3.setToXYZ(pointComplex.real, pointComplex.imag, min(self.z, vector3.z))
+
 
 class VectorwriteRepository:
 	'A class to handle the vectorwrite settings.'
@@ -241,10 +242,6 @@ class VectorwriteSkein:
 				self.threadLayer.innerPerimeters.append(self.thread)
 		self.thread = []
 
-	def getCarveLayerThickness(self):
-		'Get the layer thickness.'
-		return self.layerThickness
-
 	def getCarvedSVG(self, fileName, gcodeText, repository):
 		'Parse gnu triangulated surface text and store the vectorwrite gcode.'
 		cornerMaximum = Vector3(-987654321.0, -987654321.0, -987654321.0)
@@ -273,12 +270,9 @@ class VectorwriteSkein:
 			True, cornerMaximum, cornerMinimum, self.decimalPlacesCarried, self.layerThickness, self.perimeterWidth)
 		return svgWriter.getReplacedSVGTemplate(fileName, 'vectorwrite', self.threadLayers)
 
-	def removeEmptyLayers(self):
-		'Remove empty layers.'
-		for threadLayerIndex, threadLayer in enumerate(self.threadLayers):
-			if threadLayer.getTotalNumberOfThreads() > 0:
-				self.threadLayers = self.threadLayers[threadLayerIndex :]
-				return
+	def getCarveLayerThickness(self):
+		'Get the layer thickness.'
+		return self.layerThickness
 
 	def linearMove( self, splitLine ):
 		'Get statistics for a linear move.'
@@ -344,6 +338,13 @@ class VectorwriteSkein:
 			self.isOuter = ( splitLine[1] == 'outer')
 		elif firstWord == '(</perimeter>)':
 			self.addToPerimeters()
+
+	def removeEmptyLayers(self):
+		'Remove empty layers.'
+		for threadLayerIndex, threadLayer in enumerate(self.threadLayers):
+			if threadLayer.getTotalNumberOfThreads() > 0:
+				self.threadLayers = self.threadLayers[threadLayerIndex :]
+				return
 
 
 def main():

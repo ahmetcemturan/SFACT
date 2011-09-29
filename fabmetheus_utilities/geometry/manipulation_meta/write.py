@@ -20,55 +20,55 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return WriteDerivation(xmlElement)
+	return WriteDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	processXMLElementByDerivation(None, xmlElement)
+	processElementNodeByDerivation(None, elementNode)
 
-def processXMLElementByDerivation(derivation, xmlElement):
+def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
 	if derivation == None:
-		derivation = WriteDerivation(xmlElement)
+		derivation = WriteDerivation(elementNode)
 	if len(derivation.targets) < 1:
-		print('Warning, processXMLElement in write could not get targets for:')
-		print(xmlElement)
+		print('Warning, processElementNode in write could not get targets for:')
+		print(elementNode)
 		return
 	fileNames = []
 	for target in derivation.targets:
-		writeXMLElement(derivation, fileNames, target)
+		writeElementNode(derivation, fileNames, target)
 
-def writeXMLElement(derivation, fileNames, target):
+def writeElementNode(derivation, fileNames, target):
 	"Write a quantity of the target."
 	xmlObject = target.xmlObject
 	if xmlObject == None:
 		print('Warning, writeTarget in write could not get xmlObject for:')
 		print(target)
-		print(derivation.xmlElement)
+		print(derivation.elementNode)
 		return
-	parserDirectory = os.path.dirname(derivation.xmlElement.getRoot().parser.fileName)
+	parserDirectory = os.path.dirname(derivation.elementNode.getOwnerDocument().fileName)
 	absoluteFolderDirectory = os.path.abspath(os.path.join(parserDirectory, derivation.folderName))
 	if '/models' not in absoluteFolderDirectory:
 		print('Warning, models/ was not in the absolute file path, so for security nothing will be done for:')
-		print(derivation.xmlElement)
+		print(derivation.elementNode)
 		print('For which the absolute folder path is:')
 		print(absoluteFolderDirectory)
 		print('The write tool can only write a file which has models/ in the file path.')
 		print('To write the file, move the file into a folder called model/ or a subfolder which is inside the model folder tree.')
 		return
-	quantity = evaluate.getEvaluatedInt(1, 'quantity', target)
+	quantity = evaluate.getEvaluatedInt(1, target, 'quantity')
 	for itemIndex in xrange(quantity):
 		writeXMLObject(absoluteFolderDirectory, derivation, fileNames, target, xmlObject)
 
 def writeXMLObject(absoluteFolderDirectory, derivation, fileNames, target, xmlObject):
 	"Write one instance of the xmlObject."
-	extension = evaluate.getEvaluatedString(xmlObject.getFabricationExtension(), 'extension', derivation.xmlElement)
+	extension = evaluate.getEvaluatedString(xmlObject.getFabricationExtension(), derivation.elementNode, 'extension')
 	fileNameRoot = derivation.fileName
 	if fileNameRoot == '':
-		fileNameRoot = evaluate.getEvaluatedString('', 'name', target)
-		fileNameRoot = evaluate.getEvaluatedString(fileNameRoot, 'id', target)
+		fileNameRoot = evaluate.getEvaluatedString('', target, 'name')
+		fileNameRoot = evaluate.getEvaluatedString(fileNameRoot, target, 'id')
 		fileNameRoot += derivation.suffix
 	fileName = '%s.%s' % (fileNameRoot, extension)
 	suffixIndex = 2
@@ -87,15 +87,15 @@ def writeXMLObject(absoluteFolderDirectory, derivation, fileNames, target, xmlOb
 
 class WriteDerivation:
 	"Class to hold write variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.addLayerTemplate = evaluate.getEvaluatedBoolean(False, 'addLayerTemplate', xmlElement)
-		self.fileName = evaluate.getEvaluatedString('', 'file', xmlElement)
-		self.folderName = evaluate.getEvaluatedString('', 'folder', xmlElement)
-		self.suffix = evaluate.getEvaluatedString('', 'suffix', xmlElement)
-		self.targets = evaluate.getXMLElementsByKey('target', xmlElement)
-		self.writeMatrix = evaluate.getEvaluatedBoolean(True, 'writeMatrix', xmlElement)
-		self.xmlElement = xmlElement
+		self.addLayerTemplate = evaluate.getEvaluatedBoolean(False, elementNode, 'addLayerTemplate')
+		self.elementNode = elementNode
+		self.fileName = evaluate.getEvaluatedString('', elementNode, 'file')
+		self.folderName = evaluate.getEvaluatedString('', elementNode, 'folder')
+		self.suffix = evaluate.getEvaluatedString('', elementNode, 'suffix')
+		self.targets = evaluate.getElementNodesByKey(elementNode, 'target')
+		self.writeMatrix = evaluate.getEvaluatedBoolean(True, elementNode, 'writeMatrix')
 
 	def __repr__(self):
 		"Get the string representation of this WriteDerivation."

@@ -1,6 +1,6 @@
 """
 This page is in the table of contents.
-Skeiniso is an analysis script to display a gcode file in an isometric view.
+Skeiniso is an analyze viewer to display a gcode file in an isometric view.
 
 The skeiniso manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skeiniso
@@ -241,7 +241,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -363,7 +363,7 @@ class SkeinisoSkein:
 	def __init__(self):
 		self.coloredThread = []
 		self.feedRateMinute = 960.1
-		self.hasASurroundingLoopBeenReached = False
+		self.hasANestedRingBeenReached = False
 		self.isLoop = False
 		self.isPerimeter = False
 		self.isOuter = False
@@ -448,7 +448,7 @@ class SkeinisoSkein:
 		if self.isLoop:
 			self.setColoredThread( ( 255.0, 255.0, 0.0 ), self.skeinPane.loopLines ) #yellow
 			return
-		if not self.hasASurroundingLoopBeenReached:
+		if not self.hasANestedRingBeenReached:
 			self.setColoredThread( ( 165.0, 42.0, 42.0 ), self.skeinPane.raftLines ) #brown
 			return
 		if layerZoneIndex < self.repository.numberOfFillBottomLayers.value:
@@ -477,7 +477,7 @@ class SkeinisoSkein:
 			self.extruderActive = True
 		elif firstWord == 'M103':
 			self.extruderActive = False
-		elif firstWord == '(<layerThickness>':#todo
+		elif firstWord == '(<layerThickness>':
 			self.thirdLayerThickness = 0.33333333333 * float(splitLine[1])
 		if firstWord == '(<nestedRing>)':
 			if self.layerTopZ > self.getLayerTop():
@@ -572,7 +572,7 @@ class SkeinisoSkein:
 			self.moveColoredThreadToSkeinPane()
 			self.isLoop = False
 		elif firstWord == '(<nestedRing>)':
-			self.hasASurroundingLoopBeenReached = True
+			self.hasANestedRingBeenReached = True
 		elif firstWord == '(<perimeter>':
 			self.isPerimeter = True
 			self.isOuter = ( splitLine[1] == 'outer')
@@ -746,16 +746,16 @@ class SkeinWindow( tableau.TableauWindow ):
 		if self.repository.widthOfAxisPositiveSide.value > 0:
 			self.getDrawnColoredLine('last', self.positiveAxisLineZ, projectiveSpace, self.positiveAxisLineZ.tagString, self.repository.widthOfAxisPositiveSide.value )
 
+	def getCanvasRadius(self):
+		"Get half of the minimum of the canvas height and width."
+		return 0.5 * min( float( self.canvasHeight ), float( self.canvasWidth ) )
+
 	def getCentered( self, coordinate ):
 		"Get the centered coordinate."
 		relativeToCenter = complex( coordinate.real - self.center.real, self.center.imag - coordinate.imag )
 		if abs( relativeToCenter ) < 1.0:
 			relativeToCenter = complex( 0.0, 1.0 )
 		return relativeToCenter
-
-	def getCanvasRadius(self):
-		"Get half of the minimum of the canvas height and width."
-		return 0.5 * min( float( self.canvasHeight ), float( self.canvasWidth ) )
 
 	def getCenteredScreened( self, coordinate ):
 		"Get the normalized centered coordinate."

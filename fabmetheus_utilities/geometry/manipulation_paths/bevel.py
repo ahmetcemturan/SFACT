@@ -40,11 +40,11 @@ def getBevelPath( begin, center, close, end, radius ):
 	spikeComplex = centerComplex + centerComplex - midpointComplex
 	return [ beginBevel, Vector3( spikeComplex.real, spikeComplex.imag, center.z ), endBevel ]
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get bevel loop."
 	if len(loop) < 3:
 		return [loop]
-	radius = lineation.getRadiusByPrefix( prefix, sideLength, xmlElement )
+	radius = lineation.getRadiusByPrefix(elementNode, prefix, sideLength)
 	if radius == 0.0:
 		return loop
 	bevelLoop = []
@@ -55,6 +55,6 @@ def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
 		bevelLoop += getBevelPath( begin, center, close, end, radius )
 	return [ euclidean.getLoopWithoutCloseSequentialPoints( close, bevelLoop ) ]
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)

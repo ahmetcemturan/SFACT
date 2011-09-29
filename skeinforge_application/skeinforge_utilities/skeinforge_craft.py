@@ -22,7 +22,7 @@ import sys
 import time
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -66,15 +66,15 @@ def getNewRepository():
 	'Get new repository.'
 	return CraftRepository()
 
-def getPluginsDirectoryPath():
-	"Get the plugins directory path."
-	return archive.getSkeinforgePluginsPath('craft_plugins')
-
 def getPluginFileNames():
 	"Get craft plugin fileNames."
 	craftSequence = getReadCraftSequence()
 	craftSequence.sort()
 	return craftSequence
+
+def getPluginsDirectoryPath():
+	"Get the plugins directory path."
+	return archive.getSkeinforgePluginsPath('craft_plugins')
 
 def getProcedures( procedure, text ):
 	"Get the procedures up to and including the given procedure."

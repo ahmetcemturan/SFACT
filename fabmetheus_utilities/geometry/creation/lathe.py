@@ -69,29 +69,29 @@ def addPositives(derivation, paths, positives):
 		geometryOutput = triangle_mesh.getPillarsOutput(loopListsByPath)
 		positives.append(geometryOutput)
 
-def getGeometryOutput(derivation, xmlElement):
+def getGeometryOutput(derivation, elementNode):
 	"Get triangle mesh from attribute dictionary."
 	if derivation == None:
-		derivation = LatheDerivation(xmlElement)
+		derivation = LatheDerivation(elementNode)
 	if len(euclidean.getConcatenatedList(derivation.target)) == 0:
 		print('Warning, in lathe there are no paths.')
-		print(xmlElement.attributeDictionary)
+		print(elementNode.attributes)
 		return None
 	negatives = []
 	positives = []
 	addNegativesPositives(derivation, negatives, derivation.target, positives)
-	return getGeometryOutputByNegativesPositives(derivation, negatives, positives, xmlElement)
+	return getGeometryOutputByNegativesPositives(derivation, elementNode, negatives, positives)
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	"Get triangle mesh from attribute dictionary by arguments."
-	return getGeometryOutput(None, xmlElement)
+	return getGeometryOutput(None, elementNode)
 
-def getGeometryOutputByNegativesPositives(derivation, negatives, positives, xmlElement):
-	"Get triangle mesh from derivation, negatives, positives and xmlElement."
+def getGeometryOutputByNegativesPositives(derivation, elementNode, negatives, positives):
+	"Get triangle mesh from derivation, elementNode, negatives and positives."
 	positiveOutput = triangle_mesh.getUnifiedOutput(positives)
 	if len(negatives) < 1:
-		return solid.getGeometryOutputByManipulation(positiveOutput, xmlElement)
-	return solid.getGeometryOutputByManipulation({'difference' : {'shapes' : [positiveOutput] + negatives}}, xmlElement)
+		return solid.getGeometryOutputByManipulation(elementNode, positiveOutput)
+	return solid.getGeometryOutputByManipulation(elementNode, {'difference' : {'shapes' : [positiveOutput] + negatives}})
 
 def getLoopListsByPath(derivation, endMultiplier, path):
 	"Get loop lists from path."
@@ -112,34 +112,34 @@ def getLoopListsByPath(derivation, endMultiplier, path):
 		loopLists[-1].append([])
 	return loopLists
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return LatheDerivation(xmlElement)
+	return LatheDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	solid.processXMLElementByGeometry(getGeometryOutput(None, xmlElement), xmlElement)
+	solid.processElementNodeByGeometry(elementNode, getGeometryOutput(None, elementNode))
 
 
 class LatheDerivation:
 	"Class to hold lathe variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.axisEnd = evaluate.getVector3ByPrefix(None, 'axisEnd', xmlElement)
-		self.axisStart = evaluate.getVector3ByPrefix(None, 'axisStart', xmlElement)
-		self.end = evaluate.getEvaluatedFloat(360.0, 'end', xmlElement)
-		self.loop = evaluate.getTransformedPathByKey([], 'loop', xmlElement)
-		self.sides = evaluate.getEvaluatedInt(None, 'sides', xmlElement)
-		self.start = evaluate.getEvaluatedFloat(0.0, 'start', xmlElement)
-		self.target = evaluate.getTransformedPathsByKey([], 'target', xmlElement)
+		self.axisEnd = evaluate.getVector3ByPrefix(None, elementNode, 'axisEnd')
+		self.axisStart = evaluate.getVector3ByPrefix(None, elementNode, 'axisStart')
+		self.end = evaluate.getEvaluatedFloat(360.0, elementNode, 'end')
+		self.loop = evaluate.getTransformedPathByKey([], elementNode, 'loop')
+		self.sides = evaluate.getEvaluatedInt(None, elementNode, 'sides')
+		self.start = evaluate.getEvaluatedFloat(0.0, elementNode, 'start')
+		self.target = evaluate.getTransformedPathsByKey([], elementNode, 'target')
 		if len(self.target) < 1:
 			print('Warning, no target in derive in lathe for:')
-			print(xmlElement)
+			print(elementNode)
 			return
 		firstPath = self.target[0]
 		if len(firstPath) < 3:
 			print('Warning, firstPath length is less than three in derive in lathe for:')
-			print(xmlElement)
+			print(elementNode)
 			self.target = []
 			return
 		if self.axisStart == None:
@@ -152,7 +152,7 @@ class LatheDerivation:
 		axisLength = abs(self.axis)
 		if axisLength <= 0.0:
 			print('Warning, axisLength is zero in derive in lathe for:')
-			print(xmlElement)
+			print(elementNode)
 			self.target = []
 			return
 		self.axis /= axisLength
@@ -160,14 +160,14 @@ class LatheDerivation:
 		firstVector3Length = abs(firstVector3)
 		if firstVector3Length <= 0.0:
 			print('Warning, firstVector3Length is zero in derive in lathe for:')
-			print(xmlElement)
+			print(elementNode)
 			self.target = []
 			return
 		firstVector3 /= firstVector3Length
 		self.axisProjectiveSpace = euclidean.ProjectiveSpace().getByBasisZFirst(self.axis, firstVector3)
 		if self.sides == None:
 			distanceToLine = euclidean.getDistanceToLineByPaths(self.axisStart, self.axisEnd, self.target)
-			self.sides = evaluate.getSidesMinimumThreeBasedOnPrecisionSides(distanceToLine, xmlElement)
+			self.sides = evaluate.getSidesMinimumThreeBasedOnPrecisionSides(elementNode, distanceToLine)
 		endRadian = math.radians(self.end)
 		startRadian = math.radians(self.start)
 		self.isEndCloseToStart = euclidean.getIsRadianClose(endRadian, startRadian)

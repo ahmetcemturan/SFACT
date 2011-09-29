@@ -2,9 +2,9 @@ Format is tab separated speed settings.
 _Name                          	Value
 WindowPosition	700+0
 Open File for Speed	
-Activate Speed:	True
+Activate Speed	True
 Add Flow Rate:	True
-Add Acceleration Rate:	False
+Add Acceleration Rate:	True
 Main Feed Rate (mm/s):	60.0
 Main Flow Rate  (scaler):	1.0
 Main Acceleration Rate for Extruder  (mm/s2):	1300.0
@@ -15,6 +15,7 @@ Perimeter Acceleration Rate for Extruder (mm/s2):	50.0
 Bridge Feed Rate (ratio to Perim.feed):	1.0
 Bridge Flow Rate (scaler):	1.0
 Bridge Acceleration Rate for Extruder(mm/s2):	1000.0
-Travel Feed Rate (mm/s):	130.0
+Travel Feed Rate (mm/s):	230.0
+Maximum Z Feed Rate (mm/s):	3.0
 Duty Cyle at Beginning (portion):	1.0
 Duty Cyle at Ending (portion):	0.0

@@ -96,18 +96,18 @@ class SVGCarving:
 		svg_writer.setSVGCarvingCorners(
 			self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.svgReader.rotatedLoopLayers)
 
-	def setCarveInfillInDirectionOfBridge(self, infillInDirectionOfBridge):
-		'Set the infill in direction of bridge.'
-		pass
-
-	def setCarveLayerThickness(self, layerThickness):
-		'Set the layer thickness.'
-		self.layerThickness = layerThickness
-
 	def setCarveImportRadius(self, importRadius):
 		'Set the import radius.'
+		pass
+
+	def setCarveInfillInDirectionOfBridge(self, infillInDirectionOfBridge):
+		'Set the infill in direction of bridge.'
 		pass
 
 	def setCarveIsCorrectMesh(self, isCorrectMesh):
 		'Set the is correct mesh flag.'
 		pass
+
+	def setCarveLayerThickness(self, layerThickness):
+		'Set the layer thickness.'
+		self.layerThickness = layerThickness

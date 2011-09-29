@@ -19,13 +19,13 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def convertXMLElement(geometryOutput, xmlElement):
+def convertElementNode(elementNode, geometryOutput):
 	'Convert the xml element to a union xml element.'
-	group.convertContainerXMLElement(geometryOutput, xmlElement, Union())
+	group.convertContainerElementNode(elementNode, geometryOutput, Union())
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	evaluate.processArchivable(Union, xmlElement)
+	evaluate.processArchivable(Union, elementNode)
 
 
 class Union(difference.Difference):

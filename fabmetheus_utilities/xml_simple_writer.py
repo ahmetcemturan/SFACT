@@ -102,20 +102,13 @@ def getAttributesString(attributes):
 			attributesString += " %s='%s'" % (attributesKey, valueString)
 	return attributesString
 
-def getBeforeRootOutput(xmlParser):
-	'Get the output before the root and the root xml.'
-	output = cStringIO.StringIO()
-	output.write(xmlParser.beforeRoot)
-	xmlParser.getRoot().addXML(0, output)
-	return output.getvalue()
-
-def getBeginGeometryXMLOutput(xmlElement=None):
+def getBeginGeometryXMLOutput(elementNode=None):
 	'Get the beginning of the string representation of this boolean geometry object info.'
 	output = getBeginXMLOutput()
 	attributes = {}
-	if xmlElement != None:
-		root = xmlElement.getRoot()
-		attributes = root.attributeDictionary
+	if elementNode != None:
+		documentElement = elementNode.getDocumentElement()
+		attributes = documentElement.attributes
 	addBeginXMLTag(attributes, 0, 'fabmetheus', output)
 	return output
 

@@ -12,23 +12,10 @@ from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
-
-def getFileOrGcodeDirectory( fileName, wasCancelled, words = [] ):
-	"Get the gcode files in the directory the file is in if directory setting is true.  Otherwise, return the file in a list."
-	if isEmptyOrCancelled( fileName, wasCancelled ):
-		return []
-	if isDirectorySetting():
-		dotIndex = fileName.rfind('.')
-		if dotIndex < 0:
-			print('The file name should have a suffix, like myfile.xml.')
-			print('Since the file name does not have a suffix, nothing will be done')
-		suffix = fileName[ dotIndex + 1 : ]
-		return archive.getFilesWithFileTypeWithoutWords( suffix, words, fileName )
-	return [ fileName ]
 
 def getFileOrDirectoryTypes( fileName, fileTypes, wasCancelled ):
 	"Get the gcode files in the directory the file is in if directory setting is true.  Otherwise, return the file in a list."
@@ -45,6 +32,19 @@ def getFileOrDirectoryTypesUnmodifiedGcode(fileName, fileTypes, wasCancelled):
 	if isDirectorySetting():
 		return archive.getFilesWithFileTypesWithoutWords(fileTypes, [], fileName)
 	return [fileName]
+
+def getFileOrGcodeDirectory( fileName, wasCancelled, words = [] ):
+	"Get the gcode files in the directory the file is in if directory setting is true.  Otherwise, return the file in a list."
+	if isEmptyOrCancelled( fileName, wasCancelled ):
+		return []
+	if isDirectorySetting():
+		dotIndex = fileName.rfind('.')
+		if dotIndex < 0:
+			print('The file name should have a suffix, like myfile.xml.')
+			print('Since the file name does not have a suffix, nothing will be done')
+		suffix = fileName[ dotIndex + 1 : ]
+		return archive.getFilesWithFileTypeWithoutWords( suffix, words, fileName )
+	return [ fileName ]
 
 def getNewRepository():
 	'Get new repository.'

@@ -116,8 +116,8 @@ class ListAttribute:
 		return self.listObject
 
 
-globalAccessibleAttributes = 'add copy count delete get getExpansion getIsIn getIsNotIn getLength getMax getMin'.split()
-globalAccessibleAttributes += 'insert keys length rindex set values'.split()
-globalGetAccessibleAttributeSet = set(globalAccessibleAttributes)
+globalAccessibleAttributeDictionary = 'add copy count delete get getExpansion getIsIn getIsNotIn getLength getMax getMin'.split()
+globalAccessibleAttributeDictionary += 'insert keys length rindex set values'.split()
+globalGetAccessibleAttributeSet = set(globalAccessibleAttributeDictionary)
 globalNativeFunctions = 'append extend index pop remove reverse sort'.split()
 globalNativeFunctionSet = set(globalNativeFunctions)

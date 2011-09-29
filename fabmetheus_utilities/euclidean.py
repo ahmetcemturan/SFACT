@@ -65,8 +65,7 @@ def addElementToListDictionaryIfNotThere(element, key, listDictionary):
 
 def addElementToPixelList( element, pixelDictionary, x, y ):
 	'Add an element to the pixel list.'
-	stepKey = getStepKey(x, y)
-	addElementToListDictionary( element, stepKey, pixelDictionary )
+	addElementToListDictionary( element, (x, y), pixelDictionary )
 
 def addElementToPixelListFromPoint( element, pixelDictionary, point ):
 	'Add an element to the pixel list.'
@@ -103,6 +102,14 @@ def addLoopToPixelTable( loop, pixelDictionary, width ):
 		pointEnd = loop[(pointIndex + 1) % len(loop)]
 		addValueSegmentToPixelTable( pointBegin, pointEnd, pixelDictionary, None, width )
 
+def addNestedRingBeginning(distanceFeedRate, loop, z):
+	'Add nested ring beginning to gcode output.'
+	distanceFeedRate.addLine('(<nestedRing>)')
+	distanceFeedRate.addLine('(<boundaryPerimeter>)')
+	for point in loop:
+		pointVector3 = Vector3(point.real, point.imag, z)
+		distanceFeedRate.addLine(distanceFeedRate.getBoundaryLine(pointVector3))
+
 def addPathToPixelTable( path, pixelDictionary, value, width ):
 	'Add path to the pixel table.'
 	for pointIndex in xrange( len(path) - 1 ):
@@ -115,16 +122,12 @@ def addPixelTableToPixelTable( fromPixelTable, intoPixelTable ):
 	for fromPixelTableKey in fromPixelTable.keys():
 		intoPixelTable[ fromPixelTableKey ] = fromPixelTable[ fromPixelTableKey ]
 
-def addPixelToPixelTable( pixelDictionary, value, x, y ):
-	'Add pixel to the pixel table.'
-	pixelDictionary[getStepKey(x, y)] = value
-
 def addPixelToPixelTableWithSteepness( isSteep, pixelDictionary, value, x, y ):
 	'Add pixels to the pixel table with steepness.'
 	if isSteep:
-		addPixelToPixelTable( pixelDictionary, value, y, x )
+		pixelDictionary[(y, x)] = value
 	else:
-		addPixelToPixelTable( pixelDictionary, value, x, y )
+		pixelDictionary[(x, y)] = value
 
 def addPointToPath( path, pixelDictionary, point, value, width ):
 	'Add a point to a path and the pixel table.'
@@ -175,12 +178,20 @@ def addSegmentToPixelTable( beginComplex, endComplex, pixelDictionary, shortenDi
 	xBegin = int(round(beginComplex.real))
 	xEnd = int(round(endComplex.real))
 	yIntersection = beginComplex.imag - beginComplex.real * gradient
-	addPixelToPixelTableWithSteepness( isSteep, pixelDictionary, None, xBegin, int( round( beginComplex.imag ) ) )
-	addPixelToPixelTableWithSteepness( isSteep, pixelDictionary, None, xEnd, int( round( endComplex.imag ) ) )
-	for x in xrange( xBegin + 1, xEnd ):
-		y = int( math.floor( yIntersection + x * gradient ) )
-		addPixelToPixelTableWithSteepness( isSteep, pixelDictionary, None, x, y )
-		addPixelToPixelTableWithSteepness( isSteep, pixelDictionary, None, x, y + 1 )
+	if isSteep:
+		pixelDictionary[( int( round( beginComplex.imag ) ), xBegin)] = None
+		pixelDictionary[( int( round( endComplex.imag ) ), xEnd )] = None
+		for x in xrange( xBegin + 1, xEnd ):
+			y = int( math.floor( yIntersection + x * gradient ) )
+			pixelDictionary[(y, x)] = None
+			pixelDictionary[(y + 1, x)] = None
+	else:
+		pixelDictionary[(xBegin, int( round( beginComplex.imag ) ) )] = None
+		pixelDictionary[(xEnd, int( round( endComplex.imag ) ) )] = None
+		for x in xrange( xBegin + 1, xEnd ):
+			y = int( math.floor( yIntersection + x * gradient ) )
+			pixelDictionary[(x, y)] = None
+			pixelDictionary[(x, y + 1)] = None
 
 def addSquareTwoToPixelDictionary(pixelDictionary, point, value, width):
 	'Add square with two pixels around the center to pixel dictionary.'
@@ -189,15 +200,7 @@ def addSquareTwoToPixelDictionary(pixelDictionary, point, value, width):
 	y = int(round(point.imag))
 	for xStep in xrange(x - 2, x + 3):
 		for yStep in xrange(y - 2, y + 3):
-			pixelDictionary[getStepKey(xStep, yStep)] = value
-
-def addSurroundingLoopBeginning( distanceFeedRate, loop, z ):
-	'Add surrounding loop beginning to gcode output.'
-	distanceFeedRate.addLine('(<nestedRing>)')
-	distanceFeedRate.addLine('(<boundaryPerimeter>)')
-	for point in loop:
-		pointVector3 = Vector3(point.real, point.imag, z)
-		distanceFeedRate.addLine( distanceFeedRate.getBoundaryLine( pointVector3 ) )
+			pixelDictionary[(xStep, yStep)] = value
 
 def addToThreadsFromLoop(extrusionHalfWidth, gcodeType, loop, oldOrderedLocation, skein):
 	'Add to threads from the last location from loop.'
@@ -213,9 +216,9 @@ def addToThreadsFromLoop(extrusionHalfWidth, gcodeType, loop, oldOrderedLocation
 	skein.distanceFeedRate.addLine('(</%s>)' % gcodeType)
 
 def addToThreadsRemove(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence):
-	'Add to threads from the last location from surrounding loops.'
+	'Add to threads from the last location from nested rings.'
 	while len(nestedRings) > 0:
-		getTransferClosestSurroundingLoop(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence)
+		getTransferClosestNestedRing(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence)
 
 def addValueSegmentToPixelTable( beginComplex, endComplex, pixelDictionary, value, width ):
 	'Add line segment to the pixel table.'
@@ -245,12 +248,20 @@ def addValueSegmentToPixelTable( beginComplex, endComplex, pixelDictionary, valu
 	xBegin = int(round(beginComplex.real))
 	xEnd = int(round(endComplex.real))
 	yIntersection = beginComplex.imag - beginComplex.real * gradient
-	addPixelToPixelTableWithSteepness( isSteep, pixelDictionary, value, xBegin, int( round( beginComplex.imag ) ) )
-	addPixelToPixelTableWithSteepness( isSteep, pixelDictionary, value, xEnd, int( round( endComplex.imag ) ) )
-	for x in xrange( xBegin + 1, xEnd ):
-		y = int( math.floor( yIntersection + x * gradient ) )
-		addPixelToPixelTableWithSteepness( isSteep, pixelDictionary, value, x, y )
-		addPixelToPixelTableWithSteepness( isSteep, pixelDictionary, value, x, y + 1 )
+	if isSteep:
+		pixelDictionary[(int( round( beginComplex.imag ) ), xBegin)] = value
+		pixelDictionary[(int( round( endComplex.imag ) ), xEnd)] = value
+		for x in xrange( xBegin + 1, xEnd ):
+			y = int( math.floor( yIntersection + x * gradient ) )
+			pixelDictionary[(y, x)] = value
+			pixelDictionary[(y + 1, x)] = value
+	else:
+		pixelDictionary[(xBegin, int( round( beginComplex.imag ) ))] = value
+		pixelDictionary[(xEnd, int( round( endComplex.imag ) ))] = value
+		for x in xrange( xBegin + 1, xEnd ):
+			y = int( math.floor( yIntersection + x * gradient ) )
+			pixelDictionary[(x, y)] = value
+			pixelDictionary[(x, y + 1)] = value
 
 def addValueToOutput(depth, keyInput, output, value):
 	'Add value to the output.'
@@ -292,10 +303,21 @@ def addXIntersectionIndexesFromLoop( frontOverWidth, loop, solidIndex, xIntersec
 				xIntersectionIndexList = xIntersectionIndexLists[fillLine]
 				xIntersectionIndexList.append( XIntersectionIndex( solidIndex, xIntersection ) )
 
+def addXIntersectionIndexesFromLoopListsY( loopLists, xIntersectionIndexList, y ):
+	'Add the x intersection indexes for the loop lists.'
+	for loopListIndex in xrange( len(loopLists) ):
+		loopList = loopLists[ loopListIndex ]
+		addXIntersectionIndexesFromLoopsY( loopList, loopListIndex, xIntersectionIndexList, y )
+
 def addXIntersectionIndexesFromLoops( frontOverWidth, loops, solidIndex, xIntersectionIndexLists, width, yList ):
 	'Add the x intersection indexes for a loop.'
 	for loop in loops:
 		addXIntersectionIndexesFromLoop( frontOverWidth, loop, solidIndex, xIntersectionIndexLists, width, yList )
+
+def addXIntersectionIndexesFromLoopsY( loops, solidIndex, xIntersectionIndexList, y ):
+	'Add the x intersection indexes for the loops.'
+	for loop in loops:
+		addXIntersectionIndexesFromLoopY( loop, solidIndex, xIntersectionIndexList, y )
 
 def addXIntersectionIndexesFromLoopY( loop, solidIndex, xIntersectionIndexList, y ):
 	'Add the x intersection indexes for a loop.'
@@ -305,17 +327,6 @@ def addXIntersectionIndexesFromLoopY( loop, solidIndex, xIntersectionIndexList, 
 		xIntersection = getXIntersectionIfExists( pointFirst, pointSecond, y )
 		if xIntersection != None:
 			xIntersectionIndexList.append( XIntersectionIndex( solidIndex, xIntersection ) )
-
-def addXIntersectionIndexesFromLoopListsY( loopLists, xIntersectionIndexList, y ):
-	'Add the x intersection indexes for the loop lists.'
-	for loopListIndex in xrange( len(loopLists) ):
-		loopList = loopLists[ loopListIndex ]
-		addXIntersectionIndexesFromLoopsY( loopList, loopListIndex, xIntersectionIndexList, y )
-
-def addXIntersectionIndexesFromLoopsY( loops, solidIndex, xIntersectionIndexList, y ):
-	'Add the x intersection indexes for the loops.'
-	for loop in loops:
-		addXIntersectionIndexesFromLoopY( loop, solidIndex, xIntersectionIndexList, y )
 
 def addXIntersectionIndexesFromSegment( index, segment, xIntersectionIndexList ):
 	'Add the x intersection indexes from the segment.'
@@ -341,7 +352,7 @@ def addXIntersections( loop, xIntersections, y ):
 		if xIntersection != None:
 			xIntersections.append( xIntersection )
 
-def addXIntersectionsFromLoopForTable( loop, xIntersectionsTable, width ):
+def addXIntersectionsFromLoopForTable(loop, xIntersectionsTable, width):
 	'Add the x intersections for a loop into a table.'
 	for pointIndex in xrange(len(loop)):
 		pointBegin = loop[pointIndex]
@@ -361,15 +372,15 @@ def addXIntersectionsFromLoopForTable( loop, xIntersectionsTable, width ):
 				xIntersection = y * secondMinusFirstImaginaryOverReal + beginRealMinusImaginary
 				addElementToListDictionary( xIntersection, fillLine, xIntersectionsTable )
 
-def addXIntersectionsFromLoops( loops, xIntersections, y ):
+def addXIntersectionsFromLoops(loops, xIntersections, y):
 	'Add the x intersections for the loops.'
 	for loop in loops:
-		addXIntersections( loop, xIntersections, y )
+		addXIntersections(loop, xIntersections, y)
 
-def addXIntersectionsFromLoopsForTable( loops, xIntersectionsTable, width ):
+def addXIntersectionsFromLoopsForTable(loops, xIntersectionsTable, width):
 	'Add the x intersections for a loop into a table.'
 	for loop in loops:
-		addXIntersectionsFromLoopForTable( loop, xIntersectionsTable, width )
+		addXIntersectionsFromLoopForTable(loop, xIntersectionsTable, width)
 
 def compareSegmentLength( endpoint, otherEndpoint ):
 	'Get comparison in order to sort endpoints in ascending order of segment length.'
@@ -446,10 +457,6 @@ def getAreaLoops(loops):
 		areaLoops += getAreaLoop(loop)
 	return areaLoops
 
-def getAreaRadiusMultiplier(sides):
-	'Get the area radius multiplier for the polygon.'
-	return math.sqrt(globalTau / sides / math.sin(globalTau / sides))
-
 def getAreaVector3LoopAbsolute(loop):
 	'Get the absolute area of a vector3 polygon.'
 	return getAreaLoopAbsolute(getComplexPath(loop))
@@ -463,19 +470,30 @@ def getAroundLoop(begin, end, loop):
 		aroundLoop.append(loop[pointIndex % len(loop)])
 	return aroundLoop
 
+def getAwayPath(path, radius):
+	'Get a path with only the points that are far enough away from each other, except for the last point.'
+	if len(path) < 2:
+		return path
+	lastPoint = path[-1]
+	awayPath = getAwayPoints(path, radius)
+	if len(awayPath) == 0:
+		return [lastPoint]
+	if abs(lastPoint - awayPath[-1]) > 0.001 * radius:
+		awayPath.append(lastPoint)
+	return awayPath
+
 def getAwayPoints(points, radius):
 	'Get a path with only the points that are far enough away from each other.'
-	away = []
+	awayPoints = []
 	oneOverOverlapDistance = 1000.0 / radius
 	pixelDictionary = {}
 	for point in points:
 		x = int(point.real * oneOverOverlapDistance)
 		y = int(point.imag * oneOverOverlapDistance)
 		if not getSquareIsOccupied(pixelDictionary, x, y):
-			away.append(point)
-			stepKey = getStepKey(x, y)
-			pixelDictionary[stepKey] = None
-	return away
+			awayPoints.append(point)
+			pixelDictionary[(x, y)] = None
+	return awayPoints
 
 def getBackOfLoops(loops):
 	'Get the back of the loops.'
@@ -581,6 +599,14 @@ def getComplexByCommaString( valueCommaString ):
 		pass
 	return None
 
+def getComplexByWords(words, wordIndex=0):
+	'Get the complex by the first two words.'
+	try:
+		return complex(float(words[wordIndex]), float(words[wordIndex + 1]))
+	except:
+		pass
+	return None
+
 def getComplexDefaultByDictionary( defaultComplex, dictionary, key ):
 	'Get the value as a complex.'
 	if key in dictionary:
@@ -592,14 +618,6 @@ def getComplexDefaultByDictionaryKeys( defaultComplex, dictionary, keyX, keyY ):
 	x = getFloatDefaultByDictionary( defaultComplex.real, dictionary, keyX )
 	y = getFloatDefaultByDictionary( defaultComplex.real, dictionary, keyY )
 	return complex(x, y)
-
-def getComplexByWords(words, wordIndex=0):
-	'Get the complex by the first two words.'
-	try:
-		return complex(float(words[wordIndex]), float(words[wordIndex + 1]))
-	except:
-		pass
-	return None
 
 def getComplexPath(vector3Path):
 	'Get the complex path from the vector3 path.'
@@ -831,7 +849,7 @@ def getEnumeratorKeysExceptForOneArgument(enumerator, keys):
 	return range(beginIndex, endIndex, step)
 
 def getFillOfSurroundings(nestedRings, penultimateFillLoops):
-	'Get extra fill loops of surrounding loops.'
+	'Get extra fill loops of nested rings.'
 	fillOfSurroundings = []
 	for nestedRing in nestedRings:
 		fillOfSurroundings += nestedRing.getFillLoops(penultimateFillLoops)
@@ -1382,7 +1400,7 @@ def getPathLength(path):
 def getPathsFromEndpoints(endpoints, maximumConnectionLength, pixelDictionary, width):
 	'Get paths from endpoints.'
 	if len(endpoints) < 2:
-		return [[]]
+		return []
 	endpoints = endpoints[:] # so that the first two endpoints aren't removed when used again
 	for beginningEndpoint in endpoints[: : 2]:
 		beginningPoint = beginningEndpoint.point
@@ -1409,7 +1427,7 @@ def getPathsFromEndpoints(endpoints, maximumConnectionLength, pixelDictionary, w
 	while len(endpointTable) > 0:
 		if len(endpointTable) == 1:
 			if len(endpointTable.values()[0]) < 2:
-				return
+				return []
 		endpoints = getSquareValuesFromPoint(endpointTable, otherEndpoint.point * oneOverEndpointWidth)
 		nextEndpoint = otherEndpoint.getNearestMiss(endpoints, path, pixelDictionary, width)
 		if nextEndpoint == None:
@@ -1444,6 +1462,10 @@ def getPluralString( number, suffix ):
 		return '1 %s' % suffix
 	return '%s %ss' % ( number, suffix )
 
+def getPointPlusSegmentWithLength( length, point, segment ):
+	'Get point plus a segment scaled to a given length.'
+	return segment * length / abs(segment) + point
+
 def getPointsByHorizontalDictionary(width, xIntersectionsDictionary):
 	'Get points from the horizontalXIntersectionsDictionary.'
 	points = []
@@ -1464,16 +1486,16 @@ def getPointsByVerticalDictionary(width, xIntersectionsDictionary):
 			points.append(complex(xIntersectionsDictionaryKey * width, xIntersection))
 	return points
 
-def getPointsRoundZAxis( planeAngle, points ):
+def getPointsRoundZAxis(planeAngle, points):
 	'Get points rotated by the plane angle'
 	planeArray = []
 	for point in points:
-		planeArray.append( planeAngle * point )
+		planeArray.append(planeAngle * point)
 	return planeArray
 
-def getPointPlusSegmentWithLength( length, point, segment ):
-	'Get point plus a segment scaled to a given length.'
-	return segment * length / abs(segment) + point
+def getRadiusArealizedMultiplier(sides):
+	'Get the radius multiplier for a polygon of equal area.'
+	return math.sqrt(globalTau / sides / math.sin(globalTau / sides))
 
 def getRandomComplex(begin, end):
 	'Get random complex.'
@@ -1528,6 +1550,11 @@ def getSegmentFromPoints( begin, end ):
 	endpointFirst.getFromOtherPoint( endpointSecond, begin )
 	return ( endpointFirst, endpointSecond )
 
+def getSegmentsFromXIntersectionIndexes( xIntersectionIndexList, y ):
+	'Get endpoint segments from the x intersection indexes.'
+	xIntersections = getXIntersectionsFromIntersections( xIntersectionIndexList )
+	return getSegmentsFromXIntersections( xIntersections, y )
+
 def getSegmentsFromXIntersections( xIntersections, y ):
 	'Get endpoint segments from the x intersections.'
 	segments = []
@@ -1540,11 +1567,6 @@ def getSegmentsFromXIntersections( xIntersections, y ):
 		if firstX != secondX:
 			segments.append( getSegmentFromPoints( complex( firstX, y ), complex( secondX, y ) ) )
 	return segments
-
-def getSegmentsFromXIntersectionIndexes( xIntersectionIndexList, y ):
-	'Get endpoint segments from the x intersection indexes.'
-	xIntersections = getXIntersectionsFromIntersections( xIntersectionIndexList )
-	return getSegmentsFromXIntersections( xIntersections, y )
 
 def getSimplifiedLoop( loop, radius ):
 	'Get loop with points inside the channel removed.'
@@ -1590,20 +1612,19 @@ def getSimplifiedPath(path, radius):
 		simplificationRadius += simplificationRadius
 		if oldPathLength == len(path):
 			if simplificationRadius > radius:
-				return getAwayPoints(path, radius)
+				return getAwayPath(path, radius)
 			else:
 				simplificationRadius *= 1.5
 		simplificationRadius = min(simplificationRadius, radius)
 		pointIndex += pointIndex
-	return getAwayPoints(path, radius)
+	return getAwayPath(path, radius)
 
 def getSquareIsOccupied( pixelDictionary, x, y ):
 	'Determine if a square around the x and y pixel coordinates is occupied.'
 	squareValues = []
 	for xStep in xrange(x - 1, x + 2):
 		for yStep in xrange(y - 1, y + 2):
-			stepKey = getStepKey(xStep, yStep)
-			if stepKey in pixelDictionary:
+			if (xStep, yStep) in pixelDictionary:
 				return True
 	return False
 
@@ -1618,7 +1639,7 @@ def getSquareValues( pixelDictionary, x, y ):
 	squareValues = []
 	for xStep in xrange(x - 1, x + 2):
 		for yStep in xrange(y - 1, y + 2):
-			stepKey = getStepKey(xStep, yStep)
+			stepKey = (xStep, yStep)
 			if stepKey in pixelDictionary:
 				squareValues += pixelDictionary[ stepKey ]
 	return squareValues
@@ -1626,10 +1647,6 @@ def getSquareValues( pixelDictionary, x, y ):
 def getSquareValuesFromPoint( pixelDictionary, point ):
 	'Get a list of the values in a square around the point.'
 	return getSquareValues(pixelDictionary, int(round(point.real)), int(round(point.imag)))
-
-def getStepKey(x, y):
-	'Get step key for x and y.'
-	return (x, y)
 
 def getStepKeyFromPoint(point):
 	'Get step key for the point.'
@@ -1659,20 +1676,30 @@ def getTopPaths(paths):
 			top = max(top, point.z)
 	return top
 
-def getTransferClosestSurroundingLoop(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence):
-	'Get and transfer the closest remaining surrounding loop.'
+def getTransferClosestNestedRing(extrusionHalfWidth, nestedRings, oldOrderedLocation, skein, threadSequence):
+	'Get and transfer the closest remaining nested ring.'
 	if len(nestedRings) > 0:
 		oldOrderedLocation.z = nestedRings[0].z
 	closestDistance = 987654321987654321.0
-	closestSurroundingLoop = None
-	for remainingSurroundingLoop in nestedRings:
-		distance = getNearestDistanceIndex(oldOrderedLocation.dropAxis(), remainingSurroundingLoop.boundary).distance
+	closestNestedRing = None
+	for remainingNestedRing in nestedRings:
+		distance = getNearestDistanceIndex(oldOrderedLocation.dropAxis(), remainingNestedRing.boundary).distance
 		if distance < closestDistance:
 			closestDistance = distance
-			closestSurroundingLoop = remainingSurroundingLoop
-	nestedRings.remove(closestSurroundingLoop)
-	closestSurroundingLoop.addToThreads(extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)
-	return closestSurroundingLoop
+			closestNestedRing = remainingNestedRing
+	nestedRings.remove(closestNestedRing)
+	closestNestedRing.addToThreads(extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)
+	return closestNestedRing
+
+def getTransferredNestedRings( insides, loop ):
+	'Get transferred paths from inside nested rings.'
+	transferredSurroundings = []
+	for insideIndex in xrange( len( insides ) - 1, - 1, - 1 ):
+		insideSurrounding = insides[ insideIndex ]
+		if isPathInsideLoop( loop, insideSurrounding.boundary ):
+			transferredSurroundings.append( insideSurrounding )
+			del insides[ insideIndex ]
+	return transferredSurroundings
 
 def getTransferredPaths( insides, loop ):
 	'Get transferred paths from inside paths.'
@@ -1683,16 +1710,6 @@ def getTransferredPaths( insides, loop ):
 			transferredPaths.append( inside )
 			del insides[ insideIndex ]
 	return transferredPaths
-
-def getTransferredSurroundingLoops( insides, loop ):
-	'Get transferred paths from inside surrounding loops.'
-	transferredSurroundings = []
-	for insideIndex in xrange( len( insides ) - 1, - 1, - 1 ):
-		insideSurrounding = insides[ insideIndex ]
-		if isPathInsideLoop( loop, insideSurrounding.boundary ):
-			transferredSurroundings.append( insideSurrounding )
-			del insides[ insideIndex ]
-	return transferredSurroundings
 
 def getTranslatedComplexPath(path, translateComplex):
 	'Get the translated complex path.'
@@ -1828,18 +1845,18 @@ def isLoopIntersectingLoops( loop, otherLoops ):
 			return True
 	return False
 
-def isLoopListIntersectingInsideXSegment( loopList, segmentFirstX, segmentSecondX, segmentYMirror, y ):
-	'Determine if the loop list is crossing inside the x segment.'
-	for alreadyFilledLoop in loopList:
-		if isLoopIntersectingInsideXSegment( alreadyFilledLoop, segmentFirstX, segmentSecondX, segmentYMirror, y ):
-			return True
-	return False
-
 def isLoopListIntersecting(loops):
 	'Determine if a loop in the list is intersecting the other loops.'
 	for loopIndex in xrange(len(loops) - 1):
 		loop = loops[loopIndex]
 		if isLoopIntersectingLoops(loop, loops[loopIndex + 1 :]):
+			return True
+	return False
+
+def isLoopListIntersectingInsideXSegment( loopList, segmentFirstX, segmentSecondX, segmentYMirror, y ):
+	'Determine if the loop list is crossing inside the x segment.'
+	for alreadyFilledLoop in loopList:
+		if isLoopIntersectingInsideXSegment( alreadyFilledLoop, segmentFirstX, segmentSecondX, segmentYMirror, y ):
 			return True
 	return False
 
@@ -2001,15 +2018,15 @@ def removeElementsFromDictionary(dictionary, keys):
 	for key in keys:
 		removeElementFromDictionary(dictionary, key)
 
+def removePixelTableFromPixelTable( pixelDictionaryToBeRemoved, pixelDictionaryToBeRemovedFrom ):
+	'Remove pixel from the pixel table.'
+	removeElementsFromDictionary( pixelDictionaryToBeRemovedFrom, pixelDictionaryToBeRemoved.keys() )
+
 def removePrefixFromDictionary( dictionary, prefix ):
 	'Remove the attributes starting with the prefix from the dictionary.'
 	for key in dictionary.keys():
 		if key.startswith( prefix ):
 			del dictionary[key]
-
-def removePixelTableFromPixelTable( pixelDictionaryToBeRemoved, pixelDictionaryToBeRemovedFrom ):
-	'Remove pixel from the pixel table.'
-	removeElementsFromDictionary( pixelDictionaryToBeRemovedFrom, pixelDictionaryToBeRemoved.keys() )
 
 def removeTrueFromDictionary(dictionary, key):
 	'Remove key from the dictionary in the value is true.'
@@ -2084,8 +2101,8 @@ def transferClosestPaths(oldOrderedLocation, remainingPaths, skein):
 	while len(remainingPaths) > 0:
 		transferClosestPath(oldOrderedLocation, remainingPaths, skein)
 
-def transferPathsToSurroundingLoops(nestedRings, paths):
-	'Transfer paths to surrounding loops.'
+def transferPathsToNestedRings(nestedRings, paths):
+	'Transfer paths to nested rings.'
 	for nestedRing in nestedRings:
 		nestedRing.transferPaths(paths)
 
@@ -2248,7 +2265,7 @@ class NestedRing:
 		self.innerNestedRings = None
 
 	def __repr__(self):
-		'Get the string representation of this surrounding loop.'
+		'Get the string representation of this nested ring.'
 		return str(self.__dict__)
 
 	def addFlattenedNestedRings(self, flattenedNestedRings):
@@ -2258,8 +2275,8 @@ class NestedRing:
 			flattenedNestedRings += getFlattenedNestedRings(innerNestedRing.innerNestedRings)
 
 	def getFromInsideSurroundings(self, inputSurroundingInsides):
-		'Initialize from inside surrounding loops.'
-		transferredSurroundings = getTransferredSurroundingLoops(inputSurroundingInsides, self.boundary)
+		'Initialize from inside nested rings.'
+		transferredSurroundings = getTransferredNestedRings(inputSurroundingInsides, self.boundary)
 		self.innerNestedRings = getOrderedNestedRings(transferredSurroundings)
 		return self
 
@@ -2270,6 +2287,7 @@ class NestedBand(NestedRing):
 		'Initialize.'
 		NestedRing.__init__(self)
 		self.extraLoops = []
+		self.infillBoundaries = []
 		self.infillPaths = []
 #		self.lastExistingFillLoops = None
 		self.lastFillLoops = None
@@ -2279,7 +2297,7 @@ class NestedBand(NestedRing):
 		self.z = None
 
 	def __repr__(self):
-		'Get the string representation of this surrounding loop.'
+		'Get the string representation of this nested ring.'
 		stringRepresentation = 'boundary\n%s\n' % self.boundary
 		stringRepresentation += 'loop\n%s\n' % self.loop
 		stringRepresentation += 'inner nested rings\n%s\n' % self.innerNestedRings
@@ -2290,6 +2308,17 @@ class NestedBand(NestedRing):
 		for perimeterPath in self.perimeterPaths:
 			stringRepresentation += 'perimeterPath\n%s\n' % perimeterPath
 		return stringRepresentation + '\n'
+
+	def addPerimeterInner(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence):
+		'Add to the perimeter and the inner island.'
+		if self.loop == None:
+			skein.distanceFeedRate.addLine('(<perimeterPath>)')
+			transferClosestPaths(oldOrderedLocation, self.perimeterPaths[:], skein)
+			skein.distanceFeedRate.addLine('(</perimeterPath>)')
+		else:
+			addToThreadsFromLoop(extrusionHalfWidth, 'perimeter', self.loop[:], oldOrderedLocation, skein)
+		skein.distanceFeedRate.addLine('(</boundaryPerimeter>)')
+		addToThreadsRemove(extrusionHalfWidth, self.innerNestedRings[:], oldOrderedLocation, skein, threadSequence)
 
 	def addToBoundary(self, vector3):
 		'Add vector3 to boundary.'
@@ -2303,20 +2332,9 @@ class NestedBand(NestedRing):
 		self.loop.append(vector3.dropAxis())
 		self.z = vector3.z
 
-	def addPerimeterInner(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence):
-		'Add to the perimeter and the inner island.'
-		if self.loop == None:
-			skein.distanceFeedRate.addLine('(<perimeterPath>)')
-			transferClosestPaths(oldOrderedLocation, self.perimeterPaths[:], skein)
-			skein.distanceFeedRate.addLine('(</perimeterPath>)')
-		else:
-			addToThreadsFromLoop(extrusionHalfWidth, 'perimeter', self.loop[:], oldOrderedLocation, skein)
-		skein.distanceFeedRate.addLine('(</boundaryPerimeter>)')
-		addToThreadsRemove(extrusionHalfWidth, self.innerNestedRings[:], oldOrderedLocation, skein, threadSequence)
-
 	def addToThreads(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence):
 		'Add to paths from the last location. perimeter>inner >fill>paths or fill> perimeter>inner >paths'
-		addSurroundingLoopBeginning(skein.distanceFeedRate, self.boundary, self.z)
+		addNestedRingBeginning(skein.distanceFeedRate, self.boundary, self.z)
 		threadFunctionDictionary = {
 			'infill' : self.transferInfillPaths, 'loops' : self.transferClosestFillLoops, 'perimeter' : self.addPerimeterInner}
 		for threadType in threadSequence:
@@ -2330,6 +2348,9 @@ class NestedBand(NestedRing):
 		withinLoops = []
 		if penultimateFillLoops == None:
 			penultimateFillLoops = self.penultimateFillLoops
+		if penultimateFillLoops == None:
+			print('Warning, penultimateFillLoops == None in getFillLoops in NestedBand in euclidean.')
+			return fillLoops
 		for penultimateFillLoop in penultimateFillLoops:
 			if len(penultimateFillLoop) > 2:
 				if getIsInFilledRegion(surroundingBoundaries, penultimateFillLoop[0]):
@@ -2370,12 +2391,20 @@ class NestedBand(NestedRing):
 
 	def transferInfillPaths(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence):
 		'Transfer the infill paths.'
+		skein.distanceFeedRate.addLine('(<infill>)')
+		for infillBoundary in self.infillBoundaries:
+			skein.distanceFeedRate.addLine('(<infillBoundary>)')
+			for infillPoint in infillBoundary:
+				infillPointVector3 = Vector3(infillPoint.real, infillPoint.imag, self.z)
+				skein.distanceFeedRate.addLine(skein.distanceFeedRate.getInfillBoundaryLine(infillPointVector3))
+			skein.distanceFeedRate.addLine('(</infillBoundary>)')
 		transferClosestPaths(oldOrderedLocation, self.infillPaths[:], skein)
+		skein.distanceFeedRate.addLine('(</infill>)')
 
 	def transferPaths(self, paths):
 		'Transfer paths.'
 		for nestedRing in self.innerNestedRings:
-			transferPathsToSurroundingLoops(nestedRing.innerNestedRings, paths)
+			transferPathsToNestedRings(nestedRing.innerNestedRings, paths)
 		self.infillPaths = getTransferredPaths(paths, self.boundary)
 
 

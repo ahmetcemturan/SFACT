@@ -16,24 +16,24 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	functions = xmlElement.getXMLProcessor().functions
+	functions = elementNode.getXMLProcessor().functions
 	if len(functions) < 1:
-		print('Warning, there are no functions in processXMLElement in statement for:')
-		print(xmlElement)
+		print('Warning, there are no functions in processElementNode in statement for:')
+		print(elementNode)
 		return
 	function = functions[-1]
-	evaluate.setLocalAttribute(xmlElement)
-	if xmlElement.xmlObject.value == None:
-		print('Warning, xmlElement.xmlObject.value is None in processXMLElement in statement for:')
-		print(xmlElement)
+	evaluate.setLocalAttribute(elementNode)
+	if elementNode.xmlObject.value == None:
+		print('Warning, elementNode.xmlObject.value is None in processElementNode in statement for:')
+		print(elementNode)
 		return
-	localValue = evaluate.getEvaluatedExpressionValueBySplitLine(xmlElement.xmlObject.value, xmlElement)
-	keywords = xmlElement.xmlObject.key.split('.')
+	localValue = evaluate.getEvaluatedExpressionValueBySplitLine(elementNode, elementNode.xmlObject.value)
+	keywords = elementNode.xmlObject.key.split('.')
 	if len(keywords) == 0:
-		print('Warning, there are no keywords in processXMLElement in statement for:')
-		print(xmlElement)
+		print('Warning, there are no keywords in processElementNode in statement for:')
+		print(elementNode)
 		return
 	firstWord = keywords[0]
 	if len(keywords) == 1:

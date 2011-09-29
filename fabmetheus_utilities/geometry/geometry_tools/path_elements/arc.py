@@ -24,14 +24,14 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getArcPath(xmlElement):
+def getArcPath(elementNode):
 	"Get the arc path.rx ry x-axis-rotation large-arc-flag sweep-flag"
-	begin = xmlElement.getPreviousVertex(Vector3())
-	end = evaluate.getVector3FromXMLElement(xmlElement)
-	largeArcFlag = evaluate.getEvaluatedBoolean(True, 'largeArcFlag', xmlElement)
-	radius = lineation.getComplexByPrefix('radius', complex(1.0, 1.0), xmlElement )
-	sweepFlag = evaluate.getEvaluatedBoolean(True, 'sweepFlag', xmlElement)
-	xAxisRotation = math.radians(evaluate.getEvaluatedFloat(0.0, 'xAxisRotation', xmlElement ))
+	begin = elementNode.getPreviousVertex(Vector3())
+	end = evaluate.getVector3FromElementNode(elementNode)
+	largeArcFlag = evaluate.getEvaluatedBoolean(True, elementNode, 'largeArcFlag')
+	radius = lineation.getComplexByPrefix(elementNode, 'radius', complex(1.0, 1.0))
+	sweepFlag = evaluate.getEvaluatedBoolean(True, elementNode, 'sweepFlag')
+	xAxisRotation = math.radians(evaluate.getEvaluatedFloat(0.0, elementNode, 'xAxisRotation'))
 	arcComplexes = svg_reader.getArcComplexes(begin.dropAxis(), end.dropAxis(), largeArcFlag, radius, sweepFlag, xAxisRotation)
 	path = []
 	if len(arcComplexes) < 1:
@@ -46,6 +46,6 @@ def getArcPath(xmlElement):
 		path[-1] = end
 	return path
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	xmlElement.parentNode.xmlObject.vertexes += getArcPath(xmlElement)
+	elementNode.parentNode.xmlObject.vertexes += getArcPath(elementNode)

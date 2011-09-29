@@ -86,13 +86,6 @@ class Vector3Index:
 		'Get a new Vector3 by floor dividing each component of this one.'
 		return Vector3Index( self.index, self.x // other, self.y // other, self.z // other )
 
-	def _getAccessibleAttribute(self, attributeName):
-		'Get the accessible attribute.'
-		global globalGetAccessibleAttributeSet
-		if attributeName in globalGetAccessibleAttributeSet:
-			return getattr(self, attributeName, None)
-		return None
-
 	def __hash__(self):
 		'Determine whether this vector is identical to other one.'
 		return self.__repr__().__hash__()
@@ -153,13 +146,13 @@ class Vector3Index:
 	def __nonzero__(self):
 		return self.x != 0 or self.y != 0 or self.z != 0
 
-	def __repr__(self):
-		'Get the string representation of this Vector3 index.'
-		return '(%s, %s, %s, %s)' % (self.index, self.x, self.y, self.z)
-
 	def __rdiv__(self, other):
 		'Get a new Vector3 by dividing each component of this one.'
 		return Vector3Index( self.index, other / self.x, other / self.y, other / self.z )
+
+	def __repr__(self):
+		'Get the string representation of this Vector3 index.'
+		return '(%s, %s, %s, %s)' % (self.index, self.x, self.y, self.z)
 
 	def __rfloordiv__(self, other):
 		'Get a new Vector3 by floor dividing each component of this one.'
@@ -173,11 +166,6 @@ class Vector3Index:
 		'Get a new Vector3 by true dividing each component of this one.'
 		return Vector3Index( self.index, operator.truediv( other , self.x ), operator.truediv( other, self.y ), operator.truediv( other, self.z ) )
 
-	def _setAccessibleAttribute(self, attributeName, value):
-		'Set the accessible attribute.'
-		if attributeName in globalSetAccessibleAttributeSet:
-			setattr(self, attributeName, value)
-
 	def __sub__(self, other):
 		'Get the difference between the Vector3 and other one.'
 		return Vector3Index( self.index, self.x - other.x, self.y - other.y, self.z - other.z )
@@ -185,6 +173,18 @@ class Vector3Index:
 	def __truediv__(self, other):
 		'Get a new Vector3 by true dividing each component of this one.'
 		return Vector3Index( self.index, operator.truediv( self.x, other ), operator.truediv( self.y, other ), operator.truediv( self.z, other ) )
+
+	def _getAccessibleAttribute(self, attributeName):
+		'Get the accessible attribute.'
+		global globalGetAccessibleAttributeSet
+		if attributeName in globalGetAccessibleAttributeSet:
+			return getattr(self, attributeName, None)
+		return None
+
+	def _setAccessibleAttribute(self, attributeName, value):
+		'Set the accessible attribute.'
+		if attributeName in globalSetAccessibleAttributeSet:
+			setattr(self, attributeName, value)
 
 	def cross(self, other):
 		'Calculate the cross product of this vector with other one.'

@@ -46,7 +46,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -163,7 +163,7 @@ class DrillSkein:
 		self.repository = repository
 		self.parseInitialization()
 		for line in self.lines[self.lineIndex :]:
-			self.parseSurroundingLoop(line)
+			self.parseNestedRing(line)
 		for line in self.lines[self.lineIndex :]:
 			self.parseLine(line)
 		return self.distanceFeedRate.output.getvalue()
@@ -200,7 +200,7 @@ class DrillSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> drill </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('drill')
 				return
 			elif firstWord == '(<layerThickness>':
 				self.halfLayerThickness = 0.5 * float(splitLine[1])
@@ -219,8 +219,8 @@ class DrillSkein:
 			if not self.isDrilled:
 				self.addDrillHoles()
 
-	def parseSurroundingLoop(self, line):
-		"Parse a surrounding loop."
+	def parseNestedRing(self, line):
+		"Parse a nested ring."
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		if len(splitLine) < 1:
 			return

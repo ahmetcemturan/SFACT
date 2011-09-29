@@ -13,13 +13,17 @@
 <a href="skeinforge_application.skeinforge_plugins.analyze_plugins.export_canvas_plugins.scalable_vector_graphics.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.analyze_plugins.skeiniso.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Interpret is a script to interpret a file, turning it into xml.<br>
+Interpret is an analyze plugin to interpret a file, turning a 2D file into svg and a 3D file into constructive solid geometry xml.<br>
+ <br>
+The comment manual page is at:<br>
+<a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Interpret">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Interpret</a><br>
  <br>
 <br />
 <a href="#Operation">Operation</a><br />
 <a href="#Settings">Settings</a><br />
 &nbsp;&nbsp;<a href="#Print Interpretion">Print Interpretion</a><br />
 &nbsp;&nbsp;<a href="#Text Program">Text Program</a><br />
+<a href="#Examples">Examples</a><br />
 <br />
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
@@ -39,7 +43,18 @@ When selected, the xml text will be printed to the console.<br>
 
 Default is webbrowser.<br>
  <br>
-If the 'Text Program' is set the default 'webbrowser', the XML file will be sent to the default browser to be opened.  If the 'Text Program' is set to a program name, the XML file will be sent to that program to be opened.</tt>
+If the 'Text Program' is set the default 'webbrowser', the XML file will be sent to the default browser to be opened.  If the 'Text Program' is set to a program name, the XML file will be sent to that program to be opened.<br>
+ <br>
+<a name="Examples" id="Examples"></a><h2>Examples</h2>
+<hr>
+
+Below are examples of interpret being used.  These examples are run in a terminal in the folder which contains Screw_Holder.stl and interpret.py.<br>
+ <br>
+&gt; python interpret.py<br>
+This brings up the interpret dialog.<br>
+ <br>
+&gt; python interpret.py Screw_Holder.stl<br>
+The comment file is saved as Screw_Holder_interpret.xml</tt>
 <br />
 <br />
 <p>

@@ -23,15 +23,15 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 40
 
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get round loop."
 	if len(loop) < 3:
 		return [loop]
-	radius = lineation.getRadiusByPrefix(prefix, sideLength, xmlElement)
+	radius = lineation.getRadiusByPrefix(elementNode, prefix, sideLength)
 	if radius == 0.0:
 		return loop
 	roundLoop = []
-	sidesPerRadian = 0.5 / math.pi * evaluate.getSidesMinimumThreeBasedOnPrecision(sideLength, xmlElement)
+	sidesPerRadian = 0.5 / math.pi * evaluate.getSidesMinimumThreeBasedOnPrecision(elementNode, sideLength)
 	for pointIndex in xrange(len(loop)):
 		begin = loop[(pointIndex + len(loop) - 1) % len(loop)]
 		center = loop[pointIndex]
@@ -78,6 +78,6 @@ def getRoundPath( begin, center, close, end, radius, sidesPerRadian ):
 		roundPath.append( arcPoint )
 	return roundPath + [ endBevel ]
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)

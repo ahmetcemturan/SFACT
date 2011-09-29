@@ -37,10 +37,10 @@ def addUnsupportedPointIndexes( alongAway ):
 		point = alongAway.loop[pointIndex]
 		point.y += alongAway.maximumYPlus
 
-def alterClockwiseSupportedPath( alongAway, xmlElement ):
+def alterClockwiseSupportedPath( alongAway, elementNode ):
 	"Get clockwise path with overhangs carved out."
 	alongAway.bottomPoints = []
-	alongAway.overhangSpan = setting.getOverhangSpan(xmlElement)
+	alongAway.overhangSpan = setting.getOverhangSpan(elementNode)
 	maximumY = - 987654321.0
 	minimumYPointIndex = 0
 	for pointIndex in xrange( len( alongAway.loop ) ):
@@ -102,15 +102,15 @@ def compareYAscending( point, pointOther ):
 		return - 1
 	return int( point.y > pointOther.y )
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get path with overhangs removed or filled in."
 	if len(loop) < 3:
 		print('Warning, loop has less than three sides in getManipulatedPaths in overhang for:')
-		print(xmlElement)
+		print(elementNode)
 		return [loop]
-	overhangRadians = setting.getOverhangRadians(xmlElement)
+	overhangRadians = setting.getOverhangRadians(elementNode)
 	overhangPlaneAngle = euclidean.getWiddershinsUnitPolar(0.5 * math.pi - overhangRadians)
-	overhangVerticalRadians = math.radians(evaluate.getEvaluatedFloat(0.0,  prefix + 'inclination', xmlElement))
+	overhangVerticalRadians = math.radians(evaluate.getEvaluatedFloat(0.0, elementNode,  prefix + 'inclination'))
 	if overhangVerticalRadians != 0.0:
 		overhangVerticalCosine = abs(math.cos(overhangVerticalRadians))
 		if overhangVerticalCosine == 0.0:
@@ -121,7 +121,7 @@ def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
 	if euclidean.getIsWiddershinsByVector3(loop):
 		alterWiddershinsSupportedPath(alongAway, close)
 	else:
-		alterClockwiseSupportedPath(alongAway, xmlElement)
+		alterClockwiseSupportedPath(alongAway, elementNode)
 	return [euclidean.getLoopWithoutCloseSequentialPoints(close,  alongAway.loop)]
 
 def getMinimumYByPath(path):
@@ -131,9 +131,9 @@ def getMinimumYByPath(path):
 		minimumYByPath = min( minimumYByPath, point.y )
 	return minimumYByPath
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)
 
 
 class AlongAway:
@@ -177,6 +177,12 @@ class AlongAway:
 			return True
 		return self.getIsPointSupportedBySegment( self.pointIndex + 1 )
 
+	def getIsPointSupportedBySegment( self, endIndex ):
+		"Determine if the point on the widdershins loop is supported."
+		endComplex = self.loop[ ( endIndex % len( self.loop ) ) ].dropAxis()
+		endMinusPointComplex = euclidean.getNormalized( endComplex - self.point.dropAxis() )
+		return endMinusPointComplex.imag < self.ySupport
+
 	def getIsWiddershinsPointSupported(self, point):
 		"Determine if the point on the widdershins loop is supported."
 		if point.y <= self.minimumY:
@@ -202,12 +208,6 @@ class AlongAway:
 		if self.getIsPointSupportedBySegment( self.pointIndex - 1 + len( self.loop ) ):
 			return True
 		return self.getIsPointSupportedBySegment( self.pointIndex + 1 )
-
-	def getIsPointSupportedBySegment( self, endIndex ):
-		"Determine if the point on the widdershins loop is supported."
-		endComplex = self.loop[ ( endIndex % len( self.loop ) ) ].dropAxis()
-		endMinusPointComplex = euclidean.getNormalized( endComplex - self.point.dropAxis() )
-		return endMinusPointComplex.imag < self.ySupport
 
 
 class OverhangClockwise:

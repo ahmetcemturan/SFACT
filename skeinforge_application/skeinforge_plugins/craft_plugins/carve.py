@@ -196,7 +196,7 @@ class CarveSkein:
 		carving.setCarveInfillInDirectionOfBridge(repository.infillInDirectionOfBridge.value)
 		carving.setCarveLayerThickness(layerThickness)
 		importRadius = 0.5 * repository.importCoarseness.value * abs(perimeterWidth)
-		carving.setCarveImportRadius(max(importRadius, 0.001 * layerThickness))
+		carving.setCarveImportRadius(max(importRadius, 0.01 * layerThickness))
 		carving.setCarveIsCorrectMesh(repository.correctMesh.value)
 		rotatedLoopLayers = carving.getCarveRotatedBoundaryLayers()
 		if len(rotatedLoopLayers) < 1:

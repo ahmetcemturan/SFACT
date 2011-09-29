@@ -22,36 +22,36 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 380
 
 
-def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
+def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	"Get equated geometryOutput."
-	translatePoints( matrix.getVertexes(geometryOutput), prefix, xmlElement )
+	translatePoints(elementNode, matrix.getVertexes(geometryOutput), prefix)
 	return geometryOutput
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get equated paths."
-	translatePoints( loop, prefix, xmlElement )
+	translatePoints(elementNode, loop, prefix)
 	return [loop]
 
-def manipulateXMLElement(target, xmlElement):
+def manipulateElementNode(elementNode, target):
 	"Manipulate the xml element."
-	translateTetragrid = matrix.getTranslateTetragrid('', xmlElement)
+	translateTetragrid = matrix.getTranslateTetragrid(elementNode, '')
 	if translateTetragrid == None:
 		print('Warning, translateTetragrid was None in translate so nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	matrix.setAttributeDictionaryToMultipliedTetragrid(translateTetragrid, target)
+	matrix.setAttributesToMultipliedTetragrid(target, translateTetragrid)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	solid.processXMLElementByFunction(manipulateXMLElement, xmlElement)
+	solid.processElementNodeByFunction(elementNode, manipulateElementNode)
 
 def translateNegativesPositives(negatives, positives, translation):
 	'Translate the negatives and postives.'
 	euclidean.translateVector3Path(matrix.getVertexes(negatives), translation)
 	euclidean.translateVector3Path(matrix.getVertexes(positives), translation)
 
-def translatePoints(points, prefix, xmlElement):
+def translatePoints(elementNode, points, prefix):
 	"Translate the points."
-	translateVector3 = matrix.getCumulativeVector3Remove(Vector3(), prefix, xmlElement)
+	translateVector3 = matrix.getCumulativeVector3Remove(Vector3(), elementNode, prefix)
 	if abs(translateVector3) > 0.0:
 		euclidean.translateVector3Path(points, translateVector3)

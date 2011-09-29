@@ -12,19 +12,6 @@ Default is empty.
 
 The 'Meta' field is to add meta tags or a note to all your files.  Whatever is in that field will be added in a meta tagged line to the output.
 
-===Name of Alteration Files===
-Preface looks for alteration files in the alterations folder in the .skeinforge folder in the home directory.  Preface does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
-
-====Name of End File====
-Default is end.gcode.
-
-If there is a file with the name of the "Name of End File" setting, it will be added to the very end of the gcode.
-
-====Name of Start File====
-Default is start.gcode.
-
-If there is a file with the name of the "Name of Start File" setting, it will be added to the very beginning of the gcode.
-
 ===Set Positioning to Absolute===
 Default is on.
 
@@ -73,7 +60,6 @@ import __init__
 from datetime import date
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 from fabmetheus_utilities.svg_reader import SVGReader
-from fabmetheus_utilities.xml_simple_reader import XMLSimpleReader
 from fabmetheus_utilities import archive
 from fabmetheus_utilities import euclidean
 from fabmetheus_utilities import gcodec
@@ -214,8 +200,8 @@ class PrefaceSkein:
 		self.distanceFeedRate.addTagBracketedLine('timeStampPreface', strftime('%Y%m%d_%H%M%S'))
 		procedureNames = self.svgReader.sliceDictionary['procedureName'].replace(',', ' ').split()
 		for procedureName in procedureNames:
-			self.distanceFeedRate.addTagBracketedLine('procedureName', procedureName)
-		self.distanceFeedRate.addTagBracketedLine('procedureName', 'preface')
+			self.distanceFeedRate.addTagBracketedProcedure(procedureName)
+		self.distanceFeedRate.addTagBracketedProcedure('preface')
 		self.distanceFeedRate.addLine('(</extruderInitialization>)') # Initialization is finished, extrusion is starting.
 		self.distanceFeedRate.addLine('(<crafting>)') # Initialization is finished, crafting is starting.
 

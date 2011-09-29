@@ -70,7 +70,7 @@ def addEndCap(begin, end, points, radius):
 
 def addHalfPath(path, points, radius, thresholdRatio=0.9):
 	'Add the points from every point on a half path and between points.'
-	lessThanRadius = 0.7853 * radius
+	lessThanRadius = 0.75 * radius
 	for pointIndex in xrange(len(path) - 1):
 		begin = path[pointIndex]
 		center = path[pointIndex + 1]
@@ -163,15 +163,15 @@ def directLoop(isWiddershins, loop):
 	if euclidean.isWiddershins(loop) != isWiddershins:
 		loop.reverse()
 
-def directLoops(isWiddershins, loops):
-	'Direct the loops.'
-	for loop in loops:
-		directLoop(isWiddershins, loop)
-
 def directLoopLists(isWiddershins, loopLists):
 	'Direct the loop lists.'
 	for loopList in loopLists:
 		directLoops(isWiddershins, loopList)
+
+def directLoops(isWiddershins, loops):
+	'Direct the loops.'
+	for loop in loops:
+		directLoop(isWiddershins, loop)
 
 def getAroundsFromLoop(loop, radius, thresholdRatio=0.9):
 	'Get the arounds from the loop.'
@@ -252,6 +252,16 @@ def getCentersFromPoints(points, radius):
 	circleNodes = getCircleNodesFromPoints(points, abs(radius))
 	return getCentersFromCircleNodes(circleNodes, abs(radius))
 
+def getCircleIntersectionLoops( circleIntersections ):
+	'Get all the loops going through the circle intersections.'
+	circleIntersectionLoops = []
+	for circleIntersection in circleIntersections:
+		if not circleIntersection.steppedOn:
+			circleIntersectionLoop = [ circleIntersection ]
+			circleIntersectionLoops.append( circleIntersectionLoop )
+			addCircleIntersectionLoop( circleIntersectionLoop, circleIntersections )
+	return circleIntersectionLoops
+
 def getCircleIntersectionsFromCircleNodes(circleNodes):
 	'Get all the circle intersections which exist between all the circle nodes.'
 	if len( circleNodes ) < 1:
@@ -282,16 +292,6 @@ def getCircleIntersectionsFromCircleNodes(circleNodes):
 				index += 1
 	return circleIntersections
 
-def getCircleIntersectionLoops( circleIntersections ):
-	'Get all the loops going through the circle intersections.'
-	circleIntersectionLoops = []
-	for circleIntersection in circleIntersections:
-		if not circleIntersection.steppedOn:
-			circleIntersectionLoop = [ circleIntersection ]
-			circleIntersectionLoops.append( circleIntersectionLoop )
-			addCircleIntersectionLoop( circleIntersectionLoop, circleIntersections )
-	return circleIntersectionLoops
-
 def getCircleNodesFromLoop(loop, radius, thresholdRatio=0.9):
 	'Get the circle nodes from every point on a loop and between points.'
 	radius = abs(radius)
@@ -300,6 +300,10 @@ def getCircleNodesFromLoop(loop, radius, thresholdRatio=0.9):
 
 def getCircleNodesFromPoints(points, radius):
 	'Get the circle nodes from a path.'
+	if radius == 0.0:
+		print('Warning, radius is 0 in getCircleNodesFromPoints in intercircle.')
+		print(points)
+		return []
 	circleNodes = []
 	oneOverRadius = 1.000001 / radius # to avoid problem of accidentally integral radius
 	points = euclidean.getAwayPoints(points, radius)
@@ -409,6 +413,10 @@ def getLoopsFromLoopsDirection( isWiddershins, loops ):
 
 def getPointsFromLoop(loop, radius, thresholdRatio=0.9):
 	'Get the points from every point on a loop and between points.'
+	if radius == 0.0:
+		print('Warning, radius is 0 in getPointsFromLoop in intercircle.')
+		print(loop)
+		return loop
 	radius = abs(radius)
 	points = []
 	for pointIndex in xrange(len(loop)):

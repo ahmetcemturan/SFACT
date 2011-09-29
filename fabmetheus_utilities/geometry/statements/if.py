@@ -16,6 +16,6 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	evaluate.processCondition(xmlElement)
+	evaluate.processCondition(elementNode)

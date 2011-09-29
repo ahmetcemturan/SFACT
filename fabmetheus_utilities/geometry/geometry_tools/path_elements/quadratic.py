@@ -22,24 +22,24 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getQuadraticPath(xmlElement):
+def getQuadraticPath(elementNode):
 	"Get the quadratic path."
-	end = evaluate.getVector3FromXMLElement(xmlElement)
-	previousXMLElement = xmlElement.getPreviousXMLElement()
-	if previousXMLElement == None:
-		print('Warning, can not get previousXMLElement in getQuadraticPath in quadratic for:')
-		print(xmlElement)
+	end = evaluate.getVector3FromElementNode(elementNode)
+	previousElementNode = elementNode.getPreviousElementNode()
+	if previousElementNode == None:
+		print('Warning, can not get previousElementNode in getQuadraticPath in quadratic for:')
+		print(elementNode)
 		return [end]
-	begin = xmlElement.getPreviousVertex(Vector3())
-	controlPoint = evaluate.getVector3ByPrefix(None, 'controlPoint', xmlElement)
+	begin = elementNode.getPreviousVertex(Vector3())
+	controlPoint = evaluate.getVector3ByPrefix(None, elementNode, 'controlPoint')
 	if controlPoint == None:
-		oldControlPoint = evaluate.getVector3ByPrefixes(['controlPoint','controlPoint1'], None, previousXMLElement)
+		oldControlPoint = evaluate.getVector3ByPrefixes(previousElementNode, ['controlPoint','controlPoint1'], None)
 		if oldControlPoint == None:
 			oldControlPoint = end
 		controlPoint = begin + begin - oldControlPoint
-		evaluate.addVector3ToXMLElement('controlPoint', controlPoint, xmlElement)
-	return svg_reader.getQuadraticPoints(begin, controlPoint, end, lineation.getNumberOfBezierPoints(begin, end, xmlElement))
+		evaluate.addVector3ToElementNode(elementNode, 'controlPoint', controlPoint)
+	return svg_reader.getQuadraticPoints(begin, controlPoint, end, lineation.getNumberOfBezierPoints(begin, elementNode, end))
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	xmlElement.parentNode.xmlObject.vertexes += getQuadraticPath(xmlElement)
+	elementNode.parentNode.xmlObject.vertexes += getQuadraticPath(elementNode)

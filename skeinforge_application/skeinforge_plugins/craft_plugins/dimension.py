@@ -46,6 +46,11 @@ The default value is so low for ABS because ABS is relatively soft and with a pi
 
 Overall, you'll have to find the optimal filament packing density by experiment.
 
+===Retract Within Island===
+Default is off.
+
+When selected, retraction will work even when the next thread is within the same island.  If it is not selected, retraction will only work when crossing a boundary.
+
 ===Retraction Distance===
 Default is zero.
 
@@ -249,7 +254,7 @@ class DimensionSkein:
 		else:
 			if self.oldLocation == None:
 				print('Warning: There was no absolute location when the G91 command was parsed, so the absolute location will be set to the origin.')
-				self.oldLocation = Vector3() #todo why was it  commented in sfact?
+				self.oldLocation = Vector3()
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
 			distance = abs( location )
 			self.oldLocation += location
@@ -289,7 +294,12 @@ class DimensionSkein:
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
 		if not self.isExtruderActive:
 			return ''
-		if distance <= 0.0:
+		if distance == 0.0:
+			return ''
+		if distance < 0.0:
+			print('Warning, the distance is less than zero in getExtrusionDistanceString in dimension; so there will not be an E value')
+			print(distance)
+			print(splitLine)
 			return ''
 		scaledFlowRate = self.flowRate * self.flowScaleSixty
 		return self.getExtrusionDistanceStringFromExtrusionDistance(scaledFlowRate / self.feedRateMinute * distance)
@@ -359,7 +369,7 @@ class DimensionSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> dimension </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('dimension')
 				return
 			elif firstWord == '(<layerThickness>':
 				self.layerThickness = float(splitLine[1])
@@ -382,7 +392,7 @@ class DimensionSkein:
 		'Parse a gcode line and add it to the dimension skein.'
 		line = self.lines[lineIndex].lstrip()
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
-#		self.newFlowrate = str (round(self.flowRate * self.flowScaleSixty,0) )
+#		self.newFlowrate = str(round(self.flowRate * self.flowScaleSixty,0) )
 		if len(splitLine) < 1:
 			return
 		firstWord = splitLine[0]

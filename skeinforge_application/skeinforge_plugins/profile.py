@@ -21,7 +21,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import os
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -39,6 +39,10 @@ def addSubmenus( craftTypeName, menu, pluginFileName, pluginPath, profileRadioVa
 		value = isSelected and profileName == profilePluginSettings.profileListbox.value
 		ProfileMenuRadio( pluginFileName, submenu, profileName, profileRadioVar, value )
 
+def addToMenu( master, menu, repository, window ):
+	"Add a tool plugin menu."
+	ProfileMenuSaveListener( menu, window )
+
 def addToProfileMenu( menu ):
 	"Add a profile menu."
 	settings.ToolDialog().addPluginToMenu( menu, __file__[ : __file__.rfind('.') ] )
@@ -49,10 +53,6 @@ def addToProfileMenu( menu ):
 	profileRadioVar = settings.Tkinter.StringVar()
 	for pluginFileName in pluginFileNames:
 		addSubmenus( craftTypeName, menu, pluginFileName, os.path.join( directoryPath, pluginFileName ), profileRadioVar )
-
-def addToMenu( master, menu, repository, window ):
-	"Add a tool plugin menu."
-	ProfileMenuSaveListener( menu, window )
 
 def getNewRepository():
 	'Get new repository.'

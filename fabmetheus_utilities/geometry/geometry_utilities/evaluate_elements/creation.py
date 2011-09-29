@@ -19,33 +19,33 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def _getAccessibleAttribute(attributeName, xmlElement):
+def _getAccessibleAttribute(attributeName, elementNode):
 	'Get the accessible attribute.'
 	functionName = attributeName[len('get') :].lower()
 	if functionName not in evaluate.globalCreationDictionary:
 		print('Warning, functionName not in globalCreationDictionary in _getAccessibleAttribute in creation for:')
 		print(functionName)
-		print(xmlElement)
+		print(elementNode)
 		return None
 	pluginModule = archive.getModuleWithPath(evaluate.globalCreationDictionary[functionName])
 	if pluginModule == None:
 		print('Warning, _getAccessibleAttribute in creation can not get a pluginModule for:')
 		print(functionName)
-		print(xmlElement)
+		print(elementNode)
 		return None
-	return Creation(pluginModule, xmlElement).getCreation
+	return Creation(elementNode, pluginModule).getCreation
 
 
 class Creation:
 	'Class to handle a creation.'
-	def __init__(self, pluginModule, xmlElement):
+	def __init__(self, elementNode, pluginModule):
 		'Initialize.'
+		self.elementNode = elementNode
 		self.pluginModule = pluginModule
-		self.xmlElement = xmlElement
 
 	def __repr__(self):
 		"Get the string representation of this creation."
-		return self.xmlElement
+		return self.elementNode
 
 	def getCreation(self, *arguments):
 		"Get creation."
@@ -55,6 +55,6 @@ class Creation:
 			firstArgument = arguments[0]
 		if firstArgument.__class__ == dict:
 			dictionary.update(firstArgument)
-			return self.pluginModule.getGeometryOutput(None, self.xmlElement.getCopyShallow(dictionary))
-		copyShallow = self.xmlElement.getCopyShallow(dictionary)
+			return self.pluginModule.getGeometryOutput(None, self.elementNode.getCopyShallow(dictionary))
+		copyShallow = self.elementNode.getCopyShallow(dictionary)
 		return self.pluginModule.getGeometryOutputByArguments(arguments, copyShallow)

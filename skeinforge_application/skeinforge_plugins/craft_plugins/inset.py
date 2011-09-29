@@ -316,7 +316,7 @@ class InsetSkein:
 	def addGcodeFromRemainingLoop(self, loop, loopLists, radius, rotatedLoopLayer):
 		"Add the remainder of the loop which does not overlap the alreadyFilledArounds loops."
 		centerOutset = intercircle.getLargestCenterOutsetLoopFromLoopRegardless(loop, radius)
-		euclidean.addSurroundingLoopBeginning(self.distanceFeedRate, centerOutset.outset, rotatedLoopLayer.z)
+		euclidean.addNestedRingBeginning(self.distanceFeedRate, centerOutset.outset, rotatedLoopLayer.z)
 		self.addGcodePerimeterBlockFromRemainingLoop(centerOutset.center, loopLists, radius, rotatedLoopLayer)
 		self.distanceFeedRate.addLine('(</boundaryPerimeter>)')
 		self.distanceFeedRate.addLine('(</nestedRing>)')
@@ -334,15 +334,14 @@ class InsetSkein:
 		addAlreadyFilledArounds(loopLists, loop, self.overlapRemovalWidth)
 
 #	def addInitializationToOutput(self):
-#		"Add initialization gcode to the output."
-#		if self.repository.addCustomCodeForTemperatureReading.value:
+#		"Add initialization gcode to the output."#		if self.repository.addCustomCodeForTemperatureReading.value:
 #			self.distanceFeedRate.addLine('M105') # Custom code for temperature reading.
 #		return
 
 	def addInset(self, rotatedLoopLayer):
 		"Add inset to the layer."
 		alreadyFilledArounds = []
-		halfWidth = self.halfPerimeterWidth * 0.7853 #todo was without 0,7853
+		halfWidth = self.halfPerimeterWidth * 0.7853 #todo was without 0.7853
 		if rotatedLoopLayer.rotation != None:
 			halfWidth = self.repository.bridgeWidthMultiplier.value * ((2* self.repository.nozzleDiameter.value - self.layerThickness) / 2) * 0.7853
 			self.distanceFeedRate.addTagBracketedLine('bridgeRotation', rotatedLoopLayer.rotation)
@@ -368,11 +367,11 @@ class InsetSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(<decimalPlacesCarried>':
-				#self.addInitializationToOutput()
+#				self.addInitializationToOutput()
 				self.distanceFeedRate.addTagBracketedLine(
 					'bridgeWidthMultiplier', self.distanceFeedRate.getRounded( self.repository.bridgeWidthMultiplier.value ) )
 			elif firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addTagBracketedLine('procedureName', 'inset')
+				self.distanceFeedRate.addTagBracketedProcedure('inset')
 				return
 			elif firstWord == '(<layerThickness>':
 				self.layerThickness = float(splitLine[1])
@@ -393,8 +392,8 @@ class InsetSkein:
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
 			self.boundary.append(location.dropAxis())
 		elif firstWord == '(<bridgeRotation>':
-			secondWordWithoutBrackets = splitLine[1].replace('(', '').replace(')', '')
-			self.rotatedLoopLayer.rotation = complex(secondWordWithoutBrackets)
+#			secondWordWithoutBrackets = splitLine[1].replace('(', '').replace(')', '')
+			self.rotatedLoopLayer.rotation = gcodec.getRotationBySplitLine(splitLine)
 #		elif firstWord == '(</crafting>)':
 #				self.distanceFeedRate.addLine(line)
 #				if self.repository.turnExtruderHeaterOffAtShutDown.value:

@@ -18,42 +18,42 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return CopyDerivation(xmlElement)
+	return CopyDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	processXMLElementByDerivation(None, xmlElement)
+	processElementNodeByDerivation(None, elementNode)
 
-def processXMLElementByDerivation(derivation, xmlElement):
+def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
 	if derivation == None:
-		derivation = CopyDerivation(xmlElement)
+		derivation = CopyDerivation(elementNode)
 	if derivation.target == None:
 		print('Warning, copy could not get target for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	del xmlElement.attributeDictionary['target']
-	copyMatrix = matrix.getBranchMatrixSetXMLElement(xmlElement)
-	targetMatrix = matrix.getBranchMatrixSetXMLElement(derivation.target)
-	targetDictionaryCopy = derivation.target.attributeDictionary.copy()
+	del elementNode.attributes['target']
+	copyMatrix = matrix.getBranchMatrixSetElementNode(elementNode)
+	targetMatrix = matrix.getBranchMatrixSetElementNode(derivation.target)
+	targetDictionaryCopy = derivation.target.attributes.copy()
 	evaluate.removeIdentifiersFromDictionary(targetDictionaryCopy)
-	targetDictionaryCopy.update(xmlElement.attributeDictionary)
-	xmlElement.attributeDictionary = targetDictionaryCopy
-	euclidean.removeTrueFromDictionary(xmlElement.attributeDictionary, 'visible')
-	xmlElement.localName = derivation.target.localName
-	derivation.target.copyXMLChildNodes(xmlElement.getIDSuffix(), xmlElement)
-	xmlElement.getXMLProcessor().processXMLElement(xmlElement)
+	targetDictionaryCopy.update(elementNode.attributes)
+	elementNode.attributes = targetDictionaryCopy
+	euclidean.removeTrueFromDictionary(elementNode.attributes, 'visible')
+	elementNode.localName = derivation.target.localName
+	derivation.target.copyXMLChildNodes(elementNode.getIDSuffix(), elementNode)
+	elementNode.getXMLProcessor().processElementNode(elementNode)
 	if copyMatrix != None and targetMatrix != None:
-		xmlElement.xmlObject.matrix4X4 = copyMatrix.getSelfTimesOther(targetMatrix.tetragrid)
+		elementNode.xmlObject.matrix4X4 = copyMatrix.getSelfTimesOther(targetMatrix.tetragrid)
 
 
 class CopyDerivation:
 	"Class to hold copy variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.target = evaluate.getXMLElementByKey('target', xmlElement)
+		self.target = evaluate.getElementNodeByKey(elementNode, 'target')
 
 	def __repr__(self):
 		"Get the string representation of this CopyDerivation."

@@ -51,8 +51,8 @@ def getMinimumZ(geometryObject):
 	'Get the minimum of the minimum z of the archivableObjects and the object.'
 	booleanGeometry = BooleanGeometry()
 	booleanGeometry.archivableObjects = geometryObject.archivableObjects
-	booleanGeometry.importRadius = setting.getImportRadius(geometryObject.xmlElement)
-	booleanGeometry.layerThickness = setting.getLayerThickness(geometryObject.xmlElement)
+	booleanGeometry.importRadius = setting.getImportRadius(geometryObject.elementNode)
+	booleanGeometry.layerThickness = setting.getLayerThickness(geometryObject.elementNode)
 	archivableMinimumZ = booleanGeometry.getMinimumZ()
 	geometryMinimumZ = geometryObject.getMinimumZ()
 	if archivableMinimumZ == None and geometryMinimumZ == None:
@@ -77,10 +77,10 @@ class BooleanGeometry:
 
 	def __repr__(self):
 		'Get the string representation of this carving.'
-		xmlElement = None
+		elementNode = None
 		if len(self.archivableObjects) > 0:
-			xmlElement = self.archivableObjects[0].xmlElement
-		output = xml_simple_writer.getBeginGeometryXMLOutput(xmlElement)
+			elementNode = self.archivableObjects[0].elementNode
+		output = xml_simple_writer.getBeginGeometryXMLOutput(elementNode)
 		self.addXML( 1, output )
 		return xml_simple_writer.getEndGeometryXMLString(output)
 
@@ -126,7 +126,7 @@ class BooleanGeometry:
 	def getFabmetheusXML(self):
 		'Return the fabmetheus XML.'
 		if len(self.archivableObjects) > 0:
-			return self.archivableObjects[0].xmlElement.getParser().getOriginalRoot()
+			return self.archivableObjects[0].elementNode.getOwnerDocument().getOriginalRoot()
 		return None
 
 	def getInterpretationSuffix(self):
@@ -186,18 +186,18 @@ class BooleanGeometry:
 				return
 			self.minimumZ += self.layerThickness
 
-	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
-		'Set the infill in direction of bridge.'
-		self.infillInDirectionOfBridge = infillInDirectionOfBridge
-
-	def setCarveLayerThickness( self, layerThickness ):
-		'Set the layer thickness.'
-		self.layerThickness = layerThickness
-
 	def setCarveImportRadius( self, importRadius ):
 		'Set the import radius.'
 		self.importRadius = importRadius
 
+	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
+		'Set the infill in direction of bridge.'
+		self.infillInDirectionOfBridge = infillInDirectionOfBridge
+
 	def setCarveIsCorrectMesh( self, isCorrectMesh ):
 		'Set the is correct mesh flag.'
 		self.isCorrectMesh = isCorrectMesh
+
+	def setCarveLayerThickness( self, layerThickness ):
+		'Set the layer thickness.'
+		self.layerThickness = layerThickness

@@ -139,19 +139,19 @@ def comparePortionDirection( portionDirection, otherPortionDirection ):
 		return - 1
 	return portionDirection.directionReversed > otherPortionDirection.directionReversed
 
-def getGeometryOutput(derivation, xmlElement):
+def getGeometryOutput(derivation, elementNode):
 	'Get triangle mesh from attribute dictionary.'
 	if derivation == None:
-		derivation = ExtrudeDerivation(xmlElement)
+		derivation = ExtrudeDerivation(elementNode)
 	if len(euclidean.getConcatenatedList(derivation.target)) == 0:
 		print('Warning, in extrude there are no paths.')
-		print(xmlElement.attributeDictionary)
+		print(elementNode.attributes)
 		return None
 	return getGeometryOutputByLoops(derivation, derivation.target)
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	'Get triangle mesh from attribute dictionary by arguments.'
-	return getGeometryOutput(None, xmlElement)
+	return getGeometryOutput(None, elementNode)
 
 def getGeometryOutputByLoops(derivation, loops):
 	'Get geometry output by sorted, nested loops.'
@@ -175,21 +175,21 @@ def getGeometryOutputByLoops(derivation, loops):
 		return {}
 	if len(nestedRings) == 1:
 		geometryOutput = getGeometryOutputByNestedRing(derivation, nestedRings[0], portionDirections)
-		return solid.getGeometryOutputByManipulation(geometryOutput, derivation.xmlElement)
+		return solid.getGeometryOutputByManipulation(derivation.elementNode, geometryOutput)
 	shapes = []
 	for nestedRing in nestedRings:
 		shapes.append(getGeometryOutputByNestedRing(derivation, nestedRing, portionDirections))
-	return solid.getGeometryOutputByManipulation({'union' : {'shapes' : shapes}}, derivation.xmlElement)
+	return solid.getGeometryOutputByManipulation(derivation.elementNode, {'union' : {'shapes' : shapes}})
 
-def getGeometryOutputByNegativesPositives(negatives, positives, xmlElement):
-	'Get triangle mesh from derivation, negatives, positives and xmlElement.'
+def getGeometryOutputByNegativesPositives(elementNode, negatives, positives):
+	'Get triangle mesh from elementNode, negatives and positives.'
 	positiveOutput = triangle_mesh.getUnifiedOutput(positives)
 	if len(negatives) < 1:
-		return solid.getGeometryOutputByManipulation(positiveOutput, xmlElement)
+		return solid.getGeometryOutputByManipulation(elementNode, positiveOutput)
 	if len(positives) < 1:
 		negativeOutput = triangle_mesh.getUnifiedOutput(negatives)
-		return solid.getGeometryOutputByManipulation(negativeOutput, xmlElement)
-	return solid.getGeometryOutputByManipulation({'difference' : {'shapes' : [positiveOutput] + negatives}}, xmlElement)
+		return solid.getGeometryOutputByManipulation(elementNode, negativeOutput)
+	return solid.getGeometryOutputByManipulation(elementNode, {'difference' : {'shapes' : [positiveOutput] + negatives}})
 
 def getGeometryOutputByNestedRing(derivation, nestedRing, portionDirections):
 	'Get geometry output by sorted, nested loops.'
@@ -212,9 +212,9 @@ def getLoopListsByPath(derivation, endMultiplier, path, portionDirections):
 		addLoop(derivation, endMultiplier, loopLists, path, portionDirectionIndex, portionDirections, vertexes)
 	return loopLists
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return ExtrudeDerivation(xmlElement)
+	return ExtrudeDerivation(elementNode)
 
 def getNormalAverage(normals):
 	'Get normal.'
@@ -246,30 +246,30 @@ def getSpacedPortionDirections( interpolationDictionary ):
 		addSpacedPortionDirection( portionDirection, spacedPortionDirections )
 	return spacedPortionDirections
 
-def insertTwistPortions(derivation, xmlElement):
+def insertTwistPortions(derivation, elementNode):
 	'Insert twist portions and radian the twist.'
 	interpolationDictionary = derivation.interpolationDictionary
-	interpolationTwist = Interpolation().getByPrefixX(derivation.twistPathDefault, 'twist', xmlElement)
+	interpolationTwist = Interpolation().getByPrefixX(elementNode, derivation.twistPathDefault, 'twist')
 	interpolationDictionary['twist'] = interpolationTwist
 	for point in interpolationTwist.path:
 		point.y = math.radians(point.y)
 	remainderPortionDirections = interpolationTwist.portionDirections[1 :]
 	interpolationTwist.portionDirections = [interpolationTwist.portionDirections[0]]
-	if xmlElement != None:
-		twistPrecision = setting.getTwistPrecisionRadians(xmlElement)
+	if elementNode != None:
+		twistPrecision = setting.getTwistPrecisionRadians(elementNode)
 	for remainderPortionDirection in remainderPortionDirections:
 		addTwistPortions(interpolationTwist, remainderPortionDirection, twistPrecision)
 		interpolationTwist.portionDirections.append(remainderPortionDirection)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	solid.processXMLElementByGeometry(getGeometryOutput(None, xmlElement), xmlElement)
+	solid.processElementNodeByGeometry(elementNode, getGeometryOutput(None, elementNode))
 
-def setXMLElementToEndStart(end, start, xmlElement):
-	'Set xmlElement attribute dictionary to a tilt following path from the start to end.'
-	xmlElement.attributeDictionary['path'] = [start, end]
-	xmlElement.attributeDictionary['tiltFollow'] = 'true'
-	xmlElement.attributeDictionary['tiltTop'] = Vector3(0.0, 0.0, 1.0)
+def setElementNodeToEndStart(elementNode, end, start):
+	'Set elementNode attribute dictionary to a tilt following path from the start to end.'
+	elementNode.attributes['path'] = [start, end]
+	elementNode.attributes['tiltFollow'] = 'true'
+	elementNode.attributes['tiltTop'] = Vector3(0.0, 0.0, 1.0)
 
 def setOffsetByMultiplier(begin, end, multiplier, offset):
 	'Set the offset by the multiplier.'
@@ -280,30 +280,30 @@ def setOffsetByMultiplier(begin, end, multiplier, offset):
 
 class ExtrudeDerivation:
 	'Class to hold extrude variables.'
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Initialize.'
+		self.elementNode = elementNode
 		self.interpolationDictionary = {}
-		self.tiltFollow = evaluate.getEvaluatedBoolean(True, 'tiltFollow', xmlElement)
-		self.tiltTop = evaluate.getVector3ByPrefix(None, 'tiltTop', xmlElement)
-		self.maximumUnbuckling = evaluate.getEvaluatedFloat(5.0, 'maximumUnbuckling', xmlElement)
+		self.tiltFollow = evaluate.getEvaluatedBoolean(True, elementNode, 'tiltFollow')
+		self.tiltTop = evaluate.getVector3ByPrefix(None, elementNode, 'tiltTop')
+		self.maximumUnbuckling = evaluate.getEvaluatedFloat(5.0, elementNode, 'maximumUnbuckling')
 		scalePathDefault = [Vector3(1.0, 1.0, 0.0), Vector3(1.0, 1.0, 1.0)]
-		self.interpolationDictionary['scale'] = Interpolation().getByPrefixZ(scalePathDefault, 'scale', xmlElement)
-		self.target = evaluate.getTransformedPathsByKey([], 'target', xmlElement)
+		self.interpolationDictionary['scale'] = Interpolation().getByPrefixZ(elementNode, scalePathDefault, 'scale')
+		self.target = evaluate.getTransformedPathsByKey([], elementNode, 'target')
 		if self.tiltTop == None:
 			offsetPathDefault = [Vector3(), Vector3(0.0, 0.0, 1.0)]
-			self.interpolationDictionary['offset'] = Interpolation().getByPrefixZ(offsetPathDefault, '', xmlElement)
+			self.interpolationDictionary['offset'] = Interpolation().getByPrefixZ(elementNode, offsetPathDefault, '')
 			tiltPathDefault = [Vector3(), Vector3(0.0, 0.0, 1.0)]
-			self.interpolationDictionary['tilt'] = Interpolation().getByPrefixZ(tiltPathDefault, 'tilt', xmlElement)
+			self.interpolationDictionary['tilt'] = Interpolation().getByPrefixZ(elementNode, tiltPathDefault, 'tilt')
 			for point in self.interpolationDictionary['tilt'].path:
 				point.x = math.radians(point.x)
 				point.y = math.radians(point.y)
 		else:
 			offsetAlongDefault = [Vector3(), Vector3(1.0, 0.0, 0.0)]
-			self.interpolationDictionary['offset'] = Interpolation().getByPrefixAlong(offsetAlongDefault, '', xmlElement)
-		self.twist = evaluate.getEvaluatedFloat(0.0, 'twist', xmlElement )
+			self.interpolationDictionary['offset'] = Interpolation().getByPrefixAlong(elementNode, offsetAlongDefault, '')
+		self.twist = evaluate.getEvaluatedFloat(0.0, elementNode, 'twist')
 		self.twistPathDefault = [Vector3(), Vector3(1.0, self.twist) ]
-		self.xmlElement = xmlElement
-		insertTwistPortions(self, xmlElement)
+		insertTwistPortions(self, elementNode)
 
 	def __repr__(self):
 		'Get the string representation of this ExtrudeDerivation.'
@@ -336,15 +336,15 @@ class Interpolation:
 			oldDistance = deltaDistance
 		return self
 
-	def getByPrefixAlong(self, path, prefix, xmlElement):
+	def getByPrefixAlong(self, elementNode, path, prefix):
 		'Get interpolation from prefix and xml element along the path.'
 		if len(path) < 2:
 			print('Warning, path is too small in evaluate in Interpolation.')
 			return
-		if xmlElement == None:
+		if elementNode == None:
 			self.path = path
 		else:
-			self.path = evaluate.getTransformedPathByPrefix(path, prefix, xmlElement)
+			self.path = evaluate.getTransformedPathByPrefix(elementNode, path, prefix)
 		self.distances = [0.0]
 		previousPoint = self.path[0]
 		for point in self.path[1 :]:
@@ -353,29 +353,29 @@ class Interpolation:
 			previousPoint = point
 		return self.getByDistances()
 
-	def getByPrefixX(self, path, prefix, xmlElement):
+	def getByPrefixX(self, elementNode, path, prefix):
 		'Get interpolation from prefix and xml element in the z direction.'
 		if len(path) < 2:
 			print('Warning, path is too small in evaluate in Interpolation.')
 			return
-		if xmlElement == None:
+		if elementNode == None:
 			self.path = path
 		else:
-			self.path = evaluate.getTransformedPathByPrefix(path, prefix, xmlElement)
+			self.path = evaluate.getTransformedPathByPrefix(elementNode, path, prefix)
 		self.distances = []
 		for point in self.path:
 			self.distances.append(point.x)
 		return self.getByDistances()
 
-	def getByPrefixZ(self, path, prefix, xmlElement):
+	def getByPrefixZ(self, elementNode, path, prefix):
 		'Get interpolation from prefix and xml element in the z direction.'
 		if len(path) < 2:
 			print('Warning, path is too small in evaluate in Interpolation.')
 			return
-		if xmlElement == None:
+		if elementNode == None:
 			self.path = path
 		else:
-			self.path = evaluate.getTransformedPathByPrefix(path, prefix, xmlElement)
+			self.path = evaluate.getTransformedPathByPrefix(elementNode, path, prefix)
 		self.distances = []
 		for point in self.path:
 			self.distances.append(point.z)

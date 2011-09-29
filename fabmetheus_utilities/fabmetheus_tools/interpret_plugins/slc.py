@@ -169,20 +169,20 @@ class SLCCarving:
 			sampleTableEntry = SampleTableEntry( file )
 			self.layerThickness = sampleTableEntry.layer_thickness
 
-	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
-		'Set the infill in direction of bridge.'
-		pass
-
-	def setCarveLayerThickness( self, layerThickness ):
-		"Set the layer thickness."
-		pass
-
 	def setCarveImportRadius( self, importRadius ):
 		"Set the import radius."
 		pass
 
+	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
+		'Set the infill in direction of bridge.'
+		pass
+
 	def setCarveIsCorrectMesh( self, isCorrectMesh ):
 		"Set the is correct mesh flag."
+		pass
+
+	def setCarveLayerThickness( self, layerThickness ):
+		"Set the layer thickness."
 		pass
 
 

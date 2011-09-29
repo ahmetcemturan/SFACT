@@ -20,7 +20,7 @@ if [ -n $suffix ]; then
   newdir=$filename-`date +%m%d%H%M`
   mkdir -p $newdir/skeinforge-prefs
   cp $1 $newdir
-  cp ~/.skeinforge/*.csv $newdir/skeinforge-prefs
+  cp ~/sfact_profiles/*.csv $newdir/skeinforge-prefs
   python skeinforge.py $newdir/$filename$suffix
   echo $PWD/$newdir/${filename}_export.gcode
 fi

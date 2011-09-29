@@ -1,6 +1,6 @@
 """
 This page is in the table of contents.
-Skeinlayer is a script to display each layer of a gcode file.
+Skeinlayer is an analyze viewer to display each layer of a gcode file.
 
 The skeinlayer manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skeinlayer
@@ -145,7 +145,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import os
 import sys
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 

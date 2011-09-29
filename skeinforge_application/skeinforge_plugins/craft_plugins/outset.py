@@ -42,7 +42,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -98,7 +98,7 @@ class OutsetSkein:
 	def addGcodeFromRemainingLoop( self, loop, radius, z ):
 		'Add the remainder of the loop.'
 		boundary = intercircle.getLargestInsetLoopFromLoopRegardless( loop, radius )
-		euclidean.addSurroundingLoopBeginning( self.distanceFeedRate, boundary, z )
+		euclidean.addNestedRingBeginning( self.distanceFeedRate, boundary, z )
 		self.distanceFeedRate.addPerimeterBlock(loop, z)
 		self.distanceFeedRate.addLine('(</boundaryPerimeter>)')
 		self.distanceFeedRate.addLine('(</nestedRing>)')

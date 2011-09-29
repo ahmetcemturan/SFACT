@@ -28,7 +28,8 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getCraftSequence():
 	'Get the extrusion craft sequence.'
-	return 'carve scale bottom preface inset fill multiply speed temperature clip raft skirt chamber jitter  stretch leadin ease skin comb cool wipe lash limit dimension export'.split()
+	return 'carve scale bottom preface widen inset fill multiply speed temperature     raft skirt chamber jitter clip stretch leadin skin comb cool wipe lash limit dimension bookend export'.split()
+#	return 'carve scale bottom preface inset fill multiply speed temperature clip raft skirt chamber jitter  stretch leadin ease skin comb cool wipe lash limit dimension export'.split()
 #	return 'carve scale bottom preface inset fill multiply speed temperature clip raft skirt chamber jitter  stretch leadin skin comb cool wipe lash limit dimension export'.split()
 
 def getNewRepository():

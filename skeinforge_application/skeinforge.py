@@ -105,7 +105,7 @@ http://reprap.org/bin/view/Main/MCodeReference
 A gode example is at:
 http://forums.reprap.org/file.php?12,file=565
 
-The settings are saved as tab separated .csv files in the .skeinforge folder in your home directory.  The settings can be set in the tool dialogs.  The .csv files can also be edited with a text editor or a spreadsheet program set to separate tabs.
+The settings are saved as tab separated .csv files in the sfact_profiles folder in your home directory.  The settings can be set in the tool dialogs.  The .csv files can also be edited with a text editor or a spreadsheet program set to separate tabs.
 
 The Scalable Vector Graphics file produced by vectorwrite can be opened by an SVG viewer or an SVG capable browser like Mozilla:
 http://www.mozilla.com/firefox/
@@ -175,7 +175,7 @@ If there is still a bug, then first prepare the following files:
 
 1. stl file
 2. pictures explaining the problem
-3. your settings (pack the whole .skeinforge directory with all your settings) 
+3. your settings (pack the whole sfact_profiles directory with all your settings)
 4. alterations folder, if you have any active alterations files
 
 Then zip all the files.
@@ -230,29 +230,31 @@ import os
 import sys
 
 
-# attributeDictionary, write, getTextContent, comment, pcdata, idDictionary.., importName getImportChain, document, rootElement
-# cool travel bug? getLayerTimeActive multiplier = active / (remainder + active) http://forums.reprap.org/read.php?154,91413
-# double circle top infill in skin & above layer, should clip before getAroundsFromPath(
-# circle is average radius in circle, cylinder, drill, extrude
-# infuse _extrusion
-# cutting ahmet
-# smooth http://hydraraptor.blogspot.com/2010/12/frequency-limit.html _extrusion
-# think about changing getOverlapRatio(loop, pointDictionary) < 0.2 to 0.51
-# change topOverBottom in linearbearingexample to pegAngle
-# add links download manual svg_writer, add left right arrow keys to layer
-# change thickness to face width in gear xml
-# documentation Retract When Crossing
-# document announce skirt convex
-# announcement clairvoyance, synopsis, export http://garyhodgson.com/reprap/2011/06/hacking-skeinforge-export-module/
-# maybe in svgReader if loop intersection with previous union else add
-# think about http://code.google.com/p/skeinarchiver/ and/or undo
+# document synopsis..
+# no need for completely filled bridge layer
+# analyze in export
+# add date time 11.01.02|12:08
+# double M108 problem by raft
+# unpause slow flow rate instead of speeding feed rate
+# fix arc model 'too large for getArcComplexes in svgReader'
 #
 # unimportant
 # minor outline problem when an end path goes through a path, like in the letter A
 # view profile 1 mm thickness
 #
+# fix infill on small circles, like 25499 Screw_Holder_stretch.. G1 X39.6221 Y-38.9346 Z14.0001 F960.0
+# think about http://code.google.com/p/skeinarchiver/ and/or undo
+# work out why skinning sometimes straightens a side of a circle
+# replace getHorizontalSegmentListsFromLoo.. in fill also change inset algorithm to skin
+# use shortened infill to determine sparseness
+# skin layers without something over the infill
+# maybe in svgReader if loop intersection with previous union else add
+# smooth http://hydraraptor.blogspot.com/2010/12/frequency-limit.html _extrusion
 # raftPerimeter outset by maximum thickness
-# xmlparser to xmldocument, xmlelement of xml dom, originally 563 http://stackoverflow.com/questions/1971186/how-to-set-elements-id-in-pythons-xml-dom-minidom
+# set temperature in temperature
+# add links download manual svg_writer, add left right arrow keys to layer
+# infuse _extrusion
+# cutting ahmet
 # When opening a file for craft I wondered if there is an option to set the file type to .stl as it currently defaults to .xml
 # scrollbar/width problem when starting with narrow view like help/meta/profile
 # check inset loop for intersection with rotatedLoopLayer.loops
@@ -267,7 +269,7 @@ import sys
 # links in layerTemplate
 # del previous, add begin & end if far  get actual path
 # linearbearingexample 15 x 1 x 2, linearbearingcage
-# add date time 11.01.02|12:08
+# remember xy in skeiniso
 # polling
 # connectionfrom, to, connect, xaxis
 # lathe, transform normal in getRemaining, getConnection
@@ -276,6 +278,7 @@ import sys
 # voronoi average location intersection looped inset intercircles
 # 'fileName, text, repository' commandLineInterface
 # delete: text = text.replace(('\nName                          %sValue\n' % globalSpreadsheetSeparator), ('\n_Name                          %sValue\n' % globalSpreadsheetSeparator))
+# comment search from home panel when there is an input field
 #
 #
 # multiply to table + boundary bedBound bedWidth bedHeight bedFile.csv
@@ -294,6 +297,7 @@ import sys
 # maybe remove default warnings from scale, rotate, translate, transform
 # easy helix
 # write tool; maybe write one deep
+# getElementsByLocalName which is the equivalent of # getElementsByTagName
 #
 #
 # tube
@@ -362,7 +366,6 @@ import sys
 # maybe later remove isPerimeterPathInSurroundLoops, once there are no weird fill bugs, also change getHorizontalSegmentListsFromLoopLists
 # save all analyze viewers of the same name except itself, update help menu self.wikiManualPrimary.setUpdateFunction
 # check alterations folder first, if there is something copy it to the home directory, if not check the home directory
-# set temperature in temperature
 # add links to demozendium in help
 # maybe add hop only if long option
 #
@@ -490,7 +493,7 @@ import sys
 # concept, intermittent cloud with multiple hash functions
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __credits__ = """
 Adrian Bowyer <http://forums.reprap.org/profile.php?12,13>
 Brendan Erwin <http://forums.reprap.org/profile.php?12,217>
@@ -562,14 +565,6 @@ class SkeinforgeRepository:
 		self.profileType = settings.MenuButtonDisplay().getFromName('Profile Type: ', self )
 		self.profileSelection = settings.MenuButtonDisplay().getFromName('Profile Selection: ', self)
 		addToProfileMenu( self.profileSelection, self.profileType, self )
-		settings.LabelDisplay().getFromName('Search:', self )
-		reprapSearch = settings.HelpPage().getFromNameAfterHTTP('github.com/ahmetcemturan/SFACT', 'SFACT Update', self)
-		skeinforgeSearch = settings.HelpPage().getFromNameAfterHTTP('www.reprapfordummies.net/index.php/softwaresection/44-gcode-generators/49-sfact-homepage', 'SFACT Help', self )
-		skeinforgeSearch.column += 6
-		webSearch = settings.HelpPage().getFromNameAfterHTTP('www.reprap.org', 'Reprap', self)
-		webSearch.column += 4
-		versionText = archive.getFileText( archive.getVersionFileName() )
-		self.version = settings.LabelDisplay().getFromName('Version: ' + versionText, self)
 		settings.LabelDisplay().getFromName('', self)
 		importantFileNames = ['craft', 'profile']
 		getRadioPluginsAddPluginGroupFrame(archive.getSkeinforgePluginsPath(), importantFileNames, getPluginFileNames(), self)

@@ -22,33 +22,33 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 340
 
 
-def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
+def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	"Get equated geometryOutput."
-	scalePoints( matrix.getVertexes(geometryOutput), prefix, xmlElement )
+	scalePoints( elementNode, matrix.getVertexes(geometryOutput), prefix )
 	return geometryOutput
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get equated paths."
-	scalePoints( loop, prefix, xmlElement )
+	scalePoints( elementNode, loop, prefix )
 	return [loop]
 
-def manipulateXMLElement(target, xmlElement):
+def manipulateElementNode(elementNode, target):
 	"Manipulate the xml element."
-	scaleTetragrid = matrix.getScaleTetragrid('', xmlElement)
+	scaleTetragrid = matrix.getScaleTetragrid(elementNode, '')
 	if scaleTetragrid == None:
 		print('Warning, scaleTetragrid was None in scale so nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	matrix.setAttributeDictionaryToMultipliedTetragrid(scaleTetragrid, target)
+	matrix.setAttributesToMultipliedTetragrid(target, scaleTetragrid)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	solid.processXMLElementByFunction( manipulateXMLElement, xmlElement)
+	solid.processElementNodeByFunction(elementNode, manipulateElementNode)
 
-def scalePoints(points, prefix, xmlElement):
+def scalePoints(elementNode, points, prefix):
 	"Scale the points."
 	scaleDefaultVector3 = Vector3(1.0, 1.0, 1.0)
-	scaleVector3 = matrix.getCumulativeVector3Remove(scaleDefaultVector3.copy(), prefix, xmlElement)
+	scaleVector3 = matrix.getCumulativeVector3Remove(scaleDefaultVector3.copy(), elementNode, prefix)
 	if scaleVector3 == scaleDefaultVector3:
 		return
 	for point in points:

@@ -271,7 +271,7 @@ def getReadRepository(repository):
 		if repository.baseNameSynonym != None:
 			text = archive.getFileText(archive.getProfilesPath(getProfileBaseNameSynonym(repository)), False)
 	if text == '':
-		print('The default %s will be written in the .skeinforge folder in the home directory.' % repository.title.lower() )
+		print('The default %s will be written in the sfact_profiles folder in the home directory.' % repository.title.lower() )
 		text = archive.getFileText(getProfilesDirectoryInAboveDirectory(getProfileBaseName(repository)), False)
 		if text != '':
 			readSettingsFromText(repository, text)
@@ -421,15 +421,15 @@ def printProgress(layerIndex, procedureName):
 	"Print layerIndex followed by a carriage return."
 	printProgressByString('%s layer count %s...' % (procedureName.capitalize(), layerIndex + 1))
 
+def printProgressByNumber(layerIndex, numberOfLayers, procedureName):
+	"Print layerIndex and numberOfLayers followed by a carriage return."
+	printProgressByString('%s layer count %s of %s...' % (procedureName.capitalize(), layerIndex + 1, numberOfLayers))
+
 def printProgressByString(progressString):
 	"Print progress string."
 	sys.stdout.write(progressString)
 	sys.stdout.write(chr(27) + '\r')
 	sys.stdout.flush()
-
-def printProgressByNumber(layerIndex, numberOfLayers, procedureName):
-	"Print layerIndex and numberOfLayers followed by a carriage return."
-	printProgressByString('%s layer count %s of %s...' % (procedureName.capitalize(), layerIndex + 1, numberOfLayers))
 
 def quitWindow(root):
 	"Quit a window."
@@ -581,15 +581,6 @@ def temporaryApplyOverrides(repository):
 			else:
 				print('Override not applied for: %s, %s' % (name,value))
 
-def writeValueListToRepositoryWriter( repositoryWriter, setting ):
-	"Write tab separated name and list to the repository writer."
-	repositoryWriter.write( setting.name )
-	for item in setting.value:
-		if item != '[]':
-			repositoryWriter.write(globalSpreadsheetSeparator)
-			repositoryWriter.write( item )
-	repositoryWriter.write('\n')
-
 def writeSettings(repository):
 	"Write the settings to a file."
 	profilesDirectoryPath = archive.getProfilesPath(getProfileBaseName(repository))
@@ -602,6 +593,15 @@ def writeSettingsPrintMessage(repository):
 	"Set the settings to the dialog then write them."
 	writeSettings(repository)
 	print( repository.title.lower().capitalize() + ' have been saved.')
+
+def writeValueListToRepositoryWriter( repositoryWriter, setting ):
+	"Write tab separated name and list to the repository writer."
+	repositoryWriter.write( setting.name )
+	for item in setting.value:
+		if item != '[]':
+			repositoryWriter.write(globalSpreadsheetSeparator)
+			repositoryWriter.write( item )
+	repositoryWriter.write('\n')
 
 
 class StringSetting:
@@ -1328,16 +1328,16 @@ class LabelHelp:
 		widget.bind('<Button-2>', self.unpostPopupMenu )
 		widget.bind('<Button-3>', self.displayPopupMenu )
 
-	def unpostPopupMenu(self, event=None):
-		'Unpost the popup menu.'
-		self.popupMenu.unpost()
-
 	def displayPopupMenu(self, event=None):
 		'Display the popup menu when the button is right clicked.'
 		try:
 			self.popupMenu.tk_popup( event.x_root + 30, event.y_root, 0 )
 		finally:
 			self.popupMenu.grab_release()
+
+	def unpostPopupMenu(self, event=None):
+		'Unpost the popup menu.'
+		self.popupMenu.unpost()
 
 
 class LabelSeparator:
@@ -1371,15 +1371,15 @@ class LatentStringVar:
 		"Set the string var."
 		self.stringVar = None
 
+	def getString(self):
+		"Get the string."
+		return self.getVar().get()
+
 	def getVar(self):
 		"Get the string var."
 		if self.stringVar == None:
 			self.stringVar = Tkinter.StringVar()
 		return self.stringVar
-
-	def getString(self):
-		"Get the string."
-		return self.getVar().get()
 
 	def setString(self, word):
 		"Set the string."
@@ -1713,10 +1713,6 @@ class Radio( BooleanSetting ):
 #		repository.menuEntities.append(self)
 		return self
 
-	def setToDisplay(self):
-		"Set the boolean to the checkbutton."
-		self.value = ( self.latentStringVar.getString() == self.radiobutton['value'] )
-
 	def setSelect(self):
 		"Set the int var and select the radio button."
 		oldLatentStringValue = self.latentStringVar.getString()
@@ -1732,6 +1728,10 @@ class Radio( BooleanSetting ):
 			if self.setSelect():
 				if self.updateFunction != None:
 					self.updateFunction()
+
+	def setToDisplay(self):
+		"Set the boolean to the checkbutton."
+		self.value = ( self.latentStringVar.getString() == self.radiobutton['value'] )
 
 
 class RadioCapitalized( Radio ):
@@ -1768,8 +1768,7 @@ class RadioPlugin( RadioCapitalized ):
 	def addToDialog( self, gridPosition ):
 		"Add this to the dialog."
 		self.createRadioButton( gridPosition )
-		self.radiobutton['activebackground'] = 'black'
-		self.radiobutton['activeforeground'] = 'white'
+		self.radiobutton['activeforeground'] = 'magenta'
 		self.radiobutton['selectcolor'] = 'white'
 		self.radiobutton['borderwidth'] = 3
 		self.radiobutton['indicatoron'] = 0
@@ -1820,11 +1819,6 @@ class TextSetting( StringSetting ):
 		repository.preferences.append(self)
 		return self
 
-	def setToDisplay(self):
-		"Set the string to the entry field."
-		valueString = self.entry.get( 1.0, Tkinter.END )
-		self.setValueToString( valueString )
-
 	def setStateToValue(self):
 		"Set the entry to the value."
 		try:
@@ -1832,6 +1826,11 @@ class TextSetting( StringSetting ):
 			self.entry.insert( Tkinter.INSERT, self.value )
 		except:
 			pass
+
+	def setToDisplay(self):
+		"Set the string to the entry field."
+		valueString = self.entry.get( 1.0, Tkinter.END )
+		self.setValueToString( valueString )
 
 	def setValueToSplitLine( self, lineIndex, lines, splitLine ):
 		"Set the value to the second word of a split line."

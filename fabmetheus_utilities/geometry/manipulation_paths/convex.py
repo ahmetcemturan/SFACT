@@ -20,13 +20,13 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 80
 
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get path with overhangs removed or filled in."
 	if len(loop) < 4:
 		return [loop]
 	loopComplex = euclidean.getComplexPath(loop)
 	return euclidean.getVector3Paths([euclidean.getLoopConvex(loopComplex)], loop[0].z)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)

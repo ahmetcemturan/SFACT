@@ -23,35 +23,35 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 320
 
 
-def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
+def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	'Get equated geometryOutput.'
-	transformPoints(matrix.getVertexes(geometryOutput), prefix, xmlElement)
+	transformPoints(elementNode, matrix.getVertexes(geometryOutput), prefix)
 	return geometryOutput
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	'Get equated paths.'
-	transformPoints(loop, prefix, xmlElement)
+	transformPoints(elementNode, loop, prefix)
 	return [loop]
 
-def manipulateXMLElement(target, xmlElement):
+def manipulateElementNode(elementNode, target):
 	'Manipulate the xml element.'
-	transformTetragrid = matrix.getTransformTetragrid('', xmlElement)
+	transformTetragrid = matrix.getTransformTetragrid(elementNode, '')
 	if transformTetragrid == None:
 		print('Warning, transformTetragrid was None in transform so nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	matrix.setAttributeDictionaryToMultipliedTetragrid(transformTetragrid, target)
+	matrix.setAttributesToMultipliedTetragrid(target, transformTetragrid)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	solid.processXMLElementByFunction(manipulateXMLElement, xmlElement)
+	solid.processElementNodeByFunction(elementNode, manipulateElementNode)
 
-def transformPoints(points, prefix, xmlElement):
+def transformPoints(elementNode, points, prefix):
 	'Transform the points.'
-	transformTetragrid = matrix.getTransformTetragrid(prefix, xmlElement)
+	transformTetragrid = matrix.getTransformTetragrid(elementNode, prefix)
 	if transformTetragrid == None:
 		print('Warning, transformTetragrid was None in transform so nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		return
 	for point in points:
 		matrix.transformVector3ByMatrix(transformTetragrid, point)

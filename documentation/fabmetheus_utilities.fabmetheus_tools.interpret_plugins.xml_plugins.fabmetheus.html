@@ -39,11 +39,13 @@ An xml file can be exported from Art of Illusion by going to the "File" menu, th
 <a href="fabmetheus_utilities.geometry.geometry_utilities.boolean_geometry.html">fabmetheus_utilities.geometry.geometry_utilities.boolean_geometry</a><br>
 </td><td width="25%" valign=top><a href="fabmetheus_utilities.geometry.geometry_utilities.evaluate.html">fabmetheus_utilities.geometry.geometry_utilities.evaluate</a><br>
 <a href="fabmetheus_utilities.gcodec.html">fabmetheus_utilities.gcodec</a><br>
-<a href="os.html">os</a><br>
-</td><td width="25%" valign=top><a href="fabmetheus_utilities.settings.html">fabmetheus_utilities.settings</a><br>
+<a href="fabmetheus_utilities.geometry.solids.group.html">fabmetheus_utilities.geometry.solids.group</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="fabmetheus_utilities.settings.html">fabmetheus_utilities.settings</a><br>
 <a href="sys.html">sys</a><br>
-<a href="traceback.html">traceback</a><br>
-</td><td width="25%" valign=top><a href="fabmetheus_utilities.xml_simple_reader.html">fabmetheus_utilities.xml_simple_reader</a><br>
+</td><td width="25%" valign=top><a href="traceback.html">traceback</a><br>
+<a href="fabmetheus_utilities.fabmetheus_tools.interpret_plugins.xml.html">fabmetheus_utilities.fabmetheus_tools.interpret_plugins.xml</a><br>
+<a href="fabmetheus_utilities.xml_simple_reader.html">fabmetheus_utilities.xml_simple_reader</a><br>
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
@@ -68,13 +70,13 @@ An xml file can be exported from Art of Illusion by going to the "File" menu, th
 
 <dl><dt><a name="XMLBooleanGeometryProcessor-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;<a href="#XMLBooleanGeometryProcessor">XMLBooleanGeometryProcessor</a>.</tt></dd></dl>
 
-<dl><dt><a name="XMLBooleanGeometryProcessor-convertXMLElement"><strong>convertXMLElement</strong></a>(self, geometryOutput, xmlElement)</dt><dd><tt>Convert&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
+<dl><dt><a name="XMLBooleanGeometryProcessor-convertElementNode"><strong>convertElementNode</strong></a>(self, elementNode, geometryOutput)</dt><dd><tt>Convert&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
 
 <dl><dt><a name="XMLBooleanGeometryProcessor-createChildNodes"><strong>createChildNodes</strong></a>(self, geometryOutput, parentNode)</dt><dd><tt>Create&nbsp;childNodes&nbsp;for&nbsp;the&nbsp;parentNode.</tt></dd></dl>
 
-<dl><dt><a name="XMLBooleanGeometryProcessor-processChildNodes"><strong>processChildNodes</strong></a>(self, xmlElement)</dt><dd><tt>Process&nbsp;the&nbsp;childNodes&nbsp;of&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
+<dl><dt><a name="XMLBooleanGeometryProcessor-processChildNodes"><strong>processChildNodes</strong></a>(self, elementNode)</dt><dd><tt>Process&nbsp;the&nbsp;childNodes&nbsp;of&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
 
-<dl><dt><a name="XMLBooleanGeometryProcessor-processXMLElement"><strong>processXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
+<dl><dt><a name="XMLBooleanGeometryProcessor-processElementNode"><strong>processElementNode</strong></a>(self, elementNode)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -84,6 +86,7 @@ An xml file can be exported from Art of Illusion by going to the "File" menu, th
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-getCarvingFromParser"><strong>getCarvingFromParser</strong></a>(xmlParser)</dt><dd><tt>Get&nbsp;the&nbsp;carving&nbsp;for&nbsp;the&nbsp;parser.</tt></dd></dl>
+ <dl><dt><a name="-processElementNode"><strong>processElementNode</strong></a>(elementNode)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

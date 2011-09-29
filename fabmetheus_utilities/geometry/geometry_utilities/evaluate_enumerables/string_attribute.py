@@ -127,9 +127,9 @@ class StringAttribute:
 		return values
 
 
-globalAccessibleAttributes = 'add append copy delete get getExpansion getIsIn getIsNotIn getLength getMax getMin'.split()
-globalAccessibleAttributes += 'insert keys length remove reverse set values'.split()
-globalGetAccessibleAttributeSet = set(globalAccessibleAttributes)
+globalAccessibleAttributeDictionary = 'add append copy delete get getExpansion getIsIn getIsNotIn getLength getMax getMin'.split()
+globalAccessibleAttributeDictionary += 'insert keys length remove reverse set values'.split()
+globalGetAccessibleAttributeSet = set(globalAccessibleAttributeDictionary)
 globalNativeFunctions = 'capitalize center count decode encode endswith expandtabs find format index isalnum join'.split()
 globalNativeFunctions += 'isalpha isdigit islower isspace istitle isupper ljust lower lstrip partition replace rfind rindex'.split()
 globalNativeFunctions += 'rjust rpartition rsplit rstrip split splitlines startswith strip swapcase title translate upper zfill'.split()

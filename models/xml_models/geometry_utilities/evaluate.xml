@@ -60,11 +60,11 @@
 	<path id='zeropath' y='1' >
 		<vertex x='4' y='6'/>
 		<vertex x='4' y='5'/>
-		<dictionary mathPowVertex='=math.pow(document.getParentElement().getPaths()[0][0].x, document.getParentElement().getPaths()[0][0].y)'/>
-		<dictionary parentParent='=document.getSelf().parent.parent[eight]'/>
-		<dictionary parentPaths='=document.getParentElement().getPaths()'/>
-		<dictionary parentVertex='=document.getParentElement().getVertexes()'/>
-		<dictionary parentVertexZero='=document.getParentElement().getPaths()[0][0]'/>
+		<dictionary mathPowVertex='=math.pow(document.getParentNode().getPaths()[0][0].x, document.getParentNode().getPaths()[0][0].y)'/>
+		<dictionary parentParent='=document.getSelfElement().parentNode.parentNode[eight]'/>
+		<dictionary parentPaths='=document.getParentNode().getPaths()'/>
+		<dictionary parentVertex='=document.getParentNode().getVertexes()'/>
+		<dictionary parentVertexZero='=document.getParentNode().getPaths()[0][0]'/>
 		<dictionary zog='=["zog"]'/>
 	</path>
 	<!--

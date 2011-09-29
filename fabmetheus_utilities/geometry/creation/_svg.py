@@ -20,44 +20,44 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getGeometryOutput(derivation, xmlElement):
+def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
 	if derivation == None:
-		derivation = SVGDerivation(xmlElement)
-	return getGeometryOutputBySVGReader(derivation.svgReader, xmlElement)
+		derivation = SVGDerivation(elementNode)
+	return getGeometryOutputBySVGReader(elementNode, derivation.svgReader)
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	"Get vector3 vertexes from attribute dictionary by arguments."
 	derivation = SVGDerivation()
 	derivation.svgReader.parseSVG('', arguments[0])
-	return getGeometryOutput(derivation, xmlElement)
+	return getGeometryOutput(derivation, elementNode)
 
-def getGeometryOutputBySVGReader(svgReader, xmlElement):
+def getGeometryOutputBySVGReader(elementNode, svgReader):
 	"Get vector3 vertexes from svgReader."
 	geometryOutput = []
 	for rotatedLoopLayer in svgReader.rotatedLoopLayers:
 		for loop in rotatedLoopLayer.loops:
 			vector3Path = euclidean.getVector3Path(loop, rotatedLoopLayer.z)
 			sideLoop = lineation.SideLoop(vector3Path, None, None)
-			sideLoop.rotate(xmlElement)
-			geometryOutput += lineation.getGeometryOutputByManipulation(sideLoop, xmlElement)
+			sideLoop.rotate(elementNode)
+			geometryOutput += lineation.getGeometryOutputByManipulation(elementNode, sideLoop)
 	return geometryOutput
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return SVGDerivation(xmlElement)
+	return SVGDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
+	path.convertElementNode(elementNode, getGeometryOutput(None, elementNode))
 
 
 class SVGDerivation:
 	"Class to hold svg variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
 		self.svgReader = svg_reader.SVGReader()
-		self.svgReader.parseSVGByXMLElement(xmlElement)
+		self.svgReader.parseSVGByElementNode(elementNode)
 
 	def __repr__(self):
 		"Get the string representation of this SVGDerivation."

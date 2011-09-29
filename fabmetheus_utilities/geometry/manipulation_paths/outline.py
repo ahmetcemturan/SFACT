@@ -23,12 +23,12 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 80
 
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get path with outline."
 	if len(loop) < 2:
 		return [loop]
-	isClosed = evaluate.getEvaluatedBoolean(False, prefix + 'closed', xmlElement)
-	radius = lineation.getStrokeRadiusByPrefix(prefix, xmlElement )
+	isClosed = evaluate.getEvaluatedBoolean(False, elementNode, prefix + 'closed')
+	radius = lineation.getStrokeRadiusByPrefix(elementNode, prefix )
 	loopComplex = euclidean.getComplexPath(loop)
 	if isClosed:
 		loopComplexes = intercircle.getAroundsFromLoop(loopComplex, radius)
@@ -36,6 +36,6 @@ def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
 		loopComplexes = intercircle.getAroundsFromPath(loopComplex, radius)
 	return euclidean.getVector3Paths(loopComplexes, loop[0].z)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)

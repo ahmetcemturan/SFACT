@@ -205,13 +205,13 @@ def addWithLeastLength(importRadius, loops, point):
 	if shortestPointIndex != None:
 		shortestLoop.insert( shortestPointIndex, point )
 
-def convertXMLElement(geometryOutput, xmlElement):
+def convertElementNode(elementNode, geometryOutput):
 	'Convert the xml element to a TriangleMesh xml element.'
-	xmlElement.linkObject(TriangleMesh())
-	matrix.getBranchMatrixSetXMLElement(xmlElement)
-	vertex.addGeometryList(geometryOutput['vertex'], xmlElement)
-	face.addGeometryList(geometryOutput['face'], xmlElement)
-	xmlElement.getXMLProcessor().processChildNodes(xmlElement)
+	elementNode.linkObject(TriangleMesh())
+	matrix.getBranchMatrixSetElementNode(elementNode)
+	vertex.addGeometryList(elementNode, geometryOutput['vertex'])
+	face.addGeometryList(elementNode, geometryOutput['face'])
+	elementNode.getXMLProcessor().processChildNodes(elementNode)
 
 def getAddIndexedGrid( grid, vertexes, z ):
 	'Get and add an indexed grid.'
@@ -267,7 +267,7 @@ def getBridgeDirection( belowLoops, layerLoops, layerThickness ):
 		for pointIndex in xrange(len(loop)):
 			previousIndex = ( pointIndex + len(loop) - 1 ) % len(loop)
 			bridgeRotation += getOverhangDirection( belowOutsetLoops, loop[ previousIndex ], loop[pointIndex] )
-	if abs( bridgeRotation ) < 0.7853 * layerThickness:
+	if abs( bridgeRotation ) < 0.75 * layerThickness:
 		return None
 	else:
 		bridgeRotation /= abs( bridgeRotation )
@@ -304,7 +304,7 @@ def getDescendingAreaLoops(allPoints, corners, importRadius):
 	sortLoopsInOrderOfArea(True, loops)
 	pointDictionary = {}
 	for loop in loops:
-		if len(loop) > 2 and getOverlapRatio(loop, pointDictionary) < 0.2:
+		if len(loop) > 2 and getOverlapRatio(loop, pointDictionary) < 0.3:
 			intercircle.directLoop(not euclidean.getIsInFilledRegion(descendingAreaLoops, loop[0]), loop)
 			descendingAreaLoops.append(loop)
 			addLoopToPointTable(loop, pointDictionary)
@@ -388,6 +388,15 @@ def getInsetPoint( loop, tinyRadius ):
 	midpointNormalized = midpoint / abs( midpoint )
 	return point + midpointNormalized * tinyRadius
 
+def getIsPathEntirelyOutsideTriangle(begin, center, end, vector3Path):
+	'Determine if a path is entirely outside another loop.'
+	loop = [begin.dropAxis(), center.dropAxis(), end.dropAxis()]
+	for vector3 in vector3Path:
+		point = vector3.dropAxis()
+		if euclidean.isPointInsideLoop(loop, point):
+			return False
+	return True
+
 def getIsPointCloseInline(close, loop, point, pointIndex):
 	'Insert a point into a loop, at the index at which the loop would be shortest.'
 	afterCenterComplex = loop[pointIndex]
@@ -401,15 +410,6 @@ def getIsPointCloseInline(close, loop, point, pointIndex):
 		return False
 	beforeEndComplex = loop[(pointIndex + len(loop) - 2) % len(loop)]
 	return isInline(point, beforeCenterComplex, beforeEndComplex)
-
-def getIsPathEntirelyOutsideTriangle(begin, center, end, vector3Path):
-	'Determine if a path is entirely outside another loop.'
-	loop = [begin.dropAxis(), center.dropAxis(), end.dropAxis()]
-	for vector3 in vector3Path:
-		point = vector3.dropAxis()
-		if euclidean.isPointInsideLoop(loop, point):
-			return False
-	return True
 
 def getLoopsFromCorrectMesh( edges, faces, vertexes, z ):
 	'Get loops from a carve of a correct mesh.'
@@ -693,9 +693,9 @@ def isPathAdded( edges, faces, loops, remainingEdgeTable, vertexes, z ):
 	loops.append( getPath( edges, pathIndexes, vertexes, z ) )
 	return True
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	evaluate.processArchivable(TriangleMesh, xmlElement)
+	evaluate.processArchivable(TriangleMesh, elementNode)
 
 def setEdgeMaximumMinimum(edge, vertexes):
 	'Set the edge maximum and minimum.'
@@ -824,7 +824,7 @@ class TriangleMesh( group.Group ):
 
 	def getTransformedVertexes(self):
 		'Get all transformed vertexes.'
-		if self.xmlElement == None:
+		if self.elementNode == None:
 			return self.vertexes
 		chainTetragrid = self.getMatrixChainTetragrid()
 		if self.oldChainTetragrid != chainTetragrid:
@@ -854,28 +854,28 @@ class TriangleMesh( group.Group ):
 
 	def liftByMinimumZ(self, minimumZ):
 		'Lift the triangle mesh to the altitude.'
-		altitude = evaluate.getEvaluatedFloat(None, 'altitude', self.xmlElement)
+		altitude = evaluate.getEvaluatedFloat(None, self.elementNode, 'altitude')
 		if altitude == None:
 			return
 		lift = altitude - minimumZ
 		for vertex in self.vertexes:
 			vertex.z += lift
 
-	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
-		'Set the infill in direction of bridge.'
-		self.infillInDirectionOfBridge = infillInDirectionOfBridge
-
-	def setCarveLayerThickness( self, layerThickness ):
-		'Set the layer thickness.'
-		self.layerThickness = layerThickness
-
 	def setCarveImportRadius( self, importRadius ):
 		'Set the import radius.'
 		self.importRadius = importRadius
 
+	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
+		'Set the infill in direction of bridge.'
+		self.infillInDirectionOfBridge = infillInDirectionOfBridge
+
 	def setCarveIsCorrectMesh( self, isCorrectMesh ):
 		'Set the is correct mesh flag.'
 		self.isCorrectMesh = isCorrectMesh
+
+	def setCarveLayerThickness( self, layerThickness ):
+		'Set the layer thickness.'
+		self.layerThickness = layerThickness
 
 	def setEdgesForAllFaces(self):
 		'Set the face edges of all the faces.'

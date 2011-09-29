@@ -20,20 +20,20 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getLocalDictionary( attributeDictionaryKey, xmlElement):
+def getLocalDictionary( attributesKey, elementNode):
 	"Get the local dictionary."
-	xmlProcessor = xmlElement.getXMLProcessor()
+	xmlProcessor = elementNode.getXMLProcessor()
 	if len( xmlProcessor.functions ) < 1:
 		return None
 	return xmlProcessor.functions[-1].localDictionary
 
-def printAttributeDictionaryKey( attributeDictionaryKey, xmlElement):
-	"Print the attributeDictionaryKey."
-	if attributeDictionaryKey.lower() == '_localdictionary':
-		localDictionary = getLocalDictionary( attributeDictionaryKey, xmlElement)
+def printAttributesKey( attributesKey, elementNode):
+	"Print the attributesKey."
+	if attributesKey.lower() == '_localdictionary':
+		localDictionary = getLocalDictionary( attributesKey, elementNode)
 		if localDictionary != None:
 			localDictionaryKeys = localDictionary.keys()
-			attributeValue = xmlElement.attributeDictionary[attributeDictionaryKey]
+			attributeValue = elementNode.attributes[attributesKey]
 			if attributeValue != '':
 				attributeValue = ' - ' + attributeValue
 			print('Local Dictionary Variables' + attributeValue )
@@ -41,23 +41,23 @@ def printAttributeDictionaryKey( attributeDictionaryKey, xmlElement):
 			for localDictionaryKey in localDictionaryKeys:
 				print('%s: %s' % ( localDictionaryKey, localDictionary[ localDictionaryKey ] ) )
 			return
-	value = xmlElement.attributeDictionary[attributeDictionaryKey]
+	value = elementNode.attributes[attributesKey]
 	evaluatedValue = None
 	if value == '':
-		evaluatedValue = evaluate.getEvaluatedExpressionValue( attributeDictionaryKey, xmlElement )
+		evaluatedValue = evaluate.getEvaluatedExpressionValue(elementNode, attributesKey)
 	else:
-		evaluatedValue = evaluate.getEvaluatedExpressionValue(value, xmlElement)
-	print('%s: %s' % ( attributeDictionaryKey, evaluatedValue ) )
+		evaluatedValue = evaluate.getEvaluatedExpressionValue(elementNode, value)
+	print('%s: %s' % ( attributesKey, evaluatedValue ) )
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	if len(xmlElement.text) > 1:
-		print(xmlElement.text)
+	if len(elementNode.getTextContent()) > 1:
+		print(elementNode.getTextContent())
 		return
-	attributeDictionaryKeys = xmlElement.attributeDictionary.keys()
-	if len( attributeDictionaryKeys ) < 1:
+	attributesKeys = elementNode.attributes.keys()
+	if len( attributesKeys ) < 1:
 		print('')
 		return
-	attributeDictionaryKeys.sort()
-	for attributeDictionaryKey in attributeDictionaryKeys:
-		printAttributeDictionaryKey( attributeDictionaryKey, xmlElement)
+	attributesKeys.sort()
+	for attributesKey in attributesKeys:
+		printAttributesKey( attributesKey, elementNode)

@@ -54,9 +54,9 @@
 
 <dl><dt><a name="Matrix-addXML"><strong>addXML</strong></a>(self, depth, output)</dt><dd><tt>Add&nbsp;xml&nbsp;for&nbsp;this&nbsp;object.</tt></dd></dl>
 
-<dl><dt><a name="Matrix-getAttributeDictionary"><strong>getAttributeDictionary</strong></a>(self, prefix<font color="#909090">=''</font>)</dt><dd><tt>Get&nbsp;the&nbsp;attributeDictionary&nbsp;from&nbsp;row&nbsp;column&nbsp;attribute&nbsp;strings,&nbsp;counting&nbsp;from&nbsp;one.</tt></dd></dl>
+<dl><dt><a name="Matrix-getAttributes"><strong>getAttributes</strong></a>(self, prefix<font color="#909090">=''</font>)</dt><dd><tt>Get&nbsp;the&nbsp;attributes&nbsp;from&nbsp;row&nbsp;column&nbsp;attribute&nbsp;strings,&nbsp;counting&nbsp;from&nbsp;one.</tt></dd></dl>
 
-<dl><dt><a name="Matrix-getFromXMLElement"><strong>getFromXMLElement</strong></a>(self, prefix, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;values&nbsp;from&nbsp;row&nbsp;column&nbsp;attribute&nbsp;strings,&nbsp;counting&nbsp;from&nbsp;one.</tt></dd></dl>
+<dl><dt><a name="Matrix-getFromElementNode"><strong>getFromElementNode</strong></a>(self, elementNode, prefix)</dt><dd><tt>Get&nbsp;the&nbsp;values&nbsp;from&nbsp;row&nbsp;column&nbsp;attribute&nbsp;strings,&nbsp;counting&nbsp;from&nbsp;one.</tt></dd></dl>
 
 <dl><dt><a name="Matrix-getOtherTimesSelf"><strong>getOtherTimesSelf</strong></a>(self, otherTetragrid)</dt><dd><tt>Get&nbsp;this&nbsp;matrix&nbsp;reverse&nbsp;multiplied&nbsp;by&nbsp;the&nbsp;other&nbsp;matrix.</tt></dd></dl>
 
@@ -70,9 +70,9 @@
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-addVertexes"><strong>addVertexes</strong></a>(geometryOutput, vertexes)</dt><dd><tt>Add&nbsp;the&nbsp;vertexes.</tt></dd></dl>
- <dl><dt><a name="-getBranchMatrix"><strong>getBranchMatrix</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;matrix&nbsp;starting&nbsp;from&nbsp;the&nbsp;object&nbsp;if&nbsp;it&nbsp;exists,&nbsp;otherwise&nbsp;get&nbsp;a&nbsp;matrix&nbsp;starting&nbsp;from&nbsp;stratch.</tt></dd></dl>
- <dl><dt><a name="-getBranchMatrixSetXMLElement"><strong>getBranchMatrixSetXMLElement</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;matrix&nbsp;starting&nbsp;from&nbsp;the&nbsp;object&nbsp;if&nbsp;it&nbsp;exists,&nbsp;otherwise&nbsp;get&nbsp;a&nbsp;matrix&nbsp;starting&nbsp;from&nbsp;stratch.</tt></dd></dl>
- <dl><dt><a name="-getCumulativeVector3Remove"><strong>getCumulativeVector3Remove</strong></a>(defaultVector3, prefix, xmlElement)</dt><dd><tt>Get&nbsp;cumulative&nbsp;vector3&nbsp;and&nbsp;delete&nbsp;the&nbsp;prefixed&nbsp;attributes.</tt></dd></dl>
+ <dl><dt><a name="-getBranchMatrix"><strong>getBranchMatrix</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;matrix&nbsp;starting&nbsp;from&nbsp;the&nbsp;object&nbsp;if&nbsp;it&nbsp;exists,&nbsp;otherwise&nbsp;get&nbsp;a&nbsp;matrix&nbsp;starting&nbsp;from&nbsp;stratch.</tt></dd></dl>
+ <dl><dt><a name="-getBranchMatrixSetElementNode"><strong>getBranchMatrixSetElementNode</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;matrix&nbsp;starting&nbsp;from&nbsp;the&nbsp;object&nbsp;if&nbsp;it&nbsp;exists,&nbsp;otherwise&nbsp;get&nbsp;a&nbsp;matrix&nbsp;starting&nbsp;from&nbsp;stratch.</tt></dd></dl>
+ <dl><dt><a name="-getCumulativeVector3Remove"><strong>getCumulativeVector3Remove</strong></a>(defaultVector3, elementNode, prefix)</dt><dd><tt>Get&nbsp;cumulative&nbsp;vector3&nbsp;and&nbsp;delete&nbsp;the&nbsp;prefixed&nbsp;attributes.</tt></dd></dl>
  <dl><dt><a name="-getDiagonalSwitchedTetragrid"><strong>getDiagonalSwitchedTetragrid</strong></a>(angleDegrees, diagonals)</dt><dd><tt>Get&nbsp;the&nbsp;diagonals&nbsp;and&nbsp;switched&nbsp;matrix&nbsp;by&nbsp;degrees.</tt></dd></dl>
  <dl><dt><a name="-getDiagonalSwitchedTetragridByPolar"><strong>getDiagonalSwitchedTetragridByPolar</strong></a>(diagonals, unitPolar)</dt><dd><tt>Get&nbsp;the&nbsp;diagonals&nbsp;and&nbsp;switched&nbsp;matrix&nbsp;by&nbsp;unitPolar.</tt></dd></dl>
  <dl><dt><a name="-getDiagonalSwitchedTetragridByRadians"><strong>getDiagonalSwitchedTetragridByRadians</strong></a>(angleRadians, diagonals)</dt><dd><tt>Get&nbsp;the&nbsp;diagonals&nbsp;and&nbsp;switched&nbsp;matrix&nbsp;by&nbsp;radians.</tt></dd></dl>
@@ -81,27 +81,27 @@
  <dl><dt><a name="-getKeyM"><strong>getKeyM</strong></a>(row, column, prefix<font color="#909090">=''</font>)</dt><dd><tt>Get&nbsp;the&nbsp;m&nbsp;format&nbsp;key&nbsp;string&nbsp;from&nbsp;row&nbsp;&amp;&nbsp;column,&nbsp;counting&nbsp;from&nbsp;one.</tt></dd></dl>
  <dl><dt><a name="-getKeysA"><strong>getKeysA</strong></a>(prefix<font color="#909090">=''</font>)</dt><dd><tt>Get&nbsp;the&nbsp;matrix&nbsp;keys,&nbsp;counting&nbsp;from&nbsp;zero.</tt></dd></dl>
  <dl><dt><a name="-getKeysM"><strong>getKeysM</strong></a>(prefix<font color="#909090">=''</font>)</dt><dd><tt>Get&nbsp;the&nbsp;matrix&nbsp;keys,&nbsp;counting&nbsp;from&nbsp;one.</tt></dd></dl>
- <dl><dt><a name="-getRemovedFloat"><strong>getRemovedFloat</strong></a>(defaultFloat, key, prefix, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;float&nbsp;by&nbsp;the&nbsp;key&nbsp;and&nbsp;the&nbsp;prefix.</tt></dd></dl>
- <dl><dt><a name="-getRemovedFloatByKeys"><strong>getRemovedFloatByKeys</strong></a>(defaultFloat, keys, prefix, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;float&nbsp;by&nbsp;the&nbsp;keys&nbsp;and&nbsp;the&nbsp;prefix.</tt></dd></dl>
- <dl><dt><a name="-getRotateAroundAxisTetragrid"><strong>getRotateAroundAxisTetragrid</strong></a>(prefix, xmlElement)</dt><dd><tt>Get&nbsp;rotate&nbsp;around&nbsp;axis&nbsp;tetragrid&nbsp;and&nbsp;delete&nbsp;the&nbsp;axis&nbsp;and&nbsp;angle&nbsp;attributes.</tt></dd></dl>
- <dl><dt><a name="-getRotateTetragrid"><strong>getRotateTetragrid</strong></a>(prefix, xmlElement)</dt><dd><tt>Get&nbsp;rotate&nbsp;tetragrid&nbsp;and&nbsp;delete&nbsp;the&nbsp;rotate&nbsp;attributes.</tt></dd></dl>
- <dl><dt><a name="-getScaleTetragrid"><strong>getScaleTetragrid</strong></a>(prefix, xmlElement)</dt><dd><tt>Get&nbsp;scale&nbsp;matrix&nbsp;and&nbsp;delete&nbsp;the&nbsp;scale&nbsp;attributes.</tt></dd></dl>
- <dl><dt><a name="-getTetragridA"><strong>getTetragridA</strong></a>(prefix, tetragrid, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;xmlElement&nbsp;letter&nbsp;a&nbsp;values.</tt></dd></dl>
- <dl><dt><a name="-getTetragridC"><strong>getTetragridC</strong></a>(prefix, tetragrid, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;matrix&nbsp;Tetragrid&nbsp;from&nbsp;the&nbsp;xmlElement&nbsp;letter&nbsp;c&nbsp;values.</tt></dd></dl>
+ <dl><dt><a name="-getRemovedFloat"><strong>getRemovedFloat</strong></a>(defaultFloat, elementNode, key, prefix)</dt><dd><tt>Get&nbsp;the&nbsp;float&nbsp;by&nbsp;the&nbsp;key&nbsp;and&nbsp;the&nbsp;prefix.</tt></dd></dl>
+ <dl><dt><a name="-getRemovedFloatByKeys"><strong>getRemovedFloatByKeys</strong></a>(defaultFloat, elementNode, keys, prefix)</dt><dd><tt>Get&nbsp;the&nbsp;float&nbsp;by&nbsp;the&nbsp;keys&nbsp;and&nbsp;the&nbsp;prefix.</tt></dd></dl>
+ <dl><dt><a name="-getRotateAroundAxisTetragrid"><strong>getRotateAroundAxisTetragrid</strong></a>(elementNode, prefix)</dt><dd><tt>Get&nbsp;rotate&nbsp;around&nbsp;axis&nbsp;tetragrid&nbsp;and&nbsp;delete&nbsp;the&nbsp;axis&nbsp;and&nbsp;angle&nbsp;attributes.</tt></dd></dl>
+ <dl><dt><a name="-getRotateTetragrid"><strong>getRotateTetragrid</strong></a>(elementNode, prefix)</dt><dd><tt>Get&nbsp;rotate&nbsp;tetragrid&nbsp;and&nbsp;delete&nbsp;the&nbsp;rotate&nbsp;attributes.</tt></dd></dl>
+ <dl><dt><a name="-getScaleTetragrid"><strong>getScaleTetragrid</strong></a>(elementNode, prefix)</dt><dd><tt>Get&nbsp;scale&nbsp;matrix&nbsp;and&nbsp;delete&nbsp;the&nbsp;scale&nbsp;attributes.</tt></dd></dl>
+ <dl><dt><a name="-getTetragridA"><strong>getTetragridA</strong></a>(elementNode, prefix, tetragrid)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;elementNode&nbsp;letter&nbsp;a&nbsp;values.</tt></dd></dl>
+ <dl><dt><a name="-getTetragridC"><strong>getTetragridC</strong></a>(elementNode, prefix, tetragrid)</dt><dd><tt>Get&nbsp;the&nbsp;matrix&nbsp;Tetragrid&nbsp;from&nbsp;the&nbsp;elementNode&nbsp;letter&nbsp;c&nbsp;values.</tt></dd></dl>
  <dl><dt><a name="-getTetragridCopy"><strong>getTetragridCopy</strong></a>(tetragrid)</dt><dd><tt>Get&nbsp;tetragrid&nbsp;copy.</tt></dd></dl>
- <dl><dt><a name="-getTetragridM"><strong>getTetragridM</strong></a>(prefix, tetragrid, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;xmlElement&nbsp;letter&nbsp;m&nbsp;values.</tt></dd></dl>
- <dl><dt><a name="-getTetragridMatrix"><strong>getTetragridMatrix</strong></a>(prefix, tetragrid, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;xmlElement&nbsp;matrix&nbsp;value.</tt></dd></dl>
- <dl><dt><a name="-getTetragridR"><strong>getTetragridR</strong></a>(prefix, tetragrid, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;xmlElement&nbsp;letter&nbsp;r&nbsp;values.</tt></dd></dl>
+ <dl><dt><a name="-getTetragridM"><strong>getTetragridM</strong></a>(elementNode, prefix, tetragrid)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;elementNode&nbsp;letter&nbsp;m&nbsp;values.</tt></dd></dl>
+ <dl><dt><a name="-getTetragridMatrix"><strong>getTetragridMatrix</strong></a>(elementNode, prefix, tetragrid)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;elementNode&nbsp;matrix&nbsp;value.</tt></dd></dl>
+ <dl><dt><a name="-getTetragridR"><strong>getTetragridR</strong></a>(elementNode, prefix, tetragrid)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;elementNode&nbsp;letter&nbsp;r&nbsp;values.</tt></dd></dl>
  <dl><dt><a name="-getTetragridTimesOther"><strong>getTetragridTimesOther</strong></a>(firstTetragrid, otherTetragrid)</dt><dd><tt>Get&nbsp;this&nbsp;matrix&nbsp;multiplied&nbsp;by&nbsp;the&nbsp;other&nbsp;matrix.</tt></dd></dl>
- <dl><dt><a name="-getTransformTetragrid"><strong>getTransformTetragrid</strong></a>(prefix, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;xmlElement.</tt></dd></dl>
+ <dl><dt><a name="-getTransformTetragrid"><strong>getTransformTetragrid</strong></a>(elementNode, prefix)</dt><dd><tt>Get&nbsp;the&nbsp;tetragrid&nbsp;from&nbsp;the&nbsp;elementNode.</tt></dd></dl>
  <dl><dt><a name="-getTransformedByList"><strong>getTransformedByList</strong></a>(floatList, point)</dt><dd><tt>Get&nbsp;the&nbsp;point&nbsp;transformed&nbsp;by&nbsp;the&nbsp;array.</tt></dd></dl>
  <dl><dt><a name="-getTransformedVector3"><strong>getTransformedVector3</strong></a>(tetragrid, vector3)</dt><dd><tt>Get&nbsp;the&nbsp;vector3&nbsp;multiplied&nbsp;by&nbsp;a&nbsp;matrix.</tt></dd></dl>
  <dl><dt><a name="-getTransformedVector3s"><strong>getTransformedVector3s</strong></a>(tetragrid, vector3s)</dt><dd><tt>Get&nbsp;the&nbsp;vector3s&nbsp;multiplied&nbsp;by&nbsp;a&nbsp;matrix.</tt></dd></dl>
- <dl><dt><a name="-getTranslateTetragrid"><strong>getTranslateTetragrid</strong></a>(prefix, xmlElement)</dt><dd><tt>Get&nbsp;translate&nbsp;matrix&nbsp;and&nbsp;delete&nbsp;the&nbsp;translate&nbsp;attributes.</tt></dd></dl>
+ <dl><dt><a name="-getTranslateTetragrid"><strong>getTranslateTetragrid</strong></a>(elementNode, prefix)</dt><dd><tt>Get&nbsp;translate&nbsp;matrix&nbsp;and&nbsp;delete&nbsp;the&nbsp;translate&nbsp;attributes.</tt></dd></dl>
  <dl><dt><a name="-getTranslateTetragridByTranslation"><strong>getTranslateTetragridByTranslation</strong></a>(translation)</dt><dd><tt>Get&nbsp;translate&nbsp;tetragrid&nbsp;by&nbsp;translation.</tt></dd></dl>
  <dl><dt><a name="-getVertexes"><strong>getVertexes</strong></a>(geometryOutput)</dt><dd><tt>Get&nbsp;the&nbsp;vertexes.</tt></dd></dl>
- <dl><dt><a name="-setAttributeDictionaryToMultipliedTetragrid"><strong>setAttributeDictionaryToMultipliedTetragrid</strong></a>(tetragrid, xmlElement)</dt><dd><tt>Set&nbsp;the&nbsp;element&nbsp;attribute&nbsp;dictionary&nbsp;and&nbsp;element&nbsp;matrix&nbsp;to&nbsp;the&nbsp;matrix&nbsp;times&nbsp;the&nbsp;tetragrid.</tt></dd></dl>
- <dl><dt><a name="-setXMLElementDictionaryMatrix"><strong>setXMLElementDictionaryMatrix</strong></a>(matrix4X4, xmlElement)</dt><dd><tt>Set&nbsp;the&nbsp;element&nbsp;attribute&nbsp;dictionary&nbsp;or&nbsp;element&nbsp;matrix&nbsp;to&nbsp;the&nbsp;matrix.</tt></dd></dl>
+ <dl><dt><a name="-setAttributesToMultipliedTetragrid"><strong>setAttributesToMultipliedTetragrid</strong></a>(elementNode, tetragrid)</dt><dd><tt>Set&nbsp;the&nbsp;element&nbsp;attribute&nbsp;dictionary&nbsp;and&nbsp;element&nbsp;matrix&nbsp;to&nbsp;the&nbsp;matrix&nbsp;times&nbsp;the&nbsp;tetragrid.</tt></dd></dl>
+ <dl><dt><a name="-setElementNodeDictionaryMatrix"><strong>setElementNodeDictionaryMatrix</strong></a>(elementNode, matrix4X4)</dt><dd><tt>Set&nbsp;the&nbsp;element&nbsp;attribute&nbsp;dictionary&nbsp;or&nbsp;element&nbsp;matrix&nbsp;to&nbsp;the&nbsp;matrix.</tt></dd></dl>
  <dl><dt><a name="-transformVector3ByMatrix"><strong>transformVector3ByMatrix</strong></a>(tetragrid, vector3)</dt><dd><tt>Transform&nbsp;the&nbsp;vector3&nbsp;by&nbsp;a&nbsp;matrix.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

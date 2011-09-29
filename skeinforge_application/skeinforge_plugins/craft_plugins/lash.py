@@ -143,7 +143,7 @@ class LashSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> lash </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('lash')
 				return
 			self.distanceFeedRate.addLine(line)
 

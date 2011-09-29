@@ -26,9 +26,14 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getNewDerivation(xmlElement):
+def appendAttributes(fromElementNode, toElementNode):
+	'Append the attributes from the child nodes of fromElementNode to the attributes of toElementNode.'
+	for childNode in fromElementNode.childNodes:
+		toElementNode.attributes.update(evaluate.removeIdentifiersFromDictionary(childNode.attributes.copy()))
+
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return ImportDerivation(xmlElement)
+	return ImportDerivation(elementNode)
 
 def getXMLFromCarvingFileName(fileName):
 	'Get xml text from xml text.'
@@ -39,21 +44,21 @@ def getXMLFromCarvingFileName(fileName):
 	carving.addXML(0, output)
 	return xml_simple_writer.getEndGeometryXMLString(output)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	processXMLElementByDerivation(None, xmlElement)
+	processElementNodeByDerivation(None, elementNode)
 
-def processXMLElementByDerivation(derivation, xmlElement):
+def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
 	if derivation == None:
-		derivation = ImportDerivation(xmlElement)
+		derivation = ImportDerivation(elementNode)
 	if derivation.fileName == None:
 		return
-	parserFileName = xmlElement.getParser().fileName
+	parserFileName = elementNode.getOwnerDocument().fileName
 	absoluteFileName = archive.getAbsoluteFolderPath(parserFileName, derivation.fileName)
 	if 'models/' not in absoluteFileName:
 		print('Warning, models/ was not in the absolute file path, so for security nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		print('For which the absolute file path is:')
 		print(absoluteFileName)
 		print('The import tool can only read a file which has models/ in the file path.')
@@ -67,36 +72,31 @@ def processXMLElementByDerivation(derivation, xmlElement):
 	print('The import tool is opening the file:')
 	print(absoluteFileName)
 	if xmlText == '':
-		print('The file %s could not be found by processXMLElement in import.' % derivation.fileName)
+		print('The file %s could not be found by processElementNode in import.' % derivation.fileName)
 		return
 	if derivation.importName == None:
-		xmlElement.importName = archive.getUntilDot(derivation.fileName)
+		elementNode.attributes['_importName'] = archive.getUntilDot(derivation.fileName)
 		if derivation.basename:
-			xmlElement.importName = os.path.basename(xmlElement.importName)
-		xmlElement.attributeDictionary['_importName'] = xmlElement.importName
-	else:
-		xmlElement.importName = derivation.importName
-	importXMLElement = xml_simple_reader.XMLElement()
-	xml_simple_reader.XMLSimpleReader(parserFileName, importXMLElement, xmlText)
-	for childNode in importXMLElement.childNodes:
-		childNode.copyXMLChildNodes('', xmlElement)
-		evaluate.removeIdentifiersFromDictionary(childNode.attributeDictionary)
-		xmlElement.attributeDictionary.update(childNode.attributeDictionary)
-		if derivation.overwriteRoot:
-			xmlElement.getRoot().attributeDictionary.update(childNode.attributeDictionary)
-	xmlElement.localName = 'group'
-	evaluate.processArchivable(group.Group, xmlElement)
+			elementNode.attributes['_importName'] = os.path.basename(elementNode.attributes['_importName'])
+	xml_simple_reader.createAppendByText(elementNode, xmlText)
+	if derivation.appendDocumentElement:
+		appendAttributes(elementNode, elementNode.getDocumentElement())
+	if derivation.appendElement:
+		appendAttributes(elementNode, elementNode)
+	elementNode.localName = 'group'
+	evaluate.processArchivable(group.Group, elementNode)
 
 
 class ImportDerivation:
 	"Class to hold import variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.basename = evaluate.getEvaluatedBoolean(True, 'basename', xmlElement)
-		self.fileName = evaluate.getEvaluatedString('', 'file', xmlElement)
-		self.importName = evaluate.getEvaluatedString(None, '_importName', xmlElement)
-		self.overwriteRoot = evaluate.getEvaluatedBoolean(False, 'overwriteRoot', xmlElement)
-		self.xmlElement = xmlElement
+		self.appendDocumentElement = evaluate.getEvaluatedBoolean(False, elementNode, 'appendDocumentElement')
+		self.appendElement = evaluate.getEvaluatedBoolean(False, elementNode, 'appendElement')
+		self.basename = evaluate.getEvaluatedBoolean(True, elementNode, 'basename')
+		self.elementNode = elementNode
+		self.fileName = evaluate.getEvaluatedString('', elementNode, 'file')
+		self.importName = evaluate.getEvaluatedString(None, elementNode, '_importName')
 
 	def __repr__(self):
 		"Get the string representation of this ImportDerivation."

@@ -57,7 +57,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -244,37 +244,37 @@ class TowerSkein:
 			self.oldLayerIndex = layerIndex
 			threadLayer = self.threadLayers[layerIndex]
 			self.distanceFeedRate.addLines( threadLayer.beforeExtrusionLines )
-		removedIsland = self.getTransferClosestSurroundingLoopLines( self.oldOrderedLocation, islands )
+		removedIsland = self.getTransferClosestNestedRingLines( self.oldOrderedLocation, islands )
 		if threadLayer != None:
 			self.distanceFeedRate.addLines( threadLayer.afterExtrusionLines )
 		return removedIsland
 
-	def getTransferClosestSurroundingLoopLines( self, oldOrderedLocation, remainingNestedRings ):
-		"Get and transfer the closest remaining surrounding loop."
+	def getTransferClosestNestedRingLines( self, oldOrderedLocation, remainingNestedRings ):
+		"Get and transfer the closest remaining nested ring."
 		if len( remainingNestedRings ) > 0:
 			oldOrderedLocation.z = remainingNestedRings[0].z
 		closestDistance = 999999999987654321.0
-		closestSurroundingLoop = None
-		for remainingSurroundingLoop in remainingNestedRings:
-			distance = euclidean.getNearestDistanceIndex( oldOrderedLocation.dropAxis(), remainingSurroundingLoop.boundary ).distance
+		closestNestedRing = None
+		for remainingNestedRing in remainingNestedRings:
+			distance = euclidean.getNearestDistanceIndex(oldOrderedLocation.dropAxis(), remainingNestedRing.boundary).distance
 			if distance < closestDistance:
 				closestDistance = distance
-				closestSurroundingLoop = remainingSurroundingLoop
-		remainingNestedRings.remove( closestSurroundingLoop )
+				closestNestedRing = remainingNestedRing
+		remainingNestedRings.remove(closestNestedRing)
 		hasTravelledHighRoad = False
-		for line in closestSurroundingLoop.lines:
+		for line in closestNestedRing.lines:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
 			if firstWord == 'G1':
 				location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 				if not hasTravelledHighRoad:
 					hasTravelledHighRoad = True
-					self.addHighThread( location )
+					self.addHighThread(location)
 				if location.z > self.highestZ:
 					self.highestZ = location.z
 				self.oldLocation = location
 			self.distanceFeedRate.addLine(line)
-		return closestSurroundingLoop
+		return closestNestedRing
 
 	def isInsideRemovedOutsideCone( self, island, removedBoundingLoop, untilLayerIndex ):
 		"Determine if the island is entirely inside the removed bounding loop and outside the collision cone of the remaining islands."
@@ -311,7 +311,7 @@ class TowerSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> tower </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('tower')
 			elif firstWord == '(<layer>':
 				return
 			elif firstWord == '(<layerThickness>':

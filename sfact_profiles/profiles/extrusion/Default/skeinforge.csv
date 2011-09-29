@@ -1,7 +1,7 @@
 Format is tab separated skeinforge settings.
 _Name                          	Value
-WindowPosition	699+35
-Open File for Skeinforge	C:/Users/Ahmet/STL/_x3Screw Holder Bottom.stl
+WindowPosition	715+17
+Open File for Skeinforge	C:/Users/Ahmet/STL/Calibration/ult_2.STL
 analyze	False
 craft	True
 help	False

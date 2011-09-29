@@ -251,7 +251,7 @@ class SkirtSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addTagBracketedLine('procedureName', 'skirt')
+				self.distanceFeedRate.addTagBracketedProcedure('skirt')
 				return
 			elif firstWord == '(<objectNextLayersTemperature>':
 				self.oldTemperatureInput = float(splitLine[1])

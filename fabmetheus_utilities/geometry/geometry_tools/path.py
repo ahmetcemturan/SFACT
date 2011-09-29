@@ -25,13 +25,7 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def convertXMLElementByPath(geometryOutput, xmlElement):
-	'Convert the xml element to a path xml element.'
-	createLinkPath(xmlElement)
-	xmlElement.xmlObject.vertexes = geometryOutput
-	vertex.addGeometryList(geometryOutput, xmlElement)
-
-def convertXMLElement(geometryOutput, xmlElement):
+def convertElementNode(elementNode, geometryOutput):
 	'Convert the xml element by geometryOutput.'
 	if geometryOutput == None:
 		return
@@ -44,28 +38,34 @@ def convertXMLElement(geometryOutput, xmlElement):
 	firstElement = geometryOutput[0]
 	if firstElement.__class__ == list:
 		if len(firstElement) > 1:
-			convertXMLElementRenameByPaths(geometryOutput, xmlElement)
+			convertElementNodeRenameByPaths(elementNode, geometryOutput)
 		else:
-			convertXMLElementByPath(firstElement, xmlElement)
+			convertElementNodeByPath(elementNode, firstElement)
 	else:
-		convertXMLElementByPath(geometryOutput, xmlElement)
+		convertElementNodeByPath(elementNode, geometryOutput)
 
-def convertXMLElementRenameByPaths(geometryOutput, xmlElement):
+def convertElementNodeByPath(elementNode, geometryOutput):
+	'Convert the xml element to a path xml element.'
+	createLinkPath(elementNode)
+	elementNode.xmlObject.vertexes = geometryOutput
+	vertex.addGeometryList(elementNode, geometryOutput)
+
+def convertElementNodeRenameByPaths(elementNode, geometryOutput):
 	'Convert the xml element to a path xml element and add paths.'
-	createLinkPath(xmlElement)
+	createLinkPath(elementNode)
 	for geometryOutputChild in geometryOutput:
-		pathElement = xml_simple_reader.XMLElement()
-		pathElement.setParentAddToChildNodes(xmlElement)
-		convertXMLElementByPath(geometryOutputChild, pathElement)
+		pathElement = xml_simple_reader.ElementNode()
+		pathElement.setParentAddToChildNodes(elementNode)
+		convertElementNodeByPath(pathElement, geometryOutputChild)
 
-def createLinkPath(xmlElement):
+def createLinkPath(elementNode):
 	'Create and link a path object.'
-	xmlElement.localName = 'path'
-	xmlElement.linkObject(Path())
+	elementNode.localName = 'path'
+	elementNode.linkObject(Path())
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	evaluate.processArchivable(Path, xmlElement)
+	evaluate.processArchivable(Path, elementNode)
 
 
 class Path(dictionary.Dictionary):
@@ -90,9 +90,9 @@ class Path(dictionary.Dictionary):
 
 	def getFabricationText(self, addLayerTemplate):
 		'Get fabrication text.'
-		carving = SVGFabricationCarving(addLayerTemplate, self.xmlElement)
-		carving.setCarveLayerThickness(setting.getSheetThickness(self.xmlElement))
-		carving.processSVGElement(self.xmlElement.getRoot().parser.fileName)
+		carving = SVGFabricationCarving(addLayerTemplate, self.elementNode)
+		carving.setCarveLayerThickness(setting.getSheetThickness(self.elementNode))
+		carving.processSVGElement(self.elementNode.getOwnerDocument().fileName)
 		return str(carving)
 
 	def getMatrix4X4(self):
@@ -101,7 +101,7 @@ class Path(dictionary.Dictionary):
 
 	def getMatrixChainTetragrid(self):
 		'Get the matrix chain tetragrid.'
-		return matrix.getTetragridTimesOther(self.xmlElement.parentNode.xmlObject.getMatrixChainTetragrid(), self.matrix4X4.tetragrid)
+		return matrix.getTetragridTimesOther(self.elementNode.parentNode.xmlObject.getMatrixChainTetragrid(), self.matrix4X4.tetragrid)
 
 	def getPaths(self):
 		'Get all paths.'
@@ -112,7 +112,7 @@ class Path(dictionary.Dictionary):
 
 	def getTransformedPaths(self):
 		'Get all transformed paths.'
-		if self.xmlElement == None:
+		if self.elementNode == None:
 			return dictionary.getAllPaths([self.vertexes], self)
 		chainTetragrid = self.getMatrixChainTetragrid()
 		if self.oldChainTetragrid != chainTetragrid:
@@ -127,12 +127,12 @@ class Path(dictionary.Dictionary):
 
 class SVGFabricationCarving:
 	'An svg carving.'
-	def __init__(self, addLayerTemplate, xmlElement):
+	def __init__(self, addLayerTemplate, elementNode):
 		'Add empty lists.'
 		self.addLayerTemplate = addLayerTemplate
+		self.elementNode = elementNode
 		self.layerThickness = 1.0
 		self.rotatedLoopLayers = []
-		self.xmlElement = xmlElement
 
 	def __repr__(self):
 		'Get the string representation of this carving.'
@@ -164,7 +164,7 @@ class SVGFabricationCarving:
 
 	def getFabmetheusXML(self):
 		'Return the fabmetheus XML.'
-		return self.xmlElement.getParser().getOriginalRoot()
+		return self.elementNode.getOwnerDocument().getOriginalRoot()
 
 	def getInterpretationSuffix(self):
 		'Return the suffix for a carving.'
@@ -173,7 +173,7 @@ class SVGFabricationCarving:
 	def processSVGElement(self, fileName):
 		'Parse SVG element and store the layers.'
 		self.fileName = fileName
-		paths = self.xmlElement.xmlObject.getPaths()
+		paths = self.elementNode.xmlObject.getPaths()
 		oldZ = None
 		self.rotatedLoopLayers = []
 		rotatedLoopLayer = None
@@ -191,18 +191,18 @@ class SVGFabricationCarving:
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, 987654321.0)
 		svg_writer.setSVGCarvingCorners(self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.rotatedLoopLayers)
 
-	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
-		'Set the infill in direction of bridge.'
-		pass
-
-	def setCarveLayerThickness( self, layerThickness ):
-		'Set the layer thickness.'
-		self.layerThickness = layerThickness
-
 	def setCarveImportRadius( self, importRadius ):
 		'Set the import radius.'
+		pass
+
+	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
+		'Set the infill in direction of bridge.'
 		pass
 
 	def setCarveIsCorrectMesh( self, isCorrectMesh ):
 		'Set the is correct mesh flag.'
 		pass
+
+	def setCarveLayerThickness( self, layerThickness ):
+		'Set the layer thickness.'
+		self.layerThickness = layerThickness

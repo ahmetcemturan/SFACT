@@ -223,7 +223,7 @@ class BooleanSolid( group.Group ):
 
 	def getTransformedPaths(self):
 		'Get all transformed paths.'
-		importRadius = setting.getImportRadius(self.xmlElement)
+		importRadius = setting.getImportRadius(self.elementNode)
 		loopsFromObjectLoopsList = self.getLoopsFromObjectLoopsList(importRadius, self.getComplexTransformedPathLists())
 		return euclidean.getVector3Paths(loopsFromObjectLoopsList)
 

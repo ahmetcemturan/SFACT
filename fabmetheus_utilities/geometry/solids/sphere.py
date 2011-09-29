@@ -22,10 +22,10 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def addSphere(faces, radius, vertexes, xmlElement):
+def addSphere(elementNode, faces, radius, vertexes):
 	'Add sphere by radius.'
 	bottom = -radius.z
-	sides = evaluate.getSidesMinimumThreeBasedOnPrecision(max(radius.x, radius.y, radius.z), xmlElement )
+	sides = evaluate.getSidesMinimumThreeBasedOnPrecision(elementNode, max(radius.x, radius.y, radius.z))
 	sphereSlices = max(sides / 2, 2)
 	equator = euclidean.getComplexPolygonByComplexRadius(complex(radius.x, radius.y), sides)
 	polygons = [triangle_mesh.getAddIndexedLoop([complex()], vertexes, bottom)]
@@ -39,35 +39,35 @@ def addSphere(faces, radius, vertexes, xmlElement):
 	polygons.append(triangle_mesh.getAddIndexedLoop([complex()], vertexes, radius.z))
 	triangle_mesh.addPillarByLoops(faces, polygons)
 
-def getGeometryOutput(radius, xmlElement):
+def getGeometryOutput(elementNode, radius):
 	'Get triangle mesh from attribute dictionary.'
 	faces = []
 	vertexes = []
-	addSphere(faces, radius, vertexes, xmlElement)
+	addSphere(elementNode, faces, radius, vertexes)
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	evaluate.processArchivable(Sphere, xmlElement)
+	evaluate.processArchivable(Sphere, elementNode)
 
 
 class Sphere(cube.Cube):
 	'A sphere object.'
 	def createShape(self):
 		'Create the shape.'
-		addSphere(self.faces, self.radius, self.vertexes, self.xmlElement)
+		addSphere(self.elementNode, self.faces, self.radius, self.vertexes)
 
-	def setToXMLElement(self, xmlElement):
-		'Set to xmlElement.'
-		attributeDictionary = xmlElement.attributeDictionary
-		self.radius = evaluate.getVector3ByPrefixes( ['demisize', 'radius'], Vector3(1.0, 1.0, 1.0), xmlElement )
-		self.radius = evaluate.getVector3ByMultiplierPrefixes( 2.0, ['diameter', 'size'], self.radius, xmlElement )
-		self.xmlElement = xmlElement
-		if 'radius' in attributeDictionary:
-			del attributeDictionary['radius']
-		attributeDictionary['radius.x'] = self.radius.x
-		attributeDictionary['radius.y'] = self.radius.y
-		attributeDictionary['radius.z'] = self.radius.z
+	def setToElementNode(self, elementNode):
+		'Set to elementNode.'
+		attributes = elementNode.attributes
+		self.elementNode = elementNode
+		self.radius = evaluate.getVector3ByPrefixes( elementNode, ['demisize', 'radius'], Vector3(1.0, 1.0, 1.0) )
+		self.radius = evaluate.getVector3ByMultiplierPrefixes( elementNode, 2.0, ['diameter', 'size'], self.radius )
+		if 'radius' in attributes:
+			del attributes['radius']
+		attributes['radius.x'] = self.radius.x
+		attributes['radius.y'] = self.radius.y
+		attributes['radius.z'] = self.radius.z
 		self.createShape()
 		self.liftByMinimumZ(-self.radius.z)
-		solid.processArchiveRemoveSolid(self.getGeometryOutput(), xmlElement)
+		solid.processArchiveRemoveSolid(elementNode, self.getGeometryOutput())

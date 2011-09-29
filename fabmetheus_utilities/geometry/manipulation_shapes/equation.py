@@ -26,12 +26,27 @@ def equate(point, returnValue):
 	"Get equation for rectangular."
 	point.setToVector3(evaluate.getVector3ByDictionaryListValue(returnValue, point))
 
-def equatePoints(points, prefix, revolutions, xmlElement):
+def equatePoints(elementNode, points, prefix, revolutions):
 	"Equate the points."
-	equateVertexesByFunction(equate, points, prefix, revolutions, xmlElement)
-	equateVertexesByFunction(equateX, points, prefix, revolutions, xmlElement)
-	equateVertexesByFunction(equateY, points, prefix, revolutions, xmlElement)
-	equateVertexesByFunction(equateZ, points, prefix, revolutions, xmlElement)
+	equateVertexesByFunction(elementNode, equate, points, prefix, revolutions)
+	equateVertexesByFunction(elementNode, equateX, points, prefix, revolutions)
+	equateVertexesByFunction(elementNode, equateY, points, prefix, revolutions)
+	equateVertexesByFunction(elementNode, equateZ, points, prefix, revolutions)
+
+def equateVertexesByFunction(elementNode, equationFunction, points, prefix, revolutions):
+	"Get equated points by equation function."
+	prefixedEquationName = prefix + equationFunction.__name__[ len('equate') : ].replace('Dot', '.').lower()
+	if prefixedEquationName not in elementNode.attributes:
+		return
+	equationResult = EquationResult(elementNode, prefixedEquationName, revolutions)
+	for point in points:
+		returnValue = equationResult.getReturnValue(point)
+		if returnValue == None:
+			print('Warning, returnValue in alterVertexesByEquation in equation is None for:')
+			print(point)
+			print(elementNode)
+		else:
+			equationFunction(point, returnValue)
 
 def equateX(point, returnValue):
 	"Get equation for rectangular x."
@@ -45,40 +60,24 @@ def equateZ(point, returnValue):
 	"Get equation for rectangular z."
 	point.z = returnValue
 
-def equateVertexesByFunction( equationFunction, points, prefix, revolutions, xmlElement ):
-	"Get equated points by equation function."
-	prefixedEquationName = prefix + equationFunction.__name__[ len('equate') : ].replace('Dot', '.').lower()
-	if prefixedEquationName not in xmlElement.attributeDictionary:
-		return
-	equationResult = EquationResult( prefixedEquationName, revolutions, xmlElement )
-	for point in points:
-		returnValue = equationResult.getReturnValue(point)
-		if returnValue == None:
-			print('Warning, returnValue in alterVertexesByEquation in equation is None for:')
-			print(point)
-			print(xmlElement)
-		else:
-			equationFunction(point, returnValue)
-#	equationResult.function.reset() #removeLater
-
-def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
+def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	"Get equated geometryOutput."
-	equatePoints( matrix.getVertexes(geometryOutput), prefix, None, xmlElement )
+	equatePoints(elementNode, matrix.getVertexes(geometryOutput), prefix, None)
 	return geometryOutput
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get equated paths."
-	equatePoints( loop, prefix, 0.0, xmlElement )
+	equatePoints(elementNode, loop, prefix, 0.0)
 	return [loop]
 
 
 class EquationResult:
 	"Class to get equation results."
-	def __init__(self, key, revolutions, xmlElement):
+	def __init__(self, elementNode, key, revolutions):
 		"Initialize."
 		self.distance = 0.0
-		xmlElement.xmlObject = evaluate.getEvaluatorSplitWords(xmlElement.attributeDictionary[key])
-		self.function = evaluate.Function(xmlElement)
+		elementNode.xmlObject = evaluate.getEvaluatorSplitWords(elementNode.attributes[key])
+		self.function = evaluate.Function(elementNode)
 		self.points = []
 		self.revolutions = revolutions
 

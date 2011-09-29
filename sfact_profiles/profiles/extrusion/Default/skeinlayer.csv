@@ -8,12 +8,12 @@ Animation Line Quickening (ratio):	1.0
 Animation Slide Show Rate (layers/second):	2.0
 Draw Arrows	True
 Go Around Extruder Off Travel	False
-Layer (index):	1
+Layer (index):	19
 Layer Extra Span (integer):	0
-Line (index):	0
+Line (index):	564
 Display Line	True
 View Move	False
-Scale (pixels per millimeter):	15.0
+Scale (pixels per millimeter):	20.0
 Screen Horizontal Inset (pixels):	100
 Screen Vertical Inset (pixels):	220
 Show Gcode	True

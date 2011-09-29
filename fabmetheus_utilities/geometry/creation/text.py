@@ -20,47 +20,47 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getGeometryOutput(derivation, xmlElement):
-	"Get vector3 vertexes from attribute dictionary."
+def getGeometryOutput(derivation, elementNode):
+	"Get vector3 vertexes from attributes."
 	if derivation == None:
-		derivation = TextDerivation(xmlElement)
+		derivation = TextDerivation(elementNode)
 	if derivation.textString == '':
 		print('Warning, textString is empty in getGeometryOutput in text for:')
-		print(xmlElement)
+		print(elementNode)
 		return []
 	geometryOutput = []
 	for textComplexLoop in svg_reader.getTextComplexLoops(derivation.fontFamily, derivation.fontSize, derivation.textString):
 		textComplexLoop.reverse()
 		vector3Path = euclidean.getVector3Path(textComplexLoop)
 		sideLoop = lineation.SideLoop(vector3Path, None, None)
-		sideLoop.rotate(xmlElement)
-		geometryOutput += lineation.getGeometryOutputByManipulation(sideLoop, xmlElement)
+		sideLoop.rotate(elementNode)
+		geometryOutput += lineation.getGeometryOutputByManipulation(elementNode, sideLoop)
 	return geometryOutput
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	"Get vector3 vertexes from attribute dictionary by arguments."
-	evaluate.setAttributeDictionaryByArguments(['text', 'fontSize', 'fontFamily'], arguments, xmlElement)
-	return getGeometryOutput(None, xmlElement)
+	evaluate.setAttributesByArguments(['text', 'fontSize', 'fontFamily'], arguments, elementNode)
+	return getGeometryOutput(None, elementNode)
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return TextDerivation(xmlElement)
+	return TextDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	path.convertXMLElement(getGeometryOutput(None, xmlElement), xmlElement)
+	path.convertElementNode(elementNode, getGeometryOutput(None, elementNode))
 
 
 class TextDerivation:
 	"Class to hold text variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.fontFamily = evaluate.getEvaluatedString('Gentium Basic Regular', 'font-family', xmlElement)
-		self.fontFamily = evaluate.getEvaluatedString(self.fontFamily, 'fontFamily', xmlElement)
-		self.fontSize = evaluate.getEvaluatedFloat(12.0, 'font-size', xmlElement)
-		self.fontSize = evaluate.getEvaluatedFloat(self.fontSize, 'fontSize', xmlElement)
-		self.textString = xmlElement.text
-		self.textString = evaluate.getEvaluatedString(self.textString, 'text', xmlElement)
+		self.fontFamily = evaluate.getEvaluatedString('Gentium Basic Regular', elementNode, 'font-family')
+		self.fontFamily = evaluate.getEvaluatedString(self.fontFamily, elementNode, 'fontFamily')
+		self.fontSize = evaluate.getEvaluatedFloat(12.0, elementNode, 'font-size')
+		self.fontSize = evaluate.getEvaluatedFloat(self.fontSize, elementNode, 'fontSize')
+		self.textString = elementNode.getTextContent()
+		self.textString = evaluate.getEvaluatedString(self.textString, elementNode, 'text')
 
 	def __repr__(self):
 		"Get the string representation of this TextDerivation."

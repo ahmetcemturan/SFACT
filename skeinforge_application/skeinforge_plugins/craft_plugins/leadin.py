@@ -227,7 +227,7 @@ class LeadinSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> leadin </procedureName>)')
+				self.addLine(gcodec.getTagBracketedProcedure('leadin'))
 				return
 			elif firstWord == '(<infillWidth>':
 				self.quarterInfillWidth = 0.25 * float(splitLine[1])

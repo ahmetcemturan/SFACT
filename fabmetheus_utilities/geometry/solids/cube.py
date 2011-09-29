@@ -20,7 +20,7 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def addCube(faces, inradius, vertexes, xmlElement):
+def addCube(elementNode, faces, inradius, vertexes):
 	'Add cube by inradius.'
 	square = [
 		complex(-inradius.x, -inradius.y),
@@ -30,16 +30,16 @@ def addCube(faces, inradius, vertexes, xmlElement):
 	bottomTopSquare = triangle_mesh.getAddIndexedLoops(square, vertexes, [-inradius.z, inradius.z])
 	triangle_mesh.addPillarByLoops(faces, bottomTopSquare)
 
-def getGeometryOutput(inradius, xmlElement):
+def getGeometryOutput(elementNode, inradius):
 	'Get cube triangle mesh by inradius.'
 	faces = []
 	vertexes = []
-	addCube(faces, inradius, vertexes, xmlElement)
+	addCube(elementNode, faces, inradius, vertexes)
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	evaluate.processArchivable(Cube, xmlElement)
+	evaluate.processArchivable(Cube, elementNode)
 
 
 class Cube(triangle_mesh.TriangleMesh):
@@ -50,19 +50,19 @@ class Cube(triangle_mesh.TriangleMesh):
 
 	def createShape(self):
 		'Create the shape.'
-		addCube(self.faces, self.inradius, self.vertexes, self.xmlElement)
+		addCube(self.elementNode, self.faces, self.inradius, self.vertexes)
 
-	def setToXMLElement(self, xmlElement):
-		'Set to xmlElement.'
-		attributeDictionary = xmlElement.attributeDictionary
-		self.inradius = evaluate.getVector3ByPrefixes(['demisize', 'inradius'], Vector3(1.0, 1.0, 1.0), xmlElement)
-		self.inradius = evaluate.getVector3ByMultiplierPrefix(2.0, 'size', self.inradius, xmlElement)
-		self.xmlElement = xmlElement
-		attributeDictionary['inradius.x'] = self.inradius.x
-		attributeDictionary['inradius.y'] = self.inradius.y
-		attributeDictionary['inradius.z'] = self.inradius.z
-		if 'inradius' in attributeDictionary:
-			del attributeDictionary['inradius']
+	def setToElementNode(self, elementNode):
+		'Set to elementNode.'
+		attributes = elementNode.attributes
+		self.elementNode = elementNode
+		self.inradius = evaluate.getVector3ByPrefixes(elementNode, ['demisize', 'inradius'], Vector3(1.0, 1.0, 1.0))
+		self.inradius = evaluate.getVector3ByMultiplierPrefix(elementNode, 2.0, 'size', self.inradius)
+		attributes['inradius.x'] = self.inradius.x
+		attributes['inradius.y'] = self.inradius.y
+		attributes['inradius.z'] = self.inradius.z
+		if 'inradius' in attributes:
+			del attributes['inradius']
 		self.createShape()
 		self.liftByMinimumZ(-self.inradius.z)
-		solid.processArchiveRemoveSolid(self.getGeometryOutput(), xmlElement)
+		solid.processArchiveRemoveSolid(elementNode, self.getGeometryOutput())

@@ -19,30 +19,6 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-class Heading:
-	'A class to hold the heading and subheadings.'
-	def __init__(self, depth=0):
-		'Initialize.'
-		self.depth = depth
-
-	def addToOutput(self, output):
-		'Add to the output.'
-		line = '&nbsp;&nbsp;' * self.depth + '<a href="#%s">%s</a><br />\n' % (self.name, self.name)
-		output.write(line)
-
-	def getFromLine(self, headingLineTable, line):
-		'Get the heading from a line.'
-		heading = 'h%s' % (self.depth + 2)
-		nextLine = '\n<hr>\n'
-		if self.depth > 0:
-			nextLine = '\n'
-		self.name = line.replace('=', '').replace('<br>', '')
-		name = self.name
-		headingLine = '<a name="%s" id="%s"></a><%s>%s</%s>%s' % (name, name, heading, name, heading, nextLine)
-		headingLineTable[line] = headingLine
-		return self
-
-
 def addToHeadings(headingLineTable, headings, line):
 	'Add the line to the headings.'
 	for depth in xrange(4, -1, -1):
@@ -189,6 +165,30 @@ def writeHypertext():
 		readWriteNavigationHelp(documentDirectoryPath, transferredFileNameIndex, transferredFileNames)
 	writeContentsFile(documentDirectoryPath, transferredFileNames)
 	print('%s files were wrapped.' % len(transferredFileNames))
+
+
+class Heading:
+	'A class to hold the heading and subheadings.'
+	def __init__(self, depth=0):
+		'Initialize.'
+		self.depth = depth
+
+	def addToOutput(self, output):
+		'Add to the output.'
+		line = '&nbsp;&nbsp;' * self.depth + '<a href="#%s">%s</a><br />\n' % (self.name, self.name)
+		output.write(line)
+
+	def getFromLine(self, headingLineTable, line):
+		'Get the heading from a line.'
+		heading = 'h%s' % (self.depth + 2)
+		nextLine = '\n<hr>\n'
+		if self.depth > 0:
+			nextLine = '\n'
+		self.name = line.replace('=', '').replace('<br>', '')
+		name = self.name
+		headingLine = '<a name="%s" id="%s"></a><%s>%s</%s>%s' % (name, name, heading, name, heading, nextLine)
+		headingLineTable[line] = headingLine
+		return self
 
 
 def main():

@@ -36,10 +36,10 @@
 <font color="#000000" face="helvetica, arial"><a name="Setting">class <strong>Setting</strong></a></font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>Class&nbsp;to&nbsp;get&nbsp;handle&nbsp;xmlElements&nbsp;in&nbsp;a&nbsp;setting.<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt>Class&nbsp;to&nbsp;get&nbsp;handle&nbsp;elementNodes&nbsp;in&nbsp;a&nbsp;setting.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="Setting-__init__"><strong>__init__</strong></a>(self, xmlElement)</dt><dd><tt>Initialize.</tt></dd></dl>
+<dl><dt><a name="Setting-__init__"><strong>__init__</strong></a>(self, elementNode)</dt><dd><tt>Initialize.</tt></dd></dl>
 
 <dl><dt><a name="Setting-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;<a href="#Setting">Setting</a>.</tt></dd></dl>
 
@@ -72,18 +72,18 @@
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-getCascadeFloatWithoutSelf"><strong>getCascadeFloatWithoutSelf</strong></a>(defaultFloat, key, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;importRadius.</tt></dd></dl>
- <dl><dt><a name="-getImportRadius"><strong>getImportRadius</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;importRadius.</tt></dd></dl>
- <dl><dt><a name="-getInteriorOverhangAngle"><strong>getInteriorOverhangAngle</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;interior&nbsp;overhang&nbsp;support&nbsp;angle&nbsp;in&nbsp;degrees.</tt></dd></dl>
- <dl><dt><a name="-getInteriorOverhangRadians"><strong>getInteriorOverhangRadians</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;interior&nbsp;overhang&nbsp;support&nbsp;angle&nbsp;in&nbsp;radians.</tt></dd></dl>
- <dl><dt><a name="-getLayerThickness"><strong>getLayerThickness</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;layer&nbsp;thickness.</tt></dd></dl>
- <dl><dt><a name="-getOverhangAngle"><strong>getOverhangAngle</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;overhang&nbsp;support&nbsp;angle&nbsp;in&nbsp;degrees.</tt></dd></dl>
- <dl><dt><a name="-getOverhangRadians"><strong>getOverhangRadians</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;overhang&nbsp;support&nbsp;angle&nbsp;in&nbsp;radians.</tt></dd></dl>
- <dl><dt><a name="-getOverhangSpan"><strong>getOverhangSpan</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;overhang&nbsp;span.</tt></dd></dl>
- <dl><dt><a name="-getPrecision"><strong>getPrecision</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;cascade&nbsp;precision.</tt></dd></dl>
- <dl><dt><a name="-getSheetThickness"><strong>getSheetThickness</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;sheet&nbsp;thickness.</tt></dd></dl>
- <dl><dt><a name="-getTwistPrecision"><strong>getTwistPrecision</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;twist&nbsp;precision&nbsp;in&nbsp;degrees.</tt></dd></dl>
- <dl><dt><a name="-getTwistPrecisionRadians"><strong>getTwistPrecisionRadians</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;twist&nbsp;precision&nbsp;in&nbsp;radians.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-getCascadeFloatWithoutSelf"><strong>getCascadeFloatWithoutSelf</strong></a>(defaultFloat, elementNode, key)</dt><dd><tt>Get&nbsp;the&nbsp;cascade&nbsp;float.</tt></dd></dl>
+ <dl><dt><a name="-getImportRadius"><strong>getImportRadius</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;importRadius.</tt></dd></dl>
+ <dl><dt><a name="-getInteriorOverhangAngle"><strong>getInteriorOverhangAngle</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;interior&nbsp;overhang&nbsp;support&nbsp;angle&nbsp;in&nbsp;degrees.</tt></dd></dl>
+ <dl><dt><a name="-getInteriorOverhangRadians"><strong>getInteriorOverhangRadians</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;interior&nbsp;overhang&nbsp;support&nbsp;angle&nbsp;in&nbsp;radians.</tt></dd></dl>
+ <dl><dt><a name="-getLayerThickness"><strong>getLayerThickness</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;layer&nbsp;thickness.</tt></dd></dl>
+ <dl><dt><a name="-getOverhangAngle"><strong>getOverhangAngle</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;overhang&nbsp;support&nbsp;angle&nbsp;in&nbsp;degrees.</tt></dd></dl>
+ <dl><dt><a name="-getOverhangRadians"><strong>getOverhangRadians</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;overhang&nbsp;support&nbsp;angle&nbsp;in&nbsp;radians.</tt></dd></dl>
+ <dl><dt><a name="-getOverhangSpan"><strong>getOverhangSpan</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;overhang&nbsp;span.</tt></dd></dl>
+ <dl><dt><a name="-getPrecision"><strong>getPrecision</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;cascade&nbsp;precision.</tt></dd></dl>
+ <dl><dt><a name="-getSheetThickness"><strong>getSheetThickness</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;sheet&nbsp;thickness.</tt></dd></dl>
+ <dl><dt><a name="-getTwistPrecision"><strong>getTwistPrecision</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;twist&nbsp;precision&nbsp;in&nbsp;degrees.</tt></dd></dl>
+ <dl><dt><a name="-getTwistPrecisionRadians"><strong>getTwistPrecisionRadians</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;twist&nbsp;precision&nbsp;in&nbsp;radians.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">
@@ -96,7 +96,7 @@
 <strong>__date__</strong> = '$Date: 2008/02/05 $'<br>
 <strong>__license__</strong> = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'<br>
 <strong>absolute_import</strong> = _Feature((2, 5, 0, 'alpha', 1), (2, 7, 0, 'alpha', 0), 16384)<br>
-<strong>globalAccessibleAttributes</strong> = ['getImportRadius', 'getInteriorOverhangAngle', 'getInteriorOverhangRadians', 'getLayerThickness', 'getOverhangSpan', 'getOverhangAngle', 'getOverhangRadians', 'getPrecision', 'getSheetThickness', 'getTwistPrecision', 'getTwistPrecisionRadians']<br>
+<strong>globalAccessibleAttributeDictionary</strong> = ['getImportRadius', 'getInteriorOverhangAngle', 'getInteriorOverhangRadians', 'getLayerThickness', 'getOverhangSpan', 'getOverhangAngle', 'getOverhangRadians', 'getPrecision', 'getSheetThickness', 'getTwistPrecision', 'getTwistPrecisionRadians']<br>
 <strong>globalGetAccessibleAttributeSet</strong> = set(['getImportRadius', 'getInteriorOverhangAngle', 'getInteriorOverhangRadians', 'getLayerThickness', 'getOverhangAngle', 'getOverhangRadians', ...])</td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#7799ee">

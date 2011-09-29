@@ -1,21 +1,5 @@
 """
-Interpret is a collection of utilities to list the import plugins.
-
-An import plugin is a script in the interpret_plugins folder which has the function getCarving.
-
-The following examples shows functions of fabmetheus_interpret.  The examples are run in a terminal in the folder which contains fabmetheus_interpret.py.
-
-
-> python
-Python 2.5.1 (r251:54863, Sep 22 2007, 01:43:31)
-[GCC 4.2.1 (SUSE Linux)] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
->>> import interpret
->>> fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples()
-[('GTS files', '*.gts'), ('Gcode text files', '*.gcode'), ('STL files', '*.stl'), ('SVG files', '*.svg')]
-
->>> fabmetheus_interpret.getImportPluginFileNames()
-['gts', 'stl', 'svg']
+Fabmetheus interpret is a fabmetheus utility to interpret a file, turning it into fabmetheus constructive solid geometry xml.
 
 """
 
@@ -45,16 +29,16 @@ def getCarving(fileName):
 		return None
 	return pluginModule.getCarving(fileName)
 
+def getGNUTranslatorFilesUnmodified():
+	"Get the file types from the translators in the import plugins folder."
+	return archive.getFilesWithFileTypesWithoutWords(getImportPluginFileNames())
+
 def getGNUTranslatorGcodeFileTypeTuples():
 	"Get the file type tuples from the translators in the import plugins folder plus gcode."
 	fileTypeTuples = getTranslatorFileTypeTuples()
 	fileTypeTuples.append( ('Gcode text files', '*.gcode') )
 	fileTypeTuples.sort()
 	return fileTypeTuples
-
-def getGNUTranslatorFilesUnmodified():
-	"Get the file types from the translators in the import plugins folder."
-	return archive.getFilesWithFileTypesWithoutWords(getImportPluginFileNames())
 
 def getImportPluginFileNames():
 	"Get interpret plugin fileNames."
@@ -135,6 +119,7 @@ class InterpretRepository:
 		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.analyze_plugins.interpret.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName( getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Interpret', self, '')
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Interpret')
 		self.activateInterpret = settings.BooleanSetting().getFromValue('Activate Interpret', self, False )
 		self.printInterpretion = settings.BooleanSetting().getFromValue('Print Interpretion', self, False )
 		self.textProgram = settings.StringSetting().getFromValue('Text Program:', self, 'webbrowser')

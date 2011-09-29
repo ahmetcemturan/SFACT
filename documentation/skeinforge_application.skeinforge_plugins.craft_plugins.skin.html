@@ -14,8 +14,8 @@
 </p>
 <p><tt><br>
 Skin is a script to smooth the surface skin of an object by replacing the perimeter surface with a surface printed at half the carve<br>
-height. This gives the impression that the object was carved at a much thinner height giving a high-quality finish, but still prints <br>
-in a relatively short time. The process is described at:<br>
+height.  This gives the impression that the object was carved at a much thinner height giving a high-quality finish, but still prints <br>
+in a relatively short time.  The latest process has some similarities with a description at:<br>
 <a href="http://adventuresin3-dprinting.blogspot.com/2011/05/skinning.html">http://adventuresin3-dprinting.blogspot.com/2011/05/skinning.html</a><br>
  <br>
 The skin manual page is at:<br>
@@ -25,7 +25,7 @@ The skin manual page is at:<br>
 <br />
 <a href="#Operation">Operation</a><br />
 <a href="#Settings">Settings</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Clip Over Perimeter Width">Clip Over Perimeter Width</a><br />
+&nbsp;&nbsp;<a href="#Hop When Extruding Infill">Hop When Extruding Infill</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layer From">Layer From</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Tips">Tips</a><br />
 <a href="#Examples">Examples</a><br />
@@ -38,11 +38,11 @@ The default 'Activate Skin' checkbox is off.  When it is on, the functions descr
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
 
-<a name="Clip Over Perimeter Width" id="Clip Over Perimeter Width"></a><h4>Clip Over Perimeter Width</h4>
+<a name="Hop When Extruding Infill" id="Hop When Extruding Infill"></a><h3>Hop When Extruding Infill</h3>
 
-Default is 0.1.<br>
+Default is off.<br>
  <br>
-Defines the ratio of the amount each end of the loop is clipped over the perimeter width.  The total gap will therefore be twice the clip.  If the ratio is too high loops will have a gap, if the ratio is too low there will be a bulge at the loop ends.<br>
+When selected, the extruder will hop before and after extruding the lower infill in order to avoid the regular thickness threads.<br>
  <br>
 <a name="Layer From" id="Layer From"></a><h4>Layer From</h4>
 
@@ -135,11 +135,11 @@ The skin tool has created the file:<br>
 
 <dl><dt><a name="SkinSkein-addFlowRateLine"><strong>addFlowRateLine</strong></a>(self, flowRate)</dt><dd><tt>Add&nbsp;a&nbsp;flow&nbsp;rate&nbsp;line.</tt></dd></dl>
 
-<dl><dt><a name="SkinSkein-addInfillOutlines"><strong>addInfillOutlines</strong></a>(self, feedRate, infillOutlines, z)</dt><dd><tt>Add&nbsp;the&nbsp;infill&nbsp;outlines&nbsp;to&nbsp;the&nbsp;gcode.</tt></dd></dl>
-
 <dl><dt><a name="SkinSkein-addPerimeterLoop"><strong>addPerimeterLoop</strong></a>(self, thread, z)</dt><dd><tt>Add&nbsp;the&nbsp;perimeter&nbsp;loop&nbsp;to&nbsp;the&nbsp;gcode.</tt></dd></dl>
 
 <dl><dt><a name="SkinSkein-addSkinnedInfill"><strong>addSkinnedInfill</strong></a>(self)</dt><dd><tt>Add&nbsp;skinned&nbsp;infill.</tt></dd></dl>
+
+<dl><dt><a name="SkinSkein-addSkinnedInfillBoundary"><strong>addSkinnedInfillBoundary</strong></a>(self, infillBoundaries, offsetY, upperZ, z)</dt><dd><tt>Add&nbsp;skinned&nbsp;infill&nbsp;boundary.</tt></dd></dl>
 
 <dl><dt><a name="SkinSkein-addSkinnedPerimeter"><strong>addSkinnedPerimeter</strong></a>(self)</dt><dd><tt>Add&nbsp;skinned&nbsp;perimeter.</tt></dd></dl>
 
@@ -152,8 +152,6 @@ The skin tool has created the file:<br>
 <dl><dt><a name="SkinSkein-parseInitialization"><strong>parseInitialization</strong></a>(self)</dt><dd><tt>Parse&nbsp;gcode&nbsp;initialization&nbsp;and&nbsp;store&nbsp;the&nbsp;parameters.</tt></dd></dl>
 
 <dl><dt><a name="SkinSkein-parseLine"><strong>parseLine</strong></a>(self, line)</dt><dd><tt>Parse&nbsp;a&nbsp;gcode&nbsp;line&nbsp;and&nbsp;add&nbsp;it&nbsp;to&nbsp;the&nbsp;skin&nbsp;skein.</tt></dd></dl>
-
-<dl><dt><a name="SkinSkein-setInfill"><strong>setInfill</strong></a>(self)</dt><dd><tt>Set&nbsp;the&nbsp;infill&nbsp;to&nbsp;an&nbsp;empty&nbsp;list&nbsp;if&nbsp;the&nbsp;layerIndex&nbsp;is&nbsp;above&nbsp;layersFromBottom&nbsp;and&nbsp;there&nbsp;is&nbsp;nothing&nbsp;above.</tt></dd></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

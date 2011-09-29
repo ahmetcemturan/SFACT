@@ -109,6 +109,13 @@ def getFirstWordFromLine(line):
 	'Get the first word of a line.'
 	return getFirstWord(line.split())
 
+def getFirstWordIndexReverse(firstWord, lines, startIndex):
+	'Parse gcode in reverse order until the first word if there is one, otherwise return -1.'
+	for lineIndex in xrange(len(lines) - 1, startIndex - 1, -1):
+		if firstWord == getFirstWord(getSplitLineBeforeBracketSemicolon(lines[lineIndex])):
+			return lineIndex
+	return -1
+
 def getGcodeFileText(fileName, gcodeText):
 	'Get the gcode text from a file if it the gcode text is empty and if the file is a gcode file.'
 	if gcodeText != '':
@@ -130,7 +137,7 @@ def getLineWithValueString(character, line, splitLine, valueString):
 	'Get the line with a valueString.'
 	roundedValueString = character + valueString
 	indexOfValue = getIndexOfStartingWithSecond(character, splitLine)
-	if indexOfValue == - 1:
+	if indexOfValue == -1:
 		return line + ' ' + roundedValueString
 	word = splitLine[indexOfValue]
 	return line.replace(word, roundedValueString)
@@ -143,6 +150,10 @@ def getLocationFromSplitLine(oldLocation, splitLine):
 		getDoubleFromCharacterSplitLineValue('X', splitLine, oldLocation.x),
 		getDoubleFromCharacterSplitLineValue('Y', splitLine, oldLocation.y),
 		getDoubleFromCharacterSplitLineValue('Z', splitLine, oldLocation.z))
+
+def getRotationBySplitLine(splitLine):
+	'Get the complex rotation from the split gcode line.'
+	return complex(splitLine[1].replace('(', '').replace(')', ''))
 
 def getSplitLineBeforeBracketSemicolon(line):
 	'Get the split line before a bracket or semicolon.'
@@ -159,6 +170,14 @@ def getStringFromCharacterSplitLine(character, splitLine):
 		return None
 	return splitLine[indexOfCharacter][1 :]
 
+def getTagBracketedLine(tagName, value):
+	'Get line with a begin tag, value and end tag.'
+	return '(<%s> %s </%s>)' % (tagName, value, tagName)
+
+def getTagBracketedProcedure(procedure):
+	'Get line with a begin procedure tag, procedure and end procedure tag.'
+	return getTagBracketedLine('procedureName', procedure)
+
 def getWithoutBracketsEqualTab(line):
 	'Get a string without the greater than sign, the bracket and less than sign, the equal sign or the tab.'
 	line = line.replace('=', ' ')
@@ -170,38 +189,16 @@ def isProcedureDone(gcodeText, procedure):
 	'Determine if the procedure has been done on the gcode text.'
 	if gcodeText == '':
 		return False
-	lines = archive.getTextLines(gcodeText)
-	for line in lines:
-		withoutBracketsEqualTabQuotes = getWithoutBracketsEqualTab(line).replace('"', '').replace("'", '')
-		splitLine = getWithoutBracketsEqualTab( withoutBracketsEqualTabQuotes ).split()
-		firstWord = getFirstWord(splitLine)
-		if firstWord == 'procedureName':
-			if splitLine[1].find(procedure) != -1:
-				return True
-		elif firstWord == 'extrusionStart':
-			return False
-		procedureIndex = line.find(procedure)
-		if procedureIndex != -1:
-			if 'procedureName' in splitLine:
-				nextIndex = splitLine.index('procedureName') + 1
-				if nextIndex < len(splitLine):
-					nextWordSplit = splitLine[nextIndex].split(',')
-					if procedure in nextWordSplit:
-						return True
-	return False
+	extruderInitializationIndex = gcodeText.find('(</extruderInitialization>)')
+	if extruderInitializationIndex == -1:
+		return False
+	return gcodeText.find(getTagBracketedProcedure(procedure), 0, extruderInitializationIndex) != -1
 
 def isProcedureDoneOrFileIsEmpty(gcodeText, procedure):
 	'Determine if the procedure has been done on the gcode text or the file is empty.'
 	if gcodeText == '':
 		return True
 	return isProcedureDone(gcodeText, procedure)
-
-def getFirstWordIndexReverse(firstWord, lines, startIndex):
-	'Parse gcode in reverse order until the first word if there is one, otherwise return -1.'
-	for lineIndex in xrange(len(lines) - 1, startIndex - 1, -1):
-		if firstWord == getFirstWord(getSplitLineBeforeBracketSemicolon(lines[lineIndex])):
-			return lineIndex
-	return -1
 
 def isThereAFirstWord(firstWord, lines, startIndex):
 	'Parse gcode until the first word if there is one.'
@@ -269,7 +266,7 @@ class DistanceFeedRate:
 
 	def addGcodeFromLoop(self, loop, z):
 		'Add the gcode loop.'
-		euclidean.addSurroundingLoopBeginning(self, loop, z)
+		euclidean.addNestedRingBeginning(self, loop, z)
 		self.addPerimeterBlock(loop, z)
 		self.addLine('(</boundaryPerimeter>)')
 		self.addLine('(</nestedRing>)')
@@ -343,11 +340,15 @@ class DistanceFeedRate:
 
 	def addTagBracketedLine(self, tagName, value):
 		'Add a begin tag, value and end tag.'
-		self.addLine('(<%s> %s </%s>)' % (tagName, value, tagName))
+		self.addLine(getTagBracketedLine(tagName, value))
 
 	def addTagRoundedLine(self, tagName, value):
 		'Add a begin tag, rounded value and end tag.'
 		self.addLine('(<%s> %s </%s>)' % (tagName, self.getRounded(value), tagName))
+
+	def addTagBracketedProcedure(self, procedure):
+		'Add a begin procedure tag, procedure and end procedure tag.'
+		self.addLine(getTagBracketedProcedure(procedure))
 
 	def getBoundaryLine(self, location):
 		'Get boundary gcode line.'
@@ -356,6 +357,10 @@ class DistanceFeedRate:
 	def getFirstWordMovement(self, firstWord, location):
 		'Get the start of the arc line.'
 		return '%s X%s Y%s Z%s' % (firstWord, self.getRounded(location.x), self.getRounded(location.y), self.getRounded(location.z))
+
+	def getInfillBoundaryLine(self, location):
+		'Get infill boundary gcode line.'
+		return '(<infillPoint> X%s Y%s Z%s </infillPoint>)' % (self.getRounded(location.x), self.getRounded(location.y), self.getRounded(location.z))
 
 	def getLinearGcodeMovement(self, point, z):
 		'Get a linear gcode movement.'

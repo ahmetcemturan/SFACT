@@ -113,7 +113,7 @@ class JitterRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.jitter.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Jitter', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Jitter')
-		self.activateJitter = settings.BooleanSetting().getFromValue('Activate Jitter to have your perimeter and loop endpoints scattered', self, False)
+		self.activateJitter = settings.BooleanSetting().getFromValue('Activate Jitter to have your perimeter and loop endpoints scattered', self, True)
 		self.jitterOverPerimeterWidth = settings.FloatSpin().getFromValue(0.0, 'Jitter Over Perimeter Width (ratio):', self, 10.0, 2.0)
 		self.executeTitle = 'Jitter'
 
@@ -188,7 +188,7 @@ class JitterSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> jitter </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('jitter')
 				return
 			elif firstWord == '(<operatingFeedRatePerSecond>':
 				self.operatingFeedRatePerMinute = 60.0 * float(splitLine[1])
@@ -219,7 +219,7 @@ class JitterSkein:
 				self.addTailoredLoopPath()
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('jitter')
-			self.layerGolden = math.fmod(self.layerGolden + 0.61803398874989479, 1.0)  # x-n*y
+			self.layerGolden = math.fmod(self.layerGolden + 0.61803398874989479, 1.0)
 			self.layerJitter = self.jitter * self.layerGolden - 0.5
 		elif firstWord == '(<loop>' or firstWord == '(<perimeter>':
 			self.isLoopPerimeter = True
