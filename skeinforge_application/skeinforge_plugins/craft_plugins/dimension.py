@@ -147,6 +147,8 @@ class DimensionRepository:
 		#self.restartExtraDistance = settings.FloatSpin().getFromValue( -0.50, 'Restart Extra Distance (millimeters):', self, 0.50, 0.00 )
 		self.oozeRate = settings.FloatSpin().getFromValue( 0, 'Oozerate (mm/min):', self, 200, 75 )
 		self.extruderRetractionSpeed = settings.FloatSpin().getFromValue( 5.0, 'Extruder Retraction Speed (mm/s):', self, 50.0, 15.0 )
+		self.maxRetract = settings.FloatSpin().getFromValue( 0, 'Maximum Retract Limit (mm):', self, 200, 75 )
+		self.minRetract = settings.FloatSpin().getFromValue( 0, 'Minimum Retract threshold(mm):', self, 200, 75 )
 		self.maxZFeedRate = settings.FloatSpin().getFromValue( 30 , 'Z-maximum feedrate from Firmware settings (mm/min):', self, 300, 170 )
 		#settings.LabelSeparator().getFromRepository(self)
 		#settings.LabelDisplay().getFromName('- When to retract ? -', self )
@@ -281,7 +283,7 @@ class DimensionSkein:
 					xyTravel = abs(locationMinusOld.dropAxis())
 					zTravelMultiplied = locationMinusOld.z * self.zDistanceRatio
 					self.timeToNextThread = math.sqrt(xyTravel * xyTravel + zTravelMultiplied * zTravelMultiplied)/ self.feedRateMinute*60
-					self.autoRetractDistance = self.timeToNextThread * abs(self.repository.oozeRate.value)/60
+					self.autoRetractDistance = (self.timeToNextThread)**0.5 / (abs(self.repository.oozeRate.value)/60)
 					return math.sqrt(xyTravel * xyTravel + zTravelMultiplied * zTravelMultiplied)
 			elif firstWord == 'M101':
 				isActive = True
