@@ -125,6 +125,7 @@ class DimensionRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.dimension.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Dimension', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Dimension')
+		settings.LabelDisplay().getFromName('- Only one dimension type must be active -', self )
 		self.activateDimension = settings.BooleanSetting().getFromValue('Activate Volumetric Extrusion (Stepper driven Extruders)', self, True )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Filament Settings - YOU NEED TO HAVE YOUR EXTRUDER E-STEPS CALIBRATED FIRST -', self )
@@ -313,7 +314,7 @@ class DimensionSkein:
 #		self.retractionRatio = self.getRetractionRatio(lineIndex)
 		#return (self.distanceToNextThread - self.minimumTravelForRetraction) / self.minimumTravelForRetraction
 		return 1.00
-		
+
 	def getSmallestEnclosureIndex(self, point):
 		'Get the index of the smallest boundary loop which encloses the point.'
 		boundaryLayer = self.boundaryLayers[self.layerIndex]
