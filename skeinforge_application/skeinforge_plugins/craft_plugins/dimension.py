@@ -147,8 +147,8 @@ class DimensionRepository:
 		#self.restartExtraDistance = settings.FloatSpin().getFromValue( -0.50, 'Restart Extra Distance (millimeters):', self, 0.50, 0.00 )
 		self.oozeRate = settings.FloatSpin().getFromValue( 0, 'Oozerate (mm/min):', self, 200, 75 )
 		self.extruderRetractionSpeed = settings.FloatSpin().getFromValue( 5.0, 'Extruder Retraction Speed (mm/s):', self, 50.0, 15.0 )
-		self.maxRetract = settings.FloatSpin().getFromValue( 0, 'Maximum Retract Limit (mm):', self, 200, 75 )
-		self.minRetract = settings.FloatSpin().getFromValue( 0, 'Minimum Retract threshold(mm):', self, 200, 75 )
+		self.maxRetract = settings.FloatSpin().getFromValue( 0, 'Maximum Retract Limit (mm):', self, 40, 20 )
+		self.minRetract = settings.FloatSpin().getFromValue( 0, 'Minimum Retract threshold(mm):', self, 1.0 , 0.3 )
 		self.maxZFeedRate = settings.FloatSpin().getFromValue( 30 , 'Z-maximum feedrate from Firmware settings (mm/min):', self, 300, 170 )
 		#settings.LabelSeparator().getFromRepository(self)
 		#settings.LabelDisplay().getFromName('- When to retract ? -', self )
@@ -192,6 +192,9 @@ class DimensionSkein:
 		self.oldFlowRateString = None
 		self.autoRetractDistance = 0
 		self.timeToNextThread = None
+		self.layerThickness = 0
+		self.perimeterWidth = 0
+		self.filamentXsection = 0
 
 	def addLinearMoveExtrusionDistanceLine( self, extrusionDistance ):
 		'Get the extrusion distance string from the extrusion distance.'
@@ -219,7 +222,7 @@ class DimensionSkein:
 		print('****************Filament Packing Density (For Calibration)**********************:')
 		print( 'Filament Packing Density (For Calibration) STEPPER EXTRUDERS ONLY :', self.newfilamentPackingDensity )
 		print('****************Filament Packing Density (For Calibration)**********************')
-		self.flowScaleSixty = 60.0 * ((((self.layerThickness+self.perimeterWidth)/4) ** 2 * math.pi )/filamentPackingArea) / self.calibrationFactor
+		self.flowScaleSixty = 60.0 * (self.extrusionXsection/filamentPackingArea)/ self.calibrationFactor
 		#print ('filamentPackingArea self.calibrationFactor',filamentPackingArea ,self.calibrationFactor)
 		if self.calibrationFactor is None:
 			print('Measured extrusion width cant be 0, either un-check calibration or set measured width to what you have measured!')
@@ -283,7 +286,19 @@ class DimensionSkein:
 					xyTravel = abs(locationMinusOld.dropAxis())
 					zTravelMultiplied = locationMinusOld.z * self.zDistanceRatio
 					self.timeToNextThread = math.sqrt(xyTravel * xyTravel + zTravelMultiplied * zTravelMultiplied)/ self.feedRateMinute*60
-					self.autoRetractDistance = (self.timeToNextThread)**0.5 / (abs(self.repository.oozeRate.value)/60)
+#					self.autoRetractDistance = (self.timeToNextThread)**0.5 / (abs(self.repository.oozeRate.value)/60)
+#					self.autoRetractDistance = self.timeToNextThread * abs(self.repository.oozeRate.value)/60
+					self.RetractDistance = (self.timeToNextThread)**0.5 * (abs(self.repository.oozeRate.value)/60)
+					if self.RetractDistance < self.repository.minRetract.value :
+						self.autoRetractDistance = self.repository.minRetract.value
+#						print ('min',self.autoRetractDistance)
+					elif self.RetractDistance > self.repository.maxRetract.value :
+						self.autoRetractDistance = self.repository.maxRetract.value
+#						print ('max',self.autoRetractDistance)
+					else: 
+						self.autoRetractDistance = self.RetractDistance
+#						print ('reg',self.autoRetractDistance)
+#					print ('retract',self.autoRetractDistance)
 					return math.sqrt(xyTravel * xyTravel + zTravelMultiplied * zTravelMultiplied)
 			elif firstWord == 'M101':
 				isActive = True
@@ -327,7 +342,7 @@ class DimensionSkein:
 #		self.retractionRatio = self.getRetractionRatio(lineIndex)
 		#return (self.distanceToNextThread - self.minimumTravelForRetraction) / self.minimumTravelForRetraction
 		return 1.00
-		
+
 	def getSmallestEnclosureIndex(self, point):
 		'Get the index of the smallest boundary loop which encloses the point.'
 		boundaryLayer = self.boundaryLayers[self.layerIndex]
@@ -388,8 +403,12 @@ class DimensionSkein:
 				self.perimeterWidth = float(splitLine[1])
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRatePerSecond = float(splitLine[1])
-			self.distanceFeedRate.addLine(line)
-
+			elif firstWord == '(<nozzleDiameter>':
+				self.nozzleDiameter = float(splitLine[1])
+				self.nozzleXsection = (self.nozzleDiameter/2)**2*math.pi
+			self.extrusionXsection = ((self.layerThickness + self.perimeterWidth)/4) ** 2 * math.pi
+#			print ('extrusionXsection', self.extrusionXsection)
+#			print ('filamentXsection', self.filamentXsection)
 	def parseLine( self, lineIndex ):
 		'Parse a gcode line and add it to the dimension skein.'
 		line = self.lines[lineIndex].lstrip()
@@ -428,7 +447,7 @@ class DimensionSkein:
 		#self.addFlowRateLineIfNecessary()
 		#self.distanceFeedRate.addLine('M108 S' + newFlowrate)
 		self.distanceFeedRate.addLine(line)
-
+		self.filamentXsection = (self.repository.filamentDiameter.value/2)**2*math.pi
 
 def main():
 	'Display the dimension dialog.'
