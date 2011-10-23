@@ -13,12 +13,12 @@ The default 'Activate Bookend' checkbox is on.  When it is on, the functions des
 Bookend looks for alteration files in the alterations folder in the sfact_profiles folder in the home directory.  Bookend does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
 
 ===Name of End File===
-Default is end.gcode.
+Default is 'end.gcode'.
 
 If there is a file with the name of the "Name of End File" setting, it will be added to the very end of the gcode.
 
 ===Name of Start File===
-Default is start.gcode.
+Default is 'start.gcode'.
 
 If there is a file with the name of the "Name of Start File" setting, it will be added to the very beginning of the gcode.
 
