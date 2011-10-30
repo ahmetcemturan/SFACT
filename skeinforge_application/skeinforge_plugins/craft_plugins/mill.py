@@ -303,8 +303,8 @@ class MillSkein:
 		if len(self.boundaryLayers) < 2:
 			return
 		for boundaryLayer in self.boundaryLayers:
-			boundaryLayer.innerOutsetLoops = intercircle.getInsetSeparateLoopsFromLoops( - self.loopInnerOutset, boundaryLayer.loops )
-			boundaryLayer.outerOutsetLoops = intercircle.getInsetSeparateLoopsFromLoops( - self.loopOuterOutset, boundaryLayer.loops )
+			boundaryLayer.innerOutsetLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, -self.loopInnerOutset)
+			boundaryLayer.outerOutsetLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, -self.loopOuterOutset)
 			boundaryLayer.innerHorizontalTable = self.getHorizontalXIntersectionsTable( boundaryLayer.innerOutsetLoops )
 			boundaryLayer.outerHorizontalTable = self.getHorizontalXIntersectionsTable( boundaryLayer.outerOutsetLoops )
 			boundaryLayer.innerVerticalTable = self.getHorizontalXIntersectionsTable( euclidean.getDiagonalFlippedLoops( boundaryLayer.innerOutsetLoops ) )

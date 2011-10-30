@@ -88,7 +88,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -122,20 +122,20 @@ class TemperatureRepository:
 		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.temperature.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Temperature', self, '')
-		self.activateTemperature = settings.BooleanSetting().getFromValue('Activate Temperature:', self, False )
+		self.activateTemperature = settings.BooleanSetting().getFromValue('Activate Temperature', self, False )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Rate -', self )
-		self.coolingRate = settings.IntSpin().getFromValue( 1, 'Cooling Rate (Celcius/second):', self, 200, 100)
-		self.heatingRate = settings.IntSpin().getFromValue( 1, 'Heating Rate (Celcius/second):', self, 200, 100 )
+		self.coolingRate = settings.FloatSpin().getFromValue( 1.0, 'Cooling Rate (Celcius/second):', self, 20.0, 3.0 )
+		self.heatingRate = settings.FloatSpin().getFromValue( 1.0, 'Heating Rate (Celcius/second):', self, 20.0, 10.0 )
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- Temperature - Defaults are for PLA', self )
-		self.baseTemperature = settings.IntSpin().getFromValue( 150, 'Base Temperature (Celcius):', self, 240, 210 )
-		self.interfaceTemperature = settings.IntSpin().getFromValue( 150, 'Interface Temperature (Celcius):', self, 240, 210 )
-		self.objectFirstLayerInfillTemperature = settings.IntSpin().getFromValue( 150, 'Object First Layer Infill Temperature (Celcius):', self, 240, 210 )
-		self.objectFirstLayerPerimeterTemperature = settings.IntSpin().getFromValue( 150, 'Object First Layer Perimeter Temperature (Celcius):', self, 240, 210 )
-		self.objectNextLayersTemperature = settings.IntSpin().getFromValue( 150, 'Object Next Layers Temperature (Celcius):', self, 240, 210 )
-		self.supportLayersTemperature = settings.IntSpin().getFromValue( 150, 'Support Layers Temperature (Celcius):', self, 240, 210 )
-		self.supportedLayersTemperature = settings.IntSpin().getFromValue( 150, 'Supported Layers Temperature (Celcius):', self, 240, 210 )
+		settings.LabelDisplay().getFromName('- Temperature -', self )
+		self.baseTemperature = settings.FloatSpin().getFromValue( 140.0, 'Base Temperature (Celcius):', self, 260.0, 200.0 )
+		self.interfaceTemperature = settings.FloatSpin().getFromValue( 140.0, 'Interface Temperature (Celcius):', self, 260.0, 200.0 )
+		self.objectFirstLayerInfillTemperature = settings.FloatSpin().getFromValue( 140.0, 'Object First Layer Infill Temperature (Celcius):', self, 260.0, 195.0 )
+		self.objectFirstLayerPerimeterTemperature = settings.FloatSpin().getFromValue( 140.0, 'Object First Layer Perimeter Temperature (Celcius):', self, 260.0, 220.0 )
+		self.objectNextLayersTemperature = settings.FloatSpin().getFromValue( 140.0, 'Object Next Layers Temperature (Celcius):', self, 260.0, 230.0 )
+		self.supportLayersTemperature = settings.FloatSpin().getFromValue( 140.0, 'Support Layers Temperature (Celcius):', self, 260.0, 200.0 )
+		self.supportedLayersTemperature = settings.FloatSpin().getFromValue( 140.0, 'Supported Layers Temperature (Celcius):', self, 260.0, 230.0 )
 		self.executeTitle = 'Temperature'
 
 	def execute(self):

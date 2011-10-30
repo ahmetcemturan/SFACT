@@ -4,7 +4,8 @@
 	<metadata>
 		<slice:layers id='sliceData' controlBoxHeight='720' controlBoxWidth='240' decimalPlacesCarried='2' layerThickness='3.0' margin='20' marginTop='60' maxX='9.0' maxY='15.0' maxZ='6.5' minX='-9.0' minY='-9.0' minZ='-1.5' procedureName='basic' svgMinWidth='516' template='svg_layer' textHeight='22.5' unitScale='3.7' version='0.1' yAxisPointingUpward='true' />
 	</metadata>
-	<script type='text/ecmascript' ><![CDATA[
+	<script type='text/ecmascript'>
+<![CDATA[
 globalMetadata = document.getElementsByTagNameNS('http://www.reprap.org/slice', 'layers')[0];
 globalSliceMinX = globalMetadata.getAttribute('minX') * 1;
 globalSliceMaxX = globalMetadata.getAttribute('maxX') * 1;
@@ -12,6 +13,7 @@ globalSliceMinY = globalMetadata.getAttribute('minY') * 1;
 globalSliceMaxY = globalMetadata.getAttribute('maxY') * 1;
 globalSliceMinZ = globalMetadata.getAttribute('minZ') * 1;
 globalSliceMaxZ = globalMetadata.getAttribute('maxZ') * 1;
+
 //Control var's
 globalLayerIndex = 0; //Number of currently viewed layer (zero index)
 globalLatitude = 60.0;
@@ -20,6 +22,7 @@ globalControlBoxHeight = globalMetadata.getAttribute('controlBoxHeight') * 1;
 globalControlBoxWidth = globalMetadata.getAttribute('controlBoxWidth') * 1;
 globalSliding = false;
 globalObserving = false
+
 //Display var's
 globalMargin = globalMetadata.getAttribute('margin') * 1;
 globalMarginTop = globalMetadata.getAttribute('marginTop') * 1;
@@ -36,12 +39,14 @@ globalXOffset = globalControlBoxWidth + globalMargin + globalMargin;
 globalYOffset = globalMargin + globalMarginTop;
 globalZoomScale = 1.0; //Default 1:1 may need smaller scale for large objects
 globalScale = globalUnitScale * globalZoomScale;
+
 //Globals to be set in init
 globalLayers = [];
 globalSlider = 0;
 globalThumb = 0;
 globalThumbRadius = 0.0;
 globalSliderWidthMinusDiameter = 0.0;
+
 
 function changeScale(newScale) {
 	globalZoomScale = newScale;
@@ -50,18 +55,22 @@ function changeScale(newScale) {
 		document.getElementById('layerData').setAttributeNS(null, 'stroke-width', 2.0 / (globalScale));
 	}
 }
+
 function changeScaleIso(newScale) {
 	changeScale(newScale);
 	viewIso();
 }
+
 function changeScaleLayer(newScale) {
 	changeScale(newScale);
 	viewLayer();
 }
+
 function changeScaleScroll(newScale) {
 	changeScale(newScale);
 	viewScroll();
 }
+
 function displayIso(latitude, longitude) {
 	latitude = Math.max(0.0, latitude);
 	latitude = Math.min(89.0, latitude);
@@ -94,12 +103,15 @@ function displayIso(latitude, longitude) {
 	globalObserver.setAttribute('cx', globalGlobeCenterX + unitX * globeMoveableRadius);
 	globalObserver.setAttribute('cy', globalGlobeCenterY - unitY * globeMoveableRadius);
 }
+
 function displayIsoByLatitude(latitude) {
 	displayIso(latitude, globalLongitude);
 }
+
 function displayIsoByLongitude(longitude) {
 	displayIso(globalLatitude, longitude);
 }
+
 function displayLayer(layerNum) {
 	if (globalLayers.length <= 1) {
 		document.getElementById('maxIndexLayer').setAttributeNS(null, 'visibility', 'hidden');
@@ -107,19 +119,17 @@ function displayLayer(layerNum) {
 		globalSlider.setAttributeNS(null, 'visibility', 'hidden');
 		globalThumb.setAttributeNS(null, 'visibility', 'hidden');
 	}
-	decreaseLayerIndexButton = document.getElementById('decreaseLayerIndex')
 	if (layerNum <= 0) {
-		decreaseLayerIndexButton.setAttributeNS(null, 'visibility', 'hidden');
+		document.getElementById('decreaseLayerIndex').setAttributeNS(null, 'visibility', 'hidden');
 	}
 	else {
-		decreaseLayerIndexButton.setAttributeNS(null, 'visibility', 'visible');
+		document.getElementById('decreaseLayerIndex').setAttributeNS(null, 'visibility', 'visible');
 	}
-	increaseLayerIndexButton = document.getElementById('increaseLayerIndex')
 	if (layerNum >= globalLayers.length - 1) {
-		increaseLayerIndexButton.setAttributeNS(null, 'visibility', 'hidden');
+		document.getElementById('increaseLayerIndex').setAttributeNS(null, 'visibility', 'hidden');
 	}
 	else {
-		increaseLayerIndexButton.setAttributeNS(null, 'visibility', 'visible');
+		document.getElementById('increaseLayerIndex').setAttributeNS(null, 'visibility', 'visible');
 	}
 	if (layerNum < 0 || layerNum >= globalLayers.length) {
 		return
@@ -134,24 +144,30 @@ function displayLayer(layerNum) {
 		placeThumb(globalSliderWidthMinusDiameter / (globalLayers.length - 1) * globalLayerIndex + globalThumbRadius);
 	}
 }
+
 function getDegrees(radians) {
 	return radians / Math.PI * 180.0;
 }
+
 function getRadians(degrees) {
 	return degrees / 180.0 * Math.PI;
 }
+
 function getScaleTransformString(scale) {
 	scaleTransformString = 'scale(' + scale + ' ' + (scale * - 1)
 	return scaleTransformString + ') translate(' + (globalSliceMinX * - 1) + ' ' + (globalSliceMinY * - 1) + ')';
 }
+
 function getWidth() {
 	return (globalDimensionX * globalScale) + globalXOffset
 }
+
 function hideElements(elementNames) {
 	for (var elementNameIndex in elementNames) {
 		document.getElementById(elementNames[elementNameIndex]).setAttributeNS(null, 'visibility', 'hidden');
 	}
 }
+
 function init() {
 	//Find only layer groups
 	globe = document.getElementById('globe');
@@ -177,6 +193,7 @@ function init() {
 			globalLayers.push(allGroups[i]);
 		}
 	}
+
 	//Slider
 	layerControlBox = document.getElementById('layerControlBox');
 	layerControlBox.addEventListener('mouseup', sliderUp, false);
@@ -194,13 +211,16 @@ function init() {
 	setText('maxIndexLayer', globalLayers.length - 1);
 	changeScaleLayer(globalZoomScale);
 }
+
 function observerDown(event) {
 	globalObserving = true;
 }
+
 function observerDownMove(event) {
 	globalObserving = true;
 	observerMove(event);
 }
+
 function observerMove(event) {
 	if (!globalObserving) {
 		return;
@@ -212,17 +232,21 @@ function observerMove(event) {
 	longitudeRadians = Math.atan2(observerX, -observerY);
 	displayIso(getDegrees(latitudeRadians), getDegrees(longitudeRadians));
 }
+
 function observerUp(event) {
 	globalObserving = false;
 }
+
 function placeThumb(value) {
 	if (globalLayers.length > 1) {
 		globalThumb.setAttribute('cx', globalSliderX + value);
 	}
 }
+
 function setScaleText(scaleID) {
 	setText(scaleID, ': ' + globalZoomScale);
 }
+
 function setSVG(width, height) {
 	rootSVG = document.getElementsByTagName('svg')[0];
 	svgMinWidth = globalMetadata.getAttribute('svgMinWidth') * 1;
@@ -231,23 +255,28 @@ function setSVG(width, height) {
 	rootSVG.setAttributeNS(null, 'width', width + 'px')
 	rootSVG.setAttributeNS(null, 'height', height + 'px')
 }
+
 function setText(id, str) {
 	e = document.getElementById(id)
 	if (e != null)
 		e.firstChild.nodeValue = str;
 }
+
 function showElements(elementNames) {
 	for (var elementNameIndex in elementNames) {
 		document.getElementById(elementNames[elementNameIndex]).setAttributeNS(null, 'visibility', 'visible');
 	}
 }
+
 function sliderDown(event) {
 	globalSliding = true;
 }
+
 function sliderDownMove(event) {
 	globalSliding = true;
 	sliderMove(event);
 }
+
 function sliderMove(event) {
 	if (!globalSliding) {
 		return;
@@ -262,9 +291,11 @@ function sliderMove(event) {
 		}
 	}
 }
+
 function sliderUp(event) {
 	globalSliding = false;
 }
+
 function viewIso() {
 	height = (globalDimensionMagnitude * globalScale) + globalYOffset;
 	setSVG((globalDimensionMagnitude * globalScale) + globalXOffset, height);
@@ -278,11 +309,12 @@ function viewIso() {
 		  }
 	  }
 	  //show control box
-	hideElements(['isoViewButton', 'layerControlBox', 'layerViewLabel', 'scrollControlBox', 'scrollViewLabel']);
+	hideElements(['decreaseLayerIndex', 'increaseLayerIndex', 'isoViewButton', 'layerControlBox', 'layerViewLabel', 'scrollControlBox', 'scrollViewLabel']);
 	showElements(['isoControlBox', 'isoViewLabel', 'layerViewButton', 'scrollViewButton']);
 	displayIso(globalLatitude, globalLongitude);
 	setScaleText('scaleIso');
 }
+
 function viewLayer() {
 	//Set svg size and view port
 	height = (globalDimensionY * globalScale) + globalYOffset;
@@ -298,6 +330,7 @@ function viewLayer() {
 			pathElements[pathElementIndex].setAttributeNS(null, 'transform', transform);
 		}
 	}
+
 	//show control box
 	hideElements(['isoControlBox', 'isoViewLabel', 'layerViewButton', 'scrollControlBox', 'scrollViewLabel'])
 	showElements(['isoViewButton', 'layerControlBox', 'layerViewLabel', 'scrollViewButton'])
@@ -306,12 +339,14 @@ function viewLayer() {
 	displayLayer(globalLayerIndex);
 	setScaleText('scaleLayer');
 }
+
 function viewScroll() {
 	//Set svg size and view port
 	yDimensionScale = globalDimensionY * globalScale
 	singleHeight = (globalMargin + yDimensionScale + globalTextHeight)
 	height = globalLayers.length * singleHeight + globalMargin + globalMargin + globalYOffset;
 	setSVG(getWidth(), height);
+
 	//move and show all layers 
 	for (var i in globalLayers) {
 		x = globalXOffset;
@@ -325,31 +360,33 @@ function viewScroll() {
 		globalLayers[i].setAttributeNS(null, 'visibility', 'visible');
 		globalLayers[i].getElementsByTagName('text')[0].setAttributeNS(null, 'visibility', 'visible');
 	}
+
 	//show control box
 	hideElements(['isoControlBox', 'isoViewLabel', 'layerControlBox', 'layerViewLabel', 'scrollViewButton'])
 	showElements(['isoViewButton', 'layerViewButton', 'scrollControlBox', 'scrollViewLabel'])
 	setScaleText('scaleScroll');
 }
-	]]></script>
+	]]>
+	</script>
 	<title >write.xml - Slice Layers</title>
-	<!--Begin Layer Data   -->
+<!--Begin Layer Data   -->
 	<g id='layerData' fill='#556B2F' fill-rule='evenodd' font-family='Arial' font-size='15px' font-weight='bold' inkscape:groupmode='layer' inkscape:label='Slice Layers' stroke='#00F' stroke-width='0.54px'>
-		<!--id='sliceElementTemplate' must be there or else the slice template will not be found-->
+<!--id='sliceElementTemplate' must be there or else the slice template will not be found-->
 		<g id='z:0.0' inkscape:groupmode='layer' inkscape:label='Layer 0, z:0.0' transform='translate(280.0, 168.8)'>
-			<!--id='layerTextTemplate' must be there so that the text could be removed if necessary-->
+<!--id='layerTextTemplate' must be there so that the text could be removed if necessary-->
 			<text id='layerTextTemplate0.0' fill='#000' stroke='none' y='15' >Layer 0, z:0.0</text>
 			<path d='M 9.0 0.0 L 8.69 2.33 L 7.79 4.5 L 6.36 6.36 L 4.5 7.79 L 2.33 8.69 L 0.0 9.0 L -2.33 8.69 L -4.5 7.79 L -6.36 6.36 L -7.79 4.5 L -8.69 2.33 L -9.0 -0.0 L -8.69 -2.33 L -7.79 -4.5 L -6.36 -6.36 L -4.5 -7.79 L -2.33 -8.69 L -0.0 -9.0 L 2.33 -8.69 L 4.5 -7.79 L 6.36 -6.36 L 7.79 -4.5 L 8.69 -2.33 z' transform='scale(3.7, -3.7) translate(9.0, 9.0)' />
 		</g>
 		<g id='z:5.0' inkscape:groupmode='layer' inkscape:label='Layer 1, z:5.0' transform='translate(280.0, 300.1)'>
-			<!--id='layerTextTemplate' must be there so that the text could be removed if necessary-->
+<!--id='layerTextTemplate' must be there so that the text could be removed if necessary-->
 			<text id='layerTextTemplate5.0' fill='#000' stroke='none' y='15' >Layer 1, z:5.0</text>
 			<path d='M -5.0 0.0 L 5.0 0.0 L 0.0 15.0 z' transform='scale(3.7, -3.7) translate(9.0, 9.0)' />
 		</g>
 	</g>
-	<!--End Layer Data-->
-	<!--beginningOfControlSection='true' must be there or else the control boxes will be carved-->
+<!--End Layer Data-->
+<!--beginningOfControlSection='true' must be there or else the control boxes will be carved-->
 	<g id='controls' beginningOfControlSection='true' inkscape:groupmode='layer' inkscape:label='Controls'>
-	<!--id='isoControlBox' must be there so that the controls could be removed if necessary-->
+<!--id='isoControlBox' must be there so that the controls could be removed if necessary-->
 		<g id='isoControlBox' fill='#000' font-family='Arial' font-size='15px' font-weight='bold' transform='translate(20, 60)' visibility='hidden'>
 			<rect fill='silver' height='720' stroke='gray' stroke-width='4px' width='240' />
 			<circle id='globe' cx='120' cy='120' fill='gray' r='100' />
@@ -390,11 +427,11 @@ function viewScroll() {
 				<text id='volumeIso' y='60' >Volume: 0.33 cm3</text>
 			</g>
 		</g>
-		<!--id='layerControlBox' must be there so that the controls could be removed if necessary-->
+<!--id='layerControlBox' must be there so that the controls could be removed if necessary-->
 		<g id='layerControlBox' fill='#000' font-family='Arial' font-size='15px' font-weight='bold' transform='translate(20, 60)' visibility='hidden'>
 			<rect fill='silver' height='720' stroke='gray' stroke-width='4px' width='240' />
 			<path d='M 66 164 h76 v6 l18 -9 l-18 -9 v6 h-70 v-70 h6 l-9 -18 l-9 18 h6 z' stroke-width='0' />
-			<!--<path stroke='#000' stroke-width='3' d='M 20 20 h5 l-5 -10 l-5 10 h5 v35 h35 v-5 l10 5 l-10 5 v-5 h-35 z'/>-->
+<!--<path stroke='#000' stroke-width='3' d='M 20 20 h5 l-5 -10 l-5 10 h5 v35 h35 v-5 l10 5 l-10 5 v-5 h-35 z'/>-->
 			<text text-anchor='middle' x='68' y='64' >Y</text>
 			<text x='165' y='166' >X</text>
 			<text id='minIndexLayer' x='20' y='245' >0</text>
@@ -433,7 +470,7 @@ function viewScroll() {
 				<text id='volumeLayer' y='60' >Volume: 0.33 cm3</text>
 			</g>
 		</g>
-		<!--id='scrollControlBox' must be there so that the controls could be removed if necessary-->
+<!--id='scrollControlBox' must be there so that the controls could be removed if necessary-->
 		<g id='scrollControlBox' fill='#000' font-family='Arial' font-size='15px' font-weight='bold' transform='translate(20, 60)' visibility='visible'>
 			<rect fill='silver' height='720' stroke='gray' stroke-width='4px' width='240' />
 			<path d='M 66 164 h76 v6 l18 -9 l-18 -9 v6 h-70 v-70 h6 l-9 -18 l-9 18 h6 z' stroke-width='0' />
@@ -482,7 +519,7 @@ function viewScroll() {
 		<lineation target='=[[-5, 0, 5], [5, 0, 5], [0, 15, 5]]' />
 	</path>
 	<extrude name='writeTest' quantity='2' target='=document.getElementByID(pathTest)'>
-		<matrix scale.rectangular.x='2' />
+		<matrix scale.x='2' />
 	</extrude>
 	<write addLayerTemplate='t' target='=document.getElementsByName(writeTest)' />
 </fabmetheus>

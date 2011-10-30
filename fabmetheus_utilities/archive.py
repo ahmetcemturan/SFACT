@@ -18,7 +18,7 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-globalTemporarySettingsPath = os.path.join(os.getcwd(), 'sfact_profiles')
+globalTemporarySettingsPath = os.path.join(os.getcwd(), 'sfact_profiles')#(os.path.expanduser('~'), '.skeinforge')
 
 
 def addToNamePathDictionary(directoryPath, namePathDictionary):
@@ -41,6 +41,14 @@ def getAbsoluteFrozenFolderPath(filePath, folderName=''):
 			filePath = ''.join(filePath.rpartition('\\')[: 2])
 		filePath = os.path.join(filePath, 'skeinforge_application')
 	return getAbsoluteFolderPath(filePath, folderName)
+
+def getAnalyzePluginsDirectoryPath(subName=''):
+	'Get the analyze plugins directory path.'
+	return getJoinedPath(getSkeinforgePluginsPath('analyze_plugins'), subName)
+
+def getCraftPluginsDirectoryPath(subName=''):
+	'Get the craft plugins directory path.'
+	return getJoinedPath(getSkeinforgePluginsPath('craft_plugins'), subName)
 
 def getDocumentationPath(subName=''):
 	'Get the documentation file path.'
@@ -65,6 +73,10 @@ def getFabmetheusPath(subName=''):
 	else:
 		fabmetheusFile = os.path.dirname(os.path.abspath(__file__))
 	return getJoinedPath(os.path.dirname(fabmetheusFile), subName)
+
+def getFabmetheusToolsPath(subName=''):
+	'Get the fabmetheus tools directory path.'
+	return getJoinedPath(getFabmetheusUtilitiesPath('fabmetheus_tools'), subName)
 
 def getFabmetheusUtilitiesPath(subName=''):
 	'Get the fabmetheus utilities directory path.'
@@ -184,6 +196,10 @@ def getGeometryUtilitiesPath(subName=''):
 	'Get the geometry_utilities directory path.'
 	return getJoinedPath(getGeometryPath('geometry_utilities'), subName)
 
+def getInterpretPluginsPath(subName=''):
+	'Get the interpret plugins directory path.'
+	return getJoinedPath(getFabmetheusToolsPath('interpret_plugins'), subName)
+
 def getJoinedPath(path, subName=''):
 	'Get the joined file path.'
 	if subName == '':
@@ -296,7 +312,9 @@ def getTextIfEmpty(fileName, text):
 
 def getTextLines(text):
 	'Get the all the lines of text of a text.'
-	textLines = text.replace('\r', '\n').replace('\n\n', '\n').split('\n')
+	if '\r' in text:
+		text = text.replace('\r', '\n').replace('\n\n', '\n')
+	textLines = text.split('\n')
 	if len(textLines) == 1:
 		if textLines[0] == '':
 			return []

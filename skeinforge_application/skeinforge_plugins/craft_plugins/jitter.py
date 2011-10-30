@@ -46,7 +46,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -113,7 +113,7 @@ class JitterRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.jitter.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Jitter', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Jitter')
-		self.activateJitter = settings.BooleanSetting().getFromValue('Activate Jitter to have your perimeter and loop endpoints scattered', self, True)
+		self.activateJitter = settings.BooleanSetting().getFromValue('Activate Jitter to have your perimeter and loop endpoints scattered', self, False)
 		self.jitterOverPerimeterWidth = settings.FloatSpin().getFromValue(0.0, 'Jitter Over Perimeter Width (ratio):', self, 10.0, 2.0)
 		self.executeTitle = 'Jitter'
 

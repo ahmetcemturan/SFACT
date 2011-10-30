@@ -14,7 +14,10 @@ An export canvas plugin is a script in the export_canvas_plugins folder which ha
 
 
 from __future__ import absolute_import
+#Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
+
+from fabmetheus_utilities import archive
 from fabmetheus_utilities import gcodec
 from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
@@ -43,8 +46,7 @@ class PostscriptRepository:
 		self.postscriptProgram = settings.StringSetting().getFromValue('Postscript Program:', self, 'gimp')
 
 	def execute(self):
-		"Convert to postscript button has been clicked."
-		"Export the canvas as a postscript file."
+		"Convert to postscript button has been clicked. Export the canvas as a postscript file."
 		postscriptFileName = archive.getFilePathWithUnderscoredBasename( self.fileName, self.suffix )
 		boundingBox = self.canvas.bbox( settings.Tkinter.ALL ) # tuple (w, n, e, s)
 		boxW = boundingBox[0]
@@ -58,9 +60,10 @@ class PostscriptRepository:
 		if postscriptProgram == '':
 			return
 		postscriptFilePath = '"' + os.path.normpath( postscriptFileName ) + '"' # " to send in file name with spaces
-		shellCommand = postscriptProgram + ' ' + postscriptFilePath
+		shellCommand = postscriptProgram
 		print('')
 		if fileExtension == '':
+			shellCommand += ' ' + postscriptFilePath
 			print('Sending the shell command:')
 			print(shellCommand)
 			commandResult = os.system(shellCommand)
@@ -69,8 +72,7 @@ class PostscriptRepository:
 				print('If so, try installing the %s program or look for another one, like the Gnu Image Manipulation Program (Gimp) which can be found at:' % postscriptProgram )
 				print('http://www.gimp.org/')
 			return
-		convertedFileName = archive.getFilePathWithUnderscoredBasename( postscriptFilePath, '.' + fileExtension + '"')
-		shellCommand += ' ' + convertedFileName
+		shellCommand += ' ' + archive.getFilePathWithUnderscoredBasename( postscriptFilePath, '.' + fileExtension + '"')
 		print('Sending the shell command:')
 		print(shellCommand)
 		commandResult = os.system(shellCommand)

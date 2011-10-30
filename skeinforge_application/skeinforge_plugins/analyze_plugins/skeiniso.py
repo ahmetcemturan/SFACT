@@ -6,7 +6,7 @@ The skeiniso manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skeiniso
 
 ==Operation==
-The default 'Activate Skeiniso' checkbox is on.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Skeiniso' checkbox is on, when skeiniso is run directly.
+The default 'Activate Skeiniso' checkbox is off.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Skeiniso' checkbox is on, when skeiniso is run directly.
 
 Skeiniso requires skeinforge comments in the gcode file to distinguish the loops and perimeters.  If the comments are deleted, all threads will be displayed as generic threads.  To get the penultimate file of the tool chain, just before export deletes the comments, select 'Save Penultimate Gcode' in export, and open the gcode file with the suffix '_penultimate.gcode' with skeiniso.
 
@@ -302,7 +302,7 @@ class SkeinisoRepository( tableau.TableauRepository ):
 		self.baseNameSynonym = 'behold.csv'
 		self.fileNameInput = settings.FileNameInput().getFromFileName( [ ('Gcode text files', '*.gcode') ], 'Open File for Skeiniso', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skeiniso')
-		self.activateSkeiniso = settings.BooleanSetting().getFromValue('Activate Skeiniso', self, True )
+		self.activateSkeiniso = settings.BooleanSetting().getFromValue('Activate Skeiniso', self, False)
 		self.addAnimation()
 		self.axisRulings = settings.BooleanSetting().getFromValue('Axis Rulings', self, True )
 		settings.LabelSeparator().getFromRepository(self)

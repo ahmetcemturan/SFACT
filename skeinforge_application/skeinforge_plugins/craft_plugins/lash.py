@@ -53,7 +53,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -89,8 +89,8 @@ class LashRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Lash', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Lash')
 		self.activateLash = settings.BooleanSetting().getFromValue('Activate Lash if you have backlash in your axes', self, False )
-		self.xBacklash = settings.FloatSpin().getFromValue( 0.0, 'X Backlash (mm):', self, 0.5, 0.0 )
-		self.yBacklash = settings.FloatSpin().getFromValue( 0.0, 'Y Backlash (mm):', self, 0.5, 0.0 )
+		self.xBacklash = settings.FloatSpin().getFromValue( 0.1, 'X Backlash (mm):', self, 0.5, 0.2 )
+		self.yBacklash = settings.FloatSpin().getFromValue( 0.1, 'Y Backlash (mm):', self, 0.5, 0.3 )
 		self.executeTitle = 'Lash'
 
 	def execute(self):

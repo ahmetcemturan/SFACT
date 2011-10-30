@@ -2,7 +2,9 @@
 """
 This page is in the table of contents.
 Bottom sets the bottom of the carving to the defined altitude.
-Adjusts the Z heights of each layer.
+
+The bottom manual page is at:
+http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Bottom
 
 ==Operation==
 The default 'Activate Bottom' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
@@ -61,7 +63,7 @@ import sys
 import time
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -97,6 +99,7 @@ class BottomRepository:
 			'skeinforge_application.skeinforge_plugins.craft_plugins.bottom.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName(
 			fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Bottom', self, '')
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Bottom')
 		self.activateBottom = settings.BooleanSetting().getFromValue('Activate Bottom... and dont change anything else here!!!', self, True)
 		self.additionalHeightOverLayerThickness = settings.FloatSpin().getFromValue(
 			0.0, 'Additional Height (ratio):', self, 1.0, 0.5)

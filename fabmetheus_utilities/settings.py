@@ -140,6 +140,38 @@ def getAlongWayHexadecimalPrimary( beginBrightness, beginRatio, colorWidth, endB
 	brightness = beginRatio * float( beginBrightness ) + endRatio * float( endBrightness )
 	return getWidthHex( int( round( brightness ) ), colorWidth )
 
+def getAlterationFile(fileName):
+	"Get the file from the fileName or the lowercase fileName in the alterations directories."
+	settingsAlterationsDirectory = archive.getSettingsPath('alterations')
+	archive.makeDirectory(settingsAlterationsDirectory)
+	fileInSettingsAlterationsDirectory = getFileInGivenDirectory(settingsAlterationsDirectory, fileName)
+	if fileInSettingsAlterationsDirectory != '':
+		return fileInSettingsAlterationsDirectory
+	alterationsDirectory = archive.getSkeinforgePath('alterations')
+	return getFileInGivenDirectory(alterationsDirectory, fileName)
+
+def getAlterationFileLine(fileName):
+	"Get the alteration file line from the fileName."
+	lines = getAlterationLines(fileName)
+	if len(lines) == 0:
+		return []
+	return getAlterationFileLineBlindly(fileName)
+
+def getAlterationFileLineBlindly(fileName):
+	"Get the alteration file line from the fileName."
+	return '(<alterationFile>) %s (</alterationFile>)' % fileName
+
+def getAlterationFileLines(fileName):
+	'Get the alteration file line and the text lines from the fileName in the alterations directories.'
+	lines = getAlterationLines(fileName)
+	if len(lines) == 0:
+		return []
+	return [getAlterationFileLineBlindly(fileName)] + lines
+
+def getAlterationLines(fileName):
+	"Get the text lines from the fileName in the alterations directories."
+	return archive.getTextLines(getAlterationFile(fileName))
+
 def getDisplayedDialogFromConstructor(repository):
 	"Display the repository dialog."
 	try:
@@ -175,16 +207,6 @@ def getEachWordCapitalized( name ):
 		capitalizedStrings.append( word.capitalize() )
 	return ' '.join( capitalizedStrings )
 
-def getFileInAlterationsOrGivenDirectory(fileName):
-	"Get the file from the fileName or the lowercase fileName in the alterations directories."
-	settingsAlterationsDirectory = archive.getSettingsPath('alterations')
-	archive.makeDirectory(settingsAlterationsDirectory)
-	fileInSettingsAlterationsDirectory = getFileInGivenDirectory(settingsAlterationsDirectory, fileName)
-	if fileInSettingsAlterationsDirectory != '':
-		return fileInSettingsAlterationsDirectory
-	alterationsDirectory = archive.getSkeinforgePath('alterations')
-	return getFileInGivenDirectory(alterationsDirectory, fileName)
-
 def getFileInGivenDirectory( directory, fileName ):
 	"Get the file from the fileName or the lowercase fileName in the given directory."
 	directoryListing = os.listdir(directory)
@@ -219,10 +241,6 @@ def getGlobalRepositoryDialogValues():
 	"Get the global repository dialog values."
 	global globalRepositoryDialogListTable
 	return euclidean.getListTableElements(globalRepositoryDialogListTable)
-
-def getLinesInAlterationsOrGivenDirectory(fileName):
-	"Get the text lines from the fileName in the alterations directories, if there is no file look in the given directory."
-	return archive.getTextLines(getFileInAlterationsOrGivenDirectory(fileName))
 
 def getPathInFabmetheusFromFileNameHelp( fileNameHelp ):
 	"Get the directory path from file name help."
@@ -271,7 +289,7 @@ def getReadRepository(repository):
 		if repository.baseNameSynonym != None:
 			text = archive.getFileText(archive.getProfilesPath(getProfileBaseNameSynonym(repository)), False)
 	if text == '':
-		print('The default %s will be written in the sfact_profiles folder in the home directory.' % repository.title.lower() )
+		print('The default %s will be written in the sfact_profiles folder in the Application directory.' % repository.title.lower() )
 		text = archive.getFileText(getProfilesDirectoryInAboveDirectory(getProfileBaseName(repository)), False)
 		if text != '':
 			readSettingsFromText(repository, text)
@@ -479,12 +497,12 @@ def setButtonFontWeightString( button, isBold ):
 	except:
 		pass
 
-def setEntryText( entry, value ):
+def setEntryText(entry, value):
 	"Set the entry text."
 	if entry == None:
 		return
-	entry.delete( 0, Tkinter.END )
-	entry.insert( 0, str(value) )
+	entry.delete(0, Tkinter.END)
+	entry.insert(0, str(value))
 
 def setIntegerValueToString( integerSetting, valueString ):
 	"Set the integer to the string."
@@ -680,7 +698,7 @@ class StringSetting:
 
 	def setStateToValue(self):
 		"Set the entry to the value."
-		setEntryText( self.entry, self.value )
+		setEntryText(self.entry, self.value)
 
 	def setToDisplay(self):
 		"Set the string to the entry field."
@@ -1304,11 +1322,12 @@ class LabelDisplay:
 		"Add this to the dialog."
 		gridPosition.increment()
 		self.label = Tkinter.Label( gridPosition.master, text = self.name )
-		self.label.grid( row = gridPosition.row, column = 0, columnspan = 3, sticky = Tkinter.W )
+		self.label.grid( row = gridPosition.row, column = 0, columnspan = self.columnspan, sticky = Tkinter.W )
 		LabelHelp( self.repository.fileNameHelp, gridPosition.master, self.name, self.label )
 
 	def getFromName( self, name, repository ):
 		"Initialize."
+		self.columnspan = 3
 		self.name = name
 		self.repository = repository
 		repository.displayEntities.append(self)
@@ -1428,6 +1447,7 @@ class MenuButtonDisplay:
 
 	def getFromName( self, name, repository ):
 		"Initialize."
+		self.columnspan = 2
 		self.menuRadios = []
 		self.name = name
 		self.radioVar = None
@@ -1455,10 +1475,10 @@ class MenuButtonDisplay:
 		self.label = Tkinter.Label( gridPosition.master, text = self.name )
 		self.label.grid( row = gridPosition.row, column = 0, columnspan = 3, sticky = Tkinter.W )
 		self.menuButton = Tkinter.OptionMenu( gridPosition.master, self.radioVar, self.optionList )
-		self.menuButton.grid( row = gridPosition.row, column = 3, columnspan = 2, sticky = Tkinter.W )
+		self.menuButton.grid( row = gridPosition.row, column = 3, columnspan = self.columnspan, sticky = Tkinter.W )
 		self.menuButton.menu = Tkinter.Menu( self.menuButton, tearoff = 0 )
 		self.menu = self.menuButton.menu
-		self.menuButton['menu']  =  self.menu
+		self.menuButton['menu'] = self.menu
 		LabelHelp( self.repository.fileNameHelp, gridPosition.master, self.name, self.label )
 
 
@@ -1583,7 +1603,7 @@ class PluginFrame:
 		gridVertical.canvas['yscrollcommand'] = gridVertical.yScrollbar.set
 		gridVertical.canvas.create_window( 0, 0, anchor = Tkinter.NW, window = gridVertical.frameGridVertical.master )
 		gridVertical.canvas['scrollregion'] = gridVertical.frameGridVertical.master.grid_bbox()
-		gridVertical.canvas.grid( row = gridVertical.row, column = gridVertical.column, columnspan = 11, sticky = Tkinter.E + Tkinter.W + Tkinter.N + Tkinter.S )
+		gridVertical.canvas.grid( row = gridVertical.row, column = gridVertical.column, columnspan = 12, sticky = Tkinter.E + Tkinter.W + Tkinter.N + Tkinter.S )
 		gridVertical.master.grid_rowconfigure( gridVertical.row, weight = 1 )
 		gridVertical.master.grid_columnconfigure( gridVertical.column + 11, weight = 1 )
 		gridVertical.frameGridVertical.master.lift()

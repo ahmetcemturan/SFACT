@@ -78,7 +78,7 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -87,7 +87,7 @@ def addAlreadyFilledArounds( alreadyFilledArounds, loop, radius ):
 	"Add already filled loops around loop to alreadyFilledArounds."
 	radius = abs(radius)
 	alreadyFilledLoop = []
-	slightlyGreaterThanRadius = 1.01 * radius
+	slightlyGreaterThanRadius = intercircle.globalIntercircleMultiplier * radius
 	muchGreaterThanRadius = 2.5 * radius
 	centers = intercircle.getCentersFromLoop( loop, slightlyGreaterThanRadius )
 	for center in centers:
@@ -147,7 +147,7 @@ def addSegmentOutline( isThick, outlines, pointBegin, pointEnd, width ):
 		outline.append( pointEndIntermediate )
 		outline.append( outsideEndCenterDown )
 		outline.append( outsideBeginCenterDown )
-	outlines.append( euclidean.getPointsRoundZAxis( normalizedSegment, outline ) )
+	outlines.append( euclidean.getRotatedComplexes( normalizedSegment, outline ) )
 
 def getCraftedText( fileName, text='', repository=None):
 	"Inset the preface file or text."
@@ -194,11 +194,7 @@ def getSegmentsFromLoopListsPoints( loopLists, pointBegin, pointEnd ):
 	pointEndRotated = segmentYMirror * pointEnd
 	rotatedLoopLists = []
 	for loopList in loopLists:
-		rotatedLoopList = []
-		rotatedLoopLists.append( rotatedLoopList )
-		for loop in loopList:
-			rotatedLoop = euclidean.getPointsRoundZAxis( segmentYMirror, loop )
-			rotatedLoopList.append( rotatedLoop )
+		rotatedLoopLists.append(euclidean.getRotatedComplexLists(segmentYMirror, loopList))
 	xIntersectionIndexList = []
 	xIntersectionIndexList.append( euclidean.XIntersectionIndex( - 1, pointBeginRotated.real ) )
 	xIntersectionIndexList.append( euclidean.XIntersectionIndex( - 1, pointEndRotated.real ) )
@@ -271,6 +267,7 @@ class InsetSkein:
 		self.layerCount = settings.LayerCount()
 		self.lineIndex = 0
 		self.rotatedLoopLayer = None
+		self.scaledBridgeWidthMultiplier = 0.5
 
 	def addGcodeFromPerimeterPaths(self, isIntersectingSelf, loop, loopLists, radius, rotatedLoopLayer):
 		"Add the perimeter paths to the output."
@@ -323,7 +320,7 @@ class InsetSkein:
 
 	def addGcodePerimeterBlockFromRemainingLoop(self, loop, loopLists, radius, rotatedLoopLayer):
 		"Add the perimter block remainder of the loop which does not overlap the alreadyFilledArounds loops."
-		if self.repository.overlapRemovalWidthOverPerimeterWidth.value < 0.1:
+		if self.repository.overlapRemovalWidthOverPerimeterWidth.value < 0.5:#ACT
 			self.distanceFeedRate.addPerimeterBlock(loop, rotatedLoopLayer.z)
 			return
 		isIntersectingSelf = isIntersectingItself(loop, self.overlapRemovalWidth)
@@ -334,18 +331,20 @@ class InsetSkein:
 		addAlreadyFilledArounds(loopLists, loop, self.overlapRemovalWidth)
 
 #	def addInitializationToOutput(self):
-#		"Add initialization gcode to the output."#		if self.repository.addCustomCodeForTemperatureReading.value:
+#		"Add initialization gcode to the output."
+#		if self.repository.addCustomCodeForTemperatureReading.value:
 #			self.distanceFeedRate.addLine('M105') # Custom code for temperature reading.
-#		return
 
 	def addInset(self, rotatedLoopLayer):
 		"Add inset to the layer."
 		alreadyFilledArounds = []
-		halfWidth = self.halfPerimeterWidth * 0.7853 #todo was without 0.7853
+		halfWidth = self.halfPerimeterWidth
 		if rotatedLoopLayer.rotation != None:
-			halfWidth = self.repository.bridgeWidthMultiplier.value * ((2* self.repository.nozzleDiameter.value - self.layerThickness) / 2) * 0.7853
+#			halfWidth = self.repository.bridgeWidthMultiplier.value *   ((2* self.repository.nozzleDiameter.value - self.layerThickness) / 2)
+			halfWidth = self.repository.bridgeWidthMultiplier.value * self.halfPerimeterWidth * (self.nozzleXsection / self.extrusionXsection)
+			self.scaledBridgeWidthMultiplier	= self.repository.bridgeWidthMultiplier.value * self.halfPerimeterWidth * (self.nozzleXsection / self.extrusionXsection)
 			self.distanceFeedRate.addTagBracketedLine('bridgeRotation', rotatedLoopLayer.rotation)
-		extrudateLoops = intercircle.getInsetLoopsFromLoops(halfWidth, rotatedLoopLayer.loops)
+		extrudateLoops = intercircle.getInsetLoopsFromLoops(rotatedLoopLayer.loops, halfWidth)
 		triangle_mesh.sortLoopsInOrderOfArea(not self.repository.loopOrderAscendingArea.value, extrudateLoops)
 		for extrudateLoop in extrudateLoops:
 			self.addGcodeFromRemainingLoop(extrudateLoop, alreadyFilledArounds, halfWidth, rotatedLoopLayer)
@@ -367,9 +366,11 @@ class InsetSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(<decimalPlacesCarried>':
-#				self.addInitializationToOutput()
+				#self.addInitializationToOutput()
 				self.distanceFeedRate.addTagBracketedLine(
-					'bridgeWidthMultiplier', self.distanceFeedRate.getRounded( self.repository.bridgeWidthMultiplier.value ) )
+					'bridgeWidthMultiplier', self.distanceFeedRate.getRounded( self.repository.bridgeWidthMultiplier.value ))
+				self.distanceFeedRate.addTagBracketedLine(
+					'scaledBridgeWidthMultiplier', self.distanceFeedRate.getRounded( self.scaledBridgeWidthMultiplier ))
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('inset')
 				return
@@ -378,8 +379,11 @@ class InsetSkein:
 			elif firstWord == '(<perimeterWidth>':
 				self.perimeterWidth = float(splitLine[1])
 				self.halfPerimeterWidth = 0.5 * self.perimeterWidth
-				self.overlapRemovalWidth = self.perimeterWidth * (0.7853) * self.repository.overlapRemovalWidthOverPerimeterWidth.value
+				self.overlapRemovalWidth = self.perimeterWidth * self.repository.overlapRemovalWidthOverPerimeterWidth.value
 				self.distanceFeedRate.addTagBracketedLine('nozzleDiameter', self.repository.nozzleDiameter.value )
+				self.nozzleXsection = (self.repository.nozzleDiameter.value/2) ** 2 * math.pi
+				self.extrusionXsection = ((self.perimeterWidth + self.layerThickness)/4) ** 2 * math.pi
+				self.distanceFeedRate.addTagBracketedLine('nozzleXsection', (self.repository.nozzleDiameter.value/2) ** 2 * math.pi)
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
@@ -392,13 +396,12 @@ class InsetSkein:
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
 			self.boundary.append(location.dropAxis())
 		elif firstWord == '(<bridgeRotation>':
-#			secondWordWithoutBrackets = splitLine[1].replace('(', '').replace(')', '')
 			self.rotatedLoopLayer.rotation = gcodec.getRotationBySplitLine(splitLine)
 #		elif firstWord == '(</crafting>)':
 #				self.distanceFeedRate.addLine(line)
 #				if self.repository.turnExtruderHeaterOffAtShutDown.value:
 #					self.distanceFeedRate.addLine('M104 S0') # Turn extruder heater off.
-#				return#todo put back return?
+#				return
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('inset')
 			self.rotatedLoopLayer = euclidean.RotatedLoopLayer(float(splitLine[1]))

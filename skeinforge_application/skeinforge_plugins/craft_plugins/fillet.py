@@ -6,7 +6,7 @@ The fillet manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Fillet
 
 ==Operation==
-The default 'Activate Fillet' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Fillet' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Fillet Procedure Choice===

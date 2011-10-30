@@ -105,7 +105,7 @@ class OutsetSkein:
 
 	def addOutset(self, rotatedLoopLayer):
 		'Add outset to the layer.'
-		extrudateLoops = intercircle.getInsetLoopsFromLoops(-self.absoluteHalfPerimeterWidth, rotatedLoopLayer.loops)
+		extrudateLoops = intercircle.getInsetLoopsFromLoops(rotatedLoopLayer.loops, -self.absoluteHalfPerimeterWidth)
 		triangle_mesh.sortLoopsInOrderOfArea(False, extrudateLoops)
 		for extrudateLoop in extrudateLoops:
 			self.addGcodeFromRemainingLoop(extrudateLoop, self.absoluteHalfPerimeterWidth, rotatedLoopLayer.z)
@@ -127,7 +127,7 @@ class OutsetSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addTagBracketedLine('procedureName', 'outset')
+				self.distanceFeedRate.addTagBracketedProcedure('outset')
 				return
 			elif firstWord == '(<perimeterWidth>':
 				self.absoluteHalfPerimeterWidth = 0.5 * abs(float(splitLine[1]))

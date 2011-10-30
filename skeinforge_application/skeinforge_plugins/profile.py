@@ -15,6 +15,7 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from fabmetheus_utilities import archive
 from fabmetheus_utilities import euclidean
 from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
@@ -45,7 +46,7 @@ def addToMenu( master, menu, repository, window ):
 
 def addToProfileMenu( menu ):
 	"Add a profile menu."
-	settings.ToolDialog().addPluginToMenu( menu, __file__[ : __file__.rfind('.') ] )
+	settings.ToolDialog().addPluginToMenu(menu, archive.getUntilDot(archive.getSkeinforgePluginsPath('profile.py')))
 	menu.add_separator()
 	directoryPath = skeinforge_profile.getPluginsDirectoryPath()
 	pluginFileNames = skeinforge_profile.getPluginFileNames()

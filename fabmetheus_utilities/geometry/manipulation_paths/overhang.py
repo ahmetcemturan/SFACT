@@ -310,7 +310,7 @@ class OverhangWiddershinsLeft:
 		self.diagonalDistance = self.pointMinusBottomY * self.diagonalRatio
 		if self.alongAway.pointIndex == None:
 			return self.getDistanceToBottom()
-		rotatedLoop = euclidean.getPointsRoundZAxis( self.intersectionYMirror,  euclidean.getComplexPath( self.alongAway.loop ) )
+		rotatedLoop = euclidean.getRotatedComplexes( self.intersectionYMirror,  euclidean.getComplexPath( self.alongAway.loop ) )
 		rotatedPointComplex = rotatedLoop[ self.alongAway.pointIndex ]
 		beginX = rotatedPointComplex.real
 		endX = beginX + self.diagonalDistance + self.diagonalDistance

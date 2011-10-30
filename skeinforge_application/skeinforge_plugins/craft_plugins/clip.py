@@ -1,6 +1,6 @@
 """
 This page is in the table of contents.
-Clip clips the ends of loops to prevent bumps from forming.
+The clip plugin clips the loop ends to prevent bumps from forming, and connects loops.
 
 The clip manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Clip
@@ -19,7 +19,11 @@ This setting will affect the output of clip, and the output of the skin.  In ski
 ===Maximum Connection Distance Over Perimeter Width===
 Default is ten.
 
-Defines the ratio of the maximum connection distance between loops over the perimeter width.  If the ratio is zero, nothing will be done.  If it is ratio greater than zero, clip will connect nearby loops, combining them into a spiral.  For loop connection, nearby means that the distance between a pair of loops is smaller or equal to the maximum connection distance.
+Defines the ratio of the maximum connection distance between loops over the perimeter width.
+
+Clip will attempt to connect loops that end close to each other, combining them into a spiral, so that the extruder does not stop and restart.  This setting sets the maximum gap size to connect.  This feature can reduce the amount of extra material or gaps formed at the loop end.
+
+Setting this to zero disables this feature, preventing the loops from being connected.
 
 ==Examples==
 The following examples clip the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and clip.py.
@@ -53,7 +57,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -114,11 +118,10 @@ class ClipSkein:
 		self.oldLocation = None
 		self.oldWiddershins = None
 		self.travelFeedRateMinute = None
-		self.layerIndex = - 1
 
 	def addGcodeFromThreadZ( self, thread, z ):
 		"Add a gcode thread to the output."
-		if len(thread) > 0 :
+		if len(thread) > 0:
 			self.distanceFeedRate.addGcodeMovementZWithFeedRate( self.travelFeedRateMinute, thread[0], z )
 		else:
 			print( "zero length vertex positions array which was skipped over, this should never happen" )
@@ -267,18 +270,16 @@ class ClipSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('clip')
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
 			elif firstWord == '(<perimeterWidth>':
 				self.distanceFeedRate.addTagBracketedLine('clipOverPerimeterWidth', clipRepository.clipOverPerimeterWidth.value)
 				self.perimeterWidth = float(splitLine[1])
 				absolutePerimeterWidth = abs( self.perimeterWidth )
-				self.clipLength = (clipRepository.clipOverPerimeterWidth.value * self.perimeterWidth * (0.7853))/2
+				self.clipLength = (clipRepository.clipOverPerimeterWidth.value*(self.perimeterWidth * (0.7854/2)))
 				self.connectingStepLength = 0.5 * absolutePerimeterWidth
 				self.layerPixelWidth = 0.1 * absolutePerimeterWidth
 				self.maximumConnectionDistance = clipRepository.maximumConnectionDistanceOverPerimeterWidth.value * absolutePerimeterWidth
-			elif firstWord == '(<objectFirstLayerTravelSpeed>':
-				self.objectFirstLayerTravelSpeed = 60.0 * float(splitLine[1])
+#			elif firstWord == '(<objectFirstLayerTravelSpeed>':
+#				self.objectFirstLayerTravelSpeed = 60.0 * float(splitLine[1])
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
@@ -301,7 +302,6 @@ class ClipSkein:
 				return
 		elif firstWord == '(<layer>':
 			self.setLayerPixelTable()
-			self.layerIndex += 1
 		if firstWord == '(<loop>' or firstWord == '(<perimeter>':
 			self.isLoopPerimeter = True
 		if self.loopPath == None:

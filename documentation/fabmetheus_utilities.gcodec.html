@@ -100,6 +100,8 @@ many lines of text<br>
 
 <dl><dt><a name="DistanceFeedRate-addLine"><strong>addLine</strong></a>(self, line)</dt><dd><tt>Add&nbsp;a&nbsp;line&nbsp;of&nbsp;text&nbsp;and&nbsp;a&nbsp;newline&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
 
+<dl><dt><a name="DistanceFeedRate-addLineCheckAlteration"><strong>addLineCheckAlteration</strong></a>(self, line)</dt><dd><tt>Add&nbsp;a&nbsp;line&nbsp;of&nbsp;text&nbsp;and&nbsp;a&nbsp;newline&nbsp;to&nbsp;the&nbsp;output&nbsp;and&nbsp;check&nbsp;to&nbsp;see&nbsp;if&nbsp;it&nbsp;is&nbsp;an&nbsp;alteration&nbsp;line.</tt></dd></dl>
+
 <dl><dt><a name="DistanceFeedRate-addLines"><strong>addLines</strong></a>(self, lines)</dt><dd><tt>Add&nbsp;lines&nbsp;of&nbsp;text&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
 
 <dl><dt><a name="DistanceFeedRate-addLinesSetAbsoluteDistanceMode"><strong>addLinesSetAbsoluteDistanceMode</strong></a>(self, lines)</dt><dd><tt>Add&nbsp;lines&nbsp;of&nbsp;text&nbsp;to&nbsp;the&nbsp;output&nbsp;and&nbsp;ensure&nbsp;the&nbsp;absolute&nbsp;mode&nbsp;is&nbsp;set.</tt></dd></dl>
@@ -119,6 +121,8 @@ many lines of text<br>
 <dl><dt><a name="DistanceFeedRate-getFirstWordMovement"><strong>getFirstWordMovement</strong></a>(self, firstWord, location)</dt><dd><tt>Get&nbsp;the&nbsp;start&nbsp;of&nbsp;the&nbsp;arc&nbsp;line.</tt></dd></dl>
 
 <dl><dt><a name="DistanceFeedRate-getInfillBoundaryLine"><strong>getInfillBoundaryLine</strong></a>(self, location)</dt><dd><tt>Get&nbsp;infill&nbsp;boundary&nbsp;gcode&nbsp;line.</tt></dd></dl>
+
+<dl><dt><a name="DistanceFeedRate-getIsAlteration"><strong>getIsAlteration</strong></a>(self, line)</dt><dd><tt>Determine&nbsp;if&nbsp;it&nbsp;is&nbsp;an&nbsp;alteration.</tt></dd></dl>
 
 <dl><dt><a name="DistanceFeedRate-getLineWithFeedRate"><strong>getLineWithFeedRate</strong></a>(self, feedRateMinute, line, splitLine)</dt><dd><tt>Get&nbsp;the&nbsp;line&nbsp;with&nbsp;a&nbsp;feed&nbsp;rate.</tt></dd></dl>
 
@@ -155,6 +159,7 @@ many lines of text<br>
  <dl><dt><a name="-getFirstWordFromLine"><strong>getFirstWordFromLine</strong></a>(line)</dt><dd><tt>Get&nbsp;the&nbsp;first&nbsp;word&nbsp;of&nbsp;a&nbsp;line.</tt></dd></dl>
  <dl><dt><a name="-getFirstWordIndexReverse"><strong>getFirstWordIndexReverse</strong></a>(firstWord, lines, startIndex)</dt><dd><tt>Parse&nbsp;gcode&nbsp;in&nbsp;reverse&nbsp;order&nbsp;until&nbsp;the&nbsp;first&nbsp;word&nbsp;if&nbsp;there&nbsp;is&nbsp;one,&nbsp;otherwise&nbsp;return&nbsp;-1.</tt></dd></dl>
  <dl><dt><a name="-getGcodeFileText"><strong>getGcodeFileText</strong></a>(fileName, gcodeText)</dt><dd><tt>Get&nbsp;the&nbsp;gcode&nbsp;text&nbsp;from&nbsp;a&nbsp;file&nbsp;if&nbsp;it&nbsp;the&nbsp;gcode&nbsp;text&nbsp;is&nbsp;empty&nbsp;and&nbsp;if&nbsp;the&nbsp;file&nbsp;is&nbsp;a&nbsp;gcode&nbsp;file.</tt></dd></dl>
+ <dl><dt><a name="-getGcodeWithoutDuplication"><strong>getGcodeWithoutDuplication</strong></a>(duplicateWord, gcodeText)</dt><dd><tt>Get&nbsp;gcode&nbsp;text&nbsp;without&nbsp;duplicate&nbsp;first&nbsp;words.</tt></dd></dl>
  <dl><dt><a name="-getIndexOfStartingWithSecond"><strong>getIndexOfStartingWithSecond</strong></a>(letter, splitLine)</dt><dd><tt>Get&nbsp;index&nbsp;of&nbsp;the&nbsp;first&nbsp;occurence&nbsp;of&nbsp;the&nbsp;given&nbsp;letter&nbsp;in&nbsp;the&nbsp;split&nbsp;line,&nbsp;starting&nbsp;with&nbsp;the&nbsp;second&nbsp;word.&nbsp;&nbsp;Return&nbsp;-&nbsp;1&nbsp;if&nbsp;letter&nbsp;is&nbsp;not&nbsp;found</tt></dd></dl>
  <dl><dt><a name="-getLineWithValueString"><strong>getLineWithValueString</strong></a>(character, line, splitLine, valueString)</dt><dd><tt>Get&nbsp;the&nbsp;line&nbsp;with&nbsp;a&nbsp;valueString.</tt></dd></dl>
  <dl><dt><a name="-getLocationFromSplitLine"><strong>getLocationFromSplitLine</strong></a>(oldLocation, splitLine)</dt><dd><tt>Get&nbsp;the&nbsp;location&nbsp;from&nbsp;the&nbsp;split&nbsp;line.</tt></dd></dl>
@@ -163,7 +168,6 @@ many lines of text<br>
  <dl><dt><a name="-getStringFromCharacterSplitLine"><strong>getStringFromCharacterSplitLine</strong></a>(character, splitLine)</dt><dd><tt>Get&nbsp;the&nbsp;string&nbsp;after&nbsp;the&nbsp;first&nbsp;occurence&nbsp;of&nbsp;the&nbsp;character&nbsp;in&nbsp;the&nbsp;split&nbsp;line.</tt></dd></dl>
  <dl><dt><a name="-getTagBracketedLine"><strong>getTagBracketedLine</strong></a>(tagName, value)</dt><dd><tt>Get&nbsp;line&nbsp;with&nbsp;a&nbsp;begin&nbsp;tag,&nbsp;value&nbsp;and&nbsp;end&nbsp;tag.</tt></dd></dl>
  <dl><dt><a name="-getTagBracketedProcedure"><strong>getTagBracketedProcedure</strong></a>(procedure)</dt><dd><tt>Get&nbsp;line&nbsp;with&nbsp;a&nbsp;begin&nbsp;procedure&nbsp;tag,&nbsp;procedure&nbsp;and&nbsp;end&nbsp;procedure&nbsp;tag.</tt></dd></dl>
- <dl><dt><a name="-getWithoutBracketsEqualTab"><strong>getWithoutBracketsEqualTab</strong></a>(line)</dt><dd><tt>Get&nbsp;a&nbsp;string&nbsp;without&nbsp;the&nbsp;greater&nbsp;than&nbsp;sign,&nbsp;the&nbsp;bracket&nbsp;and&nbsp;less&nbsp;than&nbsp;sign,&nbsp;the&nbsp;equal&nbsp;sign&nbsp;or&nbsp;the&nbsp;tab.</tt></dd></dl>
  <dl><dt><a name="-isProcedureDone"><strong>isProcedureDone</strong></a>(gcodeText, procedure)</dt><dd><tt>Determine&nbsp;if&nbsp;the&nbsp;procedure&nbsp;has&nbsp;been&nbsp;done&nbsp;on&nbsp;the&nbsp;gcode&nbsp;text.</tt></dd></dl>
  <dl><dt><a name="-isProcedureDoneOrFileIsEmpty"><strong>isProcedureDoneOrFileIsEmpty</strong></a>(gcodeText, procedure)</dt><dd><tt>Determine&nbsp;if&nbsp;the&nbsp;procedure&nbsp;has&nbsp;been&nbsp;done&nbsp;on&nbsp;the&nbsp;gcode&nbsp;text&nbsp;or&nbsp;the&nbsp;file&nbsp;is&nbsp;empty.</tt></dd></dl>
  <dl><dt><a name="-isThereAFirstWord"><strong>isThereAFirstWord</strong></a>(firstWord, lines, startIndex)</dt><dd><tt>Parse&nbsp;gcode&nbsp;until&nbsp;the&nbsp;first&nbsp;word&nbsp;if&nbsp;there&nbsp;is&nbsp;one.</tt></dd></dl>

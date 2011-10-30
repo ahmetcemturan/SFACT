@@ -13,7 +13,7 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.drill.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.export_plugins.binary_16_byte.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Export is a script to pick an export plugin and optionally print the output to a file.<br>
+Export is a craft tool to pick an export plugin, add information to the file name, and delete comments.<br>
  <br>
 The export manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Export">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Export</a><br>
@@ -25,6 +25,7 @@ The export manual page is at:<br>
 &nbsp;&nbsp;<a href="#Add Profile Extension">Add Profile Extension</a><br />
 &nbsp;&nbsp;<a href="#Add Timestamp Extension">Add Timestamp Extension</a><br />
 &nbsp;&nbsp;<a href="#Also Send Output To">Also Send Output To</a><br />
+&nbsp;&nbsp;<a href="#Analyze Gcode">Analyze Gcode</a><br />
 &nbsp;&nbsp;<a href="#Comment Choice">Comment Choice</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Do Not Delete Comments">Do Not Delete Comments</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Delete Crafting Comments">Delete Crafting Comments</a><br />
@@ -85,21 +86,27 @@ Default is empty.<br>
  <br>
 Defines the output name for sending to a file or pipe.  A common choice is stdout to print the output in the shell screen.  Another common choice is stderr.  With the empty default, nothing will be done.  If the value is anything else, the output will be written to that file name.<br>
  <br>
+<a name="Analyze Gcode" id="Analyze Gcode"></a><h3>Analyze Gcode</h3>
+
+Default is on.<br>
+ <br>
+When selected, the penultimate gcode will be sent to the analyze plugins to be analyzed and viewed.<br>
+ <br>
 <a name="Comment Choice" id="Comment Choice"></a><h3>Comment Choice</h3>
 
 Default is 'Delete All Comments'.<br>
  <br>
 <a name="Do Not Delete Comments" id="Do Not Delete Comments"></a><h4>Do Not Delete Comments</h4>
 
-When selected, export will not delete comments.  Crafting comments slow down the processing in many firmware types, which leads to segment pauses.<br>
+When selected, export will not delete comments.  Crafting comments slow down the processing in many firmware types, which leads to pauses and therefore a lower quality print.<br>
  <br>
 <a name="Delete Crafting Comments" id="Delete Crafting Comments"></a><h4>Delete Crafting Comments</h4>
 
-When selected, export will delete the time consuming crafting comments, but leave the initialization comments.  Since the crafting comments are deleted, there are no additional segment pauses.  The remaining initialization comments provide some useful information for the analyze tools.<br>
+When selected, export will delete the time consuming crafting comments, but leave the initialization comments.  Since the crafting comments are deleted, there are no pauses during extrusion.  The remaining initialization comments provide some useful information for the analyze tools.<br>
  <br>
 <a name="Delete All Comments" id="Delete All Comments"></a><h4>Delete All Comments</h4>
 
-When selected, export will delete all comments.  The comments are not necessary to run a fabricator.<br>
+When selected, export will delete all comments.  The comments are not necessary to run a fabricator.  Some printers do not support comments at all so the safest way is choose this option.<br>
  <br>
 <a name="Export Operations" id="Export Operations"></a><h3>Export Operations</h3>
 
@@ -109,7 +116,7 @@ Export presents the user with a choice of the export plugins in the export_plugi
 
 Default is gcode.<br>
  <br>
-Defines the file extension added to the name of the output file.<br>
+Defines the file extension added to the name of the output file.  The output file will be named as originalname_export.extension so if you are processing XYZ.stl the output will by default be XYZ_export.gcode<br>
  <br>
 <a name="Name of Replace File" id="Name of Replace File"></a><h3>Name of Replace File</h3>
 

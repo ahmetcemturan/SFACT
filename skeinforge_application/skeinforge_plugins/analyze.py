@@ -20,6 +20,7 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from fabmetheus_utilities import archive
 from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_analyze
 import sys
@@ -32,8 +33,9 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def addToMenu(master, menu, repository, window):
 	"Add a tool plugin menu."
+	analyzeFilePath = archive.getSkeinforgePluginsPath('analyze.py')
 	pluginsDirectoryPath = skeinforge_analyze.getPluginsDirectoryPath()
-	settings.addPluginsParentToMenu(pluginsDirectoryPath, menu, __file__, skeinforge_analyze.getPluginFileNames())
+	settings.addPluginsParentToMenu(pluginsDirectoryPath, menu, analyzeFilePath, skeinforge_analyze.getPluginFileNames())
 
 def getNewRepository():
 	'Get new repository.'

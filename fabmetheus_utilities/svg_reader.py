@@ -71,20 +71,15 @@ def getArcComplexes(begin, end, largeArcFlag, radius, sweepFlag, xAxisRotation):
 	midMinusBeginTransformed = midpointTransformed - beginTransformed
 	midMinusBeginTransformedLength = abs(midMinusBeginTransformed)
 	if midMinusBeginTransformedLength > 1.0:
-		print('Warning, midMinusBeginTransformedLength is too large for getArcComplexes in svgReader')
-		print(begin)
-		print(end)
-		print(beginTransformed)
-		print(endTransformed)
-		print(midpointTransformed)
-		print(midMinusBeginTransformed)
-		print('The ellipse will be scaled to fit.')
+		print('The ellipse radius is too small for getArcComplexes in svgReader.')
+		print('So the ellipse will be scaled to fit, according to the formulas in "Step 3: Ensure radii are large enough" of:')
+		print('http://www.w3.org/TR/SVG/implnote.html#ArcCorrectionOutOfRangeRadii')
+		print('')
 		radius *= midMinusBeginTransformedLength
-		scale = 1.0 / midMinusBeginTransformedLength
-		beginTransformed *= scale
-		endTransformed *= scale
-		midpointTransformed *= scale
-		midMinusBeginTransformed *= scale
+		beginTransformed /= midMinusBeginTransformedLength
+		endTransformed /= midMinusBeginTransformedLength
+		midpointTransformed /= midMinusBeginTransformedLength
+		midMinusBeginTransformed /= midMinusBeginTransformedLength
 		midMinusBeginTransformedLength = 1.0
 	midWiddershinsTransformed = complex(-midMinusBeginTransformed.imag, midMinusBeginTransformed.real)
 	midWiddershinsLengthSquared = 1.0 - midMinusBeginTransformedLength * midMinusBeginTransformedLength

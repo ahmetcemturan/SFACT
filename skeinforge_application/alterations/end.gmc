@@ -1,7 +1,7 @@
 G91					; Make coordinates relative
 G92 E0 				; reset Extruder counter
 G1 E-2 F900		;Retract extuder 2mm at 900mm/min
-G1 Z2 F400			;Move up tw mm (from current position because it is all relative now) 
+G1 Z2 F400			;Move up two mm (from current position because it is all relative now)
 G1 Z2 F5000 		; Move Z another 2mm up
 G90 				; Use absolute coordinates again
 G1 X5 Y5 F3000.0	;go to almost home

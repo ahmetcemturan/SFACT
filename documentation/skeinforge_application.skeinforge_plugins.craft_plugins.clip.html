@@ -13,7 +13,7 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.cleave.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.coil.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Clip clips the ends of loops to prevent bumps from forming.<br>
+The clip plugin clips the loop ends to prevent bumps from forming, and connects loops.<br>
  <br>
 The clip manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Clip">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Clip</a><br>
@@ -45,7 +45,11 @@ This setting will affect the output of clip, and the output of the skin.  In ski
 
 Default is ten.<br>
  <br>
-Defines the ratio of the maximum connection distance between loops over the perimeter width.  If the ratio is zero, nothing will be done.  If it is ratio greater than zero, clip will connect nearby loops, combining them into a spiral.  For loop connection, nearby means that the distance between a pair of loops is smaller or equal to the maximum connection distance.<br>
+Defines the ratio of the maximum connection distance between loops over the perimeter width.<br>
+ <br>
+Clip will attempt to connect loops that end close to each other, combining them into a spiral, so that the extruder does not stop and restart.  This setting sets the maximum gap size to connect.  This feature can reduce the amount of extra material or gaps formed at the loop end.<br>
+ <br>
+Setting this to zero disables this feature, preventing the loops from being connected.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>

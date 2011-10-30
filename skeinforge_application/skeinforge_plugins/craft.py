@@ -37,7 +37,7 @@ def addSubmenus( menu, pluginFileName, pluginFolderPath, pluginPath ):
 
 def addToCraftMenu( menu ):
 	"Add a craft plugin menu."
-	settings.ToolDialog().addPluginToMenu( menu, archive.getUntilDot( os.path.abspath(__file__) ) )
+	settings.ToolDialog().addPluginToMenu(menu, archive.getUntilDot(archive.getSkeinforgePluginsPath('craft.py')))
 	menu.add_separator()
 	directoryPath = skeinforge_craft.getPluginsDirectoryPath()
 	directoryFolders = settings.getFolders(directoryPath)

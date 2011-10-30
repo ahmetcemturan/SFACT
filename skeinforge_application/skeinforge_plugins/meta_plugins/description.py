@@ -4,7 +4,7 @@ Description is a script to store a description of the profile.
 
 ==Settings==
 ===Description Text===
-Default is empty.
+Default is 'Write your profile description here.'
 
 The suggested format is a description, followed by a link to a profile post or web page.
 
@@ -40,7 +40,7 @@ class DescriptionRepository:
 		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.meta_plugins.description.html', self)
 		description = 'Write your description of the profile here.\n\nSuggested format is a description, followed by a link to the profile post or web page.'
-		self.descriptionText = settings.TextSetting().getFromValue('Description Text:', self, description )
+		self.descriptionText = settings.TextSetting().getFromValue('Description Text:', self, description)
 
 
 def main():

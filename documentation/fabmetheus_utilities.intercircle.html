@@ -145,9 +145,11 @@
  <dl><dt><a name="-getCircleNodesFromLoop"><strong>getCircleNodesFromLoop</strong></a>(loop, radius, thresholdRatio<font color="#909090">=0.9</font>)</dt><dd><tt>Get&nbsp;the&nbsp;circle&nbsp;nodes&nbsp;from&nbsp;every&nbsp;point&nbsp;on&nbsp;a&nbsp;loop&nbsp;and&nbsp;between&nbsp;points.</tt></dd></dl>
  <dl><dt><a name="-getCircleNodesFromPoints"><strong>getCircleNodesFromPoints</strong></a>(points, radius)</dt><dd><tt>Get&nbsp;the&nbsp;circle&nbsp;nodes&nbsp;from&nbsp;a&nbsp;path.</tt></dd></dl>
  <dl><dt><a name="-getInsetLoopsFromLoop"><strong>getInsetLoopsFromLoop</strong></a>(loop, radius, thresholdRatio<font color="#909090">=0.9</font>)</dt><dd><tt>Get&nbsp;the&nbsp;inset&nbsp;loops,&nbsp;which&nbsp;might&nbsp;overlap.</tt></dd></dl>
- <dl><dt><a name="-getInsetLoopsFromLoops"><strong>getInsetLoopsFromLoops</strong></a>(inset, loops)</dt><dd><tt>Get&nbsp;the&nbsp;inset&nbsp;loops,&nbsp;which&nbsp;might&nbsp;overlap.</tt></dd></dl>
+ <dl><dt><a name="-getInsetLoopsFromLoops"><strong>getInsetLoopsFromLoops</strong></a>(loops, radius)</dt><dd><tt>Get&nbsp;the&nbsp;inset&nbsp;loops,&nbsp;which&nbsp;might&nbsp;overlap.</tt></dd></dl>
  <dl><dt><a name="-getInsetLoopsFromVector3Loop"><strong>getInsetLoopsFromVector3Loop</strong></a>(loop, radius, thresholdRatio<font color="#909090">=0.9</font>)</dt><dd><tt>Get&nbsp;the&nbsp;inset&nbsp;loops&nbsp;from&nbsp;vector3&nbsp;loop,&nbsp;which&nbsp;might&nbsp;overlap.</tt></dd></dl>
- <dl><dt><a name="-getInsetSeparateLoopsFromLoops"><strong>getInsetSeparateLoopsFromLoops</strong></a>(inset, loops, thresholdRatio<font color="#909090">=0.9</font>)</dt><dd><tt>Get&nbsp;the&nbsp;separate&nbsp;inset&nbsp;loops.</tt></dd></dl>
+ <dl><dt><a name="-getInsetSeparateLoopsFromAroundLoops"><strong>getInsetSeparateLoopsFromAroundLoops</strong></a>(loops, radius, radiusAround, thresholdRatio<font color="#909090">=0.9</font>)</dt><dd><tt>Get&nbsp;the&nbsp;separate&nbsp;inset&nbsp;loops.</tt></dd></dl>
+ <dl><dt><a name="-getInsetSeparateLoopsFromLoops"><strong>getInsetSeparateLoopsFromLoops</strong></a>(loops, radius, thresholdRatio<font color="#909090">=0.9</font>)</dt><dd><tt>Get&nbsp;the&nbsp;separate&nbsp;inset&nbsp;loops.</tt></dd></dl>
+ <dl><dt><a name="-getIsLarge"><strong>getIsLarge</strong></a>(loop, radius)</dt><dd><tt>Determine&nbsp;if&nbsp;the&nbsp;loop&nbsp;is&nbsp;large&nbsp;enough.</tt></dd></dl>
  <dl><dt><a name="-getLargestCenterOutsetLoopFromLoop"><strong>getLargestCenterOutsetLoopFromLoop</strong></a>(loop, radius, thresholdRatio<font color="#909090">=0.9</font>)</dt><dd><tt>Get&nbsp;the&nbsp;largest&nbsp;circle&nbsp;outset&nbsp;loop&nbsp;from&nbsp;the&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-getLargestCenterOutsetLoopFromLoopRegardless"><strong>getLargestCenterOutsetLoopFromLoopRegardless</strong></a>(loop, radius)</dt><dd><tt>Get&nbsp;the&nbsp;largest&nbsp;circle&nbsp;outset&nbsp;loop&nbsp;from&nbsp;the&nbsp;loop,&nbsp;even&nbsp;if&nbsp;the&nbsp;radius&nbsp;has&nbsp;to&nbsp;be&nbsp;shrunk&nbsp;and&nbsp;even&nbsp;if&nbsp;there&nbsp;is&nbsp;still&nbsp;no&nbsp;outset&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-getLargestInsetLoopFromLoop"><strong>getLargestInsetLoopFromLoop</strong></a>(loop, radius)</dt><dd><tt>Get&nbsp;the&nbsp;largest&nbsp;inset&nbsp;loop&nbsp;from&nbsp;the&nbsp;loop.</tt></dd></dl>
@@ -174,7 +176,8 @@
 <strong>__date__</strong> = '$Date: 2008/21/04 $'<br>
 <strong>__license__</strong> = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'<br>
 <strong>absolute_import</strong> = _Feature((2, 5, 0, 'alpha', 1), (2, 7, 0, 'alpha', 0), 16384)<br>
-<strong>globalDecreasingRadiusMultipliers</strong> = [1.0, 0.55, 0.35, 0.2]</td></tr></table><p>
+<strong>globalDecreasingRadiusMultipliers</strong> = [1.0, 0.55, 0.35, 0.2]<br>
+<strong>globalIntercircleMultiplier</strong> = 1.04</td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#7799ee">
 <td colspan=3 valign=bottom>&nbsp;<br>

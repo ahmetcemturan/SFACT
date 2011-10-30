@@ -83,7 +83,7 @@ class LimitRepository:
 		'Set the default settings, execute title & settings fileName.'
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.limit.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Limit', self, '')
-		self.activateLimit = settings.BooleanSetting().getFromValue('Activate Limit', self, True)
+		self.activateLimit = settings.BooleanSetting().getFromValue('Activate Limit', self, False)
 		self.maximumInitialFeedRate = settings.FloatSpin().getFromValue(0.5, 'Maximum Initial Feed Rate (mm/s):', self, 10.0, 1.0)
 		self.executeTitle = 'Limit'
 

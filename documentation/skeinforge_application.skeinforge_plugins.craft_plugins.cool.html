@@ -13,9 +13,11 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.comb.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.dimension.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Cool is a script to cool the shape.<br>
+Cool is a craft tool to cool the shape.<br>
  <br>
 Cool works well with a stepper extruder, it does not work well with a DC motor extruder.<br>
+ <br>
+If enabled, before each layer that takes less then "Minimum Layer Time" to print the tool head will orbit around the printed area for 'Minimum Layer Time' minus 'the time it takes to print the layer' before it starts printing the layer. This is great way to let layers with smaller area cool before you start printing on top of them (so you do not overheat the area). <br>
  <br>
 The cool manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Cool">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Cool</a><br>
@@ -38,7 +40,7 @@ Allan Ecker aka The Masked Retriever's has written the "Skeinforge Quicktip: Coo
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Name of Cool Start File">Name of Cool Start File</a><br />
 &nbsp;&nbsp;<a href="#Orbital Outset">Orbital Outset</a><br />
 &nbsp;&nbsp;<a href="#Turn Fan On at Beginning">Turn Fan On at Beginning</a><br />
-&nbsp;&nbsp;<a href="#Turn Fan On at Ending">Turn Fan On at Ending</a><br />
+&nbsp;&nbsp;<a href="#Turn Fan Off at Ending">Turn Fan Off at Ending</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
@@ -83,7 +85,7 @@ Defines the minimum amount of time the extruder will spend on a layer, this is a
 
 Default is 10 millimeters.<br>
  <br>
-When the orbit cool type is selected, if the area of the largest island is as large as the square of the "Minimum Orbital Radius" then the orbits will be just within the island.  If the island is smaller, then the orbits will be in a square of the "Minimum Orbital Radius" around the center of the island.<br>
+When the orbit cool type is selected, if the area of the largest island is as large as the square of the "Minimum Orbital Radius" then the orbits will be just within the island.  If the island is smaller, then the orbits will be in a square of the "Minimum Orbital Radius" around the center of the island.  This is so that the hot extruder does not stay too close to small islands.<br>
  <br>
 <a name="Name of Alteration Files" id="Name of Alteration Files"></a><h3>Name of Alteration Files</h3>
 
@@ -94,14 +96,13 @@ Cool looks for alteration files in the alterations folder in the .skeinforge fol
 
 Default is cool_end.gcode.<br>
  <br>
-If there is a file with the name of the "Name of Cool End File" setting, it will be added to the start of the orbits.<br>
+If there is a file with the name of the "Name of Cool End File" setting, it will be added to the end of the orbits.<br>
  <br>
 <a name="Name of Cool Start File" id="Name of Cool Start File"></a><h4>Name of Cool Start File</h4>
 
 Default is cool_start.gcode.<br>
  <br>
-If there is a file with the name of the "Name of Cool Start File" setting, it will be added to the end of the orbits.<br>
-                self.<strong>orbitalOutset</strong> = settings.FloatSpin().getFromValue(1.0, 'Orbital Outset (millimeters):', self, 5.0, 2.0)<br>
+If there is a file with the name of the "Name of Cool Start File" setting, it will be added to the start of the orbits.<br>
  <br>
 <a name="Orbital Outset" id="Orbital Outset"></a><h3>Orbital Outset</h3>
 
@@ -113,13 +114,13 @@ When the orbit cool type is selected, the orbits will be outset around the large
 
 Default is on.<br>
  <br>
-When selected, cool will turn the fan on at the beginning of the fabrication.<br>
+When selected, cool will turn the fan on at the beginning of the fabrication by adding the M106 command.<br>
  <br>
-<a name="Turn Fan On at Ending" id="Turn Fan On at Ending"></a><h3>Turn Fan On at Ending</h3>
+<a name="Turn Fan Off at Ending" id="Turn Fan Off at Ending"></a><h3>Turn Fan Off at Ending</h3>
 
 Default is on.<br>
  <br>
-When selected, cool will turn the fan off at the ending of the fabrication.<br>
+When selected, cool will turn the fan off at the ending of the fabrication by adding the M107 command.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>
@@ -202,9 +203,7 @@ The cool tool has created the file:<br>
 
 <dl><dt><a name="CoolSkein-addCoolTemperature"><strong>addCoolTemperature</strong></a>(self, remainingOrbitTime)</dt><dd><tt>Parse&nbsp;a&nbsp;gcode&nbsp;line&nbsp;and&nbsp;add&nbsp;it&nbsp;to&nbsp;the&nbsp;cool&nbsp;skein.</tt></dd></dl>
 
-<dl><dt><a name="CoolSkein-addFlowRateLineIfNecessary"><strong>addFlowRateLineIfNecessary</strong></a>(self, flowRate)</dt><dd><tt>Add&nbsp;a&nbsp;line&nbsp;of&nbsp;flow&nbsp;rate&nbsp;if&nbsp;different.</tt></dd></dl>
-
-<dl><dt><a name="CoolSkein-addFlowRateMultipliedLineIfNecessary"><strong>addFlowRateMultipliedLineIfNecessary</strong></a>(self, flowRate)</dt><dd><tt>Add&nbsp;a&nbsp;multipled&nbsp;line&nbsp;of&nbsp;flow&nbsp;rate&nbsp;if&nbsp;different.</tt></dd></dl>
+<dl><dt><a name="CoolSkein-addFlowRate"><strong>addFlowRate</strong></a>(self, flowRate)</dt><dd><tt>Add&nbsp;a&nbsp;multipled&nbsp;line&nbsp;of&nbsp;flow&nbsp;rate&nbsp;if&nbsp;different.</tt></dd></dl>
 
 <dl><dt><a name="CoolSkein-addGcodeFromFeedRateMovementZ"><strong>addGcodeFromFeedRateMovementZ</strong></a>(self, feedRateMinute, point, z)</dt><dd><tt>Add&nbsp;a&nbsp;movement&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
 
@@ -212,7 +211,7 @@ The cool tool has created the file:<br>
 
 <dl><dt><a name="CoolSkein-addTemperature"><strong>addTemperature</strong></a>(self, temperature)</dt><dd><tt>Add&nbsp;a&nbsp;line&nbsp;of&nbsp;temperature.</tt></dd></dl>
 
-<dl><dt><a name="CoolSkein-getCoolMove"><strong>getCoolMove</strong></a>(self, line, location, splitLine)</dt><dd><tt>Add&nbsp;line&nbsp;to&nbsp;time&nbsp;spent&nbsp;on&nbsp;layer.</tt></dd></dl>
+<dl><dt><a name="CoolSkein-getCoolMove"><strong>getCoolMove</strong></a>(self, line, location, splitLine)</dt><dd><tt>Get&nbsp;cool&nbsp;line&nbsp;according&nbsp;to&nbsp;time&nbsp;spent&nbsp;on&nbsp;layer.</tt></dd></dl>
 
 <dl><dt><a name="CoolSkein-getCraftedGcode"><strong>getCraftedGcode</strong></a>(self, gcodeText, repository)</dt><dd><tt>Parse&nbsp;gcode&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;cool&nbsp;gcode.</tt></dd></dl>
 
@@ -225,8 +224,6 @@ The cool tool has created the file:<br>
 <dl><dt><a name="CoolSkein-parseLine"><strong>parseLine</strong></a>(self, line)</dt><dd><tt>Parse&nbsp;a&nbsp;gcode&nbsp;line&nbsp;and&nbsp;add&nbsp;it&nbsp;to&nbsp;the&nbsp;cool&nbsp;skein.</tt></dd></dl>
 
 <dl><dt><a name="CoolSkein-setMultiplier"><strong>setMultiplier</strong></a>(self, remainingOrbitTime)</dt><dd><tt>Set&nbsp;the&nbsp;feed&nbsp;and&nbsp;flow&nbsp;rate&nbsp;multiplier.</tt></dd></dl>
-
-<dl><dt><a name="CoolSkein-setOperatingFlowString"><strong>setOperatingFlowString</strong></a>(self, splitLine)</dt><dd><tt>Set&nbsp;the&nbsp;operating&nbsp;flow&nbsp;string&nbsp;from&nbsp;the&nbsp;split&nbsp;line.</tt></dd></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

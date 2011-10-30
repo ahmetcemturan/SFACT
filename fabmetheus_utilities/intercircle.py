@@ -23,6 +23,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 
 globalDecreasingRadiusMultipliers = [1.0, 0.55, 0.35, 0.2]
+globalIntercircleMultiplier = 1.04 # 1.02 is enough to stop known intersection
 
 
 def addCircleIntersectionLoop(circleIntersectionLoop, circleIntersections):
@@ -175,11 +176,11 @@ def directLoops(isWiddershins, loops):
 
 def getAroundsFromLoop(loop, radius, thresholdRatio=0.9):
 	'Get the arounds from the loop.'
-	return getAroundsFromPoints(getPointsFromLoop(loop, 1.01 * abs(radius), thresholdRatio), radius)
+	return getAroundsFromPoints(getPointsFromLoop(loop, radius, thresholdRatio), radius)
 
 def getAroundsFromLoops( loops, radius, thresholdRatio=0.9 ):
 	'Get the arounds from the loops.'
-	return getAroundsFromPoints(getPointsFromLoops(loops, 1.01 * abs(radius), thresholdRatio), radius)
+	return getAroundsFromPoints(getPointsFromLoops(loops, radius, thresholdRatio), radius)
 
 def getAroundsFromPath(path, radius, thresholdRatio=0.9):
 	'Get the arounds from the path.'
@@ -208,10 +209,10 @@ def getAroundsFromPoints( points, radius ):
 	'Get the arounds from the points.'
 	arounds = []
 	radius = abs(radius)
-	centers = getCentersFromPoints( points, radius )
+	centers = getCentersFromPoints(points, globalIntercircleMultiplier * radius)
 	for center in centers:
-		inset = getSimplifiedInsetFromClockwiseLoop( center, radius )
-		if isLargeSameDirection( inset, center, radius ):
+		inset = getSimplifiedInsetFromClockwiseLoop(center, radius)
+		if isLargeSameDirection(inset, center, radius):
 			arounds.append(inset)
 	return arounds
 
@@ -313,6 +314,8 @@ def getCircleNodesFromPoints(points, radius):
 
 def getInsetLoopsFromLoop(loop, radius, thresholdRatio=0.9):
 	'Get the inset loops, which might overlap.'
+	if radius == 0.0:
+		return [loop]
 	isInset = radius > 0
 	insetLoops = []
 	isLoopWiddershins = euclidean.isWiddershins(loop)
@@ -326,11 +329,11 @@ def getInsetLoopsFromLoop(loop, radius, thresholdRatio=0.9):
 			insetLoops.append(around)
 	return insetLoops
 
-def getInsetLoopsFromLoops(inset, loops):
+def getInsetLoopsFromLoops(loops, radius):
 	'Get the inset loops, which might overlap.'
 	insetLoops = []
 	for loop in loops:
-		insetLoops += getInsetLoopsFromLoop(loop, inset)
+		insetLoops += getInsetLoopsFromLoop(loop, radius)
 	return insetLoops
 
 def getInsetLoopsFromVector3Loop(loop, radius, thresholdRatio=0.9):
@@ -341,25 +344,50 @@ def getInsetLoopsFromVector3Loop(loop, radius, thresholdRatio=0.9):
 	loopComplexes = getInsetLoopsFromLoop(loopComplex, radius)
 	return euclidean.getVector3Paths(loopComplexes, loop[0].z)
 
-def getInsetSeparateLoopsFromLoops(inset, loops, thresholdRatio=0.9):
+def getInsetSeparateLoopsFromLoops(loops, radius, thresholdRatio=0.9):
 	'Get the separate inset loops.'
-	isInset = inset > 0
+	if radius == 0.0:
+		return loops
+	isInset = radius > 0
 	insetSeparateLoops = []
-	radius = abs(inset)
-	arounds = getAroundsFromLoops(loops, radius, thresholdRatio)
+	arounds = getAroundsFromLoops(loops, abs(radius), thresholdRatio)
 	for around in arounds:
-		leftPoint = euclidean.getLeftPoint(around)
-		if isInset == euclidean.getIsInFilledRegion(loops, leftPoint):
+		if isInset == euclidean.getIsInFilledRegion(loops, around[0]):
 			if isInset:
 				around.reverse()
 			insetSeparateLoops.append(around)
 	return insetSeparateLoops
 
+def getInsetSeparateLoopsFromAroundLoops(loops, radius, radiusAround, thresholdRatio=0.9):
+	'Get the separate inset loops.'
+	if radius == 0.0:
+		return loops
+	isInset = radius > 0
+	insetSeparateLoops = []
+	radius = abs(radius)
+	radiusAround = max(abs(radiusAround), radius)
+	points = getPointsFromLoops(loops, radiusAround, thresholdRatio)
+	centers = getCentersFromPoints(points, globalIntercircleMultiplier * radiusAround)
+	for center in centers:
+		inset = getSimplifiedInsetFromClockwiseLoop(center, radius)
+		if isLargeSameDirection(inset, center, radius):
+			if isInset == euclidean.getIsInFilledRegion(loops, inset[0]):
+				if isInset:
+					inset.reverse()
+				insetSeparateLoops.append(inset)
+	return insetSeparateLoops
+
+def getIsLarge(loop, radius):
+	'Determine if the loop is large enough.'
+	return euclidean.getMaximumSpan(loop) > 2.01 * abs(radius)
+
 def getLargestCenterOutsetLoopFromLoop(loop, radius, thresholdRatio=0.9):
 	'Get the largest circle outset loop from the loop.'
+	if radius == 0.0:
+		return loop
 	radius = abs(radius)
-	points = getPointsFromLoop(loop, 1.01 * radius, thresholdRatio)
-	centers = getCentersFromPoints(points, radius)
+	points = getPointsFromLoop(loop, radius, thresholdRatio)
+	centers = getCentersFromPoints(points, globalIntercircleMultiplier * radius)
 	largestCenterOutset = None
 	largestOutsetArea = -987654321.0
 	for center in centers:
@@ -473,11 +501,11 @@ def getWithoutIntersections( loop ):
 		lastLoopLength = len( loop )
 	return loop
 
-def isLargeSameDirection( inset, loop, radius ):
+def isLargeSameDirection(inset, loop, radius):
 	'Determine if the inset is in the same direction as the loop and it is large enough.'
 	if euclidean.isWiddershins(inset) != euclidean.isWiddershins(loop):
 		return False
-	return euclidean.getMaximumSpan(inset) > 2.01 * abs(radius)
+	return getIsLarge(inset, radius) and len(inset) > 2
 
 def isLoopIntersectingLoop( anotherLoop, loop ):
 	'Determine if the a loop is intersecting another loop.'

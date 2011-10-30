@@ -370,9 +370,7 @@ Screw Holder Bottom_raft.gcode</tt>
 
 <dl><dt><a name="RaftSkein-addEmptyLayerSupport"><strong>addEmptyLayerSupport</strong></a>(self, boundaryLayerIndex)</dt><dd><tt>Add&nbsp;support&nbsp;material&nbsp;to&nbsp;a&nbsp;layer&nbsp;if&nbsp;it&nbsp;is&nbsp;empty.</tt></dd></dl>
 
-<dl><dt><a name="RaftSkein-addFlowRateLineIfDifferent"><strong>addFlowRateLineIfDifferent</strong></a>(self, flowRateOutputString)</dt><dd><tt>Add&nbsp;a&nbsp;line&nbsp;of&nbsp;flow&nbsp;rate&nbsp;if&nbsp;different.</tt></dd></dl>
-
-<dl><dt><a name="RaftSkein-addFlowRateValueIfDifferent"><strong>addFlowRateValueIfDifferent</strong></a>(self, flowRate)</dt><dd><tt>Add&nbsp;a&nbsp;flow&nbsp;rate&nbsp;value&nbsp;if&nbsp;different.</tt></dd></dl>
+<dl><dt><a name="RaftSkein-addFlowRate"><strong>addFlowRate</strong></a>(self, flowRate)</dt><dd><tt>Add&nbsp;a&nbsp;flow&nbsp;rate&nbsp;value&nbsp;if&nbsp;different.</tt></dd></dl>
 
 <dl><dt><a name="RaftSkein-addInterfaceLayer"><strong>addInterfaceLayer</strong></a>(self)</dt><dd><tt>Add&nbsp;an&nbsp;interface&nbsp;layer.</tt></dd></dl>
 
@@ -389,6 +387,8 @@ Screw Holder Bottom_raft.gcode</tt>
 <dl><dt><a name="RaftSkein-addRaftPerimeters"><strong>addRaftPerimeters</strong></a>(self)</dt><dd><tt>Add&nbsp;raft&nbsp;perimeters&nbsp;if&nbsp;there&nbsp;is&nbsp;a&nbsp;raft.</tt></dd></dl>
 
 <dl><dt><a name="RaftSkein-addRaftPerimetersByLoops"><strong>addRaftPerimetersByLoops</strong></a>(self, loops, outset)</dt><dd><tt>Add&nbsp;raft&nbsp;perimeters&nbsp;to&nbsp;the&nbsp;gcode&nbsp;for&nbsp;loops.</tt></dd></dl>
+
+<dl><dt><a name="RaftSkein-addRaftedLine"><strong>addRaftedLine</strong></a>(self, splitLine)</dt><dd><tt>Add&nbsp;elevated&nbsp;gcode&nbsp;line&nbsp;with&nbsp;operating&nbsp;feed&nbsp;rate.</tt></dd></dl>
 
 <dl><dt><a name="RaftSkein-addSegmentTablesToSupportLayers"><strong>addSegmentTablesToSupportLayers</strong></a>(self)</dt><dd><tt>Add&nbsp;segment&nbsp;tables&nbsp;to&nbsp;the&nbsp;support&nbsp;layers.</tt></dd></dl>
 
@@ -413,8 +413,6 @@ Screw Holder Bottom_raft.gcode</tt>
 <dl><dt><a name="RaftSkein-getInsetLoopsAbove"><strong>getInsetLoopsAbove</strong></a>(self, boundaryLayerIndex)</dt><dd><tt>Get&nbsp;the&nbsp;inset&nbsp;loops&nbsp;above&nbsp;the&nbsp;boundary&nbsp;layer&nbsp;index.</tt></dd></dl>
 
 <dl><dt><a name="RaftSkein-getInsetLoopsBelow"><strong>getInsetLoopsBelow</strong></a>(self, boundaryLayerIndex)</dt><dd><tt>Get&nbsp;the&nbsp;inset&nbsp;loops&nbsp;below&nbsp;the&nbsp;boundary&nbsp;layer&nbsp;index.</tt></dd></dl>
-
-<dl><dt><a name="RaftSkein-getRaftedLine"><strong>getRaftedLine</strong></a>(self, splitLine)</dt><dd><tt>Get&nbsp;elevated&nbsp;gcode&nbsp;line&nbsp;with&nbsp;operating&nbsp;feed&nbsp;rate.</tt></dd></dl>
 
 <dl><dt><a name="RaftSkein-getStepsUntilEnd"><strong>getStepsUntilEnd</strong></a>(self, begin, end, stepSize)</dt><dd><tt>Get&nbsp;steps&nbsp;from&nbsp;the&nbsp;beginning&nbsp;until&nbsp;the&nbsp;end.</tt></dd></dl>
 

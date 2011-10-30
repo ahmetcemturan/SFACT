@@ -92,15 +92,15 @@ class FlowSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.lineIndex = 0
 		self.lines = None
-		self.oldFlowRateString = None
+		self.oldFlowRate = None
 		self.oldLocation = None
 
-	def addFlowRateLineIfNecessary(self):
+	def addFlowRateLine(self):
 		"Add flow rate line."
-		flowRateString = euclidean.getRoundedToThreePlaces( self.flowRepository.flowRate.value )
-		if flowRateString != self.oldFlowRateString:
-			self.distanceFeedRate.addLine('M108 S' + flowRateString )
-		self.oldFlowRateString = flowRateString
+		flowRate = self.flowRepository.flowRate.value
+		if flowRate != self.oldFlowRate:
+			self.distanceFeedRate.addLine('M108 S' + euclidean.getFourSignificantFigures(flowRate))
+		self.oldFlowRate = flowRate
 
 	def getCraftedGcode( self, gcodeText, flowRepository ):
 		"Parse gcode text and store the flow gcode."
@@ -130,7 +130,7 @@ class FlowSkein:
 			return
 		firstWord = splitLine[0]
 		if firstWord == 'G1' or firstWord == '(<layer>':
-			self.addFlowRateLineIfNecessary()
+			self.addFlowRateLine()
 		self.distanceFeedRate.addLine(line)
 
 

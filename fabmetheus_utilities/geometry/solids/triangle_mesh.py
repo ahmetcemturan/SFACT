@@ -189,7 +189,7 @@ def addSymmetricYPaths(outputs, paths, y):
 
 def addWithLeastLength(importRadius, loops, point):
 	'Insert a point into a loop, at the index at which the loop would be shortest.'
-	close = importRadius + importRadius
+	close = 1.65 * importRadius #todo a bit over the experimental minimum additional loop length to restore a right angle
 	shortestAdditionalLength = close
 	shortestLoop = None
 	shortestPointIndex = None
@@ -309,6 +309,7 @@ def getDescendingAreaLoops(allPoints, corners, importRadius):
 			descendingAreaLoops.append(loop)
 			addLoopToPointTable(loop, pointDictionary)
 	descendingAreaLoops = euclidean.getSimplifiedLoops(descendingAreaLoops, importRadius)
+#	return descendingAreaLoops
 	return getLoopsWithCorners(corners, importRadius, descendingAreaLoops, pointDictionary)
 
 def getDescendingAreaOrientedLoops(allPoints, corners, importRadius):
@@ -373,6 +374,25 @@ def getIndexedLoopFromIndexedGrid( indexedGrid ):
 	for row in indexedGrid[ len( indexedGrid ) - 2 : 0 : - 1 ]:
 		indexedLoop.append( row[0] )
 	return indexedLoop
+
+def getInfillDictionary(aroundInset, arounds, aroundWidth, infillInset, infillWidth, pixelTable, rotatedLoops, testLoops=None):
+	'Get combined fill loops which include most of the points.'
+	slightlyGreaterThanInfillInset = intercircle.globalIntercircleMultiplier * infillInset
+	allPoints = intercircle.getPointsFromLoops(rotatedLoops, infillInset, 0.7)
+	centers = intercircle.getCentersFromPoints(allPoints, slightlyGreaterThanInfillInset)
+	infillDictionary = {}
+	for center in centers:
+		insetCenter = intercircle.getSimplifiedInsetFromClockwiseLoop(center, infillInset)
+		insetPoint = insetCenter[0]
+		if len(insetCenter) > 2 and intercircle.getIsLarge(insetCenter, infillInset) and euclidean.getIsInFilledRegion(rotatedLoops, insetPoint):
+			around = intercircle.getSimplifiedInsetFromClockwiseLoop(center, aroundInset)
+			euclidean.addLoopToPixelTable(around, pixelTable, aroundWidth)
+			arounds.append(around)
+			insetLoop = intercircle.getSimplifiedInsetFromClockwiseLoop(center, infillInset)
+			euclidean.addXIntersectionsFromLoopForTable(insetLoop, infillDictionary, infillWidth)
+			if testLoops != None:
+				testLoops.append(insetLoop)
+	return infillDictionary
 
 def getInsetPoint( loop, tinyRadius ):
 	'Get the inset vertex.'
@@ -505,7 +525,7 @@ def getOverhangDirection( belowOutsetLoops, segmentBegin, segmentEnd ):
 	solidXIntersectionList.append( euclidean.XIntersectionIndex( - 1.0, segmentEnd.real ) )
 	for belowLoopIndex in xrange( len( belowOutsetLoops ) ):
 		belowLoop = belowOutsetLoops[ belowLoopIndex ]
-		rotatedOutset = euclidean.getPointsRoundZAxis( segmentYMirror, belowLoop )
+		rotatedOutset = euclidean.getRotatedComplexes( segmentYMirror, belowLoop )
 		euclidean.addXIntersectionIndexesFromLoopY( rotatedOutset, belowLoopIndex, solidXIntersectionList, y )
 	overhangingSegments = euclidean.getSegmentsFromXIntersectionIndexes( solidXIntersectionList, y )
 	overhangDirection = complex()

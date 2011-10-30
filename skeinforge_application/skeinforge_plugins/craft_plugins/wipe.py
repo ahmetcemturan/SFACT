@@ -96,7 +96,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -134,21 +134,21 @@ class WipeRepository:
 		self.activateWipe = settings.BooleanSetting().getFromValue('Activate Wipe', self, False )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Location Arrival -', self )
-		self.locationArrivalX = settings.FloatSpin().getFromValue( - 100.0, 'Location Arrival X (mm):', self, 300.0, 0.0 )
-		self.locationArrivalY = settings.FloatSpin().getFromValue( - 100.0, 'Location Arrival Y (mm):', self, 300.0, 5.0 )
-		self.locationArrivalZ = settings.FloatSpin().getFromValue( - 100.0, 'Location Arrival Z (mm):', self, 300.0, 0.0 )
+		self.locationArrivalX = settings.FloatSpin().getFromValue( - 100.0, 'Location Arrival X (mm):', self, 100.0, - 70.0 )
+		self.locationArrivalY = settings.FloatSpin().getFromValue( - 100.0, 'Location Arrival Y (mm):', self, 100.0, - 50.0 )
+		self.locationArrivalZ = settings.FloatSpin().getFromValue( - 100.0, 'Location Arrival Z (mm):', self, 100.0, 50.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Location Departure -', self )
-		self.locationDepartureX = settings.FloatSpin().getFromValue( - 100.0, 'Location Departure X (mm):', self, 300.0, 5.0 )
-		self.locationDepartureY = settings.FloatSpin().getFromValue( - 100.0, 'Location Departure Y (mm):', self, 300.0, 0.0 )
-		self.locationDepartureZ = settings.FloatSpin().getFromValue( - 100.0, 'Location Departure Z (mm):', self, 300.0, 0.0 )
+		self.locationDepartureX = settings.FloatSpin().getFromValue( - 100.0, 'Location Departure X (mm):', self, 100.0, - 70.0 )
+		self.locationDepartureY = settings.FloatSpin().getFromValue( - 100.0, 'Location Departure Y (mm):', self, 100.0, - 40.0 )
+		self.locationDepartureZ = settings.FloatSpin().getFromValue( - 100.0, 'Location Departure Z (mm):', self, 100.0, 50.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Location Wipe -', self )
-		self.locationWipeX = settings.FloatSpin().getFromValue( - 100.0, 'Location Wipe X (mm):', self, 300.0, 0.0 )
-		self.locationWipeY = settings.FloatSpin().getFromValue( - 100.0, 'Location Wipe Y (mm):', self, 300.0, 0.0 )
-		self.locationWipeZ = settings.FloatSpin().getFromValue( - 100.0, 'Location Wipe Z (mm):', self, 300.0, 0.0 )
+		self.locationWipeX = settings.FloatSpin().getFromValue( - 100.0, 'Location Wipe X (mm):', self, 100.0, - 70.0 )
+		self.locationWipeY = settings.FloatSpin().getFromValue( - 100.0, 'Location Wipe Y (mm):', self, 100.0, - 70.0 )
+		self.locationWipeZ = settings.FloatSpin().getFromValue( - 100.0, 'Location Wipe Z (mm):', self, 100.0, 50.0 )
 		settings.LabelSeparator().getFromRepository(self)
-		self.wipePeriod = settings.IntSpin().getFromValue( 1, 'Wipe Period (layers):', self, 50000, 33333 )
+		self.wipePeriod = settings.IntSpin().getFromValue( 1, 'Wipe Period (layers):', self, 5, 3 )
 		self.executeTitle = 'Wipe'
 
 	def execute(self):

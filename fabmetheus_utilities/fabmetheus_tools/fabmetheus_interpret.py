@@ -63,7 +63,7 @@ def getNewRepository():
 
 def getPluginsDirectoryPath():
 	"Get the plugins directory path."
-	return archive.getAbsoluteFrozenFolderPath( __file__, 'interpret_plugins')
+	return archive.getInterpretPluginsPath()
 
 def getTranslatorFileTypeTuples():
 	"Get the file types from the translators in the import plugins folder."

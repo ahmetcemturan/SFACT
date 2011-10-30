@@ -48,6 +48,10 @@ def getLengthMinusOneMinimumOne( elementList ):
 	'Get the length of the length minus one, minimum one.'
 	return max( 1, len( elementList ) - 1 )
 
+def getPluginsDirectoryPath():
+	'Get the plugins directory path.'
+	return archive.getAnalyzePluginsDirectoryPath('export_canvas_plugins')
+
 def getScrollbarCanvasPortion( scrollbar ):
 	'Get the canvas portion of the scrollbar.'
 	scrollbarBeginEnd = scrollbar.get()
@@ -90,16 +94,15 @@ class ExportCanvasDialog:
 		'Display the export canvas repository dialog.'
 		for repositoryDialog in settings.globalRepositoryDialogListTable:
 			if repositoryDialog.repository.lowerName == self.name:
-				repositoryDialog.setCanvasFileNameSuffix( self.canvas, self.skein.fileName, self.suffix )
-				settings.liftRepositoryDialogs( settings.globalRepositoryDialogListTable[ repositoryDialog ] )
+				repositoryDialog.setCanvasFileNameSuffix(self.canvas, self.skein.fileName, self.suffix)
+				settings.liftRepositoryDialogs(settings.globalRepositoryDialogListTable[repositoryDialog])
 				return
-		exportCanvasPluginsFolderPath = archive.getAbsoluteFolderPath( os.path.dirname(__file__), 'export_canvas_plugins')
-		pluginModule = archive.getModuleWithDirectoryPath( exportCanvasPluginsFolderPath, self.name )
+		pluginModule = archive.getModuleWithDirectoryPath(getPluginsDirectoryPath(), self.name)
 		if pluginModule == None:
 			return None
 		pluginRepository = pluginModule.getNewRepository()
-		pluginRepository.setCanvasFileNameSuffix( self.canvas, self.fileName, self.suffix )
-		settings.getDisplayedDialogFromConstructor( pluginRepository )
+		pluginRepository.setCanvasFileNameSuffix(self.canvas, self.fileName, self.suffix)
+		settings.getDisplayedDialogFromConstructor(pluginRepository)
 
 
 class TableauRepository:
@@ -189,8 +192,7 @@ class TableauWindow:
 		self.fileHelpMenuBar = settings.FileHelpMenuBar(self.root)
 		self.exportMenu = settings.Tkinter.Menu(self.fileHelpMenuBar.fileMenu, tearoff = 0)
 		self.fileHelpMenuBar.fileMenu.add_cascade(label = 'Export', menu = self.exportMenu, underline = 0)
-		exportCanvasPluginsFolderPath = archive.getAbsoluteFolderPath(os.path.dirname(__file__), 'export_canvas_plugins')
-		exportCanvasPluginFileNames = archive.getPluginFileNamesFromDirectoryPath(exportCanvasPluginsFolderPath)
+		exportCanvasPluginFileNames = archive.getPluginFileNamesFromDirectoryPath(getPluginsDirectoryPath())
 		for exportCanvasPluginFileName in exportCanvasPluginFileNames:
 			ExportCanvasDialog().addPluginToMenu(self.canvas, skein.fileName, self.exportMenu, exportCanvasPluginFileName, suffix)
 		self.fileHelpMenuBar.fileMenu.add_separator()

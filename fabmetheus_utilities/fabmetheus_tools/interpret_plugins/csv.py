@@ -49,7 +49,7 @@ def getLineDictionary(line):
 
 def getPluginsDirectoryPath():
 	"Get the plugins directory path."
-	return archive.getAbsoluteFrozenFolderPath( __file__, 'xml_plugins')
+	return archive.getInterpretPluginsPath('xml_plugins')
 
 
 class CSVElement( xml_simple_reader.XMLElement ):

@@ -74,7 +74,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -110,11 +110,11 @@ class MultiplyRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName(
 			fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Multiply', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Multiply')
-		self.activateMultiply = settings.BooleanSetting().getFromValue('Activate Multiply ', self, True )
+		self.activateMultiply = settings.BooleanSetting().getFromValue('Activate Multiply: ', self, True )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Center - (Set half your total x and y travel distance \nfor centering your prints!', self )
-		self.centerX = settings.FloatSpin().getFromValue(-240.0, 'Center X (mm):', self, 240.0, 100.0)
-		self.centerY = settings.FloatSpin().getFromValue(-240.0, 'Center Y (mm):', self, 240.0, 100.0)
+		self.centerX = settings.FloatSpin().getFromValue(-240.0, 'Center X (mm):', self, 240.0, 120.0)
+		self.centerY = settings.FloatSpin().getFromValue(-240.0, 'Center Y (mm):', self, 240.0, 120.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Number of Cells -', self)
 		self.numberOfColumns = settings.IntSpin().getFromValue(1, 'Number of Columns (integer):', self, 10, 1)

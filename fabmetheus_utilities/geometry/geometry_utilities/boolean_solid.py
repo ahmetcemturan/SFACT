@@ -72,7 +72,7 @@ def addLoopsXSegmentIntersections( lineLoopsIntersections, loops, segmentFirstX,
 
 def addLoopXSegmentIntersections( lineLoopsIntersections, loop, segmentFirstX, segmentSecondX, segmentYMirror, y ):
 	'Add intersections of the loop with the x segment.'
-	rotatedLoop = euclidean.getPointsRoundZAxis( segmentYMirror, loop )
+	rotatedLoop = euclidean.getRotatedComplexes( segmentYMirror, loop )
 	for pointIndex in xrange( len( rotatedLoop ) ):
 		pointFirst = rotatedLoop[pointIndex]
 		pointSecond = rotatedLoop[ (pointIndex + 1) % len( rotatedLoop ) ]

@@ -1,12 +1,12 @@
 """
 This page is in the table of contents.
-Vectorwrite is a script to write Scalable Vector Graphics for a gcode file.
+Vectorwrite is a very interesting analyze plugin that will create an SVG vector image for each layer that you can then use in some other printing system. 
+
+The Scalable Vector Graphics file can be opened by an SVG viewer or an SVG capable browser like Mozilla:
+http://www.mozilla.com/firefox/
 
 The vectorwrite manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Vectorwrite
-
-Vectorwrite generates a Scalable Vector Graphics file which can be opened by an SVG viewer or an SVG capable browser like Mozilla:
-http://www.mozilla.com/firefox/
 
 ==Operation==
 The default 'Activate Vectorwrite' checkbox is off.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Vectorwrite' checkbox is on, when vectorwrite is run directly.

@@ -14,7 +14,7 @@ Default is on.
 
 If 'Export Profile As CSV File' is selected, the profile from a skeinforge gcode file with comments will be exported as a csv (comma separated values) file.
 
-===Export Profile As Zip File====
+===Export Profile As Zip File===
 Default is off.
 
 If 'Export Profile As Zip File' is selected, the profile from a skeinforge gcode file with comments will be exported as a zip file.
@@ -69,7 +69,7 @@ def exportProfileAsCSVFile(abridgedSettings, suffixFileNameWithoutExtension):
 	archive.writeFileText(suffixFileName, repositoryWriter.getvalue())
 	print('The synopsis csv file is saved as ' + archive.getSummarizedFileName(suffixFileName))
 
-def exportProfileAsZipFile(abridgedSettings, suffixDirectoryName, suffixFileNameWithoutExtension):
+def exportProfileAsZipFile(abridgedSettings, suffixDirectoryPath, suffixFileNameWithoutExtension):
 	'Export the profile from the gcode text as a zip file.'
 	if len(abridgedSettings) < 1:
 		print('Warning, the synopsis zip file could not be generated because there are no setting comments in the file.')
@@ -83,20 +83,17 @@ def exportProfileAsZipFile(abridgedSettings, suffixDirectoryName, suffixFileName
 		abridgedSettings = abridgedSettingsDictionary[abridgedSettingsKey]
 		repositoryWriter = settings.getRepositoryWriter(abridgedSettingsKey)
 		addAbridgedSettings(abridgedSettings, repositoryWriter)
-		abridgedSettingFileName = abridgedSettingsKey + '.csv'
-		abridgedSettingFilePath = os.path.join(suffixDirectoryName, abridgedSettingFileName)
-		abridgedSettingFileNamePaths.append((abridgedSettingFileName, abridgedSettingFilePath))
-		archive.writeFileText(abridgedSettingFileName, repositoryWriter.getvalue())
+		abridgedSettingFileNamePath = FileNamePath(suffixDirectoryPath, abridgedSettingsKey + '.csv')
+		abridgedSettingFileNamePaths.append(abridgedSettingFileNamePath)
+		archive.writeFileText(abridgedSettingFileNamePath.path, repositoryWriter.getvalue())
 	time.sleep(0.2) # the sleep is so that the file system is sure to be consistent
 	zipArchive = zipfile.ZipFile(suffixFileName, 'w', compression=zipfile.ZIP_DEFLATED)
 	for abridgedSettingFileNamePath in abridgedSettingFileNamePaths:
-		abridgedSettingFileName = abridgedSettingFileNamePath[0]
-		abridgedSettingFilePath = abridgedSettingFileNamePath[1]
-		zipArchive.write(abridgedSettingFilePath, abridgedSettingFileName)
+		zipArchive.write(abridgedSettingFileNamePath.path, abridgedSettingFileNamePath.fileName)
 	zipArchive.close()
 	time.sleep(0.2) # the sleep is so that the file system is sure to be consistent
 	for abridgedSettingFileNamePath in abridgedSettingFileNamePaths:
-		os.remove(abridgedSettingFileNamePath[0])
+		os.remove(abridgedSettingFileNamePath.path)
 	print('The synopsis zip file is saved as ' + archive.getSummarizedFileName(suffixFileName))
 
 def getAbridgedSettings(gcodeText):
@@ -136,14 +133,14 @@ def getWindowAnalyzeFileGivenText(fileName, gcodeText, repository=None):
 		repository = settings.getReadRepository(SynopsisRepository())
 	startTime = time.time()
 	suffixFileNameWithoutExtension = fileName[: fileName.rfind('.')] + '_synopsis.'
-	suffixDirectoryName = os.path.dirname(suffixFileNameWithoutExtension)
+	suffixDirectoryPath = os.path.dirname(suffixFileNameWithoutExtension)
 	suffixReplacedBaseNameWithoutExtension = os.path.basename(suffixFileNameWithoutExtension).replace(' ', '_')
-	suffixFileNameWithoutExtension = os.path.join(suffixDirectoryName, suffixReplacedBaseNameWithoutExtension)
+	suffixFileNameWithoutExtension = os.path.join(suffixDirectoryPath, suffixReplacedBaseNameWithoutExtension)
 	abridgedSettings = getAbridgedSettings(gcodeText)
 	if repository.exportProfileAsCSVFile.value:
 		exportProfileAsCSVFile(abridgedSettings, suffixFileNameWithoutExtension)
 	if repository.exportProfileAsZipFile.value:
-		exportProfileAsZipFile(abridgedSettings, suffixDirectoryName, suffixFileNameWithoutExtension)
+		exportProfileAsZipFile(abridgedSettings, suffixDirectoryPath, suffixFileNameWithoutExtension)
 	print('It took %s for synopsis to analyze the file.' % euclidean.getDurationString(time.time() - startTime))
 
 def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWritten, gcodeText=''):
@@ -166,6 +163,18 @@ class AbridgedSetting:
 	def __repr__(self):
 		'Get the tab separated representation of this AbridgedSetting.'
 		return '%s\t%s\t%s' % (self.procedure, self.name, self.value)
+
+
+class FileNamePath:
+	'A class to handle a file name and path.'
+	def __init__(self, directoryName, fileName):
+		'Initialize.'
+		self.fileName = fileName
+		self.path = os.path.join(directoryName, fileName)
+
+	def __repr__(self):
+		'Get the tab separated representation of this FileNamePath.'
+		return '%s\t%s' % (self.fileName, self.path)
 
 
 class SynopsisRepository:

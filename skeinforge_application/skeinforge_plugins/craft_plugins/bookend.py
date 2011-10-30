@@ -10,7 +10,7 @@ http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Bookend
 The default 'Activate Bookend' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
 
 ==Settings==
-Bookend looks for alteration files in the alterations folder in the sfact_profiles folder in the home directory.  Bookend does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
+Bookend looks for alteration files in the alterations folder in the .skeinforge folder in the home directory.  Bookend does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
 
 ===Name of End File===
 Default is 'end.gcode'.
@@ -107,7 +107,7 @@ class BookendSkein:
 
 	def addFromUpperLowerFile(self, fileName):
 		"Add lines of text from the fileName or the lowercase fileName, if there is no file by the original fileName in the directory."
-		self.distanceFeedRate.addLinesSetAbsoluteDistanceMode(settings.getLinesInAlterationsOrGivenDirectory(fileName))
+		self.distanceFeedRate.addLinesSetAbsoluteDistanceMode(settings.getAlterationFileLines(fileName))
 
 	def getCraftedGcode(self, gcodeText, repository):
 		"Parse gcode text and store the bevel gcode."

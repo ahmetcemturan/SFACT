@@ -74,7 +74,7 @@ def getPluginFileNames():
 
 def getPluginsDirectoryPath():
 	"Get the plugins directory path."
-	return archive.getSkeinforgePluginsPath('craft_plugins')
+	return archive.getCraftPluginsDirectoryPath()
 
 def getProcedures( procedure, text ):
 	"Get the procedures up to and including the given procedure."

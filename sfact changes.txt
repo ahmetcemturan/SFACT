@@ -1,0 +1,21 @@
+CARVE:
+	Extrusion width ratio changed to absolute value in mm.
+CHAMBER:
+	Added options for 
+setting Initial Extruder Nozzle Temperature, it is issued only at the beginning and with M109 code so printer wont try extruding if a min temp has not beeen reached.
+option checkbox for turning Extruder Heater Off at Shut Down
+Commented out options and function for Chamber Temperature and Holding Force as it is only confusing and I am not sure if anone uses it.
+CLIP:
+	Changed internal formulation to calculate the clip amount automatically based on extrusion width by using 0.5*(1/4pi).  The value still can be altered using the clip scaler which defaults to 1.
+COOL:
+	Added option for a minimum feedrate in case of layertime approaching 0, feedrate gets tooo low.
+INSET: 
+	Removed the Temperature read option. Add Custom Code for Temperature Reading
+	Turn Extruder Heater Off at Shut Down is now removed and moved to Chamber
+SPEED: 
+	Perimeter Feedrate is entered as absolute value in mm/sec.
+	The Flowrates are directly dependent on the feedrate and default to 1 (scaled up in background)
+	Option to send Acceleration setting for Fill, perimeter and bridges differently.   Setting for bridges is relative to the perimeter.
+	Bridge feedrateis still relative but to the Perimeter feedrate setting now.
+	Flowrate for bridge is now reduced to the native flowrate of the extruder. (for explanation of the native flowrate see my blog)
+	

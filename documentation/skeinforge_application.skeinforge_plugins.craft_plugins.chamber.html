@@ -13,10 +13,14 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.carve.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.chop.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Some filaments contract too much and to prevent this you have to print the object in a temperature regulated chamber or on a temperature regulated bed. The chamber tool allows you to control the bed and chamber temperature and the holding pressure.  The gcodes are also described at:<br>
+Some filaments contract too much and warp the extruded object.  To prevent this you have to print the object in a temperature regulated chamber and/or on a temperature regulated bed. The chamber tool allows you to control the bed and chamber temperature and the holding pressure.<br>
+ <br>
+The chamber gcodes are also described at:<br>
+ <br>
 <a href="http://reprap.org/wiki/Mendel_User_Manual:_RepRapGCodes">http://reprap.org/wiki/Mendel_User_Manual:_RepRapGCodes</a><br>
  <br>
 The chamber manual page is at:<br>
+ <br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Chamber">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Chamber</a><br>
  <br>
 <br />
@@ -61,7 +65,7 @@ Defines the chamber temperature in Celcius by adding an M141 command.<br>
 
 Default is zero.<br>
  <br>
-Defines the holding pressure of a mechanism, like a vacuum table or electromagnet, to hold the bed surface or object, by adding an M142 command.  The holding pressure is in bar. For hardware which only has on/off holding, when the holding pressure is zero, turn off holding, when the holding pressure is greater than zero, turn on holding. <br>
+Defines the holding pressure of a mechanism, like a vacuum table or electromagnet, to hold the bed surface or object, by adding an M142 command.  The holding pressure is in bars. For hardware which only has on/off holding, when the holding pressure is zero, turn off holding, when the holding pressure is greater than zero, turn on holding. <br>
  <br>
 <a name="Heated Beds" id="Heated Beds"></a><h2>Heated Beds</h2>
 <hr>
@@ -69,84 +73,115 @@ Defines the holding pressure of a mechanism, like a vacuum table or electromagne
 <a name="Bothacker" id="Bothacker"></a><h3>Bothacker</h3>
 
 A resistor heated aluminum plate by Bothacker:<br>
+ <br>
 <a href="http://bothacker.com">http://bothacker.com</a><br>
  <br>
 with an article at:<br>
+ <br>
 <a href="http://bothacker.com/2009/12/18/heated-build-platform/">http://bothacker.com/2009/12/18/heated-build-platform/</a><br>
  <br>
 <a name="Domingo" id="Domingo"></a><h3>Domingo</h3>
 
 A heated copper build plate by Domingo:<br>
+ <br>
 <a href="http://casainho-emcrepstrap.blogspot.com/">http://casainho-emcrepstrap.blogspot.com/</a><br>
  <br>
 with articles at:<br>
+ <br>
 <a href="http://casainho-emcrepstrap.blogspot.com/2010/01/first-time-with-pla-testing-it-also-on.html">http://casainho-emcrepstrap.blogspot.com/2010/01/first-time-with-pla-testing-it-also-on.html</a><br>
+ <br>
 <a href="http://casainho-emcrepstrap.blogspot.com/2010/01/call-for-helpideas-to-develop-heated.html">http://casainho-emcrepstrap.blogspot.com/2010/01/call-for-helpideas-to-develop-heated.html</a><br>
+ <br>
 <a href="http://casainho-emcrepstrap.blogspot.com/2010/01/new-heated-build-platform.html">http://casainho-emcrepstrap.blogspot.com/2010/01/new-heated-build-platform.html</a><br>
+ <br>
 <a href="http://casainho-emcrepstrap.blogspot.com/2010/01/no-acrylic-and-instead-kapton-tape-on.html">http://casainho-emcrepstrap.blogspot.com/2010/01/no-acrylic-and-instead-kapton-tape-on.html</a><br>
+ <br>
 <a href="http://casainho-emcrepstrap.blogspot.com/2010/01/problems-with-heated-build-platform-and.html">http://casainho-emcrepstrap.blogspot.com/2010/01/problems-with-heated-build-platform-and.html</a><br>
+ <br>
 <a href="http://casainho-emcrepstrap.blogspot.com/2010/01/perfect-build-platform.html">http://casainho-emcrepstrap.blogspot.com/2010/01/perfect-build-platform.html</a><br>
+ <br>
 <a href="http://casainho-emcrepstrap.blogspot.com/2009/12/almost-no-warp.html">http://casainho-emcrepstrap.blogspot.com/2009/12/almost-no-warp.html</a><br>
+ <br>
 <a href="http://casainho-emcrepstrap.blogspot.com/2009/12/heated-base-plate.html">http://casainho-emcrepstrap.blogspot.com/2009/12/heated-base-plate.html</a><br>
  <br>
 <a name="Jmil" id="Jmil"></a><h3>Jmil</h3>
 
 A heated build stage by jmil, over at:<br>
+ <br>
 <a href="http://www.hive76.org">http://www.hive76.org</a><br>
  <br>
 with articles at:<br>
+ <br>
 <a href="http://www.hive76.org/handling-hot-build-surfaces">http://www.hive76.org/handling-hot-build-surfaces</a><br>
+ <br>
 <a href="http://www.hive76.org/heated-build-stage-success">http://www.hive76.org/heated-build-stage-success</a><br>
  <br>
 <a name="Kulitorum" id="Kulitorum"></a><h3>Kulitorum</h3>
 
 Kulitorum has made a heated bed.  It is a 5mm Alu sheet with a pattern laid out in kapton tape.  The wire is a 0.6mm2 Konstantin wire and it's held in place by small pieces of kapton tape.  The description and picture is at:<br>
+ <br>
 <a href="http://gallery.kulitorum.com/main.php?g2_itemId=283">http://gallery.kulitorum.com/main.php?g2_itemId=283</a><br>
  <br>
 <a name="Metalab" id="Metalab"></a><h3>Metalab</h3>
 
 A heated base by the Metalab folks:<br>
+ <br>
 <a href="http://reprap.soup.io">http://reprap.soup.io</a><br>
  <br>
 with information at:<br>
+ <br>
 <a href="http://reprap.soup.io/?search=heated%20base">http://reprap.soup.io/?search=heated%20base</a><br>
  <br>
 <a name="Nophead" id="Nophead"></a><h3>Nophead</h3>
 
 A resistor heated aluminum bed by Nophead:<br>
+ <br>
 <a href="http://hydraraptor.blogspot.com">http://hydraraptor.blogspot.com</a><br>
  <br>
 with articles at:<br>
+ <br>
 <a href="http://hydraraptor.blogspot.com/2010/01/will-it-stick.html">http://hydraraptor.blogspot.com/2010/01/will-it-stick.html</a><br>
+ <br>
 <a href="http://hydraraptor.blogspot.com/2010/01/hot-metal-and-serendipity.html">http://hydraraptor.blogspot.com/2010/01/hot-metal-and-serendipity.html</a><br>
+ <br>
 <a href="http://hydraraptor.blogspot.com/2010/01/new-year-new-plastic.html">http://hydraraptor.blogspot.com/2010/01/new-year-new-plastic.html</a><br>
+ <br>
 <a href="http://hydraraptor.blogspot.com/2010/01/hot-bed.html">http://hydraraptor.blogspot.com/2010/01/hot-bed.html</a><br>
  <br>
 <a name="Prusajr" id="Prusajr"></a><h3>Prusajr</h3>
 
 A resistive wire heated plexiglass plate by prusajr:<br>
+ <br>
 <a href="http://prusadjs.cz/">http://prusadjs.cz/</a><br>
  <br>
 with articles at:<br>
+ <br>
 <a href="http://prusadjs.cz/2010/01/heated-reprap-print-bed-mk2/">http://prusadjs.cz/2010/01/heated-reprap-print-bed-mk2/</a><br>
+ <br>
 <a href="http://prusadjs.cz/2009/11/look-ma-no-warping-heated-reprap-print-bed/">http://prusadjs.cz/2009/11/look-ma-no-warping-heated-reprap-print-bed/</a><br>
  <br>
 <a name="Pumpernickel2" id="Pumpernickel2"></a><h3>Pumpernickel2</h3>
 
 A resistor heated aluminum plate by Pumpernickel2:<br>
+ <br>
 <a href="http://dev.forums.reprap.org/profile.php?14,844">http://dev.forums.reprap.org/profile.php?14,844</a><br>
  <br>
 with a picture at:<br>
+ <br>
 <a href="http://dev.forums.reprap.org/file.php?14,file=1228,filename=heatedplate.jpg">http://dev.forums.reprap.org/file.php?14,file=1228,filename=heatedplate.jpg</a><br>
  <br>
 <a name="Zaggo" id="Zaggo"></a><h3>Zaggo</h3>
 
 A resistor heated aluminum plate by Zaggo at Pleasant Software:<br>
+ <br>
 <a href="http://pleasantsoftware.com/developer/3d/">http://pleasantsoftware.com/developer/3d/</a><br>
  <br>
 with articles at:<br>
-ttp://pleasantsoftware.com/developer/3d/2009/12/05/raftless/<br>
+ <br>
+<a href="http://pleasantsoftware.com/developer/3d/2009/12/05/raftless/">http://pleasantsoftware.com/developer/3d/2009/12/05/raftless/</a><br>
+ <br>
 <a href="http://pleasantsoftware.com/developer/3d/2009/11/15/living-in-times-of-warp-free-printing/">http://pleasantsoftware.com/developer/3d/2009/11/15/living-in-times-of-warp-free-printing/</a><br>
+ <br>
 <a href="http://pleasantsoftware.com/developer/3d/2009/11/12/canned-heat/">http://pleasantsoftware.com/developer/3d/2009/11/12/canned-heat/</a><br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
