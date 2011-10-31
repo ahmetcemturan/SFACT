@@ -268,8 +268,7 @@ def writeOutput(fileName, shouldAnalyze=True):
 		fileNameSuffix += '_export'
 	gcodeText = gcodec.getGcodeFileText(fileName, '')
 	if repository.addProfileExtension.value:
-	fileNameSuffix += '.' + getFirstValue(gcodeText, '(<profileName>')
-
+		fileNameSuffix += '.' + getFirstValue(gcodeText, '(<profileName>')
 	if repository.addDescriptiveExtension.value:
 		fileNameSuffix += getDescriptiveExtension(gcodeText)
 	if repository.addTimestampExtension.value:
