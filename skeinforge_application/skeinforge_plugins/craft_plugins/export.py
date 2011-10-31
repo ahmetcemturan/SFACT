@@ -268,9 +268,8 @@ def writeOutput(fileName, shouldAnalyze=True):
 		fileNameSuffix += '_export'
 	gcodeText = gcodec.getGcodeFileText(fileName, '')
 	if repository.addProfileExtension.value:
-	profileName = skeinforge_profile.getProfileName(skeinforge_profile.getCraftTypeName())
-	if profileName:
- 		fileNameSuffix += '.' + string.replace(profileName, ' ', '_')
+	fileNameSuffix += '.' + getFirstValue(gcodeText, '(<profileName>')
+
 	if repository.addDescriptiveExtension.value:
 		fileNameSuffix += getDescriptiveExtension(gcodeText)
 	if repository.addTimestampExtension.value:
