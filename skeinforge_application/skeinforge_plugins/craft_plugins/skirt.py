@@ -239,10 +239,10 @@ class SkirtSkein:
 				if loopCrossDictionary == None:
 					loopCrossDictionary = LoopCrossDictionary()
 				loopCrossDictionary.loop.append(location.dropAxis())
-			elif firstWord == '(<layer>':
-				layerIndex += 1
-				if layerIndex > self.repository.layersTo.value:
-					return
+#			elif firstWord == '(<layer>':
+#				layerIndex += 1
+#				if layerIndex > self.repository.layersTo.value:
+#					return
 				self.layerCount.printProgressIncrement('skirt')
 
 	def parseInitialization(self):

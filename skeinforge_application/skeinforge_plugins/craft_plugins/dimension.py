@@ -347,7 +347,7 @@ class DimensionSkein:
 #		filamentPackingArea = (math.pi * (self.filamentRadius ** 2)) * self.repository.filamentPackingDensity.value
 #		print (	'useFilamentDiameter'	, self.repository.useFilamentDiameter.value)
 		if self.repository.useFilamentDiameter.value :
-			self.extrusionReduction = self.filamentXsection / self.extrusionXsection
+			self.extrusionReduction = self.filamentXsection *10 / self.extrusionXsection
 		else:
 			self.extrusionReduction = 1
 		minimizer = 	self.extrusionReduction
@@ -355,7 +355,7 @@ class DimensionSkein:
 #		extrusionRate = self.flowRate *  self.extrusionXsection #* self.flowScaleSixty in mm3/mm
 #		scaledFlowRate = extrusionRate * self.extrusionReduction
 #		scaledFlowRate = (self.flowRate*((self.extrusionXsection/filamentPackingArea)/self.calibrationFactor))/distance
-		scaledFlowRate = (self.flowRate * 10 *  self.extrusionXsection )
+		scaledXSection = (self.flowRate *  self.extrusionXsection )
 
 
 #		scaledFlowRate = extrusionRate * self.extrusionReduction
@@ -365,7 +365,7 @@ class DimensionSkein:
 #		return self.getExtrusionDistanceStringFromExtrusionDistance(scaledFlowRate/self.feedRateMinute * distance)
 #		print('distance', distance)
 #		print ('E=',self.getExtrusionDistanceStringFromExtrusionDistance((scaledFlowRate * distance) / self.extrusionReduction))
-		return self.getExtrusionDistanceStringFromExtrusionDistance((scaledFlowRate * distance) / self.extrusionReduction)
+		return self.getExtrusionDistanceStringFromExtrusionDistance((scaledXSection * distance) / self.extrusionReduction)
 
 	def getExtrusionDistanceStringFromExtrusionDistance( self, extrusionDistance ):
 		'Get the extrusion distance string from the extrusion distance.'
@@ -469,9 +469,11 @@ class DimensionSkein:
 		elif firstWord == 'M101':
 #			print ('FR / AR',self.repository.activateFixedRetract.value,self.repository.activateAdaptiveRetract.value)
 			if self.repository.activateFixedRetract.value:
+#				self.distanceFeedRate.addLine('M88')
 				self.addLinearMoveExtrusionDistanceLine(self.restartDistance * self.retractionRatio)
 			elif self.repository.activateAdaptiveRetract.value:
-				self.addLinearMoveExtrusionDistanceLine((self.autoRetractDistance*10 / self.extrusionReduction)) #(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
+#				self.distanceFeedRate.addLine('M88')
+				self.addLinearMoveExtrusionDistanceLine((self.autoRetractDistance / self.extrusionReduction)) #(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
 			if self.totalExtrusionDistance > self.repository.maximumEValueBeforeReset.value or self.repository.relativeExtrusionDistance.value:
 				self.distanceFeedRate.addLine('G92 E0')
 				self.totalExtrusionDistance = 0.0
@@ -479,16 +481,20 @@ class DimensionSkein:
 		elif firstWord == 'M103':
 			if self.repository.activateFixedRetract.value:
 #		    	self.retractionRatio = self.getRetractionRatio(lineIndex)
+#				self.distanceFeedRate.addLine('M84r3')
+				self.distanceFeedRate.addLine('M88')
 				self.addLinearMoveExtrusionDistanceLine(-self.repository.retractionDistance.value * self.retractionRatio)
 			elif self.repository.activateAdaptiveRetract.value:
+				self.distanceFeedRate.addLine('M88')
 				self.retractionRatio = self.getRetractionRatio(lineIndex)
-				self.addLinearMoveExtrusionDistanceLine((-(self.autoRetractDistance*10-self.repository.afterOooze.value)) / self.extrusionReduction)
+#				self.distanceFeedRate.addLine('M84r4')
+				self.addLinearMoveExtrusionDistanceLine((-self.autoRetractDistance-self.repository.afterOooze.value) / self.extrusionReduction)
 			self.isExtruderActive = False
 			#print('dtnt ttnt ted rr efr',self.distanceToNextThread , self.timeToNextThread , self.totalExtrusionDistance,self.retractionRatio , self.autoRetractDistance)
 		elif firstWord == 'M108':
 			self.operatingFlowRate = float( splitLine[1][1 :] )
 			self.flowRate = self.operatingFlowRate
-##			self.flowRate = float( splitLine[1][1 :] )
+#			self.flowRate = float( splitLine[1][1 :] )
 #			self.operatingFlowRate = float(splitLine[1])
 #			self.flowRate = self.operatingFlowRate
 #			print('frte=',self.flowRate)

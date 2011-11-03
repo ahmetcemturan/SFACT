@@ -392,8 +392,8 @@ class RaftRepository:
 
 		settings.LabelDisplay().getFromName('- Base -', self)
 		self.baseLayers = settings.IntSpin().getFromValue(0, 'Base Layers (integer):', self, 3, 0)
-		self.baseFeedRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Feed Rate Multiplier (ratio):', self, 1.0, 0.5)
-		self.baseFlowRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Flow Rate Multiplier (ratio):', self, 1.0, 0.5)
+		self.baseFeedRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Feed Rate Multiplier (ratio):', self, 2.0, 1.0)
+		self.baseFlowRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Flow Rate Multiplier (ratio):', self, 2.0, 1.0)
 		self.baseInfillDensity = settings.FloatSpin().getFromValue(0.2, 'Base Infill Density (ratio):', self, 1.0, 0.5)
 		self.baseLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(
 			1.0, 'Base Layer Thickness over Layer Thickness:', self, 3.0, 2.0)
