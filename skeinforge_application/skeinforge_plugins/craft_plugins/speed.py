@@ -185,7 +185,7 @@ class SpeedSkein:
 		self.isBridgeLayer = False
 		self.isExtruderActive = False
 		self.isPerimeterPath = False
-		self.lineIndex = 0
+		self.lineIndex = 1
 		self.lines = None
 		self.oldFlowRate = None
 		self.oldAccelerationRate = None

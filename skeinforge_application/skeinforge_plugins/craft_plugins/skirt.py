@@ -129,6 +129,7 @@ class SkirtRepository:
 		self.gapOverPerimeterWidth = settings.FloatSpin().getFromValue(
 			1.0, 'Gap over Perimeter Width (ratio):', self, 10.0, 5.0)
 		self.layersTo = settings.IntSpin().getSingleIncrementFromValue(0, 'Layers To (index):', self, 912345678, 1)
+		self.boundaryCheck = settings.BooleanSetting().getFromValue('Check for Limits:', self, True)
 		self.executeTitle = 'Skirt'
 
 	def execute(self):
@@ -236,13 +237,14 @@ class SkirtSkein:
 				loopCrossDictionary = None
 			elif firstWord == '(<boundaryPoint>' or firstWord == '(<raftPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if loopCrossDictionary == None:
+				if not loopCrossDictionary :
 					loopCrossDictionary = LoopCrossDictionary()
 				loopCrossDictionary.loop.append(location.dropAxis())
-#			elif firstWord == '(<layer>':
-#				layerIndex += 1
-#				if layerIndex > self.repository.layersTo.value:
-#					return
+
+			elif firstWord == '(<layer>' and not self.repository.boundaryCheck.value :
+				layerIndex += 1
+				if layerIndex > self.repository.layersTo.value:
+					return
 				self.layerCount.printProgressIncrement('skirt')
 
 	def parseInitialization(self):
