@@ -236,23 +236,20 @@ class DimensionSkein:
 		self.parseInitialization()
 		if not self.repository.retractWithinIsland.value:
 			self.parseBoundaries()
-
-		
-#		if repository.activateCalibration.value:
-#			self.calibrationFactor = (((self.layerThickness**2/4)*math.pi)+self.layerThickness*(xSectionCorrector -self.layerThickness))/(((self.layerThickness**2/4)*math.pi)+self.layerThickness *(self.perimeterWidth-self.layerThickness))
-#		self.newfilamentPackingDensity = repository.filamentPackingDensity.value * self.calibrationFactor
-#		print('****************E-Steps corrector Value (For Calibration)**********************:')
-#		print( 'E-Steps corrector Value (For Calibration) STEPPER EXTRUDERS ONLY :', self.newfilamentPackingDensity )
-#		print('****************E-Steps corrector Value (For Calibration)**********************')
-#		self.flowScaleSixty = 60.0 * ((((self.layerThickness+self.perimeterWidth)/4) ** 2 * math.pi )/filamentPackingArea) / self.calibrationFactor
-#		self.flowScaleSixty = 60.0 * (self.extrusionXsection/filamentPackingArea)/ self.calibrationFactor
-#		self.flowScaleSixty = 60.0 * self.layerThickness * self.perimeterWidth / filamentPackingArea
-#		print ('filamentPackingArea self.calibrationFactor',filamentPackingArea ,self.calibrationFactor)
-#		if self.calibrationFactor is None:
-#			print('Measured extrusion width cant be 0, either un-check calibration or set measured width to what you have measured!')
-#		if not self.operatingFlowRate:
-#			print('There is no operatingFlowRate so dimension will do nothing.')
-#			return gcodeText
+#   Calculate the extrusion volume
+		if repository.activateCalibration.value:
+			self.calibrationFactor = (4 * (self.repository.MeasuredXSection.value - self.perimeterWidth))/((math.pi-4)*self.layerThickness+ 4* self.perimeterWidth  )+1
+			self.newfilamentPackingDensity = repository.filamentPackingDensity.value * self.calibrationFactor
+			print('****************E-Steps corrector Value (For Calibration)**********************:')
+			print( 'E-Steps corrector Value (For Calibration) STEPPER EXTRUDERS ONLY :', self.newfilamentPackingDensity )
+			print('****************E-Steps corrector Value (For Calibration)**********************')
+		else :
+			self.calibrationFactor = repository.filamentPackingDensity.value
+		if self.calibrationFactor is None:
+			print('Measured extrusion width cant be 0, either un-check calibration or set measured width to what you have measured!')
+		if not self.operatingFlowRate:
+			print('There is no operatingFlowRate so dimension will do nothing.')
+			return gcodeText
 		self.restartDistance = self.repository.retractionDistance.value + self.repository.restartExtraDistance.value
 		self.extruderRetractionSpeedMinuteString = self.distanceFeedRate.getRounded(60.0 * self.repository.extruderRetractionSpeed.value)
 		if not self.maximumZTravelFeedRatePerSecond  and not self.travelFeedRatePerSecond :
@@ -349,32 +346,19 @@ class DimensionSkein:
 			print(distance)
 			print(splitLine)
 			return ''
-		self.extrusionXsection=((self.layerThickness/2+self.perimeterWidth/2)/2) ** 2 * math.pi
-#		print ('self.layerThickness , self.perimeterWidth',self.layerThickness,self.perimeterWidth)
-		self.filamentXsection =(self.repository.filamentDiameter.value/2) ** 2 * math.pi
-#		xSectionCorrector = self.repository.MeasuredXSection.value
+		self.extrusionXsection=(((self.layerThickness+self.perimeterWidth)/4)*((self.layerThickness+self.perimeterWidth)/4)) * math.pi
+		self.filamentXsection = self.filamentRadius ** 2 * math.pi
 #		filamentPackingArea = (math.pi * (self.filamentRadius ** 2)) * self.repository.filamentPackingDensity.value
-#		print (	'useFilamentDiameter'	, self.repository.useFilamentDiameter.value)
 		if self.repository.useFilamentDiameter.value :
-			self.extrusionReduction = (self.filamentXsection  / self.extrusionXsection) /10
+			self.extrusionReduction = self.filamentXsection * self.calibrationFactor
+#			print ('calibration factor fd',self.extrusionReduction,self.filamentXsection,self.calibrationFactor )
 		else:
-			self.extrusionReduction = 1
-		minimizer = 	self.extrusionReduction
-#		print ('self.extrusionReduction',self.extrusionReduction)
-#		extrusionRate = self.flowRate *  self.extrusionXsection #* self.flowScaleSixty in mm3/mm
-#		scaledFlowRate = extrusionRate * self.extrusionReduction
-#		scaledFlowRate = (self.flowRate*((self.extrusionXsection/filamentPackingArea)/self.calibrationFactor))/distance
+			self.extrusionReduction = 1*self.calibrationFactor
+#			print ('calibration factor straight',self.extrusionReduction,self.calibrationFactor )
 		scaledXSection = (self.flowRate *  self.extrusionXsection )
+		return self.getExtrusionDistanceStringFromExtrusionDistance(((scaledXSection * distance) / self.extrusionReduction))
 
 
-#		scaledFlowRate = extrusionRate * self.extrusionReduction
-#		print ('self.extrusionXsection:',self.extrusionXsection)
-#		print ('self.flowRate=',self.flowRate)
-#		print ('scaledFlowRate=',scaledFlowRate)
-#		return self.getExtrusionDistanceStringFromExtrusionDistance(scaledFlowRate/self.feedRateMinute * distance)
-#		print('distance', distance)
-#		print ('E=',self.getExtrusionDistanceStringFromExtrusionDistance((scaledFlowRate * distance) / self.extrusionReduction))
-		return self.getExtrusionDistanceStringFromExtrusionDistance((scaledXSection * distance) / self.extrusionReduction)
 
 	def getExtrusionDistanceStringFromExtrusionDistance( self, extrusionDistance ):
 		'Get the extrusion distance string from the extrusion distance.'
@@ -443,17 +427,13 @@ class DimensionSkein:
 				self.feedRateMinute = 60.0 * float(splitLine[1])
 			elif firstWord == '(<operatingFlowRate>':
 				self.operatingFlowRate = float(splitLine[1])
-#				self.flowRate = self.operatingFlowRate
 			elif firstWord == '(<perimeterWidth>':
 				self.perimeterWidth = float(splitLine[1])
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRatePerSecond = float(splitLine[1])
 			elif firstWord == '(<nozzleDiameter>':
 				self.nozzleDiameter = float(splitLine[1])
-#				print ('ND',self.nozzleDiameter)
 				self.nozzleXsection = (self.nozzleDiameter/2)**2*math.pi
-			self.extrusionXsection = ((self.layerThickness + self.perimeterWidth)/4) ** 2 * math.pi
-#			print('xtr-xsect, nozzle, lt, pw',self.extrusionXsection , self.nozzleXsection ,self.layerThickness,self.perimeterWidth )
 			self.distanceFeedRate.addLine(line)
 	def parseLine( self, lineIndex ):
 		'Parse a gcode line and add it to the dimension skein.'
@@ -478,7 +458,6 @@ class DimensionSkein:
 			else: self.distanceFeedRate.addLine('M83')
 			self.layerIndex += 1
 		elif firstWord == 'M101':
-#			print ('FR / AR',self.repository.activateFixedRetract.value,self.repository.activateAdaptiveRetract.value)
 			if self.repository.activateFixedRetract.value:
 #				self.distanceFeedRate.addLine('M88')
 				self.addLinearMoveExtrusionDistanceLine(self.restartDistance * self.retractionRatio)
@@ -491,27 +470,18 @@ class DimensionSkein:
 			self.isExtruderActive = True
 		elif firstWord == 'M103':
 			if self.repository.activateFixedRetract.value:
-#		    	self.retractionRatio = self.getRetractionRatio(lineIndex)
-#				self.distanceFeedRate.addLine('M84r3')
 #				self.distanceFeedRate.addLine('M88')
 				self.addLinearMoveExtrusionDistanceLine(-self.repository.retractionDistance.value * self.retractionRatio)
 			elif self.repository.activateAdaptiveRetract.value:
 #				self.distanceFeedRate.addLine('M88')
 				self.retractionRatio = self.getRetractionRatio(lineIndex)
-#				self.distanceFeedRate.addLine('M84r4')
 				self.addLinearMoveExtrusionDistanceLine(- self.autoRetractDistance  / self.extrusionReduction) #retracting
 			self.isExtruderActive = False
-			#print('dtnt ttnt ted rr efr',self.distanceToNextThread , self.timeToNextThread , self.totalExtrusionDistance,self.retractionRatio , self.autoRetractDistance)
 		elif firstWord == 'M108':
 			self.operatingFlowRate = float( splitLine[1][1 :] )
 			self.flowRate = self.operatingFlowRate
-#			self.flowRate = float( splitLine[1][1 :] )
-#			self.operatingFlowRate = float(splitLine[1])
-#			self.flowRate = self.operatingFlowRate
-#			print('frte=',self.flowRate)
 		self.distanceFeedRate.addLine(line)
-#		self.filamentXsection = (self.repository.filamentDiameter.value/2)**2 * math.pi
-		self.filamentXsection = (math.pi * (self.filamentRadius ** 2)) * self.repository.filamentPackingDensity.value
+
 
 def main():
 	'Display the dimension dialog.'
