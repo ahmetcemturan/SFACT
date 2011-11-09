@@ -229,14 +229,14 @@ class DimensionSkein:
 		'Parse gcode text and store the dimension gcode.'
 		self.repository = repository
 #		self.calibrationFactor = 1
-		self.filamentRadius = 0.5 * repository.filamentDiameter.value
+		self.filamentRadius = 0.5 * self.repository.filamentDiameter.value
 		self.minimumTravelForRetraction = self.repository.minimumTravelForRetraction.value
 		self.doubleMinimumTravelForRetraction = self.minimumTravelForRetraction + self.minimumTravelForRetraction
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		if not self.repository.retractWithinIsland.value:
 			self.parseBoundaries()
-#   Calculate the extrusion volume
+
 		if repository.activateCalibration.value:
 			self.calibrationFactor = (4 * (self.repository.MeasuredXSection.value - self.perimeterWidth))/((math.pi-4)*self.layerThickness+ 4* self.perimeterWidth  )+1
 			self.newfilamentPackingDensity = repository.filamentPackingDensity.value * self.calibrationFactor
@@ -250,6 +250,16 @@ class DimensionSkein:
 		if not self.operatingFlowRate:
 			print('There is no operatingFlowRate so dimension will do nothing.')
 			return gcodeText
+#   Calculate the extrusion volume
+		self.extrusionXsection=(((self.layerThickness+self.perimeterWidth)/4)*((self.layerThickness+self.perimeterWidth)/4)) * math.pi
+		self.filamentXsection = self.filamentRadius ** 2 * math.pi
+#		filamentPackingArea = (math.pi * (self.filamentRadius ** 2)) * self.repository.filamentPackingDensity.value
+		if self.repository.useFilamentDiameter.value :
+			self.extrusionReduction = self.filamentXsection * self.calibrationFactor
+#			print ('calibration factor fd',self.extrusionReduction,self.filamentXsection,self.calibrationFactor )
+		else:
+			self.extrusionReduction = self.calibrationFactor
+#			print ('calibration factor straight',self.extrusionReduction,self.calibrationFactor )
 		self.restartDistance = self.repository.retractionDistance.value + self.repository.restartExtraDistance.value
 		self.extruderRetractionSpeedMinuteString = self.distanceFeedRate.getRounded(60.0 * self.repository.extruderRetractionSpeed.value)
 		if not self.maximumZTravelFeedRatePerSecond  and not self.travelFeedRatePerSecond :
@@ -289,11 +299,6 @@ class DimensionSkein:
 		'Get the travel distance to the next thread.'
 		if not self.oldLocation :
 			return None
-
-
-
-
-
 		isActive = False
 		location = self.oldLocation
 		for afterIndex in xrange(lineIndex + 1, len(self.lines)):
@@ -310,17 +315,13 @@ class DimensionSkein:
 					locationMinusOld = location - self.oldLocation
 					xyTravel = abs(locationMinusOld.dropAxis())
 					zTravelMultiplied = locationMinusOld.z * self.zDistanceRatio
-					self.timeToNextThread = math.sqrt(xyTravel * xyTravel + zTravelMultiplied * zTravelMultiplied)/ self.feedRateMinute*60
-#					self.autoRetractDistance = (self.timeToNextThread)**0.5 / (abs(self.repository.oozeRate.value)/60)
-#					self.autoRetractDistance = self.timeToNextThread * abs(self.repository.oozeRate.value)/60
-					self.RetractDistance = self.timeToNextThread * (self.repository.oozeRate.value/60)
+					self.timeToNextThread = math.sqrt(xyTravel * xyTravel + zTravelMultiplied * zTravelMultiplied)/ self.feedRateMinute * 60
+					self.RetractDistance = self.timeToNextThread * (self.repository.oozeRate.value)
 					if self.RetractDistance < self.repository.minRetract.value :
 						self.autoRetractDistance = self.repository.minRetract.value
-#						print ('min',self.autoRetractDistance)
 					elif self.RetractDistance > self.repository.maxRetract.value :
 						self.autoRetractDistance = self.repository.maxRetract.value
-#						print ('max',self.autoRetractDistance)
-					else: 
+					else:
 						self.autoRetractDistance = self.RetractDistance
 #						print ('reg',self.autoRetractDistance)
 #					print ('retract',self.autoRetractDistance)
@@ -346,15 +347,7 @@ class DimensionSkein:
 			print(distance)
 			print(splitLine)
 			return ''
-		self.extrusionXsection=(((self.layerThickness+self.perimeterWidth)/4)*((self.layerThickness+self.perimeterWidth)/4)) * math.pi
-		self.filamentXsection = self.filamentRadius ** 2 * math.pi
-#		filamentPackingArea = (math.pi * (self.filamentRadius ** 2)) * self.repository.filamentPackingDensity.value
-		if self.repository.useFilamentDiameter.value :
-			self.extrusionReduction = self.filamentXsection * self.calibrationFactor
-#			print ('calibration factor fd',self.extrusionReduction,self.filamentXsection,self.calibrationFactor )
-		else:
-			self.extrusionReduction = 1*self.calibrationFactor
-#			print ('calibration factor straight',self.extrusionReduction,self.calibrationFactor )
+
 		scaledXSection = (self.flowRate *  self.extrusionXsection )
 		return self.getExtrusionDistanceStringFromExtrusionDistance(((scaledXSection * distance) / self.extrusionReduction))
 
