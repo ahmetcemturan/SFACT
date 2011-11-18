@@ -27,7 +27,7 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get round loop."
 	if len(loop) < 3:
 		return [loop]
-	radius = lineation.getRadiusByPrefix(elementNode, prefix, sideLength)
+	radius = lineation.getRadiusByPrefix(0.0, elementNode, prefix, sideLength)
 	if radius == 0.0:
 		return loop
 	roundLoop = []

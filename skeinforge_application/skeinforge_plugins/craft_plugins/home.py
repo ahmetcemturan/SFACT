@@ -9,10 +9,10 @@ http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Home
 The default 'Activate Home' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
 
 ==Settings==
-===Name of Homing File===
-Default is homing.gcode.
+===Name of Home File===
+Default is home.gcode.
 
-At the beginning of a each layer, home will add the commands of a gcode script with the name of the "Name of Homing File" setting, if one exists.  Home does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  Home looks for those files in the alterations folder in the .skeinforge folder in the home directory. If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
+At the beginning of a each layer, home will add the commands of a gcode script with the name of the "Name of Home File" setting, if one exists.  Home does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  Home looks for those files in the alterations folder in the .skeinforge folder in the home directory. If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.
 
 ==Examples==
 The following examples home the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and home.py.
@@ -83,7 +83,7 @@ class HomeRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Home', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_home')
 		self.activateHome = settings.BooleanSetting().getFromValue('Activate Home', self, False )
-		self.nameOfHomingFile = settings.StringSetting().getFromValue('Name of Homing File:', self, 'homing.gcode')
+		self.nameOfHomeFile = settings.StringSetting().getFromValue('Name of Home File:', self, 'home.gcode')
 		self.executeTitle = 'Home'
 
 	def execute(self):
@@ -99,7 +99,7 @@ class HomeSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.extruderActive = False
 		self.highestZ = None
-		self.homingLines = []
+		self.homeLines = []
 		self.layerCount = settings.LayerCount()
 		self.lineIndex = 0
 		self.lines = None
@@ -127,7 +127,7 @@ class HomeSkein:
 		if self.extruderActive:
 			self.distanceFeedRate.addLine('M103')
 		self.addHopUp( self.oldLocation )
-		self.distanceFeedRate.addLinesSetAbsoluteDistanceMode( self.homingLines )
+		self.distanceFeedRate.addLinesSetAbsoluteDistanceMode(self.homeLines)
 		self.addHopUp( self.oldLocation )
 		self.addFloat( self.oldLocation, location )
 		if self.extruderActive:
@@ -141,8 +141,8 @@ class HomeSkein:
 	def getCraftedGcode( self, gcodeText, repository ):
 		"Parse gcode text and store the home gcode."
 		self.repository = repository
-		self.homingLines = settings.getAlterationFileLines(repository.nameOfHomingFile.value)
-		if len(self.homingLines) < 1:
+		self.homeLines = settings.getAlterationFileLines(repository.nameOfHomeFile.value)
+		if len(self.homeLines) < 1:
 			return gcodeText
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization( repository )
@@ -178,7 +178,7 @@ class HomeSkein:
 			self.oldLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('home')
-			if len(self.homingLines) > 0:
+			if len(self.homeLines) > 0:
 				self.shouldHome = True
 		elif firstWord == 'M101':
 			self.extruderActive = True

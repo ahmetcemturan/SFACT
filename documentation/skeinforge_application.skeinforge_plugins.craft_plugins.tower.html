@@ -29,26 +29,26 @@ The tower manual page is at:<br>
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
 
-The default 'Activate Tower' checkbox is off.  The default is off because tower could result in the extruder colliding with an already extruded part of the shape and because extruding in one region for more than one layer could result in the shape melting.  When it is on, the functions described below will work, when it is off, the functions will not be called.<br>
+The default 'Activate Tower' checkbox is off.  The default is off because tower could result in the extruder colliding with an already extruded part of the shape and because extruding in one region for more than one layer could result in the shape melting.  When it is on, the functions described below will work, when it is off, nothing will be done.<br>
  <br>
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
 
 <a name="Maximum Tower Height" id="Maximum Tower Height"></a><h3>Maximum Tower Height</h3>
 
-Default is five.<br>
+Default: 5<br>
  <br>
 Defines the maximum number of layers that the extruder will extrude in one region before going to another.  This is the most important value for tower.<br>
  <br>
 <a name="Extruder Possible Collision Cone Angle" id="Extruder Possible Collision Cone Angle"></a><h3>Extruder Possible Collision Cone Angle</h3>
 
-Default is sixty degrees.<br>
+Default: 60 degrees<br>
  <br>
 Tower works by looking for islands in each layer and if it finds another island in the layer above, it goes to the next layer above instead of going across to other regions on the original layer.  It checks for collision with shapes already extruded within a cone from the nozzle tip.  The 'Extruder Possible Collision Cone Angle' setting is the angle of that cone.  Realistic values for the cone angle range between zero and ninety.  The higher the angle, the less likely a collision with the rest of the shape is, generally the extruder will stay in the region for only a few layers before a collision is detected with the wide cone.<br>
  <br>
 <a name="Tower Start Layer" id="Tower Start Layer"></a><h3>Tower Start Layer</h3>
 
-Default is one.<br>
+Default: 1<br>
  <br>
 Defines the layer index which the script starts extruding towers, after the last raft layer which does not have support material.  It is best to not tower at least the first layer because the temperature of the first layer is sometimes different than that of the other layers.<br>
  <br>

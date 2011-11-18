@@ -93,7 +93,7 @@ class OutsetSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.layerCount = settings.LayerCount()
 		self.lineIndex = 0
-		self.rotatedLoopLayer = None
+		self.loopLayer = None
 
 	def addGcodeFromRemainingLoop( self, loop, radius, z ):
 		'Add the remainder of the loop.'
@@ -103,12 +103,12 @@ class OutsetSkein:
 		self.distanceFeedRate.addLine('(</boundaryPerimeter>)')
 		self.distanceFeedRate.addLine('(</nestedRing>)')
 
-	def addOutset(self, rotatedLoopLayer):
+	def addOutset(self, loopLayer):
 		'Add outset to the layer.'
-		extrudateLoops = intercircle.getInsetLoopsFromLoops(rotatedLoopLayer.loops, -self.absoluteHalfPerimeterWidth)
+		extrudateLoops = intercircle.getInsetLoopsFromLoops(loopLayer.loops, -self.absoluteHalfPerimeterWidth)
 		triangle_mesh.sortLoopsInOrderOfArea(False, extrudateLoops)
 		for extrudateLoop in extrudateLoops:
-			self.addGcodeFromRemainingLoop(extrudateLoop, self.absoluteHalfPerimeterWidth, rotatedLoopLayer.z)
+			self.addGcodeFromRemainingLoop(extrudateLoop, self.absoluteHalfPerimeterWidth, loopLayer.z)
 
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the bevel gcode.'
@@ -145,15 +145,15 @@ class OutsetSkein:
 			self.boundary.append(location.dropAxis())
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('outset')
-			self.rotatedLoopLayer = euclidean.RotatedLoopLayer(float(splitLine[1]))
+			self.loopLayer = euclidean.LoopLayer(float(splitLine[1]))
 			self.distanceFeedRate.addLine(line)
 		elif firstWord == '(</layer>)':
-			self.addOutset( self.rotatedLoopLayer )
-			self.rotatedLoopLayer = None
+			self.addOutset( self.loopLayer )
+			self.loopLayer = None
 		elif firstWord == '(<nestedRing>)':
 			self.boundary = []
-			self.rotatedLoopLayer.loops.append( self.boundary )
-		if self.rotatedLoopLayer == None:
+			self.loopLayer.loops.append( self.boundary )
+		if self.loopLayer == None:
 			self.distanceFeedRate.addLine(line)
 
 

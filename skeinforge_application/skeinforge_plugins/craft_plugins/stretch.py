@@ -1,11 +1,21 @@
 """
 This page is in the table of contents.
-Stretch is a script to stretch the threads to partially compensate for filament shrinkage when extruded.
+Stretch is very important Skeinforge plugin that allows you to partially compensate for the fact that extruded holes are smaller then they should be.  It stretches the threads to partially compensate for filament shrinkage when extruded.
 
 The stretch manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Stretch
 
+Extruded holes are smaller than the model because while printing an arc the head is depositing filament on both sides of the arc but in the inside of the arc you actually need less material then on the outside of the arc. You can read more about this on the RepRap ArcCompensation page:
+http://reprap.org/bin/view/Main/ArcCompensation
+
+In general, stretch will widen holes and push corners out.  In practice the filament contraction will not be identical to the algorithm, so even once the optimal parameters are determined, the stretch script will not be able to eliminate the inaccuracies caused by contraction, but it should reduce them.
+
 All the defaults assume that the thread sequence choice setting in fill is the perimeter being extruded first, then the loops, then the infill.  If the thread sequence choice is different, the optimal thread parameters will also be different.  In general, if the infill is extruded first, the infill would have to be stretched more so that even after the filament shrinkage, it would still be long enough to connect to the loop or perimeter.
+
+Holes should be made with the correct area for their radius.  In other words, for example if your modeling program approximates a hole of radius one (area = pi) by making a square with the points at [(1,0), (0,1), (-1,0), (0,-1)] (area = 2), the radius should be increased by sqrt(pi/2).  This can be done in fabmetheus xml by writing:
+radiusAreal='True'
+
+in the attributes of the object or any parent of that object.  In other modeling programs, you'll have to this manually or make a script.  If area compensation is not done, then changing the stretch parameters to over compensate for too small hole areas will lead to incorrect compensation in other shapes.
 
 ==Operation==
 The default 'Activate Stretch' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
@@ -35,7 +45,11 @@ Defines the ratio of the maximum amount the outside perimeter thread will be str
 ===Stretch from Distance over Perimeter Width===
 Default is two.
 
-In general, stretch will widen holes and push corners out.  The algorithm works by checking at each turning point on the extrusion path what the direction of the thread is at a distance of 'Stretch from Distance over Perimeter Width' times the perimeter width, on both sides, and moves the thread in the opposite direction.  The magnitude of the stretch increases with the amount that the direction of the two threads is similar and by the '..Stretch Over Perimeter Width' ratio.  In practice the filament contraction will be similar but different from the algorithm, so even once the optimal parameters are determined, the stretch script will not be able to eliminate the inaccuracies caused by contraction, but it should reduce them.
+The stretch algorithm works by checking at each turning point on the extrusion path what the direction of the thread is at a distance of 'Stretch from Distance over Perimeter Width' times the perimeter width, on both sides, and moves the thread in the opposite direction.  So it takes the current turning-point, goes "Stretch from Distance over Perimeter Width" * "Perimeter Width" ahead, reads the direction at that point.  Then it goes the same distance in back in time, reads the direction at that other point.  It then moves the thread in the opposite direction, away from the center of the arc formed by these 2 points+directions.
+
+The magnitude of the stretch increases with:
+the amount that the direction of the two threads is similar and
+by the '..Stretch Over Perimeter Width' ratio.
 
 ==Examples==
 The following examples stretch the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and stretch.py.

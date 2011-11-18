@@ -24,10 +24,10 @@ When selected, the corners will be filleted with an arc composed of several segm
 ====Bevel====
 When selected, the corners will be beveled.
 
-===Corner Feed Rate over Operating Feed Rate===
-Default is one.
+===Corner Feed Rate Multiplier===
+Default: 1.0
 
-Defines the ratio of the feed rate in corners over the operating feed rate.  With a high value the extruder will move quickly in corners, accelerating quickly and leaving a thin extrusion.  With a low value, the extruder will move slowly in corners, accelerating gently and leaving a thick extrusion.
+Defines the ratio of the feed rate in corners over the original feed rate.  With a high value the extruder will move quickly in corners, accelerating quickly and leaving a thin extrusion.  With a low value, the extruder will move slowly in corners, accelerating gently and leaving a thick extrusion.
 
 ===Fillet Radius over Perimeter Width===
 Default is 0.35.
@@ -135,11 +135,11 @@ class BevelSkein:
 		if self.repository.useIntermediateFeedRateInCorners.value:
 			if self.oldFeedRateMinute != None:
 				feedRateMinute = 0.5 * ( self.oldFeedRateMinute + self.feedRateMinute )
-		return feedRateMinute * self.cornerFeedRateOverOperatingFeedRate
+		return feedRateMinute * self.cornerFeedRateMultiplier
 
 	def getCraftedGcode( self, repository, gcodeText ):
 		"Parse gcode text and store the bevel gcode."
-		self.cornerFeedRateOverOperatingFeedRate = repository.cornerFeedRateOverOperatingFeedRate.value
+		self.cornerFeedRateMultiplier = repository.cornerFeedRateMultiplier.value
 		self.lines = archive.getTextLines(gcodeText)
 		self.repository = repository
 		self.parseInitialization( repository )
@@ -369,7 +369,7 @@ class FilletRepository:
 		self.arcRadius = settings.Radio().getFromRadio( filletLatentStringVar, 'Arc Radius', self, False )
 		self.arcSegment = settings.Radio().getFromRadio( filletLatentStringVar, 'Arc Segment', self, False )
 		self.bevel = settings.Radio().getFromRadio( filletLatentStringVar, 'Bevel', self, True )
-		self.cornerFeedRateOverOperatingFeedRate = settings.FloatSpin().getFromValue( 0.8, 'Corner Feed Rate over Operating Feed Rate (ratio):', self, 1.2, 1.0 )
+		self.cornerFeedRateMultiplier = settings.FloatSpin().getFromValue(0.8, 'Corner Feed Rate Multiplier (ratio):', self, 1.2, 1.0)
 		self.filletRadiusOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.25, 'Fillet Radius over Perimeter Width (ratio):', self, 0.65, 0.35 )
 		self.reversalSlowdownDistanceOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.3, 'Reversal Slowdown Distance over Perimeter Width (ratio):', self, 0.7, 0.5 )
 		self.useIntermediateFeedRateInCorners = settings.BooleanSetting().getFromValue('Use Intermediate Feed Rate in Corners', self, True )

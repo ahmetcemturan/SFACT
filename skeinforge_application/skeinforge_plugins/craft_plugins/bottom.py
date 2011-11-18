@@ -126,16 +126,16 @@ class BottomSkein:
 		decimalPlacesCarried = int(svgReader.sliceDictionary['decimalPlacesCarried'])
 		layerThickness = float(svgReader.sliceDictionary['layerThickness'])
 		perimeterWidth = float(svgReader.sliceDictionary['perimeterWidth'])
-		rotatedLoopLayers = svgReader.rotatedLoopLayers
+		loopLayers = svgReader.loopLayers
 		zMinimum = 987654321.0
-		for rotatedLoopLayer in rotatedLoopLayers:
-			zMinimum = min(rotatedLoopLayer.z, zMinimum)
+		for loopLayer in loopLayers:
+			zMinimum = min(loopLayer.z, zMinimum)
 		deltaZ = repository.altitude.value + repository.additionalHeightOverLayerThickness.value * layerThickness - zMinimum
-		for rotatedLoopLayer in rotatedLoopLayers:
-			rotatedLoopLayer.z += deltaZ
+		for loopLayer in loopLayers:
+			loopLayer.z += deltaZ
 		cornerMaximum = Vector3(-912345678.0, -912345678.0, -912345678.0)
 		cornerMinimum = Vector3(912345678.0, 912345678.0, 912345678.0)
-		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, rotatedLoopLayers)
+		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, loopLayers)
 		svgWriter = svg_writer.SVGWriter(
 			True,
 			cornerMaximum,
@@ -145,7 +145,7 @@ class BottomSkein:
 			perimeterWidth)
 		commentElement = svg_writer.getCommentElement(svgReader.documentElement)
 		procedureNameString = svgReader.sliceDictionary['procedureName'] + ',bottom'
-		return svgWriter.getReplacedSVGTemplate(fileName, procedureNameString, rotatedLoopLayers, commentElement)
+		return svgWriter.getReplacedSVGTemplate(fileName, loopLayers, procedureNameString, commentElement)
 
 
 def main():

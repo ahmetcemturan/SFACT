@@ -266,6 +266,8 @@ Data descriptors inherited from <a href="fabmetheus_utilities.xml_simple_reader.
 
 <dl><dt><a name="DocumentNode-getDocumentElement"><strong>getDocumentElement</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;document&nbsp;element.</tt></dd></dl>
 
+<dl><dt><a name="DocumentNode-getElementsByLocalName"><strong>getElementsByLocalName</strong></a>(self, localName)</dt><dd><tt>Get&nbsp;the&nbsp;descendents&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;local&nbsp;name.</tt></dd></dl>
+
 <dl><dt><a name="DocumentNode-getImportNameChain"><strong>getImportNameChain</strong></a>(self, suffix<font color="#909090">=''</font>)</dt><dd><tt>Get&nbsp;the&nbsp;import&nbsp;name&nbsp;chain&nbsp;with&nbsp;the&nbsp;suffix&nbsp;at&nbsp;the&nbsp;end.</tt></dd></dl>
 
 <dl><dt><a name="DocumentNode-getNodeName"><strong>getNodeName</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;node&nbsp;name.</tt></dd></dl>
@@ -434,9 +436,7 @@ Data descriptors inherited from <a href="fabmetheus_utilities.xml_simple_reader.
 
 <dl><dt><a name="ElementNode-getCascadeFloat"><strong>getCascadeFloat</strong></a>(self, defaultFloat, key)</dt><dd><tt>Get&nbsp;the&nbsp;cascade&nbsp;float.</tt></dd></dl>
 
-<dl><dt><a name="ElementNode-getChildNodesByLocalName"><strong>getChildNodesByLocalName</strong></a>(self, localName)</dt><dd><tt>Get&nbsp;the&nbsp;childNodes&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;class&nbsp;name.</tt></dd></dl>
-
-<dl><dt><a name="ElementNode-getChildNodesByLocalNameRecursively"><strong>getChildNodesByLocalNameRecursively</strong></a>(self, localName)</dt><dd><tt>Get&nbsp;the&nbsp;childNodes&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;class&nbsp;name&nbsp;recursively.</tt></dd></dl>
+<dl><dt><a name="ElementNode-getChildElementsByLocalName"><strong>getChildElementsByLocalName</strong></a>(self, localName)</dt><dd><tt>Get&nbsp;the&nbsp;childNodes&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;local&nbsp;name.</tt></dd></dl>
 
 <dl><dt><a name="ElementNode-getCopy"><strong>getCopy</strong></a>(self, idSuffix, parentNode)</dt><dd><tt>Copy&nbsp;the&nbsp;xml&nbsp;element,&nbsp;set&nbsp;its&nbsp;dictionary&nbsp;and&nbsp;add&nbsp;it&nbsp;to&nbsp;the&nbsp;parentNode.</tt></dd></dl>
 
@@ -449,6 +449,8 @@ Data descriptors inherited from <a href="fabmetheus_utilities.xml_simple_reader.
 <dl><dt><a name="ElementNode-getElementNodesByName"><strong>getElementNodesByName</strong></a>(self, nameKey)</dt><dd><tt>Get&nbsp;the&nbsp;xml&nbsp;elements&nbsp;by&nbsp;name.</tt></dd></dl>
 
 <dl><dt><a name="ElementNode-getElementNodesByTag"><strong>getElementNodesByTag</strong></a>(self, tagKey)</dt><dd><tt>Get&nbsp;the&nbsp;xml&nbsp;elements&nbsp;by&nbsp;tag.</tt></dd></dl>
+
+<dl><dt><a name="ElementNode-getElementsByLocalName"><strong>getElementsByLocalName</strong></a>(self, localName)</dt><dd><tt>Get&nbsp;the&nbsp;descendents&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;local&nbsp;name.</tt></dd></dl>
 
 <dl><dt><a name="ElementNode-getFirstChildByLocalName"><strong>getFirstChildByLocalName</strong></a>(self, localName)</dt><dd><tt>Get&nbsp;the&nbsp;first&nbsp;childNode&nbsp;which&nbsp;has&nbsp;the&nbsp;given&nbsp;class&nbsp;name.</tt></dd></dl>
 
@@ -674,7 +676,9 @@ Data descriptors inherited from <a href="fabmetheus_utilities.xml_simple_reader.
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-createAppendByText"><strong>createAppendByText</strong></a>(parentNode, xmlText)</dt><dd><tt>Create&nbsp;and&nbsp;append&nbsp;the&nbsp;child&nbsp;nodes&nbsp;from&nbsp;the&nbsp;xmlText.</tt></dd></dl>
  <dl><dt><a name="-createAppendByTextb"><strong>createAppendByTextb</strong></a>(parentNode, xmlText)</dt><dd><tt>Create&nbsp;and&nbsp;append&nbsp;the&nbsp;child&nbsp;nodes&nbsp;from&nbsp;the&nbsp;xmlText.</tt></dd></dl>
+ <dl><dt><a name="-getChildElementsByLocalName"><strong>getChildElementsByLocalName</strong></a>(childNodes, localName)</dt><dd><tt>Get&nbsp;the&nbsp;childNodes&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;local&nbsp;name.</tt></dd></dl>
  <dl><dt><a name="-getDocumentNode"><strong>getDocumentNode</strong></a>(fileName)</dt><dd><tt>Get&nbsp;the&nbsp;document&nbsp;from&nbsp;the&nbsp;file&nbsp;name.</tt></dd></dl>
+ <dl><dt><a name="-getElementsByLocalName"><strong>getElementsByLocalName</strong></a>(childNodes, localName)</dt><dd><tt>Get&nbsp;the&nbsp;descendents&nbsp;which&nbsp;have&nbsp;the&nbsp;given&nbsp;local&nbsp;name.</tt></dd></dl>
  <dl><dt><a name="-getFileText"><strong>getFileText</strong></a>(fileName, printWarning<font color="#909090">=True</font>, readMode<font color="#909090">='r'</font>)</dt><dd><tt>Get&nbsp;the&nbsp;entire&nbsp;text&nbsp;of&nbsp;a&nbsp;file.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

@@ -1,6 +1,8 @@
 """
 This page is in the table of contents.
-Multiply is a script to multiply the shape into an array of copies arranged in a table.
+The multiply plugin will take a single object and create an array of objects.  It is used when you want to print single object multiple times in a single pass.
+
+You can also position any object using this plugin by setting the center X and center Y to the desired coordinates (0,0 for the center of the print_bed) and setting the number of rows and columns to 1 (effectively setting a 1x1 matrix - printing only a single object).
 
 The multiply manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Multiply
@@ -8,7 +10,7 @@ http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Multiply
 Besides using the multiply tool, another way of printing many copies of the model is to duplicate the model in Art of Illusion, however many times you want, with the appropriate offsets.  Then you can either use the Join Objects script in the scripts submenu to create a combined shape or you can export the whole scene as an xml file, which skeinforge can then slice.
 
 ==Operation==
-The default 'Activate Multiply' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Multiply' checkbox is on.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Center===
@@ -38,7 +40,7 @@ When selected the build sequence will be reversed on every odd layer so that the
 ===Separation over Perimeter Width===
 Default is fifteen.
 
-Defines the ratio of separation between the shape copies over the extrusion width.
+Defines the ratio of separation between the shape copies over the perimeter width.
 
 ==Examples==
 The following examples multiply the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and multiply.py.

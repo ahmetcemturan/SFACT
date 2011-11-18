@@ -37,8 +37,7 @@ def processElementNodeByDerivation(derivation, elementNode):
 	del elementNode.attributes['target']
 	copyMatrix = matrix.getBranchMatrixSetElementNode(elementNode)
 	targetMatrix = matrix.getBranchMatrixSetElementNode(derivation.target)
-	targetDictionaryCopy = derivation.target.attributes.copy()
-	evaluate.removeIdentifiersFromDictionary(targetDictionaryCopy)
+	targetDictionaryCopy = evaluate.removeIdentifiersFromDictionary(derivation.target.attributes.copy())
 	targetDictionaryCopy.update(elementNode.attributes)
 	elementNode.attributes = targetDictionaryCopy
 	euclidean.removeTrueFromDictionary(elementNode.attributes, 'visible')

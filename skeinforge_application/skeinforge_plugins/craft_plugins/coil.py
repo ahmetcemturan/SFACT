@@ -142,7 +142,7 @@ class CoilSkein:
 		"Add a coil to the thread."
 		if len(loop) < 1:
 			return
-		loop = euclidean.getLoopStartingNearest(self.halfPerimeterWidth, self.oldLocationComplex, loop)
+		loop = euclidean.getLoopStartingClosest(self.halfPerimeterWidth, self.oldLocationComplex, loop)
 		length = euclidean.getLoopLength(loop)
 		if length <= 0.0:
 			return

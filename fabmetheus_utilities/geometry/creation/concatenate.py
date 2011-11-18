@@ -32,7 +32,7 @@ def getGeometryOutput(derivation, elementNode):
 		return None
 	if 'closed' not in elementNode.attributes:
 		elementNode.attributes['closed'] = 'true'
-	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(concatenatedList, None, None))
+	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(concatenatedList))
 
 def getGeometryOutputByArguments(arguments, elementNode):
 	'Get triangle mesh from attribute dictionary by arguments.'

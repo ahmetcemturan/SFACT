@@ -61,10 +61,26 @@ def createAppendByTextb(parentNode, xmlText):
 	for character in xmlText:
 		monad = monad.getNextMonad(character)
 
+def getChildElementsByLocalName(childNodes, localName):
+	'Get the childNodes which have the given local name.'
+	childElementsByLocalName = []
+	for childNode in childNodes:
+		if localName.lower() == childNode.getNodeName():
+			childElementsByLocalName.append(childNode)
+	return childElementsByLocalName
+
 def getDocumentNode(fileName):
 	'Get the document from the file name.'
 	xmlText = getFileText('test.xml')
 	return DocumentNode(fileName, xmlText)
+
+def getElementsByLocalName(childNodes, localName):
+	'Get the descendents which have the given local name.'
+	elementsByLocalName = getChildElementsByLocalName(childNodes, localName)
+	for childNode in childNodes:
+		if childNode.getNodeType() == 1:
+			elementsByLocalName += childNode.getElementsByLocalName(localName)
+	return elementsByLocalName
 
 def getFileText(fileName, printWarning=True, readMode='r'):
 	'Get the entire text of a file.'
@@ -258,6 +274,10 @@ class DocumentNode:
 			return None
 		return self.childNodes[-1]
 
+	def getElementsByLocalName(self, localName):
+		'Get the descendents which have the given local name.'
+		return getElementsByLocalName(self.childNodes, localName)
+
 	def getImportNameChain(self, suffix=''):
 		'Get the import name chain with the suffix at the end.'
 		return suffix
@@ -447,20 +467,9 @@ class ElementNode:
 				return value
 		return self.parentNode.getCascadeFloat(defaultFloat, key)
 
-	def getChildNodesByLocalName(self, localName):
-		'Get the childNodes which have the given class name.'
-		childNodesByLocalName = []
-		for childNode in self.childNodes:
-			if localName.lower() == childNode.getNodeName():
-				childNodesByLocalName.append(childNode)
-		return childNodesByLocalName
-
-	def getChildNodesByLocalNameRecursively(self, localName):
-		'Get the childNodes which have the given class name recursively.'
-		childNodesByLocalName = self.getChildNodesByLocalName(localName)
-		for childNode in self.childNodes:
-			childNodesByLocalName += childNode.getChildNodesByLocalNameRecursively(localName)
-		return childNodesByLocalName
+	def getChildElementsByLocalName(self, localName):
+		'Get the childNodes which have the given local name.'
+		return getChildElementsByLocalName(self.childNodes, localName)
 
 	def getCopy(self, idSuffix, parentNode):
 		'Copy the xml element, set its dictionary and add it to the parentNode.'
@@ -509,6 +518,10 @@ class ElementNode:
 		if tagKey in tagDictionary:
 			return tagDictionary[tagKey]
 		return None
+
+	def getElementsByLocalName(self, localName):
+		'Get the descendents which have the given local name.'
+		return getElementsByLocalName(self.childNodes, localName)
 
 	def getFirstChildByLocalName(self, localName):
 		'Get the first childNode which has the given class name.'

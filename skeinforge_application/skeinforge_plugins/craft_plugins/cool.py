@@ -219,7 +219,7 @@ class CoolSkein:
 			largestLoop = euclidean.getSquareLoopWiddershins(minimumCorner, maximumCorner)
 		pointComplex = euclidean.getXYComplexFromVector3(self.oldLocation)
 		if pointComplex != None:
-			largestLoop = euclidean.getLoopStartingNearest(self.perimeterWidth, pointComplex, largestLoop)
+			largestLoop = euclidean.getLoopStartingClosest(self.perimeterWidth, pointComplex, largestLoop)
 		intercircle.addOrbitsIfLarge(
 			self.distanceFeedRate, largestLoop, self.orbitalFeedRatePerSecond, remainingOrbitTime, self.highestZ)
 
@@ -252,14 +252,7 @@ class CoolSkein:
 	def getCoolMove(self, line, location, splitLine):
 		'Get cool line according to time spent on layer.'
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
-		coolFeedRate = self.multiplier * self.feedRateMinute
-		if coolFeedRate >  self.repository.minimumLayerFeedrate.value *60 :
-			coolFeedRate = coolFeedRate
-#			self.addFlowRate(self.multiplier * self.oldFlowRate)
-		else:
-			coolFeedRate =  self.repository.minimumLayerFeedrate.value *60
-#			self.addFlowRate((coolFeedRate/self.feedRateMinute) * self.oldFlowRate)
-		return self.distanceFeedRate.getLineWithFeedRate(coolFeedRate, line, splitLine)
+		return self.distanceFeedRate.getLineWithFeedRate(self.multiplier * self.feedRateMinute, line, splitLine)
 
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the cool gcode.'
@@ -374,6 +367,8 @@ class CoolSkein:
 			self.oldTemperature = gcodec.getDoubleAfterFirstLetter(splitLine[1])
 #		elif firstWord == 'M108':
 #			self.oldFlowRate = float(splitLine[1][1 :])
+#			self.addFlowRate(self.multiplier * self.oldFlowRate)
+#			return
 		elif firstWord == '(<boundaryPoint>':
 			self.boundaryLoop.append(gcodec.getLocationFromSplitLine(None, splitLine).dropAxis())
 		elif firstWord == '(<layer>':
@@ -387,6 +382,7 @@ class CoolSkein:
 				self.addOrbitsIfNecessary(remainingOrbitTime)
 			else:
 				self.setMultiplier(remainingOrbitTime)
+#				self.addFlowRate(self.multiplier * self.oldFlowRate)
 			z = float(splitLine[1])
 			self.boundaryLayer = euclidean.LoopLayer(z)
 			self.highestZ = max(z, self.highestZ)

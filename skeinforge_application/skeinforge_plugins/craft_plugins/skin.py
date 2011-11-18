@@ -10,16 +10,32 @@ http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skin
 
 
 ==Operation==
-The default 'Activate Skin' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Skin' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
+===Division===
+====Horizontal Infill Divisions====
+Default: 2
+
+Defines the number of times the skinned infill is divided horizontally.
+
+====Horizontal Perimeter Divisions====
+Default: 1
+
+Defines the number of times the skinned perimeters are divided horizontally.
+
+====Vertical Divisions====
+Default: 2
+
+Defines the number of times the skinned infill and perimeters are divided vertically.
+
 ===Hop When Extruding Infill===
 Default is off.
 
 When selected, the extruder will hop before and after extruding the lower infill in order to avoid the regular thickness threads.
 
-====Layer From====
-Default is one.
+===Layers From===
+Default: 1
 
 Defines which layer of the print the skinning process starts from. It is not wise to set this to zero, skinning the bottom layer is likely to cause the bottom perimeter not to adhere well to the print surface.
 
@@ -107,8 +123,8 @@ class SkinRepository:
 		self.activateSkin = settings.BooleanSetting().getFromValue('Activate Skin', self, False)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Division -', self)
-		self.horizontalInfillDivisions = settings.IntSpin().getSingleIncrementFromValue(1, 'Horizontal Infill Divisions (integer):', self, 3, 2)
-		self.horizontalPerimeterDivisions = settings.IntSpin().getSingleIncrementFromValue(1, 'Horizontal Perimeter Divisions (integer):', self, 3, 1)
+		self.horizontalInfillDivisions = settings.IntSpin().getSingleIncrementFromValue(1, 'Horizontal Infill Divisions (integer):', self, 3, 1)
+		self.horizontalPerimeterDivisions = settings.IntSpin().getSingleIncrementFromValue(1, 'Horizontal Perimeter Divisions (integer):', self, 3, 2)
 		self.verticalDivisions = settings.IntSpin().getSingleIncrementFromValue(1, 'Vertical Divisions (integer):', self, 3, 2)
 		settings.LabelSeparator().getFromRepository(self)
 		self.hopWhenExtrudingInfill = settings.BooleanSetting().getFromValue('Hop When Extruding Infill', self, False)
@@ -165,9 +181,9 @@ class SkinSkein:
 
 	def addSkinnedInfillBoundary(self, infillBoundaries, offsetY, upperZ, z):
 		'Add skinned infill boundary.'
-		aroundInset = 0.25 * self.skinInfillInset
+		aroundInset = 0.2146 * self.skinInfillInset
 		arounds = []
-		aroundWidth = 0.25 * self.skinInfillInset
+		aroundWidth = 0.2146 * self.skinInfillInset
 		endpoints = []
 		pixelTable = {}
 		rotatedLoops = []

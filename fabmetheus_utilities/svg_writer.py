@@ -47,7 +47,7 @@ def getCommentElement(elementNode):
 
 def getSliceDictionary(elementNode):
 	'Get the metadata slice attribute dictionary.'
-	for metadataElement in elementNode.getChildNodesByLocalName('metadata'):
+	for metadataElement in elementNode.getChildElementsByLocalName('metadata'):
 		for childNode in metadataElement.childNodes:
 			if childNode.getNodeName().lower() == 'slice:layers':
 				return childNode.attributes
@@ -55,7 +55,7 @@ def getSliceDictionary(elementNode):
 
 def getSliceElementNodes(elementNode):
 	'Get the slice elements.'
-	gElementNodes = elementNode.getChildNodesByLocalNameRecursively('g')
+	gElementNodes = elementNode.getElementsByLocalName('g')
 	sliceElementNodes = []
 	for gElementNode in gElementNodes:
 		if 'id' in gElementNode.attributes:
@@ -64,9 +64,9 @@ def getSliceElementNodes(elementNode):
 				sliceElementNodes.append(gElementNode)
 	return sliceElementNodes
 
-def getSVGByLoopLayers(addLayerTemplateToSVG, carving, rotatedLoopLayers):
+def getSVGByLoopLayers(addLayerTemplateToSVG, carving, loopLayers):
 	'Get the svg text.'
-	if len(rotatedLoopLayers) < 1:
+	if len(loopLayers) < 1:
 		return ''
 	decimalPlacesCarried = max(0, 2 - int(math.floor(math.log10(carving.layerThickness))))
 	svgWriter = SVGWriter(
@@ -75,18 +75,18 @@ def getSVGByLoopLayers(addLayerTemplateToSVG, carving, rotatedLoopLayers):
 		carving.getCarveCornerMinimum(),
 		decimalPlacesCarried,
 		carving.getCarveLayerThickness())
-	return svgWriter.getReplacedSVGTemplate(carving.fileName, 'basic', rotatedLoopLayers, carving.getFabmetheusXML())
+	return svgWriter.getReplacedSVGTemplate(carving.fileName, loopLayers, 'basic', carving.getFabmetheusXML())
 
-def getTruncatedRotatedBoundaryLayers(repository, rotatedLoopLayers):
+def getTruncatedRotatedBoundaryLayers(loopLayers, repository):
 	'Get the truncated rotated boundary layers.'
-	return rotatedLoopLayers[repository.layersFrom.value : repository.layersTo.value]
+	return loopLayers[repository.layersFrom.value : repository.layersTo.value]
 
-def setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, rotatedLoopLayers):
+def setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, loopLayers):
 	'Parse SVG text and store the layers.'
-	for rotatedLoopLayer in rotatedLoopLayers:
-		for loop in rotatedLoopLayer.loops:
+	for loopLayer in loopLayers:
+		for loop in loopLayer.loops:
 			for point in loop:
-				pointVector3 = Vector3(point.real, point.imag, rotatedLoopLayer.z)
+				pointVector3 = Vector3(point.real, point.imag, loopLayer.z)
 				cornerMaximum.maximize(pointVector3)
 				cornerMinimum.minimize(pointVector3)
 	halfLayerThickness = 0.5 * layerThickness
@@ -113,9 +113,9 @@ class SVGWriter:
 		self.textHeight = 22.5
 		self.unitScale = 3.7
 
-	def addLayerBegin(self, layerIndex, rotatedLoopLayer):
+	def addLayerBegin(self, layerIndex, loopLayer):
 		'Add the start lines for the layer.'
-		zRounded = self.getRounded(rotatedLoopLayer.z)
+		zRounded = self.getRounded(loopLayer.z)
 		self.graphicsCopy = self.graphicsElementNode.getCopy(zRounded, self.graphicsElementNode.parentNode)
 		if self.addLayerTemplateToSVG:
 			translateXRounded = self.getRounded(self.controlBoxWidth + self.margin + self.margin)
@@ -153,23 +153,21 @@ class SVGWriter:
 				isComment = False
 		xml_simple_reader.CommentNode(self.svgElement, '%s%s-->\n' % (globalOriginalTextString, commentNodeOutput.getvalue())).appendSelfToParent()
 
-	def addRotatedLoopLayersToOutput(self, rotatedLoopLayers):
+	def addLoopLayersToOutput(self, loopLayers):
 		'Add rotated boundary layers to the output.'
-		for rotatedLoopLayerIndex, rotatedLoopLayer in enumerate(rotatedLoopLayers):
-			self.addRotatedLoopLayerToOutput(rotatedLoopLayerIndex, rotatedLoopLayer)
+		for loopLayerIndex, loopLayer in enumerate(loopLayers):
+			self.addLoopLayerToOutput(loopLayerIndex, loopLayer)
 
-	def addRotatedLoopLayerToOutput(self, layerIndex, rotatedLoopLayer):
+	def addLoopLayerToOutput(self, layerIndex, loopLayer):
 		'Add rotated boundary layer to the output.'
-		self.addLayerBegin(layerIndex, rotatedLoopLayer)
-		if rotatedLoopLayer.rotation != None:
-			self.graphicsCopy.attributes['bridgeRotation'] = str(rotatedLoopLayer.rotation)
+		self.addLayerBegin(layerIndex, loopLayer)
 		if self.addLayerTemplateToSVG:
 			self.pathDictionary['transform'] = self.getTransformString()
 		else:
 			del self.pathDictionary['transform']
-		self.pathDictionary['d'] = self.getSVGStringForLoops(rotatedLoopLayer.loops)
+		self.pathDictionary['d'] = self.getSVGStringForLoops(loopLayer.loops)
 
-	def getReplacedSVGTemplate(self, fileName, procedureName, rotatedLoopLayers, elementNode=None):
+	def getReplacedSVGTemplate(self, fileName, loopLayers, procedureName, elementNode=None):
 		'Get the lines of text from the layer_template.svg file.'
 		self.extent = self.cornerMaximum - self.cornerMinimum
 		svgTemplateText = archive.getFileText(archive.getTemplatesPath('layer_template.svg'))
@@ -190,7 +188,7 @@ class SVGWriter:
 			del self.svgElement.getElementNodeByID('sliceElementTemplate').attributes['transform']
 		self.graphicsElementNode = self.svgElement.getElementNodeByID('sliceElementTemplate')
 		self.graphicsElementNode.attributes['id'] = 'z:'
-		self.addRotatedLoopLayersToOutput(rotatedLoopLayers)
+		self.addLoopLayersToOutput(loopLayers)
 		self.setMetadataNoscriptElement('layerThickness', 'Layer Thickness: ', self.layerThickness)
 		self.setMetadataNoscriptElement('maxX', 'X: ', self.cornerMaximum.x)
 		self.setMetadataNoscriptElement('minX', 'X: ', self.cornerMinimum.x)
@@ -199,7 +197,7 @@ class SVGWriter:
 		self.setMetadataNoscriptElement('maxZ', 'Z: ', self.cornerMaximum.z)
 		self.setMetadataNoscriptElement('minZ', 'Z: ', self.cornerMinimum.z)
 		self.textHeight = float( self.sliceDictionary['textHeight'] )
-		controlTop = len(rotatedLoopLayers) * (self.margin + self.extent.y * self.unitScale + self.textHeight) + self.marginTop + self.textHeight
+		controlTop = len(loopLayers) * (self.margin + self.extent.y * self.unitScale + self.textHeight) + self.marginTop + self.textHeight
 		self.svgElement.getFirstChildByLocalName('title').setTextContent(os.path.basename(fileName) + ' - Slice Layers')
 		svgElementDictionary['height'] = '%spx' % self.getRounded(max(controlTop, self.controlBoxHeightMargin))
 		width = max(self.extent.x * self.unitScale, svgMinWidth)
@@ -212,11 +210,11 @@ class SVGWriter:
 		self.setDimensionTexts('dimX', 'X: ' + self.getRounded(self.extent.x))
 		self.setDimensionTexts('dimY', 'Y: ' + self.getRounded(self.extent.y))
 		self.setDimensionTexts('dimZ', 'Z: ' + self.getRounded(self.extent.z))
-		self.setTexts('numberOfLayers', 'Number of Layers: %s' % len(rotatedLoopLayers))
+		self.setTexts('numberOfLayers', 'Number of Layers: %s' % len(loopLayers))
 		volume = 0.0
-		for rotatedLoopLayer in rotatedLoopLayers:
-			volume += euclidean.getAreaLoops(rotatedLoopLayer.loops)
-		volume *= 0.001
+		for loopLayer in loopLayers:
+			volume += euclidean.getAreaLoops(loopLayer.loops)
+		volume *= 0.001 * self.layerThickness
 		self.setTexts('volume', 'Volume: %s cm3' % self.getRounded(volume))
 		if not self.addLayerTemplateToSVG:
 			self.svgElement.getFirstChildByLocalName('script').removeFromIDNameParent()

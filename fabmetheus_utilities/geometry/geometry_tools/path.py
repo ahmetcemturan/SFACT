@@ -132,7 +132,7 @@ class SVGFabricationCarving:
 		self.addLayerTemplate = addLayerTemplate
 		self.elementNode = elementNode
 		self.layerThickness = 1.0
-		self.rotatedLoopLayers = []
+		self.loopLayers = []
 
 	def __repr__(self):
 		'Get the string representation of this carving.'
@@ -140,7 +140,11 @@ class SVGFabricationCarving:
 
 	def addXML(self, depth, output):
 		'Add xml for this object.'
-		xml_simple_writer.addXMLFromObjects(depth, self.rotatedLoopLayers, output)
+		xml_simple_writer.addXMLFromObjects(depth, self.loopLayers, output)
+
+	def getCarveBoundaryLayers(self):
+		'Get the  boundary layers.'
+		return self.loopLayers
 
 	def getCarveCornerMaximum(self):
 		'Get the corner maximum of the vertexes.'
@@ -152,15 +156,11 @@ class SVGFabricationCarving:
 
 	def getCarvedSVG(self):
 		'Get the carved svg text.'
-		return svg_writer.getSVGByLoopLayers(self.addLayerTemplate, self, self.rotatedLoopLayers)
+		return svg_writer.getSVGByLoopLayers(self.addLayerTemplate, self, self.loopLayers)
 
 	def getCarveLayerThickness(self):
 		'Get the layer thickness.'
 		return self.layerThickness
-
-	def getCarveRotatedBoundaryLayers(self):
-		'Get the rotated boundary layers.'
-		return self.rotatedLoopLayers
 
 	def getFabmetheusXML(self):
 		'Return the fabmetheus XML.'
@@ -175,28 +175,24 @@ class SVGFabricationCarving:
 		self.fileName = fileName
 		paths = self.elementNode.xmlObject.getPaths()
 		oldZ = None
-		self.rotatedLoopLayers = []
-		rotatedLoopLayer = None
+		self.loopLayers = []
+		loopLayer = None
 		for path in paths:
 			if len(path) > 0:
 				z = path[0].z
 				if z != oldZ:
-					rotatedLoopLayer = euclidean.RotatedLoopLayer(z)
-					self.rotatedLoopLayers.append(rotatedLoopLayer)
+					loopLayer = euclidean.LoopLayer(z)
+					self.loopLayers.append(loopLayer)
 					oldZ = z
-				rotatedLoopLayer.loops.append(euclidean.getComplexPath(path))
-		if len(self.rotatedLoopLayers) < 1:
+				loopLayer.loops.append(euclidean.getComplexPath(path))
+		if len(self.loopLayers) < 1:
 			return
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, -987654321.0)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, 987654321.0)
-		svg_writer.setSVGCarvingCorners(self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.rotatedLoopLayers)
+		svg_writer.setSVGCarvingCorners(self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.loopLayers)
 
 	def setCarveImportRadius( self, importRadius ):
 		'Set the import radius.'
-		pass
-
-	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
-		'Set the infill in direction of bridge.'
 		pass
 
 	def setCarveIsCorrectMesh( self, isCorrectMesh ):

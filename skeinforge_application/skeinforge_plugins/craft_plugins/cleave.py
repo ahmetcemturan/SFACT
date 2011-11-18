@@ -176,8 +176,8 @@ class CleaveSkein:
 		importRadius = 0.5 * repository.importCoarseness.value * abs( perimeterWidth )
 		carving.setCarveImportRadius( max( importRadius, 0.01 * layerThickness ) )
 		carving.setCarveIsCorrectMesh( repository.correctMesh.value )
-		rotatedLoopLayers = carving.getCarveRotatedBoundaryLayers()
-		if len( rotatedLoopLayers ) < 1:
+		loopLayers = carving.getCarveBoundaryLayers()
+		if len( loopLayers ) < 1:
 			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Thickness.')
 			return ''
 		layerThickness = carving.getCarveLayerThickness()
@@ -189,8 +189,8 @@ class CleaveSkein:
 			decimalPlacesCarried,
 			carving.getCarveLayerThickness(),
 			perimeterWidth)
-		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(repository, rotatedLoopLayers)
-		return svgWriter.getReplacedSVGTemplate( fileName, 'cleave', truncatedRotatedBoundaryLayers, carving.getFabmetheusXML())
+		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(loopLayers, repository)
+		return svgWriter.getReplacedSVGTemplate( fileName, truncatedRotatedBoundaryLayers, 'cleave', carving.getFabmetheusXML())
 
 
 def main():

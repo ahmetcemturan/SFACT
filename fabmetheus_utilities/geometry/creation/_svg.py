@@ -35,10 +35,10 @@ def getGeometryOutputByArguments(arguments, elementNode):
 def getGeometryOutputBySVGReader(elementNode, svgReader):
 	"Get vector3 vertexes from svgReader."
 	geometryOutput = []
-	for rotatedLoopLayer in svgReader.rotatedLoopLayers:
-		for loop in rotatedLoopLayer.loops:
-			vector3Path = euclidean.getVector3Path(loop, rotatedLoopLayer.z)
-			sideLoop = lineation.SideLoop(vector3Path, None, None)
+	for loopLayer in svgReader.loopLayers:
+		for loop in loopLayer.loops:
+			vector3Path = euclidean.getVector3Path(loop, loopLayer.z)
+			sideLoop = lineation.SideLoop(vector3Path)
 			sideLoop.rotate(elementNode)
 			geometryOutput += lineation.getGeometryOutputByManipulation(elementNode, sideLoop)
 	return geometryOutput

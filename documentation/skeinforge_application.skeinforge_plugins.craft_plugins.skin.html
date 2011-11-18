@@ -25,28 +25,52 @@ The skin manual page is at:<br>
 <br />
 <a href="#Operation">Operation</a><br />
 <a href="#Settings">Settings</a><br />
+&nbsp;&nbsp;<a href="#Division">Division</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Horizontal Infill Divisions">Horizontal Infill Divisions</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Horizontal Perimeter Divisions">Horizontal Perimeter Divisions</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Vertical Divisions">Vertical Divisions</a><br />
 &nbsp;&nbsp;<a href="#Hop When Extruding Infill">Hop When Extruding Infill</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layer From">Layer From</a><br />
+&nbsp;&nbsp;<a href="#Layers From">Layers From</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Tips">Tips</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
 
-The default 'Activate Skin' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.<br>
+The default 'Activate Skin' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.<br>
  <br>
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
 
+<a name="Division" id="Division"></a><h3>Division</h3>
+
+<a name="Horizontal Infill Divisions" id="Horizontal Infill Divisions"></a><h4>Horizontal Infill Divisions</h4>
+
+Default: 2<br>
+ <br>
+Defines the number of times the skinned infill is divided horizontally.<br>
+ <br>
+<a name="Horizontal Perimeter Divisions" id="Horizontal Perimeter Divisions"></a><h4>Horizontal Perimeter Divisions</h4>
+
+Default: 1<br>
+ <br>
+Defines the number of times the skinned perimeters are divided horizontally.<br>
+ <br>
+<a name="Vertical Divisions" id="Vertical Divisions"></a><h4>Vertical Divisions</h4>
+
+Default: 2<br>
+ <br>
+Defines the number of times the skinned infill and perimeters are divided vertically.<br>
+ <br>
 <a name="Hop When Extruding Infill" id="Hop When Extruding Infill"></a><h3>Hop When Extruding Infill</h3>
 
 Default is off.<br>
  <br>
 When selected, the extruder will hop before and after extruding the lower infill in order to avoid the regular thickness threads.<br>
  <br>
-<a name="Layer From" id="Layer From"></a><h4>Layer From</h4>
+<a name="Layers From" id="Layers From"></a><h3>Layers From</h3>
 
-Default is one.<br>
+Default: 1<br>
  <br>
 Defines which layer of the print the skinning process starts from. It is not wise to set this to zero, skinning the bottom layer is likely to cause the bottom perimeter not to adhere well to the print surface.<br>
  <br>

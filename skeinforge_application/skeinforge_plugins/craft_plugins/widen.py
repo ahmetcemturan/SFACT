@@ -138,20 +138,20 @@ class WidenSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.layerCount = settings.LayerCount()
 		self.lineIndex = 0
-		self.rotatedLoopLayer = None
+		self.loopLayer = None
 
-	def addWiden(self, rotatedLoopLayer):
+	def addWiden(self, loopLayer):
 		'Add widen to the layer.'
-		triangle_mesh.sortLoopsInOrderOfArea(False, rotatedLoopLayer.loops)
+		triangle_mesh.sortLoopsInOrderOfArea(False, loopLayer.loops)
 		widdershinsLoops = []
 		clockwiseInsetLoops = []
-		for loopIndex in xrange(len(rotatedLoopLayer.loops)):
-			loop = rotatedLoopLayer.loops[loopIndex]
+		for loopIndex in xrange(len(loopLayer.loops)):
+			loop = loopLayer.loops[loopIndex]
 			if euclidean.isWiddershins(loop):
-				otherLoops = rotatedLoopLayer.loops[: loopIndex] + rotatedLoopLayer.loops[loopIndex + 1 :]
+				otherLoops = loopLayer.loops[: loopIndex] + loopLayer.loops[loopIndex + 1 :]
 				leftPoint = euclidean.getLeftPoint(loop)
 				if getIsPointInsideALoop(otherLoops, leftPoint):
-					self.distanceFeedRate.addGcodeFromLoop(loop, rotatedLoopLayer.z)
+					self.distanceFeedRate.addGcodeFromLoop(loop, loopLayer.z)
 				else:
 					widdershinsLoops.append(loop)
 			else:
@@ -159,11 +159,11 @@ class WidenSkein:
 #				clockwiseInsetLoop.reverse()
 #				clockwiseInsetLoops.append(clockwiseInsetLoop)
 				clockwiseInsetLoops += intercircle.getInsetLoopsFromLoop(loop, self.doublePerimeterWidth)
-				self.distanceFeedRate.addGcodeFromLoop(loop, rotatedLoopLayer.z)
+				self.distanceFeedRate.addGcodeFromLoop(loop, loopLayer.z)
 		for widdershinsLoop in widdershinsLoops:
 			outsetLoop = intercircle.getLargestInsetLoopFromLoop(widdershinsLoop, -self.doublePerimeterWidth)
 			widenedLoop = getWidenedLoop(widdershinsLoop, clockwiseInsetLoops, outsetLoop, self.perimeterWidth)
-			self.distanceFeedRate.addGcodeFromLoop(widenedLoop, rotatedLoopLayer.z)
+			self.distanceFeedRate.addGcodeFromLoop(widenedLoop, loopLayer.z)
 
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the widen gcode.'
@@ -202,15 +202,15 @@ class WidenSkein:
 			self.boundary.append(location.dropAxis())
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('widen')
-			self.rotatedLoopLayer = euclidean.RotatedLoopLayer(float(splitLine[1]))
+			self.loopLayer = euclidean.LoopLayer(float(splitLine[1]))
 			self.distanceFeedRate.addLine(line)
 		elif firstWord == '(</layer>)':
-			self.addWiden( self.rotatedLoopLayer )
-			self.rotatedLoopLayer = None
+			self.addWiden( self.loopLayer )
+			self.loopLayer = None
 		elif firstWord == '(<nestedRing>)':
 			self.boundary = []
-			self.rotatedLoopLayer.loops.append( self.boundary )
-		if self.rotatedLoopLayer == None or firstWord == '(<bridgeRotation>':
+			self.loopLayer.loops.append( self.boundary )
+		if self.loopLayer == None:
 			self.distanceFeedRate.addLine(line)
 
 

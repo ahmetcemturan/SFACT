@@ -129,7 +129,7 @@ The comb tool has created the file:<br>
 
 <dl><dt><a name="CombSkein-getIsAsFarAndNotIntersecting"><strong>getIsAsFarAndNotIntersecting</strong></a>(self, begin, end)</dt><dd><tt>Determine&nbsp;if&nbsp;the&nbsp;point&nbsp;on&nbsp;the&nbsp;line&nbsp;is&nbsp;at&nbsp;least&nbsp;as&nbsp;far&nbsp;from&nbsp;the&nbsp;loop&nbsp;as&nbsp;the&nbsp;center&nbsp;point.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getIsRunningJumpPathAdded"><strong>getIsRunningJumpPathAdded</strong></a>(self, betweens, end, lastPoint, nearestEndMinusLastSegment, pathAround, penultimatePoint, runningJumpSpace)</dt><dd><tt>Add&nbsp;a&nbsp;running&nbsp;jump&nbsp;path&nbsp;if&nbsp;possible,&nbsp;and&nbsp;return&nbsp;if&nbsp;it&nbsp;was&nbsp;added.</tt></dd></dl>
+<dl><dt><a name="CombSkein-getIsRunningJumpPathAdded"><strong>getIsRunningJumpPathAdded</strong></a>(self, betweens, end, lastPoint, closestEndMinusLastSegment, pathAround, penultimatePoint, runningJumpSpace)</dt><dd><tt>Add&nbsp;a&nbsp;running&nbsp;jump&nbsp;path&nbsp;if&nbsp;possible,&nbsp;and&nbsp;return&nbsp;if&nbsp;it&nbsp;was&nbsp;added.</tt></dd></dl>
 
 <dl><dt><a name="CombSkein-getPathBetween"><strong>getPathBetween</strong></a>(self, loop, points)</dt><dd><tt>Add&nbsp;a&nbsp;path&nbsp;between&nbsp;the&nbsp;perimeter&nbsp;and&nbsp;the&nbsp;fill.</tt></dd></dl>
 
@@ -158,7 +158,7 @@ The comb tool has created the file:<br>
  <dl><dt><a name="-getCraftedTextFromText"><strong>getCraftedTextFromText</strong></a>(gcodeText, combRepository<font color="#909090">=None</font>)</dt><dd><tt>Comb&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;text.</tt></dd></dl>
  <dl><dt><a name="-getInsideness"><strong>getInsideness</strong></a>(path, loop)</dt><dd><tt>Get&nbsp;portion&nbsp;of&nbsp;the&nbsp;path&nbsp;which&nbsp;is&nbsp;inside&nbsp;the&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-getNewRepository"><strong>getNewRepository</strong></a>()</dt><dd><tt>Get&nbsp;new&nbsp;repository.</tt></dd></dl>
- <dl><dt><a name="-getPathsByIntersectedLoop"><strong>getPathsByIntersectedLoop</strong></a>(begin, end, loop)</dt><dd><tt>Get&nbsp;both&nbsp;paths&nbsp;along&nbsp;the&nbsp;loop&nbsp;from&nbsp;the&nbsp;point&nbsp;nearest&nbsp;to&nbsp;the&nbsp;begin&nbsp;to&nbsp;the&nbsp;point&nbsp;nearest&nbsp;to&nbsp;the&nbsp;end.</tt></dd></dl>
+ <dl><dt><a name="-getPathsByIntersectedLoop"><strong>getPathsByIntersectedLoop</strong></a>(begin, end, loop)</dt><dd><tt>Get&nbsp;both&nbsp;paths&nbsp;along&nbsp;the&nbsp;loop&nbsp;from&nbsp;the&nbsp;point&nbsp;closest&nbsp;to&nbsp;the&nbsp;begin&nbsp;to&nbsp;the&nbsp;point&nbsp;closest&nbsp;to&nbsp;the&nbsp;end.</tt></dd></dl>
  <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Display&nbsp;the&nbsp;comb&nbsp;dialog.</tt></dd></dl>
  <dl><dt><a name="-writeOutput"><strong>writeOutput</strong></a>(fileName, shouldAnalyze<font color="#909090">=True</font>)</dt><dd><tt>Comb&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;file.</tt></dd></dl>
 </td></tr></table><p>

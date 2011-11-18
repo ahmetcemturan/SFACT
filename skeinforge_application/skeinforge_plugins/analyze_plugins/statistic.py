@@ -110,7 +110,6 @@ from fabmetheus_utilities import gcodec
 from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
-from skeinforge_application.skeinforge_plugins.craft_plugins import dimension
 import cStringIO
 import math
 import sys
@@ -304,7 +303,7 @@ class StatisticSkein:
 		return self.output.getvalue()
 
 	def getLocationSetFeedRateToSplitLine( self, splitLine ):
-		"Get location and set feed rate to the split line."
+		"Get location ans set feed rate to the plsit line."
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		indexOfF = gcodec.getIndexOfStartingWithSecond( "F", splitLine )
 		if indexOfF > 0:

@@ -51,15 +51,15 @@ Svg_writer uses the layer_template.svg file in the templates folder in the same 
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="SVGWriter-__init__"><strong>__init__</strong></a>(self, addLayerTemplateToSVG, cornerMaximum, cornerMinimum, decimalPlacesCarried, layerThickness, perimeterWidth<font color="#909090">=None</font>)</dt><dd><tt>Initialize.</tt></dd></dl>
 
-<dl><dt><a name="SVGWriter-addLayerBegin"><strong>addLayerBegin</strong></a>(self, layerIndex, rotatedLoopLayer)</dt><dd><tt>Add&nbsp;the&nbsp;start&nbsp;lines&nbsp;for&nbsp;the&nbsp;layer.</tt></dd></dl>
+<dl><dt><a name="SVGWriter-addLayerBegin"><strong>addLayerBegin</strong></a>(self, layerIndex, loopLayer)</dt><dd><tt>Add&nbsp;the&nbsp;start&nbsp;lines&nbsp;for&nbsp;the&nbsp;layer.</tt></dd></dl>
+
+<dl><dt><a name="SVGWriter-addLoopLayerToOutput"><strong>addLoopLayerToOutput</strong></a>(self, layerIndex, loopLayer)</dt><dd><tt>Add&nbsp;rotated&nbsp;boundary&nbsp;layer&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
+
+<dl><dt><a name="SVGWriter-addLoopLayersToOutput"><strong>addLoopLayersToOutput</strong></a>(self, loopLayers)</dt><dd><tt>Add&nbsp;rotated&nbsp;boundary&nbsp;layers&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
 
 <dl><dt><a name="SVGWriter-addOriginalAsComment"><strong>addOriginalAsComment</strong></a>(self, elementNode)</dt><dd><tt>Add&nbsp;original&nbsp;elementNode&nbsp;as&nbsp;a&nbsp;comment.</tt></dd></dl>
 
-<dl><dt><a name="SVGWriter-addRotatedLoopLayerToOutput"><strong>addRotatedLoopLayerToOutput</strong></a>(self, layerIndex, rotatedLoopLayer)</dt><dd><tt>Add&nbsp;rotated&nbsp;boundary&nbsp;layer&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
-
-<dl><dt><a name="SVGWriter-addRotatedLoopLayersToOutput"><strong>addRotatedLoopLayersToOutput</strong></a>(self, rotatedLoopLayers)</dt><dd><tt>Add&nbsp;rotated&nbsp;boundary&nbsp;layers&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
-
-<dl><dt><a name="SVGWriter-getReplacedSVGTemplate"><strong>getReplacedSVGTemplate</strong></a>(self, fileName, procedureName, rotatedLoopLayers, elementNode<font color="#909090">=None</font>)</dt><dd><tt>Get&nbsp;the&nbsp;lines&nbsp;of&nbsp;text&nbsp;from&nbsp;the&nbsp;layer_template.svg&nbsp;file.</tt></dd></dl>
+<dl><dt><a name="SVGWriter-getReplacedSVGTemplate"><strong>getReplacedSVGTemplate</strong></a>(self, fileName, loopLayers, procedureName, elementNode<font color="#909090">=None</font>)</dt><dd><tt>Get&nbsp;the&nbsp;lines&nbsp;of&nbsp;text&nbsp;from&nbsp;the&nbsp;layer_template.svg&nbsp;file.</tt></dd></dl>
 
 <dl><dt><a name="SVGWriter-getRounded"><strong>getRounded</strong></a>(self, number)</dt><dd><tt>Get&nbsp;number&nbsp;rounded&nbsp;to&nbsp;the&nbsp;number&nbsp;of&nbsp;carried&nbsp;decimal&nbsp;places&nbsp;as&nbsp;a&nbsp;string.</tt></dd></dl>
 
@@ -88,11 +88,11 @@ Svg_writer uses the layer_template.svg file in the templates folder in the same 
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-getCarving"><strong>getCarving</strong></a>(fileName)</dt><dd><tt>Get&nbsp;a&nbsp;carving&nbsp;for&nbsp;the&nbsp;file&nbsp;using&nbsp;an&nbsp;import&nbsp;plugin.</tt></dd></dl>
  <dl><dt><a name="-getCommentElement"><strong>getCommentElement</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;a&nbsp;carving&nbsp;for&nbsp;the&nbsp;file&nbsp;using&nbsp;an&nbsp;import&nbsp;plugin.</tt></dd></dl>
- <dl><dt><a name="-getSVGByLoopLayers"><strong>getSVGByLoopLayers</strong></a>(addLayerTemplateToSVG, carving, rotatedLoopLayers)</dt><dd><tt>Get&nbsp;the&nbsp;svg&nbsp;text.</tt></dd></dl>
+ <dl><dt><a name="-getSVGByLoopLayers"><strong>getSVGByLoopLayers</strong></a>(addLayerTemplateToSVG, carving, loopLayers)</dt><dd><tt>Get&nbsp;the&nbsp;svg&nbsp;text.</tt></dd></dl>
  <dl><dt><a name="-getSliceDictionary"><strong>getSliceDictionary</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;metadata&nbsp;slice&nbsp;attribute&nbsp;dictionary.</tt></dd></dl>
  <dl><dt><a name="-getSliceElementNodes"><strong>getSliceElementNodes</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;slice&nbsp;elements.</tt></dd></dl>
- <dl><dt><a name="-getTruncatedRotatedBoundaryLayers"><strong>getTruncatedRotatedBoundaryLayers</strong></a>(repository, rotatedLoopLayers)</dt><dd><tt>Get&nbsp;the&nbsp;truncated&nbsp;rotated&nbsp;boundary&nbsp;layers.</tt></dd></dl>
- <dl><dt><a name="-setSVGCarvingCorners"><strong>setSVGCarvingCorners</strong></a>(cornerMaximum, cornerMinimum, layerThickness, rotatedLoopLayers)</dt><dd><tt>Parse&nbsp;SVG&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;layers.</tt></dd></dl>
+ <dl><dt><a name="-getTruncatedRotatedBoundaryLayers"><strong>getTruncatedRotatedBoundaryLayers</strong></a>(loopLayers, repository)</dt><dd><tt>Get&nbsp;the&nbsp;truncated&nbsp;rotated&nbsp;boundary&nbsp;layers.</tt></dd></dl>
+ <dl><dt><a name="-setSVGCarvingCorners"><strong>setSVGCarvingCorners</strong></a>(cornerMaximum, cornerMinimum, layerThickness, loopLayers)</dt><dd><tt>Parse&nbsp;SVG&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;layers.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

@@ -210,7 +210,7 @@ class ChamberRepository:
 		self.turnBedHeaterOffAtShutDown = settings.BooleanSetting().getFromValue('Turn print Bed Heater Off at Shut Down', self, True )
 		self.turnExtruderHeaterOffAtShutDown = settings.BooleanSetting().getFromValue('Turn Extruder Heater Off at Shut Down ', self, True )
 		self.turnATXOffAtShutDown = settings.BooleanSetting().getFromValue('Turn ATX PSU Off at Shut Down ', self, False )
-#		self.chamberTemperature = settings.FloatSpin().getFromValue( 20.0, 'Chamber Temperature (Celcius):', self, 90.0, 30.0 )
+		self.chamberTemperature = settings.FloatSpin().getFromValue( 20.0, 'Chamber Temperature (Celcius):', self, 90.0, 30.0 )
 #		self.holdingForce = settings.FloatSpin().getFromValue( 0.0, 'Holding Force (bar):', self, 100.0, 0.0 )
 		self.executeTitle = 'Chamber'
 
@@ -269,7 +269,7 @@ class ChamberSkein:
 				self.distanceFeedRate.addLine('M140 S0') # Turn bed heater off.
 			if self.repository.turnATXOffAtShutDown.value:
 				self.distanceFeedRate.addLine('M81') # Turn ATX PSU off.
-#			self.distanceFeedRate.addParameter('M141', self.repository.chamberTemperature.value ) # Set chamber temperature.
+			self.distanceFeedRate.addParameter('M141', self.repository.chamberTemperature.value ) # Set chamber temperature.
 #			self.distanceFeedRate.addParameter('M142', self.repository.holdingForce.value ) # Set holding pressure.
 			return
 		self.distanceFeedRate.addLine(line)

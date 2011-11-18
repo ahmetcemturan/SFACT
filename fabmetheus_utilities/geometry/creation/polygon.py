@@ -33,9 +33,8 @@ def getGeometryOutput(derivation, elementNode):
 		vertex = spiral.getSpiralPoint(unitPolar, Vector3(unitPolar.real * derivation.radius.real, unitPolar.imag * derivation.radius.imag))
 		loop.append(vertex)
 	loop = euclidean.getLoopWithoutCloseEnds(0.000001 * max(derivation.radius.real, derivation.radius.imag), loop)
-	sideLength = derivation.sideAngle * lineation.getRadiusAverage(derivation.radius)
 	lineation.setClosedAttribute(elementNode, derivation.revolutions)
-	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(loop, derivation.sideAngle, sideLength))
+	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(loop, derivation.sideAngle))
 
 def getGeometryOutputByArguments(arguments, elementNode):
 	"Get vector3 vertexes from attribute dictionary by arguments."

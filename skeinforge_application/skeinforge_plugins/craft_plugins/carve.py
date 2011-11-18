@@ -28,11 +28,6 @@ Default is one.
 
 When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.
 
-===Infill in Direction of Bridge===
-Default is on.
-
-When selected, the infill will be in the direction of any bridge across a gap, so that the fill will be able to span a bridge easier.
-
 ===Layer Thickness===
 Default is 0.4 mm.
 
@@ -204,18 +199,17 @@ class CarveSkein:
 		"Parse gnu triangulated surface text and store the carved gcode."
 		layerThickness = repository.layerThickness.value
 		perimeterWidth = repository.perimeterWidthOverThickness.value
-		carving.setCarveInfillInDirectionOfBridge(repository.infillInDirectionOfBridge.value)
 		carving.setCarveLayerThickness(layerThickness)
 		importRadius = 0.5 * repository.importCoarseness.value * abs(perimeterWidth)
 		carving.setCarveImportRadius(max(importRadius, 0.01 * layerThickness))
 		carving.setCarveIsCorrectMesh(repository.correctMesh.value)
-		rotatedLoopLayers = carving.getCarveRotatedBoundaryLayers()
-		if len(rotatedLoopLayers) < 1:
+		loopLayers = carving.getCarveBoundaryLayers()
+		if len(loopLayers) < 1:
 			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Thickness.')
 			return ''
 		layerThickness = carving.getCarveLayerThickness()
 		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerThickness)
-		perimeterWidth = repository.perimeterWidthOverThickness.value
+		perimeterWidth = repository.perimeterWidthOverThickness.value #todo why twice?
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),
@@ -223,9 +217,8 @@ class CarveSkein:
 			decimalPlacesCarried,
 			carving.getCarveLayerThickness(),
 			perimeterWidth)
-		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(repository, rotatedLoopLayers)
-		return svgWriter.getReplacedSVGTemplate(
-			fileName, 'carve', truncatedRotatedBoundaryLayers, carving.getFabmetheusXML())
+		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(loopLayers, repository)
+		return svgWriter.getReplacedSVGTemplate(fileName, truncatedRotatedBoundaryLayers, 'carve', carving.getFabmetheusXML())
 
 
 def main():

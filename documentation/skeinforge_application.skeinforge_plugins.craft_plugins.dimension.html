@@ -39,6 +39,8 @@ Nophead wrote an excellent article on how to set the filament parameters:<br>
 &nbsp;&nbsp;<a href="#Filament">Filament</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Filament Diameter">Filament Diameter</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Filament Packing Density">Filament Packing Density</a><br />
+&nbsp;&nbsp;<a href="#Maximum E Value before Reset">Maximum E Value before Reset</a><br />
+&nbsp;&nbsp;<a href="#Minimum Travel for Retraction">Minimum Travel for Retraction</a><br />
 &nbsp;&nbsp;<a href="#Retract Within Island">Retract Within Island</a><br />
 &nbsp;&nbsp;<a href="#Retraction Distance">Retraction Distance</a><br />
 &nbsp;&nbsp;<a href="#Restart Extra Distance">Restart Extra Distance</a><br />
@@ -89,6 +91,18 @@ Defines the effective filament packing density.<br>
 The default value is so low for ABS because ABS is relatively soft and with a pinch wheel extruder the teeth of the pinch dig in farther, so it sees a smaller effective diameter.  With a hard plastic like PLA the teeth of the pinch wheel don't dig in as far, so it sees a larger effective diameter, so feeds faster, so for PLA the value should be around 0.97.  This is with Wade's hobbed bolt.  The effect is less significant with larger pinch wheels.<br>
  <br>
 Overall, you'll have to find the optimal filament packing density by experiment.<br>
+ <br>
+<a name="Maximum E Value before Reset" id="Maximum E Value before Reset"></a><h3>Maximum E Value before Reset</h3>
+
+Default: 91234.0<br>
+ <br>
+Defines the maximum E value before it is reset with the 'G92 E0' command line.  The reason it is reset only after the maximum E value is reached is because at least one firmware takes time to reset.  The problem with waiting until the E value is high before resetting is that more characters are sent.  So if your firmware takes a lot of time to reset, set this parameter to a high value, if it doesn't set this parameter to a low value or even zero.<br>
+ <br>
+<a name="Minimum Travel for Retraction" id="Minimum Travel for Retraction"></a><h3>Minimum Travel for Retraction</h3>
+
+Default: 1.0 millimeter<br>
+ <br>
+Defines the minimum distance that the extruder head has to travel from the end of one thread to the beginning of another, in order to trigger the extruder retraction.  Setting this to a high value means the extruder will retract only occasionally, setting it to a low value means the extruder will retract most of the time.<br>
  <br>
 <a name="Retract Within Island" id="Retract Within Island"></a><h3>Retract Within Island</h3>
 

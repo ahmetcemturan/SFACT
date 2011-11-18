@@ -62,6 +62,7 @@ def processElementNodeByDerivation(derivation, elementNode):
 		print(targetElementNode)
 		print(derivation.elementNode)
 		return
+	matrix.getBranchMatrixSetElementNode(targetElementNode)
 	transformedVertexes = xmlObject.getTransformedVertexes()
 	if len(transformedVertexes) < 1:
 		print('Warning, transformedVertexes is zero in processElementNodeByDerivation in disjoin for:')
@@ -71,7 +72,6 @@ def processElementNodeByDerivation(derivation, elementNode):
 		return
 	elementNode.localName = 'group'
 	elementNode.getXMLProcessor().processElementNode(elementNode)
-	matrix.getBranchMatrixSetElementNode(targetElementNode)
 	targetChainMatrix = matrix.Matrix(xmlObject.getMatrixChainTetragrid())
 	minimumZ = boolean_geometry.getMinimumZ(xmlObject)
 	z = minimumZ + 0.5 * derivation.sheetThickness

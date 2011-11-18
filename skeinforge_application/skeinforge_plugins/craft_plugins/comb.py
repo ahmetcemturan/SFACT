@@ -98,20 +98,20 @@ def getNewRepository():
 	return CombRepository()
 
 def getPathsByIntersectedLoop( begin, end, loop ):
-	"Get both paths along the loop from the point nearest to the begin to the point nearest to the end."
-	nearestBeginDistanceIndex = euclidean.getNearestDistanceIndex( begin, loop )
-	nearestEndDistanceIndex = euclidean.getNearestDistanceIndex( end, loop )
-	beginIndex = ( nearestBeginDistanceIndex.index + 1 ) % len(loop)
-	endIndex = ( nearestEndDistanceIndex.index + 1 ) % len(loop)
-	nearestBegin = euclidean.getNearestPointOnSegment( loop[ nearestBeginDistanceIndex.index ], loop[ beginIndex ], begin )
-	nearestEnd = euclidean.getNearestPointOnSegment( loop[ nearestEndDistanceIndex.index ], loop[ endIndex ], end )
-	clockwisePath = [ nearestBegin ]
-	widdershinsPath = [ nearestBegin ]
-	if nearestBeginDistanceIndex.index != nearestEndDistanceIndex.index:
+	"Get both paths along the loop from the point closest to the begin to the point closest to the end."
+	closestBeginDistanceIndex = euclidean.getClosestDistanceIndexToLine( begin, loop )
+	closestEndDistanceIndex = euclidean.getClosestDistanceIndexToLine( end, loop )
+	beginIndex = ( closestBeginDistanceIndex.index + 1 ) % len(loop)
+	endIndex = ( closestEndDistanceIndex.index + 1 ) % len(loop)
+	closestBegin = euclidean.getClosestPointOnSegment( loop[ closestBeginDistanceIndex.index ], loop[ beginIndex ], begin )
+	closestEnd = euclidean.getClosestPointOnSegment( loop[ closestEndDistanceIndex.index ], loop[ endIndex ], end )
+	clockwisePath = [ closestBegin ]
+	widdershinsPath = [ closestBegin ]
+	if closestBeginDistanceIndex.index != closestEndDistanceIndex.index:
 		widdershinsPath += euclidean.getAroundLoop( beginIndex, endIndex, loop )
 		clockwisePath += euclidean.getAroundLoop( endIndex, beginIndex, loop )[: : -1]
-	clockwisePath.append( nearestEnd )
-	widdershinsPath.append( nearestEnd )
+	clockwisePath.append( closestEnd )
+	widdershinsPath.append( closestEnd )
 	return [ clockwisePath, widdershinsPath ]
 
 def writeOutput(fileName, shouldAnalyze=True):
@@ -220,9 +220,9 @@ class CombSkein:
 			return True
 		return not euclidean.isLineIntersectingLoops( self.getBetweens(), begin, end )
 
-	def getIsRunningJumpPathAdded( self, betweens, end, lastPoint, nearestEndMinusLastSegment, pathAround, penultimatePoint, runningJumpSpace ):
+	def getIsRunningJumpPathAdded( self, betweens, end, lastPoint, closestEndMinusLastSegment, pathAround, penultimatePoint, runningJumpSpace ):
 		"Add a running jump path if possible, and return if it was added."
-		jumpStartPoint = lastPoint - nearestEndMinusLastSegment * runningJumpSpace
+		jumpStartPoint = lastPoint - closestEndMinusLastSegment * runningJumpSpace
 		if euclidean.isLineIntersectingLoops( betweens, penultimatePoint, jumpStartPoint ):
 			return False
 		pathAround[-1] = jumpStartPoint
@@ -376,9 +376,9 @@ class CombSkein:
 				return
 			elif firstWord == '(<perimeterWidth>':
 				perimeterWidth = float(splitLine[1])
-				self.combInset = 0.7 * perimeterWidth
-				self.betweenInset = 0.4 * perimeterWidth
-				self.uTurnWidth = 0.5 * self.betweenInset
+				self.combInset = perimeterWidth
+				self.betweenInset = perimeterWidth *0.5 *0.7854
+				self.uTurnWidth = 0.5 * self.betweenInset 
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)

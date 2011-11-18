@@ -98,18 +98,15 @@ def exportProfileAsZipFile(abridgedSettings, suffixDirectoryPath, suffixFileName
 
 def getAbridgedSettings(gcodeText):
 	'Get the abridged settings from the gcode text.'
-	lines = archive.getTextLines(gcodeText)
 	abridgedSettings = []
+	lines = archive.getTextLines(gcodeText)
 	settingsStart = False
 	for line in lines:
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
-		firstWord = None
-		if len(splitLine) > 0:
-			firstWord = splitLine[0]
+		firstWord = gcodec.getFirstWord(splitLine)
 		if firstWord == '(<setting>' and settingsStart:
 			if len(splitLine) > 4:
 				abridgedSettings.append(AbridgedSetting(splitLine))
-				valueString = ' '.join(splitLine[3 : -1])
 		elif firstWord == '(<settings>)':
 			settingsStart = True
 		elif firstWord == '(</settings>)':

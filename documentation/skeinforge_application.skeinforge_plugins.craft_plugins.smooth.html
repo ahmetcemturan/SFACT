@@ -13,18 +13,19 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.skirt.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.speed.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Smooth is a script to smooth the surface smooth of an object by replacing the perimeter surface with a surface printed at half the carve<br>
-height.  This gives the impression that the object was carved at a much thinner height giving a high-quality finish, but still prints <br>
-in a relatively short time.  The latest process has some similarities with a description at:<br>
+This plugin smooths jagged extruder paths.  It takes shortcuts through jagged paths and decreases the feed rate to compensate.<br>
+ <br>
+Smooth is based on ideas in Nophead's frequency limit post: <br>
+<a href="http://hydraraptor.blogspot.com/2010/12/frequency-limit.html">http://hydraraptor.blogspot.com/2010/12/frequency-limit.html</a>:<br>
  <br>
 The smooth manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Smooth">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Smooth</a><br>
  <br>
- <br>
 <br />
 <a href="#Operation">Operation</a><br />
 <a href="#Settings">Settings</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layer From">Layer From</a><br />
+&nbsp;&nbsp;<a href="#Layers From">Layers From</a><br />
+&nbsp;&nbsp;<a href="#Maximum Shortening over Width">Maximum Shortening over Width</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
@@ -35,12 +36,17 @@ The default 'Activate Smooth' checkbox is off.  When it is on, the functions des
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
 
-<a name="Layer From" id="Layer From"></a><h4>Layer From</h4>
+<a name="Layers From" id="Layers From"></a><h3>Layers From</h3>
 
-Default is one.<br>
+Default: 1<br>
  <br>
-Defines which layer of the print the smoothing process starts from. It is not wise to set this to zero, smoothing the bottom layer is likely to cause the bottom perimeter not to adhere well to the print surface.<br>
+Defines which layer of the print the smoothing process starts from.  If this is set this to zero, that might cause the smoothed parts of the bottom perimeter not to adhere well to the print surface.  However, this is just a potential problem in theory, no bottom adhesion problem has been reported. <br>
  <br>
+<a name="Maximum Shortening over Width" id="Maximum Shortening over Width"></a><h3>Maximum Shortening over Width</h3>
+
+Default: 1.2<br>
+ <br>
+Defines the maximum shortening of the shortcut compared to the original path.  Smooth goes over the path and if the shortcut between the midpoint of one line and the midpoint of the second line after is not too short compared to the original and the shortcut is not too long, it replaces the jagged original with the shortcut.  If the maximum shortening is too much, smooth will shorten paths which should not of been shortened and will leave blobs and holes in the model.  If the maximum shortening is too little, even jagged paths that could be shortened safely won't be smoothed.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>

@@ -1,22 +1,26 @@
 """
 This page is in the table of contents.
-Smooth is a script to smooth the surface smooth of an object by replacing the perimeter surface with a surface printed at half the carve
-height.  This gives the impression that the object was carved at a much thinner height giving a high-quality finish, but still prints 
-in a relatively short time.  The latest process has some similarities with a description at:
+This plugin smooths jagged extruder paths.  It takes shortcuts through jagged paths and decreases the feed rate to compensate.
+
+Smooth is based on ideas in Nophead's frequency limit post: 
+http://hydraraptor.blogspot.com/2010/12/frequency-limit.html:
 
 The smooth manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Smooth
-
 
 ==Operation==
 The default 'Activate Smooth' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
-====Layer From====
-Default is one.
+===Layers From===
+Default: 1
 
-Defines which layer of the print the smoothing process starts from. It is not wise to set this to zero, smoothing the bottom layer is likely to cause the bottom perimeter not to adhere well to the print surface.
+Defines which layer of the print the smoothing process starts from.  If this is set this to zero, that might cause the smoothed parts of the bottom perimeter not to adhere well to the print surface.  However, this is just a potential problem in theory, no bottom adhesion problem has been reported. 
 
+===Maximum Shortening over Width===
+Default: 1.2
+
+Defines the maximum shortening of the shortcut compared to the original path.  Smooth goes over the path and if the shortcut between the midpoint of one line and the midpoint of the second line after is not too short compared to the original and the shortcut is not too long, it replaces the jagged original with the shortcut.  If the maximum shortening is too much, smooth will shorten paths which should not of been shortened and will leave blobs and holes in the model.  If the maximum shortening is too little, even jagged paths that could be shortened safely won't be smoothed.
 
 ==Examples==
 The following examples smooth the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and smooth.py.
@@ -85,7 +89,7 @@ class SmoothRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Smooth')
 		self.activateSmooth = settings.BooleanSetting().getFromValue('Activate Smooth', self, False)
 		self.layersFrom = settings.IntSpin().getSingleIncrementFromValue(0, 'Layers From (index):', self, 912345678, 1)
-		self.maximumShorteningOverWidth = settings.FloatSpin().getFromValue(0.4, 'Maximum Shortening over Width (float):', self, 3.0, 2.0)
+		self.maximumShorteningOverWidth = settings.FloatSpin().getFromValue(0.2, 'Maximum Shortening over Width (float):', self, 2.0, 1.2)
 		self.executeTitle = 'Smooth'
 
 	def execute(self):
@@ -134,7 +138,7 @@ class SmoothSkein:
 				segment = euclidean.getNormalized(nextPoint - point)
 				afterNextSegment = euclidean.getNormalized(afterNextNextPoint - afterNextPoint)
 				sameDirection = self.getIsParallelToRotation(segment) and self.getIsParallelToRotation(afterNextSegment)
-				if originalDistance - shortcutDistance < self.maximumShortening and sameDirection:
+				if originalDistance - shortcutDistance < self.maximumShortening and shortcutDistance < self.maximumDistance and sameDirection:
 					if wasOriginalPoint:
 						self.distanceFeedRate.addGcodeMovementZWithFeedRate(self.feedRateMinute, midpoint, self.oldLocation.z)
 					feedrate = self.feedRateMinute
@@ -180,6 +184,7 @@ class SmoothSkein:
 			elif firstWord == '(<infillWidth>':
 				self.infillWidth = float(splitLine[1])
 				self.maximumShortening = self.repository.maximumShorteningOverWidth.value * self.infillWidth
+				self.maximumDistance = 1.5 * self.maximumShortening
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)

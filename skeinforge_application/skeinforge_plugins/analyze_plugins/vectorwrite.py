@@ -131,7 +131,7 @@ class SVGWriterVectorwrite( svg_writer.SVGWriter ):
 		pathCopyDictionary['stroke'] = colorName
 		pathCopyDictionary['transform'] = transformString
 
-	def addRotatedLoopLayerToOutput( self, layerIndex, threadLayer ):
+	def addLoopLayerToOutput( self, layerIndex, threadLayer ):
 		'Add rotated boundary layer to the output.'
 		self.addLayerBegin( layerIndex, threadLayer )
 		transformString = self.getTransformString()
@@ -215,8 +215,8 @@ class VectorwriteSkein:
 		'Initialize.'
 		self.layerCount = settings.LayerCount()
 
-	def addRotatedLoopLayer(self, z):
-		'Add rotated loop layer.'
+	def addLoopLayer(self, z):
+		'Add loop layer.'
 		self.layerCount.printProgressIncrement('vectorwrite')
 		self.threadLayer = ThreadLayer(z)
 		self.threadLayers.append(self.threadLayer)
@@ -328,7 +328,7 @@ class VectorwriteSkein:
 				self.threadLayer.boundaryLoops.append( self.boundaryLoop )
 			self.boundaryLoop.append(location.dropAxis())
 		elif firstWord == '(<layer>':
-			self.addRotatedLoopLayer(float(splitLine[1]))
+			self.addLoopLayer(float(splitLine[1]))
 		elif firstWord == '(</loop>)':
 			self.addToLoops()
 		elif firstWord == '(<loop>':

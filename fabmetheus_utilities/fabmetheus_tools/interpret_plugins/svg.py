@@ -53,7 +53,11 @@ class SVGCarving:
 
 	def addXML(self, depth, output):
 		'Add xml for this object.'
-		xml_simple_writer.addXMLFromObjects(depth, self.svgReader.rotatedLoopLayers, output)
+		xml_simple_writer.addXMLFromObjects(depth, self.svgReader.loopLayers, output)
+
+	def getCarveBoundaryLayers(self):
+		'Get the  boundary layers.'
+		return self.svgReader.loopLayers
 
 	def getCarveCornerMaximum(self):
 		'Get the corner maximum of the vertexes.'
@@ -65,15 +69,11 @@ class SVGCarving:
 
 	def getCarvedSVG(self):
 		'Get the carved svg text.'
-		return svg_writer.getSVGByLoopLayers(True, self, self.svgReader.rotatedLoopLayers)
+		return svg_writer.getSVGByLoopLayers(True, self, self.svgReader.loopLayers)
 
 	def getCarveLayerThickness(self):
 		'Get the layer thickness.'
 		return self.layerThickness
-
-	def getCarveRotatedBoundaryLayers(self):
-		'Get the rotated boundary layers.'
-		return self.svgReader.rotatedLoopLayers
 
 	def getFabmetheusXML(self):
 		'Return the fabmetheus XML.'
@@ -94,14 +94,10 @@ class SVGCarving:
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, self.maximumZ)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, self.minimumZ)
 		svg_writer.setSVGCarvingCorners(
-			self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.svgReader.rotatedLoopLayers)
+			self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.svgReader.loopLayers)
 
 	def setCarveImportRadius(self, importRadius):
 		'Set the import radius.'
-		pass
-
-	def setCarveInfillInDirectionOfBridge(self, infillInDirectionOfBridge):
-		'Set the infill in direction of bridge.'
 		pass
 
 	def setCarveIsCorrectMesh(self, isCorrectMesh):

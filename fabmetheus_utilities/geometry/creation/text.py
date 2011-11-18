@@ -32,7 +32,7 @@ def getGeometryOutput(derivation, elementNode):
 	for textComplexLoop in svg_reader.getTextComplexLoops(derivation.fontFamily, derivation.fontSize, derivation.textString):
 		textComplexLoop.reverse()
 		vector3Path = euclidean.getVector3Path(textComplexLoop)
-		sideLoop = lineation.SideLoop(vector3Path, None, None)
+		sideLoop = lineation.SideLoop(vector3Path)
 		sideLoop.rotate(elementNode)
 		geometryOutput += lineation.getGeometryOutputByManipulation(elementNode, sideLoop)
 	return geometryOutput

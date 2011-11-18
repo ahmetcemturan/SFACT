@@ -26,7 +26,7 @@ The fillet manual page is at:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Arc Radius">Arc Radius</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Arc Segment">Arc Segment</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Bevel">Bevel</a><br />
-&nbsp;&nbsp;<a href="#Corner Feed Rate over Operating Feed Rate">Corner Feed Rate over Operating Feed Rate</a><br />
+&nbsp;&nbsp;<a href="#Corner Feed Rate Multiplier">Corner Feed Rate Multiplier</a><br />
 &nbsp;&nbsp;<a href="#Fillet Radius over Perimeter Width">Fillet Radius over Perimeter Width</a><br />
 &nbsp;&nbsp;<a href="#Reversal Slowdown over Perimeter Width">Reversal Slowdown over Perimeter Width</a><br />
 &nbsp;&nbsp;<a href="#Use Intermediate Feed Rate in Corners">Use Intermediate Feed Rate in Corners</a><br />
@@ -60,11 +60,11 @@ When selected, the corners will be filleted with an arc composed of several segm
 
 When selected, the corners will be beveled.<br>
  <br>
-<a name="Corner Feed Rate over Operating Feed Rate" id="Corner Feed Rate over Operating Feed Rate"></a><h3>Corner Feed Rate over Operating Feed Rate</h3>
+<a name="Corner Feed Rate Multiplier" id="Corner Feed Rate Multiplier"></a><h3>Corner Feed Rate Multiplier</h3>
 
-Default is one.<br>
+Default: 1.0<br>
  <br>
-Defines the ratio of the feed rate in corners over the operating feed rate.  With a high value the extruder will move quickly in corners, accelerating quickly and leaving a thin extrusion.  With a low value, the extruder will move slowly in corners, accelerating gently and leaving a thick extrusion.<br>
+Defines the ratio of the feed rate in corners over the original feed rate.  With a high value the extruder will move quickly in corners, accelerating quickly and leaving a thin extrusion.  With a low value, the extruder will move slowly in corners, accelerating gently and leaving a thick extrusion.<br>
  <br>
 <a name="Fillet Radius over Perimeter Width" id="Fillet Radius over Perimeter Width"></a><h3>Fillet Radius over Perimeter Width</h3>
 

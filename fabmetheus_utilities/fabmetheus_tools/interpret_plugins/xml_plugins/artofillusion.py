@@ -53,7 +53,7 @@ def getCarvingFromParser( xmlParser ):
 	artOfIllusionElement.xmlObject = booleanGeometry
 	euclidean.removeElementsFromDictionary( artOfIllusionElement.attributes, ['fileversion', 'xmlns:bf'] )
 	sceneElement = artOfIllusionElement.getFirstChildByLocalName('Scene')
-	elementNodes = sceneElement.getFirstChildByLocalName('objects').getChildNodesByLocalName('bf:Elem')
+	elementNodes = sceneElement.getFirstChildByLocalName('objects').getChildElementsByLocalName('bf:Elem')
 	for elementNode in elementNodes:
 		processAppendElementNode(booleanGeometry.archivableObjects, elementNode, artOfIllusionElement)
 	return booleanGeometry
@@ -145,11 +145,10 @@ class Group( group.Group ):
 	def setToArtOfIllusionDictionary(self):
 		"Set the shape of this group."
 		childNodesElement = self.elementNode.parentNode.getFirstChildByLocalName('children')
-		childNodes = childNodesElement.getChildNodesByLocalName('bf:Elem')
+		childNodes = childNodesElement.getChildElementsByLocalName('bf:Elem')
 		for childNode in childNodes:
 			processAppendElementNode(self.archivableObjects, childNode, self.elementNode)
 		removeListArtOfIllusionFromDictionary( self.elementNode.attributes, [] )
-
 
 class Sphere( sphere.Sphere ):
 	"An Art of Illusion Sphere object."
@@ -171,20 +170,20 @@ class TriangleMesh(triangle_mesh.TriangleMesh):
 	def setToArtOfIllusionDictionary(self):
 		"Set the shape of this carvable object info."
 		vertexElement = self.elementNode.getFirstChildByLocalName('vertex')
-		vertexPointElements = vertexElement.getChildNodesByLocalName('bf:Elem')
+		vertexPointElements = vertexElement.getChildElementsByLocalName('bf:Elem')
 		for vertexPointElement in vertexPointElements:
 			coordinateElement = vertexPointElement.getFirstChildByLocalName('r')
 			vertex = Vector3( float( coordinateElement.attributes['x'] ), float( coordinateElement.attributes['y'] ), float( coordinateElement.attributes['z'] ) )
 			self.vertexes.append(vertex)
 		edgeElement = self.elementNode.getFirstChildByLocalName('edge')
-		edgeSubelements = edgeElement.getChildNodesByLocalName('bf:Elem')
+		edgeSubelements = edgeElement.getChildElementsByLocalName('bf:Elem')
 		for edgeSubelementIndex in xrange( len( edgeSubelements ) ):
 			edgeSubelement = edgeSubelements[ edgeSubelementIndex ]
 			vertexIndexes = [ int( edgeSubelement.attributes['v1'] ), int( edgeSubelement.attributes['v2'] ) ]
 			edge = face.Edge().getFromVertexIndexes( edgeSubelementIndex, vertexIndexes )
 			self.edges.append( edge )
 		faceElement = self.elementNode.getFirstChildByLocalName('face')
-		faceSubelements = faceElement.getChildNodesByLocalName('bf:Elem')
+		faceSubelements = faceElement.getChildElementsByLocalName('bf:Elem')
 		for faceSubelementIndex in xrange( len( faceSubelements ) ):
 			faceSubelement = faceSubelements[ faceSubelementIndex ]
 			edgeIndexes = [ int( faceSubelement.attributes['e1'] ), int( faceSubelement.attributes['e2'] ), int( faceSubelement.attributes['e3'] ) ]

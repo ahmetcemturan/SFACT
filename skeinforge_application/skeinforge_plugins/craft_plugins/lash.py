@@ -11,7 +11,7 @@ http://objects.reprap.org/wiki/3D-to-5D-Gcode.php
 The default values are from the settings in Erik's 3D-to-5D-Gcode, I believe the settings are used on his Darwin reprap.
 
 ==Operation==
-The default 'Activate Lash' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Lash' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===X Backlash===

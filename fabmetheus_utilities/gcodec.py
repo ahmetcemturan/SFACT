@@ -126,36 +126,50 @@ def getGcodeFileText(fileName, gcodeText):
 
 def getGcodeWithoutDuplication(duplicateWord, gcodeText):
 	'Get gcode text without duplicate first words.'
-	isExtruderActive = False
 	lines = archive.getTextLines(gcodeText)
-	oldDuplicationLine = None
-	outputLines = []
+	oldWrittenLine = None
 	output = cStringIO.StringIO()
 	for line in lines:
 		firstWord = getFirstWordFromLine(line)
 		if firstWord == duplicateWord:
-			oldDuplicationLine = line
+			if line != oldWrittenLine:
+				output.write(line + '\n')
+				oldWrittenLine = line
 		else:
-			if firstWord == 'M101':
-				isExtruderActive = True
-			elif firstWord == 'M103':
-				isExtruderActive = False
-			if isExtruderActive and oldDuplicationLine != None and firstWord.startswith('G'):
-				outputLines.append(oldDuplicationLine)
-				oldDuplicationLine = None
-			if len(line) != 0:
-				outputLines.append(line)
-	if oldDuplicationLine != None:
-		outputLines.append(oldDuplicationLine)
+			if len(line) > 0:
+				output.write(line + '\n')
+	return output.getvalue() ###
+	return gcodeText
+	isExtruderActive = False
+	lines = archive.getTextLines(gcodeText)
+	oldDuplicationIndex = None
 	oldWrittenLine = None
-	for outputLine in outputLines:
-		firstWord = getFirstWordFromLine(outputLine)
+	output = cStringIO.StringIO()
+	for lineIndex, line in enumerate(lines):
+		firstWord = getFirstWordFromLine(line)
 		if firstWord == duplicateWord:
-			if outputLine != oldWrittenLine:
-				output.write(outputLine + '\n')
-				oldWrittenLine = outputLine
+			if oldDuplicationIndex == None:
+				oldDuplicationIndex = lineIndex
+			else:
+				lines[oldDuplicationIndex] = line
+				lines[lineIndex] = ''
+		elif firstWord.startswith('G'):
+			if isExtruderActive:
+				oldDuplicationIndex = None
+		elif firstWord == 'M101':
+			isExtruderActive = True
+			oldDuplicationIndex = None
+		elif firstWord == 'M103':
+			isExtruderActive = False
+	for line in lines:
+		firstWord = getFirstWordFromLine(line)
+		if firstWord == duplicateWord:
+			if line != oldWrittenLine:
+				output.write(line + '\n')
+				oldWrittenLine = line
 		else:
-			output.write(outputLine + '\n')
+			if len(line) > 0:
+				output.write(line + '\n')
 	return output.getvalue()
 
 def getIndexOfStartingWithSecond(letter, splitLine):
@@ -357,7 +371,7 @@ class DistanceFeedRate:
 				absoluteDistanceMode = True
 			elif firstWord == 'G91':
 				absoluteDistanceMode = False
-			self.addLine(line)
+			self.addLine('(<alterationDeleteThisPrefix/>)' + line)
 		if not absoluteDistanceMode:
 			self.addLine('G90')
 		self.addLine('(</alteration>)')

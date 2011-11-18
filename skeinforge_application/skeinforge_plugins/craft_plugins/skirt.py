@@ -124,7 +124,7 @@ class SkirtRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.skirt.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName(
 			fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Skirt', self, '')
-		self.activateSkirt = settings.BooleanSetting().getFromValue('Activate Skirt:', self, True)
+		self.activateSkirt = settings.BooleanSetting().getFromValue('Activate Skirt', self, True)
 		self.convex = settings.BooleanSetting().getFromValue('Convex:', self, True)
 		self.gapOverPerimeterWidth = settings.FloatSpin().getFromValue(
 			1.0, 'Gap over Perimeter Width (ratio):', self, 10.0, 5.0)
@@ -240,7 +240,6 @@ class SkirtSkein:
 				if not loopCrossDictionary :
 					loopCrossDictionary = LoopCrossDictionary()
 				loopCrossDictionary.loop.append(location.dropAxis())
-
 			elif firstWord == '(<layer>' and not self.repository.boundaryCheck.value :
 				layerIndex += 1
 				if layerIndex > self.repository.layersTo.value:
@@ -260,7 +259,7 @@ class SkirtSkein:
 			elif firstWord == '(<objectNextLayersTemperature>':
 				self.oldTemperatureInput = float(splitLine[1])
 				self.skirtTemperature = self.oldTemperatureInput
-			elif firstWord == '(<perimeterFeedRatePerSecond>':
+			elif firstWord == '(<perimeterFeedRatePerSecond>':#todo make it firstlayer
 				self.feedRateMinute = 60.0 * float(splitLine[1])
 			elif firstWord == '(<operatingFlowRate>':
 				self.oldFlowRate = float(splitLine[1])

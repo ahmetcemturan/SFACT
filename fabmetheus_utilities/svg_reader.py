@@ -147,7 +147,7 @@ def getCubicPoints( begin, controlPoints, end, numberOfBezierPoints=globalNumber
 	return cubicPoints
 
 def getFontReader(fontFamily):
-	"Get the font reader for the fontFamily."
+	'Get the font reader for the fontFamily.'
 	fontLower = fontFamily.lower().replace(' ', '_')
 	global globalFontReaderDictionary
 	if fontLower in globalFontReaderDictionary:
@@ -156,7 +156,11 @@ def getFontReader(fontFamily):
 	if globalFontFileNames == None:
 		globalFontFileNames = archive.getFileNamesByFilePaths(archive.getFilePathsByDirectory(getFontsDirectoryPath()))
 	if fontLower not in globalFontFileNames:
-		print('Warning, the %s font was not found in the fonts folder, so Gentium Basic Regular will be substituted.' % fontFamily)
+		print('Warning, the %s font was not found in the fabmetheus_utilities/fonts folder, so Gentium Basic Regular will be substituted.' % fontFamily)
+		print('The available fonts are:')
+		globalFontFileNames.sort()
+		print(globalFontFileNames)
+		print('')
 		fontLower = 'gentium_basic_regular'
 	fontReader = FontReader(fontLower)
 	globalFontReaderDictionary[fontLower] = fontReader
@@ -331,11 +335,11 @@ def processSVGElementcircle( elementNode, svgReader ):
 	global globalNumberOfCirclePoints
 	global globalSideAngle
 	loop = []
-	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
+	loopLayer = svgReader.getLoopLayer()
 	for side in xrange( globalNumberOfCirclePoints ):
 		unitPolar = euclidean.getWiddershinsUnitPolar( float(side) * globalSideAngle )
 		loop.append( center + radius * unitPolar )
-	rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
+	loopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 
 def processSVGElementellipse( elementNode, svgReader ):
 	"Process elementNode by svgReader."
@@ -349,11 +353,11 @@ def processSVGElementellipse( elementNode, svgReader ):
 	global globalNumberOfCirclePoints
 	global globalSideAngle
 	loop = []
-	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
+	loopLayer = svgReader.getLoopLayer()
 	for side in xrange( globalNumberOfCirclePoints ):
 		unitPolar = euclidean.getWiddershinsUnitPolar( float(side) * globalSideAngle )
 		loop.append( center + complex( unitPolar.real * radius.real, unitPolar.imag * radius.imag ) )
-	rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
+	loopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 
 def processSVGElementg(elementNode, svgReader):
 	'Process elementNode by svgReader.'
@@ -374,14 +378,13 @@ def processSVGElementg(elementNode, svgReader):
 	floatFromValue = euclidean.getFloatFromValue(idStringLower[zIndex + len('z:') :].strip())
 	if floatFromValue != None:
 		svgReader.z = floatFromValue
-	svgReader.bridgeRotation = euclidean.getComplexDefaultByDictionary( None, elementNode.attributes, 'bridgeRotation')
 
 def processSVGElementline(elementNode, svgReader):
 	"Process elementNode by svgReader."
 	begin = euclidean.getComplexDefaultByDictionaryKeys(complex(), elementNode.attributes, 'x1', 'y1')
 	end = euclidean.getComplexDefaultByDictionaryKeys(complex(), elementNode.attributes, 'x2', 'y2')
-	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
-	rotatedLoopLayer.loops += getTransformedOutlineByPath(elementNode, [begin, end], svgReader.yAxisPointingUpward)
+	loopLayer = svgReader.getLoopLayer()
+	loopLayer.loops += getTransformedOutlineByPath(elementNode, [begin, end], svgReader.yAxisPointingUpward)
 
 def processSVGElementpath( elementNode, svgReader ):
 	"Process elementNode by svgReader."
@@ -389,8 +392,8 @@ def processSVGElementpath( elementNode, svgReader ):
 		print('Warning, in processSVGElementpath in svgReader can not get a value for d in:')
 		print(elementNode.attributes)
 		return
-	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
-	PathReader(elementNode, rotatedLoopLayer.loops, svgReader.yAxisPointingUpward)
+	loopLayer = svgReader.getLoopLayer()
+	PathReader(elementNode, loopLayer.loops, svgReader.yAxisPointingUpward)
 
 def processSVGElementpolygon( elementNode, svgReader ):
 	"Process elementNode by svgReader."
@@ -398,12 +401,12 @@ def processSVGElementpolygon( elementNode, svgReader ):
 		print('Warning, in processSVGElementpolygon in svgReader can not get a value for d in:')
 		print(elementNode.attributes)
 		return
-	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
+	loopLayer = svgReader.getLoopLayer()
 	words = getRightStripMinusSplit(elementNode.attributes['points'].replace(',', ' '))
 	loop = []
 	for wordIndex in xrange( 0, len(words), 2 ):
 		loop.append(euclidean.getComplexByWords(words[wordIndex :]))
-	rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
+	loopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 
 def processSVGElementpolyline(elementNode, svgReader):
 	"Process elementNode by svgReader."
@@ -411,12 +414,12 @@ def processSVGElementpolyline(elementNode, svgReader):
 		print('Warning, in processSVGElementpolyline in svgReader can not get a value for d in:')
 		print(elementNode.attributes)
 		return
-	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
+	loopLayer = svgReader.getLoopLayer()
 	words = getRightStripMinusSplit(elementNode.attributes['points'].replace(',', ' '))
 	path = []
 	for wordIndex in xrange(0, len(words), 2):
 		path.append(euclidean.getComplexByWords(words[wordIndex :]))
-	rotatedLoopLayer.loops += getTransformedOutlineByPath(elementNode, path, svgReader.yAxisPointingUpward)
+	loopLayer.loops += getTransformedOutlineByPath(elementNode, path, svgReader.yAxisPointingUpward)
 
 def processSVGElementrect( elementNode, svgReader ):
 	"Process elementNode by svgReader."
@@ -434,11 +437,11 @@ def processSVGElementrect( elementNode, svgReader ):
 	center = euclidean.getComplexDefaultByDictionaryKeys(complex(), attributes, 'x', 'y')
 	inradius = 0.5 * complex( width, height )
 	cornerRadius = euclidean.getComplexDefaultByDictionaryKeys( complex(), attributes, 'rx', 'ry')
-	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
+	loopLayer = svgReader.getLoopLayer()
 	if cornerRadius.real == 0.0 and cornerRadius.imag == 0.0:
 		inradiusMinusX = complex( - inradius.real, inradius.imag )
 		loop = [center + inradius, center + inradiusMinusX, center - inradius, center - inradiusMinusX]
-		rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
+		loopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 		return
 	if cornerRadius.real == 0.0:
 		cornerRadius = complex( cornerRadius.imag, cornerRadius.imag )
@@ -467,7 +470,7 @@ def processSVGElementrect( elementNode, svgReader ):
 	for cornerPoint in cornerPointsReversed:
 		loop.append( center + complex( cornerPoint.real, - cornerPoint.imag ) )
 	loop = euclidean.getLoopWithoutCloseSequentialPoints( 0.0001 * abs(inradius), loop )
-	rotatedLoopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
+	loopLayer.loops += getTransformedFillOutline(elementNode, loop, svgReader.yAxisPointingUpward)
 
 def processSVGElementtext(elementNode, svgReader):
 	"Process elementNode by svgReader."
@@ -476,13 +479,13 @@ def processSVGElementtext(elementNode, svgReader):
 	fontFamily = getStyleValue('Gentium Basic Regular', elementNode, 'font-family')
 	fontSize = getRightStripAlphabetPercent(getStyleValue('12.0', elementNode, 'font-size'))
 	matrixSVG = getChainMatrixSVGIfNecessary(elementNode, svgReader.yAxisPointingUpward)
-	rotatedLoopLayer = svgReader.getRotatedLoopLayer()
+	loopLayer = svgReader.getLoopLayer()
 	translate = euclidean.getComplexDefaultByDictionaryKeys(complex(), elementNode.attributes, 'x', 'y')
 	for textComplexLoop in getTextComplexLoops(fontFamily, fontSize, elementNode.getTextContent(), svgReader.yAxisPointingUpward):
 		translatedLoop = []
 		for textComplexPoint in textComplexLoop:
 			translatedLoop.append(textComplexPoint + translate )
-		rotatedLoopLayer.loops.append(matrixSVG.getTransformedPath(translatedLoop))
+		loopLayer.loops.append(matrixSVG.getTransformedPath(translatedLoop))
 
 
 class FontReader:
@@ -498,7 +501,7 @@ class FontReader:
 		self.fontElementNode = documentElement.getFirstChildByLocalName('defs').getFirstChildByLocalName('font')
 		self.fontFaceElementNode = self.fontElementNode.getFirstChildByLocalName('font-face')
 		self.unitsPerEM = float(self.fontFaceElementNode.attributes['units-per-em'])
-		glyphElementNodes = self.fontElementNode.getChildNodesByLocalName('glyph')
+		glyphElementNodes = self.fontElementNode.getChildElementsByLocalName('glyph')
 		for glyphElementNode in glyphElementNodes:
 			self.glyphElementNodeDictionary[glyphElementNode.attributes['unicode']] = glyphElementNode
 
@@ -841,30 +844,28 @@ class SVGReader:
 	"An svg carving."
 	def __init__(self):
 		"Add empty lists."
-		self.bridgeRotation = None
-		self.rotatedLoopLayers = []
+		self.loopLayers = []
 		self.sliceDictionary = None
 		self.stopProcessing = False
 		self.z = 0.0
 
-	def flipDirectLayer(self, rotatedLoopLayer):
+	def flipDirectLayer(self, loopLayer):
 		"Flip the y coordinate of the layer and direct the loops."
-		for loop in rotatedLoopLayer.loops:
+		for loop in loopLayer.loops:
 			for pointIndex, point in enumerate(loop):
 				loop[pointIndex] = complex(point.real, -point.imag)
-		triangle_mesh.sortLoopsInOrderOfArea(True, rotatedLoopLayer.loops)
-		for loopIndex, loop in enumerate(rotatedLoopLayer.loops):
-			isInsideLoops = euclidean.getIsInFilledRegion(rotatedLoopLayer.loops[: loopIndex], euclidean.getLeftPoint(loop))
+		triangle_mesh.sortLoopsInOrderOfArea(True, loopLayer.loops)
+		for loopIndex, loop in enumerate(loopLayer.loops):
+			isInsideLoops = euclidean.getIsInFilledRegion(loopLayer.loops[: loopIndex], euclidean.getLeftPoint(loop))
 			intercircle.directLoop((not isInsideLoops), loop)
 
-	def getRotatedLoopLayer(self):
+	def getLoopLayer(self):
 		"Return the rotated loop layer."
 		if self.z != None:
-			rotatedLoopLayer = euclidean.RotatedLoopLayer( self.z )
-			self.rotatedLoopLayers.append( rotatedLoopLayer )
-			rotatedLoopLayer.rotation = self.bridgeRotation
+			loopLayer = euclidean.LoopLayer(self.z)
+			self.loopLayers.append(loopLayer)
 			self.z = None
-		return self.rotatedLoopLayers[-1]
+		return self.loopLayers[-1]
 
 	def parseSVG(self, fileName, svgText):
 		"Parse SVG text and store the layers."
@@ -883,8 +884,8 @@ class SVGReader:
 		self.yAxisPointingUpward = euclidean.getBooleanFromDictionary(False, self.sliceDictionary, 'yAxisPointingUpward')
 		self.processElementNode(elementNode)
 		if not self.yAxisPointingUpward:
-			for rotatedLoopLayer in self.rotatedLoopLayers:
-				self.flipDirectLayer(rotatedLoopLayer)
+			for loopLayer in self.loopLayers:
+				self.flipDirectLayer(loopLayer)
 
 	def processElementNode(self, elementNode):
 		'Process the xml element.'

@@ -16,7 +16,6 @@ from fabmetheus_utilities import gcodec
 from fabmetheus_utilities import intercircle
 from fabmetheus_utilities import xml_simple_reader
 from fabmetheus_utilities import xml_simple_writer
-import cmath
 import cStringIO
 import math
 

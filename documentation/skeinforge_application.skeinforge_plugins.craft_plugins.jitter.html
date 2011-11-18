@@ -13,7 +13,7 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.inset.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.lash.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Jitter jitters the loop end position to a different place on each layer to prevent the a ridge from forming.<br>
+This craft tool jitters the loop end position to a different place on each layer to prevent a ridge from being created on the side of the object.<br>
  <br>
 The jitter manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Jitter">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Jitter</a><br>
@@ -27,16 +27,19 @@ The jitter manual page is at:<br>
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
 
-The default 'Activate Jitter' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.<br>
+The default 'Activate Jitter' checkbox is on.  When it is on, the functions described below will work, when it is off, nothing will be done.<br>
  <br>
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
 
 <a name="Jitter Over Perimeter Width" id="Jitter Over Perimeter Width"></a><h3>Jitter Over Perimeter Width</h3>
 
-Default is two.<br>
+Default: 2<br>
  <br>
 Defines the amount the loop ends will be jittered over the perimeter width.  A high value means the loops will start all over the place and a low value means loops will start at roughly the same place on each layer.<br>
+ <br>
+For example if you turn jitter off and print a cube every outside shell on the cube will start from exactly the same point so you will have a visible "mark/line/seam" on the side of the cube.  Using the jitter tool you move that start point around hence you avoid that visible seam. <br>
+ <br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>

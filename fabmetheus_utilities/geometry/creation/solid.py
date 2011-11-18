@@ -94,9 +94,13 @@ def processElementNodeByFunction(elementNode, manipulationFunction):
 
 def processElementNodeByFunctions(elementNode, geometryFunction, pathFunction):
 	'Process the xml element by the appropriate manipulationFunction.'
+	elementAttributesCopy = elementNode.attributes.copy()
 	targets = evaluate.getElementNodesByKey(elementNode, 'target')
 	for target in targets:
-		processTargetByFunctions(geometryFunction, pathFunction, target)
+		targetAttributesCopy = target.attributes.copy()
+		target.attributes = elementAttributesCopy
+		processTargetByFunctionPair(geometryFunction, pathFunction, target)
+		target.attributes = targetAttributesCopy
 
 def processElementNodeByGeometry(elementNode, geometryOutput):
 	'Process the xml element by geometryOutput.'
@@ -104,17 +108,18 @@ def processElementNodeByGeometry(elementNode, geometryOutput):
 		return
 	elementNode.getXMLProcessor().convertElementNode(elementNode, geometryOutput)
 
-def processTargetByFunctions(geometryFunction, pathFunction, target):
+def processTargetByFunctionPair(geometryFunction, pathFunction, target):
 	'Process the target by the manipulationFunction.'
 	if target.xmlObject == None:
+		print('Warning, there is no object in processTargetByFunctions in solid for:')
+		print(target)
 		return
 	if len(target.xmlObject.getPaths()) > 0:
 		lineation.processTargetByFunction(pathFunction, target)
 		return
 	geometryOutput = getGeometryOutputByFunction(target, geometryFunction)
 	lineation.removeChildNodesFromElementObject(target)
-	xmlProcessor = target.getXMLProcessor()
-	xmlProcessor.convertElementNode(target, geometryOutput)
+	target.getXMLProcessor().convertElementNode(target, geometryOutput)
 
 
 class SolidDerivation:

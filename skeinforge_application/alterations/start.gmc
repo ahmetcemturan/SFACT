@@ -1,2 +1,2 @@
-xxxxG1 Z1 F3000	;Move Z 1mm up to avid head crashing into printbed
-xxxxxG92 E0		;reset extruder
+G1 Z1 F3000	;Move Z 1mm up to avid head crashing into printbed
+G92 E0		;reset extruder

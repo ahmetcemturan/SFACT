@@ -1409,7 +1409,7 @@ class LayerCount:
 	'A class to handle the layerIndex.'
 	def __init__(self):
 		'Initialize.'
-		self.layerIndex = 0
+		self.layerIndex = -1
 
 	def __repr__(self):
 		'Get the string representation of this LayerCount.'
@@ -1417,8 +1417,8 @@ class LayerCount:
 
 	def printProgressIncrement(self, procedureName):
 		'Print progress then increment layerIndex.'
-		printProgress(self.layerIndex, procedureName)
 		self.layerIndex += 1
+		printProgress(self.layerIndex, procedureName)
 
 
 class MenuButtonDisplay:
