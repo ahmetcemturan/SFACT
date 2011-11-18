@@ -190,7 +190,7 @@ def getAroundsFromPath(path, radius, thresholdRatio=0.9):
 
 def getAroundsFromPathPoints(points, radius, thresholdRatio=0.9):
 	'Get the arounds from the path.'
-	centers = getCentersFromPoints(points, 0.8 * radius)
+	centers = getCentersFromPoints(points, 0.7854 * radius)
 	arounds = []
 	for center in centers:
 		if euclidean.isWiddershins(center):

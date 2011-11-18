@@ -334,7 +334,7 @@ class StretchSkein:
 		iteratorBackward = LineIteratorBackward( self.isLoop, indexPreviousStart, self.lines )
 		locationComplex = location.dropAxis()
 		relativeStretch = self.getRelativeStretch( locationComplex, iteratorForward ) + self.getRelativeStretch( locationComplex, iteratorBackward )
-		relativeStretch *= 0.8
+		relativeStretch *= 0.7854
 #		print('relativeStretch')
 #		print( relativeStretch )
 		relativeStretch = self.getCrossLimitedStretch( relativeStretch, crossIteratorForward, locationComplex )

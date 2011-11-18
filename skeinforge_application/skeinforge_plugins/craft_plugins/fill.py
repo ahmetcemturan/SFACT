@@ -639,7 +639,7 @@ def isPointAddedAroundClosest(layerInfillWidth, paths, pixelTable, removedEndpoi
 				closestPathIndex = pathIndex
 	if closestPathIndex == None:
 		return
-	if closestDistanceSquared < 0.8 * layerInfillWidth * layerInfillWidth:
+	if closestDistanceSquared < 0.7854 * layerInfillWidth * layerInfillWidth:
 		return
 	closestPath = paths[closestPathIndex]
 	closestPointIndex = getWithLeastLength(closestPath, removedEndpointPoint)
@@ -817,8 +817,8 @@ class FillRepository:
 		self.gridCircleSeparationOverPerimeterWidth = settings.FloatSpin().getFromValue(0.0, 'Grid Circle Separation over Perimeter Width (ratio):', self, 1.0, 0.2)
 		self.gridExtraOverlap = settings.FloatSpin().getFromValue( 0.0, 'Grid Extra Overlap (ratio):', self, 0.5, 0.1 )
 		self.gridJunctionSeparationBandHeight = settings.IntSpin().getFromValue( 0, 'Grid Junction Separation Band Height (layers):', self, 20, 10 )
-		self.gridJunctionSeparationOverOctogonRadiusAtEnd = settings.FloatSpin().getFromValue( 0.0, 'Grid Junction Separation over Octogon Radius At End (ratio):', self, 0.8, 0.0 )
-		self.gridJunctionSeparationOverOctogonRadiusAtMiddle = settings.FloatSpin().getFromValue( 0.0, 'Grid Junction Separation over Octogon Radius At Middle (ratio):', self, 0.8, 0.0 )
+		self.gridJunctionSeparationOverOctogonRadiusAtEnd = settings.FloatSpin().getFromValue( 0.0, 'Grid Junction Separation over Octogon Radius At End (ratio):', self, 0.7854, 0.0 )
+		self.gridJunctionSeparationOverOctogonRadiusAtMiddle = settings.FloatSpin().getFromValue( 0.0, 'Grid Junction Separation over Octogon Radius At Middle (ratio):', self, 0.7854, 0.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelSeparator().getFromRepository(self)
@@ -889,7 +889,7 @@ class FillSkein:
 		if rotatedLayer.rotation != None:
 			extraShells = 0
 			self.layerInfillWidth = self.scaledBridgeWidthMultiplier * self.repository.infillWidthOverThickness.value #* 0.7854
-			self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value *0.7853  #  self.scaledBridgeWidthMultiplier * self.repository.infillPerimeterOverlap.value # self.bridgeWidthMultiplier
+			self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value #*0.7854 #  self.scaledBridgeWidthMultiplier * self.repository.infillPerimeterOverlap.value # self.bridgeWidthMultiplier
 #			layerPerimeterMinusHalfInfillWidth = self.perimeterWidth - self.scaledBridgeWidthMultiplier/2 * self.repository.infillPerimeterOverlap.value #controls the distance of the infill to the perimeter on fully filled layers bridge layers
 		self.distanceFeedRate.addLine('(<rotation> %s )' % layerRotation)
 		aroundInset = 0.2146 * self.infillWidth
@@ -1178,7 +1178,7 @@ class FillSkein:
 
 	def getGridPoints(self, fillLoops, reverseRotation):
 		'Get the grid points.'
-		if self.infillSolidity > 0.8:
+		if self.infillSolidity > 0.7854:
 			return []
 		rotationBaseAngle = euclidean.getWiddershinsUnitPolar(self.infillBeginRotation)
 		reverseRotationBaseAngle = complex(rotationBaseAngle.real, - rotationBaseAngle.imag)

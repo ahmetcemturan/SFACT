@@ -499,7 +499,8 @@ class DimensionSkein:
 				self.retractionRatio = self.getRetractionRatio(lineIndex)
 				self.addLinearMoveExtrusionDistanceLine(- self.autoRetractDistance  / self.extrusionReduction) #retracting
 				self.distanceFeedRate.addLine('G4 P100')
-				self.addLinearMoveExtrusionDistanceLine(-self.repository.afterOooze.value * self.extrusionXsection)
+				self.addLinearMoveExtrusionDistanceLine(-(self.repository.afterOooze.value/2) * self.extrusionXsection)
+				self.distanceFeedRate.addLine('G4 P100')
 			self.isExtruderActive = False
 		elif firstWord == 'M108':
 			self.flowRate = float( splitLine[1][1 :] )
