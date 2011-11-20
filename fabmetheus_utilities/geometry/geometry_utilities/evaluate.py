@@ -1734,7 +1734,6 @@ class EvaluatorPower(EvaluatorAddition):
 		'Power of two values.'
 		return leftValue ** rightValue
 
-
 class EvaluatorSelf(EvaluatorElement):
 	'Class to handle self.'
 	def executeCenterOperation(self, evaluators, evaluatorIndex):

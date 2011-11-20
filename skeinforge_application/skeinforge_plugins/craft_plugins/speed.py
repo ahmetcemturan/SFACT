@@ -176,7 +176,7 @@ class SpeedRepository:
 		settings.LabelDisplay().getFromName('- Main Feedrate Settings -', self )
 		self.feedRatePerSecond = settings.FloatSpin().getFromValue( 20, 'Main Feed Rate (mm/s):', self, 140, 60 )
 		self.flowRateSetting = settings.FloatSpin().getFromValue( 0.5, 'Main Flow Rate  (scaler):', self, 1.5, 1.0 )
-		self.accelerationRate = settings.FloatSpin().getFromValue( 500, 'Main Acceleration Rate for Extruder  (mm/s2):', self, 10000, 1300 )
+		self.accelerationRate = settings.FloatSpin().getFromValue( 500, 'Main Acceleration Rate for Extruder  (mm/s2):', self, 10000, 300 )
 		self.orbitalFeedRateOverOperatingFeedRate = settings.FloatSpin().getFromValue( 0.1, 'Feed Rate ratio for Orbiting move (ratio):', self, 0.9, 0.5 )
 
 
@@ -187,24 +187,24 @@ class SpeedRepository:
 		self.perimeterAccelerationRate = settings.FloatSpin().getFromValue( 5, 'Perimeter Acceleration Rate for Extruder (mm/s2):', self, 10000, 50 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Object First Layer -', self)
-		self.objectFirstLayerFeedRateInfillMultiplier = settings.FloatSpin().getFromValue(5, 'Object First Layer Feed Rate Infill Multiplier (ratio):', self, 100, 25)
-		self.objectFirstLayerFeedRatePerimeterMultiplier = settings.FloatSpin().getFromValue(5, 'Object First Layer Feed Rate Perimeter Multiplier (ratio):', self, 50 , 15)
-		self.objectFirstLayerFlowRateInfillMultiplier = settings.FloatSpin().getFromValue(0.8, 'Object First Layer Flow Rate Infill Multiplier (ratio):', self, 2.0, 1.0)
-		self.objectFirstLayerFlowRatePerimeterMultiplier = settings.FloatSpin().getFromValue(0.8, 'Object First Layer Flow Rate Perimeter Multiplier (ratio):', self, 2.0, 1.0)
+		self.objectFirstLayerFeedRateInfillMultiplier = settings.FloatSpin().getFromValue(5, 'First Layer Main Feed Rate(mm/sec):', self, 100, 25)
+		self.objectFirstLayerFeedRatePerimeterMultiplier = settings.FloatSpin().getFromValue(5, 'First Layer Perimeter Feed Rate (mm/sec):', self, 50 , 15)
+		self.objectFirstLayerFlowRateInfillMultiplier = settings.FloatSpin().getFromValue(0.8, 'First Layer Main Flow Rate Infill Multiplier (ratio):', self, 2.0, 1.0)
+		self.objectFirstLayerFlowRatePerimeterMultiplier = settings.FloatSpin().getFromValue(0.8, 'First Layer Perimeter Flow Rate Multiplier (ratio):', self, 2.0, 1.0)
 		self.objectFirstLayerTravelSpeed = settings.FloatSpin().getFromValue(10, 'First Layer Travel Feedrate:', self, 100, 50)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Travel Moves -', self )
 		self.maximumZFeedRatePerSecond = settings.FloatSpin().getFromValue(0.5, 'Maximum Z Feed Rate (mm/s):', self, 10.0, 1.0)
 		settings.LabelSeparator().getFromRepository(self)
-		self.travelFeedRatePerSecond = settings.FloatSpin().getFromValue( 40, 'Travel Feed Rate (mm/s):', self, 300, 130 )
+		self.travelFeedRatePerSecond = settings.FloatSpin().getFromValue( 40, 'Travel Feed Rate (mm/s):', self, 300, 100 )
 		settings.LabelDisplay().getFromName('- Duty Cyle for DC extruders only -', self )
 		self.dutyCycleAtBeginning = settings.FloatSpin().getFromValue( 0.0, 'Duty Cyle at Beginning (portion):', self, 1.0, 1.0 )
 		self.dutyCycleAtEnding = settings.FloatSpin().getFromValue( 0.0, 'Duty Cyle at Ending (portion):', self, 1.0, 0.0 )
 		self.executeTitle = 'Speed'
 		settings.LabelDisplay().getFromName('- Bridge Layers -', self )
-		self.bridgeFeedRateMultiplier = settings.FloatSpin().getFromValue( 0.5, 'Bridge Feed Rate (ratio to Perim.feed):', self, 1.5, 1.0 )
-		self.bridgeFlowRateMultiplier  = settings.FloatSpin().getFromValue( 0.5, 'Bridge Flow Rate (scaler):', self, 1.3, 1.0 )
-		self.bridgeAccelerationRate  = settings.FloatSpin().getFromValue( 10, 'Bridge Acceleration Rate for Extruder(mm/s2):', self, 10000, 1000 )
+		self.bridgeFeedRateMultiplier = settings.FloatSpin().getFromValue( 0.5, 'Bridge Feed Rate (ratio to Perim.feed):', self, 1.5, 0.25 )
+		self.bridgeFlowRateMultiplier  = settings.FloatSpin().getFromValue( 0.5, 'Bridge Flow Rate (scaler):', self, 1.3, 1.05 )
+		self.bridgeAccelerationRate  = settings.FloatSpin().getFromValue( 10, 'Bridge Acceleration Rate for Extruder(mm/s2):', self, 10000, 50 )
 
 
 
@@ -237,7 +237,7 @@ class SpeedSkein:
 		flowRate = self.repository.flowRateSetting.value
 		extrusionXsection = ((self.absolutePerimeterWidth + self.layerThickness)/4) ** 2 * math.pi#todo transfer to inset
 		if self.isBridgeLayer:
-			flowRate = self.repository.bridgeFlowRateMultiplier.value * self.repository.perimeterFlowRateOverOperatingFlowRate.value * (self.nozzleXsection / extrusionXsection)# * (self.repository.perimeterFlowRateOverOperatingFlowRate.value * self.repository.perimeterFeedRateMultiplier.value) * (self.nozzleXsection / extrusionXsection)
+			flowRate = self.repository.bridgeFlowRateMultiplier.value * self.repository.perimeterFlowRateMultiplier.value * (self.nozzleXsection / extrusionXsection)
 		if self.isPerimeterPath:
 			flowRate = self.repository.perimeterFlowRateMultiplier.value
 		if self.layerIndex == 0:
@@ -250,7 +250,7 @@ class SpeedSkein:
 		self.oldFlowRate = flowRate
 
 	def addAccelerationRateLine(self):
-		"Add flow rate line."
+		"Add Accelerationrate line."
 		if not self.repository.addAccelerationRate.value:
 			return
 		accelerationRate = self.repository.accelerationRate.value
@@ -270,9 +270,9 @@ class SpeedSkein:
 			return None
 		flowRate = self.repository.flowRateSetting.value
 		if self.isBridgeLayer:
-			flowRate = self.repository.bridgeFlowRateMultiplier.value * self.repository.perimeterFlowRateOverOperatingFlowRate.value * (self.nozzleXsection / extrusionXsection)
+			flowRate = self.repository.bridgeFlowRateMultiplier.value * self.repository.perimeterFlowRateMultiplier.value * (self.nozzleXsection / extrusionXsection)
 		if self.isPerimeterPath:
-			flowRate = self.repository.perimeterFlowRateOverOperatingFlowRate.value
+			flowRate = self.repository.perimeterFlowRateMultiplier.value
 		return euclidean.getFourSignificantFigures( flowRate )
 
 
@@ -287,9 +287,7 @@ class SpeedSkein:
 		"Parse gcode text and store the speed gcode."
 		self.repository = repository
 		self.feedRatePerSecond = repository.feedRatePerSecond.value
-#		self.travelFeedRateMinute = self.repository.objectFirstLayerTravelSpeed.value * 60
 		self.travelFeedRateMinute = 60.0 * self.repository.travelFeedRatePerSecond.value
-
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		for line in self.lines[self.lineIndex :]:
@@ -299,29 +297,33 @@ class SpeedSkein:
 
 	def getSpeededLine(self, line, splitLine):
 		'Get gcode line with feed rate.'
-		if gcodec.getIndexOfStartingWithSecond('F', splitLine) >= 0:
+		if gcodec.getIndexOfStartingWithSecond('F', splitLine) > 0:
 			return line
-
 		feedRateMinute = 60.0 * self.feedRatePerSecond
+		if self.layerIndex <= 0:
+			firstLayerTravelFeedrate = self.repository.objectFirstLayerTravelSpeed.value * 60
+			if self.isExtruderActive:
+				if self.isPerimeterPath:
+					feedRateMinute = self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value * 60
+				else:
+					feedRateMinute = self.repository.objectFirstLayerFeedRateInfillMultiplier.value * 60
+			else :
+				feedRateMinute = firstLayerTravelFeedrate
+		elif self.layerIndex > 0:
+			if self.isExtruderActive:
+				if self.isPerimeterPath:
+					feedRateMinute = self.repository.perimeterFeedRateMultiplier.value * 60
+				elif self.isBridgeLayer:
+					feedRateMinute = self.repository.bridgeFeedRateMultiplier.value * self.repository.perimeterFeedRateMultiplier.value * 60
+				else:
+					feedRateMinute = 60.0 * self.feedRatePerSecond
+			else:
+				feedRateMinute = self.travelFeedRateMinute
 
-		if self.isBridgeLayer:
-			feedRateMinute = self.repository.bridgeFeedRateMultiplier.value * self.repository.perimeterFeedRateMultiplier.value * 60
-		if self.isPerimeterPath:
-			feedRateMinute = self.repository.perimeterFeedRateMultiplier.value * 60
-
-		if self.layerIndex == 0:
-			self.travelFeedRateMinute = self.repository.objectFirstLayerTravelSpeed.value * 60
-			if self.isPerimeterPath:
-				feedRateMinute = self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value * 60
-			elif self.isPerimeterPath is None:
-				feedRateMinute = self.repository.objectFirstLayerFeedRateInfillMultiplier.value * 60
-		else :
-			self.travelFeedRateMinute = 60.0 * self.repository.travelFeedRatePerSecond.value
+#		print feedRateMinute/60
 		self.addFlowRateLine()
 		self.addAccelerationRateLine()
-		if not self.isExtruderActive:
-			feedRateMinute = self.travelFeedRateMinute
-
+		self.oldfeedRateMinute = feedRateMinute
 		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line , splitLine)
 
 	def parseInitialization(self):

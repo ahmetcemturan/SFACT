@@ -53,7 +53,7 @@ def getArcDistance(relativeLocation, splitLine):
 	'Get arc distance.'
 	halfPlaneLineDistance = 0.5 * abs(relativeLocation.dropAxis())
 	radius = getDoubleFromCharacterSplitLine('R', splitLine)
-	if radius == None:
+	if radius is None:
 		iFloat = getDoubleFromCharacterSplitLine('I', splitLine)
 		jFloat = getDoubleFromCharacterSplitLine('J', splitLine)
 		radius = abs(complex(iFloat, jFloat))
@@ -147,8 +147,8 @@ def getGcodeWithoutDuplication(duplicateWord, gcodeText):
 	output = cStringIO.StringIO()
 	for lineIndex, line in enumerate(lines):
 		firstWord = getFirstWordFromLine(line)
-		if firstWord == duplicateWord:
-			if oldDuplicationIndex == None:
+		if firstWord is duplicateWord:
+			if oldDuplicationIndex is None:
 				oldDuplicationIndex = lineIndex
 			else:
 				lines[oldDuplicationIndex] = line
@@ -163,7 +163,7 @@ def getGcodeWithoutDuplication(duplicateWord, gcodeText):
 			isExtruderActive = False
 	for line in lines:
 		firstWord = getFirstWordFromLine(line)
-		if firstWord == duplicateWord:
+		if firstWord is duplicateWord:
 			if line != oldWrittenLine:
 				output.write(line + '\n')
 				oldWrittenLine = line
@@ -192,7 +192,7 @@ def getLineWithValueString(character, line, splitLine, valueString):
 
 def getLocationFromSplitLine(oldLocation, splitLine):
 	'Get the location from the split line.'
-	if oldLocation == None:
+	if oldLocation is None:
 		oldLocation = Vector3()
 	return Vector3(
 		getDoubleFromCharacterSplitLineValue('X', splitLine, oldLocation.x),
@@ -429,7 +429,7 @@ class DistanceFeedRate:
 	def getLinearGcodeMovementWithFeedRate(self, feedRateMinute, point, z):
 		'Get a z limited gcode movement.'
 		linearGcodeMovement = self.getLinearGcodeMovement(point, z)
-		if feedRateMinute == None:
+		if feedRateMinute is None:
 			return linearGcodeMovement
 		return linearGcodeMovement + ' F' + self.getRounded(feedRateMinute)
 

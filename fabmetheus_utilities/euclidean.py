@@ -45,6 +45,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalGoldenAngle = 3.8832220774509332 # (math.sqrt(5.0) - 1.0) * math.pi
 globalGoldenRatio = 1.6180339887498948482045868 # math.sqrt(1.25) - .5
 globalTau = math.pi + math.pi # http://tauday.com/
+globalQuarterPi = math.pi/4 # 0.78543
 
 
 def addElementToListDictionary(element, key, listDictionary):
