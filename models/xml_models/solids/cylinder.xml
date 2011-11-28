@@ -1,4 +1,4 @@
 <?xml version='1.0' ?>
 <fabmetheus>
-	<cylinder id='Cylinder 5' height='10' radius.x='5' radius.y='5' altitude='10'/>
+	<cylinder id='Cylinder 5' bottom.altitude='10' height='10' radius.x='5' radius.y='5'/>
 </fabmetheus>

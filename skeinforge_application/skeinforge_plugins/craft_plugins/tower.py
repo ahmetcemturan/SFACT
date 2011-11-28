@@ -69,7 +69,7 @@ def getCraftedTextFromText( gcodeText, towerRepository = None ):
 	"Tower a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'tower'):
 		return gcodeText
-	if towerRepository == None:
+	if towerRepository is None:
 		towerRepository = settings.getReadRepository( TowerRepository() )
 	if not towerRepository.activateTower.value:
 		return gcodeText
@@ -93,14 +93,14 @@ class Island:
 
 	def addToBoundary( self, splitLine ):
 		"Add to the boundary if it is not complete."
-		if self.boundingLoop == None:
+		if self.boundingLoop is None:
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
 			self.boundary.append(location.dropAxis())
 			self.z = location.z
 
 	def createBoundingLoop(self):
 		"Create the bounding loop if it is not already created."
-		if self.boundingLoop == None:
+		if self.boundingLoop is None:
 			self.boundingLoop = intercircle.BoundingLoop().getFromLoop( self.boundary )
 
 
@@ -168,7 +168,7 @@ class TowerSkein:
 
 	def addHighThread(self, location):
 		"Add thread with a high move if necessary to clear the previous extrusion."
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			if self.oldLocation.z + self.minimumBelow < self.highestZ:
 				self.distanceFeedRate.addGcodeMovementZWithFeedRate( self.travelFeedRateMinute, self.oldLocation.dropAxis(), self.highestZ )
 		if location.z + self.minimumBelow < self.highestZ:
@@ -176,7 +176,7 @@ class TowerSkein:
 
 	def addThreadLayerIfNone(self):
 		"Add a thread layer if it is none."
-		if self.threadLayer != None:
+		if self.threadLayer is not None:
 			return
 		self.threadLayer = ThreadLayer()
 		self.threadLayers.append( self.threadLayer )
@@ -186,13 +186,13 @@ class TowerSkein:
 	def addTowers(self):
 		"Add towers."
 		bottomLayerIndex = self.getBottomLayerIndex()
-		if bottomLayerIndex == None:
+		if bottomLayerIndex is None:
 			return
 		removedIsland = self.getRemovedIslandAddLayerLinesIfDifferent( self.threadLayers[ bottomLayerIndex ].islands, bottomLayerIndex )
 		while 1:
 			self.climbTower( removedIsland )
 			bottomLayerIndex = self.getBottomLayerIndex()
-			if bottomLayerIndex == None:
+			if bottomLayerIndex is None:
 				return
 			removedIsland = self.getRemovedIslandAddLayerLinesIfDifferent( self.threadLayers[ bottomLayerIndex ].islands, bottomLayerIndex )
 
@@ -245,7 +245,7 @@ class TowerSkein:
 			threadLayer = self.threadLayers[layerIndex]
 			self.distanceFeedRate.addLines( threadLayer.beforeExtrusionLines )
 		removedIsland = self.getTransferClosestNestedRingLines( self.oldOrderedLocation, islands )
-		if threadLayer != None:
+		if threadLayer is not None:
 			self.distanceFeedRate.addLines( threadLayer.afterExtrusionLines )
 		return removedIsland
 
@@ -345,20 +345,20 @@ class TowerSkein:
 			self.threadLayer = None
 			return
 		elif firstWord == '(</layer>)':
-			if self.threadLayer != None:
+			if self.threadLayer is not None:
 				self.threadLayer.afterExtrusionLines = self.afterExtrusionLines
 			self.afterExtrusionLines = []
 		elif firstWord == '(</loop>)':
 			self.afterExtrusionLines = []
 		elif firstWord == '(<nestedRing>)':
 			self.nestedRingCount += 1
-			if self.island == None:
+			if self.island is None:
 				self.island = Island()
 				self.addThreadLayerIfNone()
 				self.threadLayer.islands.append( self.island )
 		elif firstWord == '(</perimeter>)':
 			self.afterExtrusionLines = []
-		if self.island != None:
+		if self.island is not None:
 			self.island.lines.append(line)
 		if firstWord == '(</nestedRing>)':
 			self.afterExtrusionLines = []

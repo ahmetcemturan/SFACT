@@ -24,7 +24,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	'Get geometry output from paths.'
-	if derivation == None:
+	if derivation is None:
 		derivation = SolidDerivation(elementNode)
 	geometryOutput = []
 	for path in derivation.target:
@@ -38,12 +38,12 @@ def getGeometryOutputByArguments(arguments, elementNode):
 
 def getGeometryOutputByFunction(elementNode, geometryFunction):
 	'Get geometry output by manipulationFunction.'
-	if elementNode.xmlObject == None:
+	if elementNode.xmlObject is None:
 		print('Warning, there is no object in getGeometryOutputByFunction in solid for:')
 		print(elementNode)
 		return None
 	geometryOutput = elementNode.xmlObject.getGeometryOutput()
-	if geometryOutput == None:
+	if geometryOutput is None:
 		print('Warning, there is no geometryOutput in getGeometryOutputByFunction in solid for:')
 		print(elementNode)
 		return None
@@ -74,10 +74,10 @@ def processArchiveRemoveSolid(elementNode, geometryOutput):
 	solidMatchingPlugins = getSolidMatchingPlugins(elementNode)
 	if len(solidMatchingPlugins) < 1:
 		elementNode.parentNode.xmlObject.archivableObjects.append(elementNode.xmlObject)
+		matrix.getBranchMatrixSetElementNode(elementNode)
 		return
 	processElementNodeByGeometry(elementNode, getGeometryOutputByManipulation(elementNode, geometryOutput))
 	elementNode.removeFromIDNameParent()
-	matrix.getBranchMatrixSetElementNode(elementNode)
 
 def processElementNodeByFunction(elementNode, manipulationFunction):
 	'Process the xml element.'
@@ -104,13 +104,13 @@ def processElementNodeByFunctions(elementNode, geometryFunction, pathFunction):
 
 def processElementNodeByGeometry(elementNode, geometryOutput):
 	'Process the xml element by geometryOutput.'
-	if geometryOutput == None:
+	if geometryOutput is None:
 		return
 	elementNode.getXMLProcessor().convertElementNode(elementNode, geometryOutput)
 
 def processTargetByFunctionPair(geometryFunction, pathFunction, target):
 	'Process the target by the manipulationFunction.'
-	if target.xmlObject == None:
+	if target.xmlObject is None:
 		print('Warning, there is no object in processTargetByFunctions in solid for:')
 		print(target)
 		return
@@ -127,7 +127,3 @@ class SolidDerivation:
 	def __init__(self, elementNode):
 		'Set defaults.'
 		self.target = evaluate.getTransformedPathsByKey([], elementNode, 'target')
-
-	def __repr__(self):
-		'Get the string representation of this SolidDerivation.'
-		return str(self.__dict__)

@@ -42,11 +42,11 @@ def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWr
 	for pluginFileName in pluginFileNames:
 		analyzePluginsDirectoryPath = getPluginsDirectoryPath()
 		pluginModule = archive.getModuleWithDirectoryPath( analyzePluginsDirectoryPath, pluginFileName )
-		if pluginModule != None:
+		if pluginModule is not None:
 			try:
 				newWindow = pluginModule.writeOutput(fileName, fileNamePenultimate, fileNameSuffix,
 					filePenultimateWritten, gcodeText )
-				if newWindow != None:
+				if newWindow is not None:
 					window = newWindow
 			except:
 				print('Warning, the tool %s could not analyze the output.' % pluginFileName )

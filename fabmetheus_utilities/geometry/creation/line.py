@@ -23,7 +23,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = LineDerivation(elementNode)
 	endMinusStart = derivation.end - derivation.start
 	endMinusStartLength = abs(endMinusStart)
@@ -35,14 +35,14 @@ def getGeometryOutput(derivation, elementNode):
 		return None
 	typeStringTwoCharacters = derivation.typeString.lower()[: 2]
 	elementNode.attributes['closed'] = str(derivation.closed)
-	if derivation.step == None and derivation.steps == None:
+	if derivation.step is None and derivation.steps is None:
 		return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop([derivation.start, derivation.end]))
 	loop = [derivation.start]
-	if derivation.step != None and derivation.steps != None:
+	if derivation.step is not None and derivation.steps is not None:
 		stepVector = derivation.step / endMinusStartLength * endMinusStart
 		derivation.end = derivation.start + stepVector * derivation.steps
 		return getGeometryOutputByStep(elementNode, derivation.end, loop, derivation.steps, stepVector)
-	if derivation.step == None:
+	if derivation.step is None:
 		stepVector = endMinusStart / derivation.steps
 		return getGeometryOutputByStep(elementNode, derivation.end, loop, derivation.steps, stepVector)
 	endMinusStartLengthOverStep = endMinusStartLength / derivation.step
@@ -102,7 +102,3 @@ class LineDerivation:
 		self.steps = evaluate.getEvaluatedFloat(None, elementNode, 'steps')
 		self.typeMenuRadioStrings = 'average maximum minimum'.split()
 		self.typeString = evaluate.getEvaluatedString('minimum', elementNode, 'type')
-
-	def __repr__(self):
-		"Get the string representation of this LineDerivation."
-		return str(self.__dict__)

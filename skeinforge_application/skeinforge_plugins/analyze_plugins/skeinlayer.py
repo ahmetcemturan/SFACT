@@ -167,7 +167,7 @@ def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
 	"Display a gcode file in a skeinlayer window given the text."
 	if gcodeText == '':
 		return None
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( SkeinlayerRepository() )
 	skeinWindow = getWindowGivenTextRepository( fileName, gcodeText, repository )
 	skeinWindow.updateDeiconify()
@@ -243,7 +243,7 @@ class SkeinlayerSkein:
 
 	def addToPath( self, line, location ):
 		"Add a point to travel and maybe extrusion."
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return
 		colorName = 'gray'
 		locationComplex = location.dropAxis()
@@ -283,7 +283,7 @@ class SkeinlayerSkein:
 
 	def linearMove( self, line, location ):
 		"Get statistics for a linear move."
-		if self.skeinPane != None:
+		if self.skeinPane is not None:
 			self.addToPath(line, location)
 
 	def parseCorner(self, line):

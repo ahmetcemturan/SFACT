@@ -26,15 +26,15 @@ def getQuadraticPath(elementNode):
 	"Get the quadratic path."
 	end = evaluate.getVector3FromElementNode(elementNode)
 	previousElementNode = elementNode.getPreviousElementNode()
-	if previousElementNode == None:
+	if previousElementNode is None:
 		print('Warning, can not get previousElementNode in getQuadraticPath in quadratic for:')
 		print(elementNode)
 		return [end]
 	begin = elementNode.getPreviousVertex(Vector3())
 	controlPoint = evaluate.getVector3ByPrefix(None, elementNode, 'controlPoint')
-	if controlPoint == None:
+	if controlPoint is None:
 		oldControlPoint = evaluate.getVector3ByPrefixes(previousElementNode, ['controlPoint','controlPoint1'], None)
-		if oldControlPoint == None:
+		if oldControlPoint is None:
 			oldControlPoint = end
 		controlPoint = begin + begin - oldControlPoint
 		evaluate.addVector3ToElementNode(elementNode, 'controlPoint', controlPoint)

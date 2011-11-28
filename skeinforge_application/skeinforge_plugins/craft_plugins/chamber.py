@@ -179,7 +179,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Chamber a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'chamber'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(ChamberRepository())
 	if not repository.activateChamber.value:
 		return gcodeText

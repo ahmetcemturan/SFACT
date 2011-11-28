@@ -54,7 +54,7 @@ def getCraftedTextFromText( gcodeText, whittleRepository = None ):
 	"Whittle the preface gcode text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'whittle'):
 		return gcodeText
-	if whittleRepository == None:
+	if whittleRepository is None:
 		whittleRepository = settings.getReadRepository( WhittleRepository() )
 	if not whittleRepository.activateWhittle.value:
 		return gcodeText

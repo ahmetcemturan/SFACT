@@ -89,7 +89,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Multiply the fill text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'multiply'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(MultiplyRepository())
 	if not repository.activateMultiply.value:
 		return gcodeText
@@ -115,8 +115,8 @@ class MultiplyRepository:
 		self.activateMultiply = settings.BooleanSetting().getFromValue('Activate Multiply: ', self, True )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Center - (Set half your total x and y travel distance \nfor centering your prints!', self )
-		self.centerX = settings.FloatSpin().getFromValue(-240.0, 'Center X (mm):', self, 240.0, 120.0)
-		self.centerY = settings.FloatSpin().getFromValue(-240.0, 'Center Y (mm):', self, 240.0, 120.0)
+		self.centerX = settings.FloatSpin().getFromValue(-240.0, 'Center X (mm):', self, 240.0, 100.0)
+		self.centerY = settings.FloatSpin().getFromValue(-240.0, 'Center Y (mm):', self, 240.0, 100.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Number of Cells -', self)
 		self.numberOfColumns = settings.IntSpin().getFromValue(1, 'Number of Columns (integer):', self, 10, 1)

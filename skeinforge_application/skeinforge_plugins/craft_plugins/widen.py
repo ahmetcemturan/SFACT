@@ -11,7 +11,7 @@ The widen manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Widen
 
 ==Operation==
-The default 'Activate Widen' checkbox is off.  When it is on, widen will work, when it is off, widen will not be called.
+The default 'Activate Widen' checkbox is off.  When it is on, widen will work, when it is off, nothing will be done.
 
 ==Examples==
 The following examples widen the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and widen.py.
@@ -65,7 +65,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Widen the preface gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'widen'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( WidenRepository() )
 	if not repository.activateWiden.value:
 		return gcodeText
@@ -210,7 +210,7 @@ class WidenSkein:
 		elif firstWord == '(<nestedRing>)':
 			self.boundary = []
 			self.loopLayer.loops.append( self.boundary )
-		if self.loopLayer == None:
+		if self.loopLayer is None:
 			self.distanceFeedRate.addLine(line)
 
 

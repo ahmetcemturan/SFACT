@@ -95,7 +95,7 @@ def getCraftedTextFromText( gcodeText, oozebaneRepository = None ):
 	"Oozebane a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'oozebane'):
 		return gcodeText
-	if oozebaneRepository == None:
+	if oozebaneRepository is None:
 		oozebaneRepository = settings.getReadRepository( OozebaneRepository() )
 	if not oozebaneRepository.activateOozebane.value:
 		return gcodeText
@@ -202,7 +202,7 @@ class OozebaneSkein:
 	def getAddBeforeStartupLines(self, line):
 		"Get and / or add before the startup lines."
 		distanceThreadBeginning = self.getDistanceToThreadBeginning()
-		if distanceThreadBeginning == None:
+		if distanceThreadBeginning is None:
 			return line
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		self.extruderInactiveLongEnough = False
@@ -232,9 +232,9 @@ class OozebaneSkein:
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		distanceThreadEnd = self.getDistanceToExtruderOffCommand( self.earlyShutdownDistances[ self.shutdownStepIndex ] )
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
-		if distanceThreadEnd == None:
+		if distanceThreadEnd is None:
 			distanceThreadEnd = self.getDistanceToExtruderOffCommand( self.earlyShutdownDistances[0] )
-			if distanceThreadEnd != None:
+			if distanceThreadEnd is not None:
 				shutdownFlowRateMultiplier = self.getShutdownFlowRateMultiplier( 1.0 - distanceThreadEnd / self.earlyShutdownDistance, len( self.earlyShutdownDistances ) )
 				line = self.getLinearMoveWithFeedRate( self.feedRateMinute * shutdownFlowRateMultiplier, location )
 			self.distanceFeedRate.addLine(line)
@@ -319,7 +319,7 @@ class OozebaneSkein:
 
 	def getDistanceToThreadBeginning(self):
 		"Get the distance to the beginning of the thread."
-		if self.earlyStartupDistance == None:
+		if self.earlyStartupDistance is None:
 			return None
 		line = self.lines[self.lineIndex]
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
@@ -385,7 +385,7 @@ class OozebaneSkein:
 		"Get oozebaned gcode line."
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return line
 		if self.startupStepIndex < len( self.afterStartupDistances ):
 			return self.getAddAfterStartupLines(line)
@@ -456,12 +456,12 @@ class OozebaneSkein:
 		elif firstWord == 'M101':
 			self.isExtruderActive = True
 			self.extruderInactiveLongEnough = False
-			if self.getDistanceToExtruderOffCommand( self.earlyShutdownDistance ) == None:
+			if self.getDistanceToExtruderOffCommand( self.earlyShutdownDistance ) is None:
 				self.setEarlyShutdown()
-			if self.getDistanceToExtruderOffCommand( 1.03 * ( self.earlyShutdownDistance + self.afterStartupDistance ) ) == None:
+			if self.getDistanceToExtruderOffCommand( 1.03 * ( self.earlyShutdownDistance + self.afterStartupDistance ) ) is None:
 				afterStartupRatio = 1.0
 				if self.minimumDistanceForEarlyStartup > 0.0:
-					if self.distanceFromThreadEndToThreadBeginning != None:
+					if self.distanceFromThreadEndToThreadBeginning is not None:
 						afterStartupRatio = self.distanceFromThreadEndToThreadBeginning / self.minimumDistanceForEarlyStartup
 				self.setAfterStartupFlowRates( afterStartupRatio )
 				self.startupStepIndex = 9999999999
@@ -473,7 +473,7 @@ class OozebaneSkein:
 		elif firstWord == 'M103':
 			self.isExtruderActive = False
 			self.shutdownStepIndex = 999999999
-			if self.getDistanceToThreadBeginning() == None:
+			if self.getDistanceToThreadBeginning() is None:
 				self.extruderInactiveLongEnough = True
 			self.distanceFromThreadEndToThreadBeginning = None
 			self.earlyStartupDistance = None
@@ -510,7 +510,7 @@ class OozebaneSkein:
 		"Set the early shutdown variables."
 		distanceToThreadBeginning = self.getDistanceToThreadBeginningAfterThreadEnd( self.minimumDistanceForEarlyShutdown )
 		earlyShutdownRatio = 1.0
-		if distanceToThreadBeginning != None:
+		if distanceToThreadBeginning is not None:
 			if self.minimumDistanceForEarlyShutdown > 0.0:
 				earlyShutdownRatio = distanceToThreadBeginning / self.minimumDistanceForEarlyShutdown
 		self.setEarlyShutdownFlowRates( earlyShutdownRatio )
@@ -536,11 +536,11 @@ class OozebaneSkein:
 
 	def setEarlyStartupDistance( self, splitLine ):
 		"Set the early startup distance."
-		if self.earlyStartupDistance != None:
+		if self.earlyStartupDistance is not None:
 			return
 		self.distanceFromThreadEndToThreadBeginning = 0.0
 		lastThreadLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			self.distanceFromThreadEndToThreadBeginning = lastThreadLocation.distance( self.oldLocation )
 		for afterIndex in xrange( self.lineIndex + 1, len(self.lines) ):
 			line = self.lines[ afterIndex ]

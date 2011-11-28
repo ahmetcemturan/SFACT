@@ -30,7 +30,7 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation == None:
+	if derivation is None:
 		derivation = WriteDerivation(elementNode)
 	if len(derivation.targets) < 1:
 		print('Warning, processElementNode in write could not get targets for:')
@@ -43,7 +43,7 @@ def processElementNodeByDerivation(derivation, elementNode):
 def writeElementNode(derivation, fileNames, target):
 	"Write a quantity of the target."
 	xmlObject = target.xmlObject
-	if xmlObject == None:
+	if xmlObject is None:
 		print('Warning, writeTarget in write could not get xmlObject for:')
 		print(target)
 		print(derivation.elementNode)
@@ -96,7 +96,3 @@ class WriteDerivation:
 		self.suffix = evaluate.getEvaluatedString('', elementNode, 'suffix')
 		self.targets = evaluate.getElementNodesByKey(elementNode, 'target')
 		self.writeMatrix = evaluate.getEvaluatedBoolean(True, elementNode, 'writeMatrix')
-
-	def __repr__(self):
-		"Get the string representation of this WriteDerivation."
-		return str(self.__dict__)

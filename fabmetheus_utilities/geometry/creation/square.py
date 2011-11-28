@@ -23,7 +23,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = SquareDerivation(elementNode)
 	topRight = complex(derivation.topDemiwidth, derivation.demiheight)
 	topLeft = complex(-derivation.topDemiwidth, derivation.demiheight)
@@ -78,7 +78,3 @@ class SquareDerivation:
 		self.interiorAngle = evaluate.getEvaluatedFloat(90.0, elementNode, 'interiorangle')
 		self.revolutions = evaluate.getEvaluatedInt(1, elementNode, 'revolutions')
 		self.spiral = evaluate.getVector3ByPrefix(None, elementNode, 'spiral')
-
-	def __repr__(self):
-		"Get the string representation of this SquareDerivation."
-		return str(self.__dict__)

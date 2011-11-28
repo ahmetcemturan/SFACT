@@ -73,7 +73,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Feed a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'feed'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(FeedRepository())
 	if not repository.activateFeed.value:
 		return gcodeText

@@ -32,7 +32,7 @@ def addCircleIntersectionLoop(circleIntersectionLoop, circleIntersections):
 	circleIntersectionAhead = firstCircleIntersection
 	for circleIntersectionIndex in xrange(len(circleIntersections) + 1):
 		circleIntersectionAhead = circleIntersectionAhead.getCircleIntersectionAhead()
-		if circleIntersectionAhead == firstCircleIntersection or circleIntersectionAhead == None:
+		if circleIntersectionAhead == firstCircleIntersection or circleIntersectionAhead is None:
 			firstCircleIntersection.steppedOn = True
 			return
 		circleIntersectionAhead.addToList(circleIntersectionLoop)
@@ -76,13 +76,13 @@ def addHalfPath(path, points, radius, thresholdRatio=0.9):
 		begin = path[pointIndex]
 		center = path[pointIndex + 1]
 		centerBegin = getWiddershinsByLength(begin, center, radius)
-		if centerBegin != None:
+		if centerBegin is not None:
 			addPointsFromSegment(begin + centerBegin, center + centerBegin, points, lessThanRadius, thresholdRatio)
 		endIndex = pointIndex + 2
 		if endIndex < len(path):
 			end = path[endIndex]
 			centerEnd = getWiddershinsByLength(center, end, radius)
-			if centerBegin != None and centerEnd != None:
+			if centerBegin is not None and centerEnd is not None:
 				centerPerpendicular = 0.5 * (centerBegin + centerEnd)
 				points.append(center + centerPerpendicular)
 				if euclidean.getCrossProduct(centerBegin, centerEnd) < 0.0:
@@ -104,12 +104,12 @@ def addInsetPointFromClockwiseTriple(begin, center, end, loop, radius):
 	endMinusCenterClockwise = None
 	if endMinusCenterLength > 0.0:
 		endMinusCenterClockwise = complex(endMinusCenter.imag, -endMinusCenter.real) / endMinusCenterLength
-	if centerMinusBeginClockwise == None and endMinusCenterClockwise == None:
+	if centerMinusBeginClockwise is None and endMinusCenterClockwise is None:
 		return
-	if centerMinusBeginClockwise == None:
+	if centerMinusBeginClockwise is None:
 		loop.append(center + endMinusCenterClockwise * radius)
 		return
-	if endMinusCenterClockwise == None:
+	if endMinusCenterClockwise is None:
 		loop.append(center + centerMinusBeginClockwise * radius)
 		return
 	centerClockwise = 0.5 * (centerMinusBeginClockwise + endMinusCenterClockwise)
@@ -399,7 +399,7 @@ def getLargestCenterOutsetLoopFromLoop(loop, radius, thresholdRatio=0.9):
 				if outsetArea > largestOutsetArea:
 					largestOutsetArea = outsetArea
 					largestCenterOutset = centerOutset
-	if largestCenterOutset == None:
+	if largestCenterOutset is None:
 		return None
 	largestCenterOutset.center = euclidean.getSimplifiedLoop(largestCenterOutset.center, radius)
 	return largestCenterOutset
@@ -410,7 +410,7 @@ def getLargestCenterOutsetLoopFromLoopRegardless(loop, radius):
 	for decreasingRadiusMultiplier in globalDecreasingRadiusMultipliers:
 		decreasingRadius = radius * decreasingRadiusMultiplier
 		largestCenterOutsetLoop = getLargestCenterOutsetLoopFromLoop(loop, decreasingRadius)
-		if largestCenterOutsetLoop != None:
+		if largestCenterOutsetLoop is not None:
 			return largestCenterOutsetLoop
 	return CenterOutset(loop, loop)
 
@@ -547,7 +547,7 @@ def removeIntersection( loop ):
 			aheadMidpointRotated = segmentYMirror * aheadMidpoint
 			y = behindRotated.imag
 			xIntersection = euclidean.getXIntersectionIfExists( aheadRotated, aheadMidpointRotated, y )
-			if xIntersection != None:
+			if xIntersection is not None:
 				if xIntersection > min( behindMidpointRotated.real, behindRotated.real ) and xIntersection < max( behindMidpointRotated.real, behindRotated.real ):
 					intersectionPoint = normalizedSegment * complex( xIntersection, y )
 					loop[ ( pointIndex + len( loop ) - 1 ) % len( loop ) ] = intersectionPoint
@@ -559,7 +559,7 @@ class BoundingLoop:
 	'A class to hold a bounding loop composed of a minimum complex, a maximum complex and an outset loop.'
 	def __eq__(self, other):
 		'Determine whether this bounding loop is identical to other one.'
-		if other == None:
+		if other is None:
 			return False
 		return self.minimum == other.minimum and self.maximum == other.maximum and self.loop == other.loop
 
@@ -678,7 +678,7 @@ class CircleIntersection:
 				if dot > largestDot:
 					largestDot = dot
 					circleIntersectionAhead = circleIntersection
-		if circleIntersectionAhead == None:
+		if circleIntersectionAhead is None:
 			print('Warning, circleIntersectionAhead in getCircleIntersectionAhead in intercircle is None for:')
 			print(self.circleNodeAhead.dividedPoint)
 			print('circleIntersectionsAhead')

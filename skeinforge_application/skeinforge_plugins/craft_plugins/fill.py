@@ -353,7 +353,7 @@ def addSparseEndpointsFromSegment(doubleInfillWidth, endpoints, horizontalSegmen
 
 def addYIntersectionPathToList( pathIndex, pointIndex, y, yIntersection, yIntersectionPaths ):
 	'Add the y intersection path to the y intersection paths.'
-	if yIntersection == None:
+	if yIntersection is None:
 		return
 	yIntersectionPath = YIntersectionPath( pathIndex, pointIndex, yIntersection )
 	yIntersectionPath.yMinusCenter = yIntersection - y
@@ -422,7 +422,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Fill the inset gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'fill'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( FillRepository() )
 	if not repository.activateFill.value:
 		return gcodeText
@@ -432,7 +432,7 @@ def getKeyIsInPixelTableAddValue( key, pathIndexTable, pixelTable ):
 	'Determine if the key is in the pixel table, and if it is and if the value is not None add it to the path index table.'
 	if key in pixelTable:
 		value = pixelTable[key]
-		if value != None:
+		if value is not None:
 			pathIndexTable[value] = None
 		return True
 	return False
@@ -495,7 +495,7 @@ def getWithLeastLength( path, point ):
 def getYIntersectionInsideYSegment( segmentFirstY, segmentSecondY, beginComplex, endComplex, x ):
 	'Get the y intersection inside the y segment if it does, else none.'
 	yIntersection = euclidean.getYIntersectionIfExists( beginComplex, endComplex, x )
-	if yIntersection == None:
+	if yIntersection is None:
 		return None
 	if yIntersection < min( segmentFirstY, segmentSecondY ):
 		return None
@@ -562,7 +562,7 @@ def insertGridPointPairWithLinePath( gridPoint, gridPointInsetX, gridPoints, isJ
 				intersectionBeginPoint = intersectionPoint + intersectionBeginSegment * distanceYAbsoluteInset / intersectionBeginSegmentLength
 	for point in linePath:
 		addPointOnPath( path, yIntersectionPath.pathIndex, pixelTable, point, yIntersectionPath.getPointIndexPlusOne(), width )
-	if intersectionBeginPoint != None:
+	if intersectionBeginPoint is not None:
 		addPointOnPath( path, yIntersectionPath.pathIndex, pixelTable, intersectionBeginPoint, yIntersectionPath.getPointIndexPlusOne(), width )
 
 def isAddedPointOnPathFree( path, pixelTable, point, pointIndex, width ):
@@ -637,9 +637,9 @@ def isPointAddedAroundClosest(layerInfillWidth, paths, pixelTable, removedEndpoi
 			if distanceSquared < closestDistanceSquared:
 				closestDistanceSquared = distanceSquared
 				closestPathIndex = pathIndex
-	if closestPathIndex == None:
+	if closestPathIndex is None:
 		return
-	if closestDistanceSquared < 0.7854 * layerInfillWidth * layerInfillWidth:
+	if closestDistanceSquared < euclidean.globalQuarterPi * layerInfillWidth ** 2:
 		return
 	closestPath = paths[closestPathIndex]
 	closestPointIndex = getWithLeastLength(closestPath, removedEndpointPoint)
@@ -734,10 +734,10 @@ def isSidePointAdded( pixelTable, closestPath, closestPathIndex, closestPointInd
 		euclidean.addValueSegmentToPixelTable( sidePoint, farthest, toPerpendicularTable, None, width )
 		if euclidean.isPixelTableIntersecting( pixelTable, toPerpendicularTable, maskTable ) or euclidean.isPixelTableIntersecting( closestSegmentTable, toPerpendicularTable, maskTable ):
 			return False
-	if insertPointBefore != None:
+	if insertPointBefore is not None:
 		addPointOnPathIfFree( closestPath, closestPathIndex, pixelTable, insertPointBefore, closestPointIndex, width )
 	addPointOnPathIfFree( closestPath, closestPathIndex, pixelTable, sidePoint, closestPointIndex, width )
-	if insertPointAfter != None:
+	if insertPointAfter is not None:
 		addPointOnPathIfFree( closestPath, closestPathIndex, pixelTable, insertPointAfter, closestPointIndex, width )
 	return True
 
@@ -781,9 +781,11 @@ class FillRepository:
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Shell Settings -', self )
 		settings.LabelDisplay().getFromName('- Additional Perimeter Shells -', self )
-		self.extraShellsAlternatingSolidLayer = settings.IntSpin().getFromValue( 0, 'Extra Shells on Alternating Solid Layer (layers):', self, 10, 3 )
-		self.extraShellsBase = settings.IntSpin().getFromValue( 0, 'Extra Shells on Base (layers):', self, 10, 2 )
-		self.extraShellsSparseLayer = settings.IntSpin().getFromValue( 0, 'Extra Shells on Sparse Layer (layers):', self, 10, 2 )
+		self.extraShellsAlternatingSolidLayer = settings.IntSpin().getFromValue( 0, 'Extra Shells on Alternating Solid Layer (shells):', self, 10, 3 )
+		self.extraShellsBase = settings.IntSpin().getFromValue( 0, 'Extra Shells on Base (shells):', self, 10, 2 )
+		self.extraShellsSparseLayer = settings.IntSpin().getFromValue( 0, 'Extra Shells on Sparse Layer (shells):', self, 10, 2 )
+		self.extraShellsBridgeLayer = settings.IntSpin().getFromValue( 0, 'Extra Shells on Bridge Layer (shells):', self, 10, 0 )
+
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Top and Bottom Layers -', self )
 		self.solidSurfaceThickness = settings.IntSpin().getFromValue( 0, 'Fully filled Layers (each top and bottom):', self, 5, 2 )
@@ -838,7 +840,7 @@ class FillRepository:
 class FillSkein:
 	'A class to fill a skein of extrusions.'
 	def __init__(self):
-
+		'Initialize.'
 #		self.bridgeWidthMultiplier = 1.0
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.extruderActive = False
@@ -864,10 +866,9 @@ class FillSkein:
 		arounds = []
 		endpoints = []
 		extraShells = self.repository.extraShellsSparseLayer.value
+		extraShellsBridgeLayer = self.repository.extraShellsBridgeLayer.value
 		infillPaths = []
-#		layerFillInset = self.fillInset  # distance between inner fill and perimeter or extra loops
 		layerInfillSolidity = self.infillSolidity
-#		layerPerimeterMinusHalfInfillWidth = self.perimeterMinusHalfInfillWidth
 		layerRemainder = layerIndex % int(round(self.repository.diaphragmPeriod.value))
 		layerRotation = self.getLayerRotation(layerIndex)
 		pixelTable = {}
@@ -878,6 +879,7 @@ class FillSkein:
 #		self.layerInfillWidth = self.infillWidth
 		surroundingCarves = []
 		self.distanceFeedRate.addLine('(<layer> %s )' % rotatedLayer.z)
+
 		if layerRemainder >= int(round(self.repository.diaphragmThickness.value)):
 			for surroundingIndex in xrange(1, self.solidSurfaceThickness + 1):
 				self.addRotatedCarve(layerIndex, -surroundingIndex, reverseRotation, surroundingCarves)
@@ -886,14 +888,13 @@ class FillSkein:
 			extraShells = self.repository.extraShellsAlternatingSolidLayer.value
 			if self.lastExtraShells != self.repository.extraShellsBase.value:
 				extraShells = self.repository.extraShellsBase.value
-		if rotatedLayer.rotation != None:
-			extraShells = 0
-			self.layerInfillWidth = self.scaledBridgeWidthMultiplier * self.repository.infillWidthOverThickness.value #* 0.7854
-			self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value #*0.7854 #  self.scaledBridgeWidthMultiplier * self.repository.infillPerimeterOverlap.value # self.bridgeWidthMultiplier
-#			layerPerimeterMinusHalfInfillWidth = self.perimeterWidth - self.scaledBridgeWidthMultiplier/2 * self.repository.infillPerimeterOverlap.value #controls the distance of the infill to the perimeter on fully filled layers bridge layers
+		if rotatedLayer.rotation is not None:
+			extraShells = extraShellsBridgeLayer
+			self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value * 2 #*euclidean.globalQuarterPi #  self.scaledBridgeWidthMultiplier * self.repository.infillPerimeterOverlap.value # self.bridgeWidthMultiplier
+			self.distanceFeedRate.addLine('(<bridgeRotation> %s )' % rotatedLayer.rotation)
 		self.distanceFeedRate.addLine('(<rotation> %s )' % layerRotation)
-		aroundInset = 0.2146 * self.infillWidth
-		aroundWidth = 0.2146 * self.infillWidth
+		aroundInset = 0.24321 * self.infillWidth
+		aroundWidth = 0.24321 * self.infillWidth
 		doubleInfillWidth = 2.0 * self.infillWidth
 		gridPointInsetX = 0.5 * self.fillInset
 		self.lastExtraShells = extraShells
@@ -1041,7 +1042,7 @@ class FillSkein:
 			if shouldAddLoop:
 				shouldAddLoop = euclidean.getIsInFilledRegion(rotatedLoops, point)
 			if shouldAddLoop:
-				if insideIndexPath == None:
+				if insideIndexPath is None:
 					insideIndexPath = [pointIndex]
 					insideIndexPaths.append(insideIndexPath)
 				else:
@@ -1106,29 +1107,29 @@ class FillSkein:
 
 	def addThreadsBridgeLayer(self, layerIndex, nestedRings, rotatedLayer, testLoops=None):
 		'Add the threads, add the bridge end & the layer end tag.'
-		if self.oldOrderedLocation == None or self.repository.startFromLowerLeft.value:
+		if self.oldOrderedLocation is None or self.repository.startFromLowerLeft.value:
 			self.oldOrderedLocation = getLowerLeftCorner(nestedRings)
 		extrusionHalfWidth = 0.5 * self.infillWidth
 		threadSequence = self.threadSequence
 		if layerIndex < 1:
 			threadSequence = ['perimeter', 'loops', 'infill']
 		euclidean.addToThreadsRemove(extrusionHalfWidth, nestedRings, self.oldOrderedLocation, self, threadSequence)
-		if testLoops != None:
+		if testLoops is not None:
 			for testLoop in testLoops:
 				self.addGcodeFromThreadZ(testLoop, self.oldOrderedLocation.z)
 		self.distanceFeedRate.addLine('(</rotation>)')
-		if rotatedLayer.rotation != None:
+		if rotatedLayer.rotation is not None:
 			self.distanceFeedRate.addLine('(</bridgeRotation>)')
 		self.distanceFeedRate.addLine('(</layer>)')
 
 	def addToThread(self, location):
 		'Add a location to thread.'
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return
 		if self.isPerimeter:
 			self.nestedRing.addToLoop( location )
 			return
-		if self.thread == None:
+		if self.thread is None:
 			self.thread = [ self.oldLocation.dropAxis() ]
 			self.nestedRing.perimeterPaths.append(self.thread)
 		self.thread.append(location.dropAxis())
@@ -1157,10 +1158,10 @@ class FillSkein:
 			print('If you want to stretch the infill a lot, set "Path Stretch over Perimeter Width" in stretch to a high value instead of setting "Infill Perimeter Overlap" to a high value.')
 			print('')
 		self.parseInitialization()
-		if self.perimeterWidth == None:
+		if self.perimeterWidth is None:
 			print('Warning, nothing will be done because self.perimeterWidth in getCraftedGcode in FillSkein was None.')
 			return ''
-		self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value #self.infillWidth - self.infillWidth * self.repository.infillPerimeterOverlap.value  #todo check
+		self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value #  #todo check
 		self.infillSolidity = repository.infillSolidity.value
 		self.perimeterMinusHalfInfillWidth = self.perimeterWidth - 0.5 * self.infillWidth
 		if self.isGridToBeExtruded():
@@ -1178,7 +1179,7 @@ class FillSkein:
 
 	def getGridPoints(self, fillLoops, reverseRotation):
 		'Get the grid points.'
-		if self.infillSolidity > 0.7854:
+		if self.infillSolidity > euclidean.globalQuarterPi :
 			return []
 		rotationBaseAngle = euclidean.getWiddershinsUnitPolar(self.infillBeginRotation)
 		reverseRotationBaseAngle = complex(rotationBaseAngle.real, - rotationBaseAngle.imag)
@@ -1213,7 +1214,7 @@ class FillSkein:
 	def getLayerRotation(self, layerIndex):
 		'Get the layer rotation.'
 		rotation = self.rotatedLayers[layerIndex].rotation
-		if rotation != None:
+		if rotation is not None:
 			return rotation
 		infillBeginRotationRepeat = self.repository.infillBeginRotationRepeat.value
 		infillOddLayerRotationMultiplier = float( layerIndex % ( infillBeginRotationRepeat + 1 ) == infillBeginRotationRepeat )
@@ -1279,7 +1280,7 @@ class FillSkein:
 #				self.infillWidth = self.repository.infillWidthOverThickness.value * self.layerThickness #todo
 			elif firstWord == '(<perimeterWidth>':
 				self.perimeterWidth = float(splitLine[1])
-				self.infillWidth = self.repository.infillWidthOverThickness.value * self.perimeterWidth * 0.7854
+				self.infillWidth = self.repository.infillWidthOverThickness.value * self.perimeterWidth * euclidean.globalQuarterPi
 				self.surroundingSlope = math.tan(math.radians(min(self.repository.surroundingAngle.value, 80.0)))
 				self.distanceFeedRate.addTagRoundedLine('infillPerimeterOverlap', self.repository.infillPerimeterOverlap.value)
 				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)
@@ -1298,29 +1299,29 @@ class FillSkein:
 		firstWord = splitLine[0]
 		if firstWord == 'G1':
 			self.linearMove(splitLine)
-		elif firstWord == 'M101':
+		if firstWord == 'M101':
 			self.extruderActive = True
-		elif firstWord == 'M103':
+		if firstWord == 'M103':
 			self.extruderActive = False
 			self.thread = None
 			self.isPerimeter = False
-		elif firstWord == '(<boundaryPerimeter>)':
+		if firstWord == '(<boundaryPerimeter>)':
 			self.nestedRing = euclidean.NestedBand()
 			self.rotatedLayer.nestedRings.append( self.nestedRing )
-		elif firstWord == '(</boundaryPerimeter>)':
+		if firstWord == '(</boundaryPerimeter>)':
 			self.nestedRing = None
-		elif firstWord == '(<boundaryPoint>':
+		if firstWord == '(<boundaryPoint>':
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
 			self.nestedRing.addToBoundary( location )
-		elif firstWord == '(<bridgeRotation>':
+		if firstWord == '(<bridgeRotation>':
 			self.rotatedLayer.rotation = gcodec.getRotationBySplitLine(splitLine)
-		elif firstWord == '(</crafting>)':
+		if firstWord == '(</crafting>)':
 			self.shutdownLineIndex = lineIndex
-		elif firstWord == '(<layer>':
+		if firstWord == '(<layer>':
 			self.rotatedLayer = RotatedLayer(float(splitLine[1]))
 			self.rotatedLayers.append( self.rotatedLayer )
 			self.thread = None
-		elif firstWord == '(<perimeter>':
+		if firstWord == '(<perimeter>':
 			self.isPerimeter = True
 
 	def setGridVariables( self, repository ):
@@ -1328,7 +1329,7 @@ class FillSkein:
 		self.gridInset = 1.2 * self.infillWidth
 		self.gridRadius = self.infillWidth / self.infillSolidity
 		self.gridXStepSize = 2.0 * self.gridRadius
- 		self.offsetMultiplier = self.gridRadius
+		self.offsetMultiplier = self.gridRadius
 		if self.repository.infillPatternGridHexagonal.value:
 			self.gridXStepSize = 4.0 / 3.0 * self.gridRadius
 			self.offsetMultiplier = 1.5 * self.gridXStepSize

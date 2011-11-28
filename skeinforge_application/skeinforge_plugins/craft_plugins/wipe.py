@@ -8,7 +8,7 @@ The wipe manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Wipe
 
 ==Operation==
-The default 'Activate Wipe' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Wipe' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Location Arrival===
@@ -109,7 +109,7 @@ def getCraftedTextFromText( gcodeText, wipeRepository = None ):
 	"Wipe a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'wipe'):
 		return gcodeText
-	if wipeRepository == None:
+	if wipeRepository is None:
 		wipeRepository = settings.getReadRepository( WipeRepository() )
 	if not wipeRepository.activateWipe.value:
 		return gcodeText
@@ -193,7 +193,7 @@ class WipeSkein:
 		self.shouldWipe = False
 		if self.extruderActive:
 			self.distanceFeedRate.addLine('M103')
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			self.addHop( self.oldLocation, self.locationArrival )
 		self.distanceFeedRate.addLine( self.getLinearMoveWithFeedRate( self.travelFeedRateMinute, self.locationArrival ) )
 		self.distanceFeedRate.addLine( self.getLinearMoveWithFeedRate( self.travelFeedRateMinute, self.locationWipe ) )

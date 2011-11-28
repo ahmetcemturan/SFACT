@@ -26,7 +26,7 @@ def getCubicPath(elementNode):
 	"Get the cubic path."
 	end = evaluate.getVector3FromElementNode(elementNode)
 	previousElementNode = elementNode.getPreviousElementNode()
-	if previousElementNode == None:
+	if previousElementNode is None:
 		print('Warning, can not get previousElementNode in getCubicPath in cubic for:')
 		print(elementNode)
 		return [end]
@@ -38,13 +38,13 @@ def getCubicPath(elementNode):
 	controlPoint1 = evaluate.getVector3ByPrefix(None, elementNode, 'controlPoint1')
 	if len(evaluatedControlPoints) == 1:
 		controlPoint1 = evaluatedControlPoints[0]
-	if controlPoint0 == None:
+	if controlPoint0 is None:
 		oldControlPoint = evaluate.getVector3ByPrefixes(previousElementNode, ['controlPoint','controlPoint1'], None)
-		if oldControlPoint == None:
+		if oldControlPoint is None:
 			oldControlPoints = evaluate.getTransformedPathByKey([], previousElementNode, 'controlPoints')
 			if len(oldControlPoints) > 0:
 				oldControlPoint = oldControlPoints[-1]
-		if oldControlPoint == None:
+		if oldControlPoint is None:
 			oldControlPoint = end
 		controlPoint0 = begin + begin - oldControlPoint
 	return getCubicPathByBeginEnd(begin, [controlPoint0, controlPoint1], elementNode, end)

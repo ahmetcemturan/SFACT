@@ -33,7 +33,7 @@ globalOriginalTextString = '<!-- Original XML Text:\n'
 def getCarving(fileName):
 	'Get a carving for the file using an import plugin.'
 	pluginModule = fabmetheus_interpret.getInterpretPlugin(fileName)
-	if pluginModule == None:
+	if pluginModule is None:
 		return None
 	return pluginModule.getCarving(fileName)
 
@@ -132,7 +132,7 @@ class SVGWriter:
 
 	def addOriginalAsComment(self, elementNode):
 		'Add original elementNode as a comment.'
-		if elementNode == None:
+		if elementNode is None:
 			return
 		if elementNode.getNodeName() == '#comment':
 			elementNode.setParentAddToChildNodes(self.svgElement)
@@ -203,7 +203,7 @@ class SVGWriter:
 		width = max(self.extent.x * self.unitScale, svgMinWidth)
 		svgElementDictionary['width'] = '%spx' % self.getRounded( width )
 		self.sliceDictionary['decimalPlacesCarried'] = str( self.decimalPlacesCarried )
-		if self.perimeterWidth != None:
+		if self.perimeterWidth is not None:
 			self.sliceDictionary['perimeterWidth'] = self.getRounded( self.perimeterWidth )
 		self.sliceDictionary['yAxisPointingUpward'] = 'true'
 		self.sliceDictionary['procedureName'] = procedureName

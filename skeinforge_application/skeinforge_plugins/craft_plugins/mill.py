@@ -86,7 +86,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Mill a gcode linear move gcodeText.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'mill'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( MillRepository() )
 	if not repository.activateMill.value:
 		return gcodeText
@@ -184,7 +184,7 @@ class MillSkein:
 
 	def addGcodeFromLoops(self, loops, z):
 		'Add gcode from loops.'
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			self.oldLocation = Vector3()
 		self.oldLocation.z = z
 		for loop in loops:
@@ -293,7 +293,7 @@ class MillSkein:
 				boundaryLoop = None
 			elif firstWord == '(<boundaryPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if boundaryLoop == None:
+				if boundaryLoop is None:
 					boundaryLoop = []
 					boundaryLayer.loops.append(boundaryLoop)
 				boundaryLoop.append(location.dropAxis())
@@ -351,7 +351,7 @@ class MillSkein:
 			location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			if self.isExtruderActive:
 				self.average.addValue(location.z)
-				if self.oldLocation != None:
+				if self.oldLocation is not None:
 					euclidean.addValueSegmentToPixelTable( self.oldLocation.dropAxis(), location.dropAxis(), self.aroundPixelTable, None, self.aroundWidth )
 			self.oldLocation = location
 		elif firstWord == 'M101':

@@ -79,7 +79,7 @@ def getCraftedTextFromText(fileName, svgText, repository=None):
 	"Scale and convert an svgText."
 	if gcodec.isProcedureDoneOrFileIsEmpty(svgText, 'scale'):
 		return svgText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(ScaleRepository())
 	if repository.activateScale.value:
 		return ScaleSkein().getCraftedGcode(fileName, repository, svgText)
@@ -127,7 +127,7 @@ class ScaleSkein:
 		"Parse svgText and store the scale svgText."
 		svgReader = SVGReader()
 		svgReader.parseSVG('', svgText)
-		if svgReader.sliceDictionary == None:
+		if svgReader.sliceDictionary is None:
 			print('Warning, nothing will be done because the sliceDictionary could not be found getCraftedGcode in preface.')
 			return ''
 		xyPlaneScale = repository.xyPlaneScale.value

@@ -58,7 +58,7 @@ def getCraftedTextFromText( gcodeText, liftRepository = None ):
 	"Lift the preface gcode text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'lift'):
 		return gcodeText
-	if liftRepository == None:
+	if liftRepository is None:
 		liftRepository = settings.getReadRepository( LiftRepository() )
 	if not liftRepository.activateLift.value:
 		return gcodeText
@@ -106,7 +106,7 @@ class LiftSkein:
 
 	def addPreviousInactiveMovementLineIfNecessary(self):
 		"Add the previous inactive movement line if necessary."
-		if self.previousInactiveMovementLine != None:
+		if self.previousInactiveMovementLine is not None:
 			self.distanceFeedRate.addLine( self.previousInactiveMovementLine )
 			self.previousInactiveMovementLine = None
 
@@ -116,7 +116,7 @@ class LiftSkein:
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		self.oldLocation = None
-		if self.layerStep == None:
+		if self.layerStep is None:
 			self.layerStep = self.layerThickness
 		self.cuttingLift = self.layerStep * liftRepository.cuttingLiftOverLayerStep.value
 		self.setMaximumZ()
@@ -130,7 +130,7 @@ class LiftSkein:
 		if self.extruderActive:
 			z = location.z + self.cuttingLift
 			return self.distanceFeedRate.getLineWithZ( line, splitLine, z )
-		if self.previousActiveMovementLine != None:
+		if self.previousActiveMovementLine is not None:
 			previousActiveMovementLineSplit = self.previousActiveMovementLine.split()
 			self.distanceFeedRate.addLine( self.distanceFeedRate.getLineWithZ( self.previousActiveMovementLine, previousActiveMovementLineSplit, self.travelZ ) )
 			self.previousActiveMovementLine = None

@@ -62,7 +62,7 @@ def getCraftedTextFromText( gcodeText, jitterRepository = None ):
 	'Jitter a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'jitter'):
 		return gcodeText
-	if jitterRepository == None:
+	if jitterRepository is None:
 		jitterRepository = settings.getReadRepository( JitterRepository() )
 	if not jitterRepository.activateJitter.value:
 		return gcodeText
@@ -156,7 +156,7 @@ class JitterSkein:
 
 	def addGcodeMovementZ(self, feedRateMinute, point, z):
 		'Add a movement to the output.'
-		if feedRateMinute == None:
+		if feedRateMinute is None:
 			feedRateMinute = self.operatingFeedRatePerMinute
 		self.distanceFeedRate.addGcodeMovementZWithFeedRate(feedRateMinute, point, z)
 
@@ -210,15 +210,15 @@ class JitterSkein:
 		firstWord = splitLine[0]
 		if firstWord == 'G1':
 			self.setFeedRateLocationLoopPath(line, splitLine)
-			if self.loopPath != None:
+			if self.loopPath is not None:
 				self.loopPath.path.append(self.oldLocation.dropAxis())
 				return
 		elif firstWord == 'M101':
-			if self.loopPath != None:
+			if self.loopPath is not None:
 				return
 		elif firstWord == 'M103':
 			self.isLoopPerimeter = False
-			if self.loopPath != None:
+			if self.loopPath is not None:
 				self.addTailoredLoopPath()
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('jitter')
@@ -232,7 +232,7 @@ class JitterSkein:
 		'Set the feedRateMinute, oldLocation and loopPath.'
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 		self.oldLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
-		if not self.isLoopPerimeter or self.loopPath != None:
+		if not self.isLoopPerimeter or self.loopPath is not None:
 			return
 		for afterIndex in xrange(self.lineIndex + 1, len(self.lines)):
 			line = self.lines[afterIndex]

@@ -173,7 +173,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Inset the preface gcode text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'inset'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( InsetRepository() )
 	return InsetSkein().getCraftedGcode(gcodeText, repository)
 
@@ -376,7 +376,7 @@ class InsetSkein:
 
 	def addGcodePerimeterBlockFromRemainingLoop(self, loop, loopLayer, loopLists, radius):
 		"Add the perimter block remainder of the loop which does not overlap the alreadyFilledArounds loops."
-		if self.repository.overlapRemovalWidthOverPerimeterWidth.value < 0.5:#ACT
+		if self.repository.overlapRemovalWidthOverPerimeterWidth.value < 0.2:#ACT
 			self.distanceFeedRate.addPerimeterBlock(loop, loopLayer.z)
 			return
 		isIntersectingSelf = isIntersectingItself(loop, self.overlapRemovalWidth)
@@ -396,10 +396,11 @@ class InsetSkein:
 		alreadyFilledArounds = []
 		extrudateLoops = intercircle.getInsetLoopsFromLoops(loopLayer.loops, self.halfPerimeterWidth)
 		if self.repository.infillInDirectionOfBridge.value:
-			self.halfBridgeWidth = self.repository.bridgeWidthMultiplier.value * self.halfPerimeterWidth * (self.nozzleXsection / self.extrusionXsection)
+			self.halfBridgeWidth = self.repository.bridgeWidthMultiplier.value * self.halfPerimeterWidth #* (self.nozzleXsection / self.extrusionXsection)
 			bridgeRotation = getBridgeDirection(self.belowLoops, extrudateLoops, self.halfBridgeWidth )
-			if bridgeRotation != None:
+			if bridgeRotation is not None:
 				self.distanceFeedRate.addTagBracketedLine('bridgeRotation', bridgeRotation)
+#				print 'bridge' , self.layerCount
 		self.belowLoops = loopLayer.loops
 		triangle_mesh.sortLoopsInOrderOfArea(not self.repository.loopOrderAscendingArea.value, extrudateLoops)
 		for extrudateLoop in extrudateLoops:
@@ -421,13 +422,11 @@ class InsetSkein:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
-#			if firstWord == '(<decimalPlacesCarried>':
+			if firstWord == '(<decimalPlacesCarried>':
 #				self.addInitializationToOutput()
-#				self.distanceFeedRate.addTagBracketedLine(
-#					'bridgeWidthMultiplier', self.distanceFeedRate.getRounded( self.repository.bridgeWidthMultiplier.value ))
-#				self.distanceFeedRate.addTagBracketedLine(
-#					'scaledBridgeWidthMultiplier', self.distanceFeedRate.getRounded( self.scaledBridgeWidthMultiplier ))
-			if firstWord == '(</extruderInitialization>)':
+				self.distanceFeedRate.addTagBracketedLine('bridgeWidthMultiplier', self.distanceFeedRate.getRounded( self.repository.bridgeWidthMultiplier.value ))
+				self.distanceFeedRate.addTagBracketedLine('scaledBridgeWidthMultiplier', self.distanceFeedRate.getRounded( self.scaledBridgeWidthMultiplier ))
+			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('inset')
 				return
 			elif firstWord == '(<layerThickness>':
@@ -451,8 +450,8 @@ class InsetSkein:
 		if firstWord == '(<boundaryPoint>':
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
 			self.boundary.append(location.dropAxis())
-#		elif firstWord == '(<bridgeRotation>':
-#			self.loopLayer.rotation = gcodec.getRotationBySplitLine(splitLine)
+		elif firstWord == '(<bridgeRotation>':
+			self.loopLayer.rotation = gcodec.getRotationBySplitLine(splitLine)
 #		elif firstWord == '(</crafting>)':
 #				self.distanceFeedRate.addLine(line)
 #				if self.repository.turnExtruderHeaterOffAtShutDown.value:

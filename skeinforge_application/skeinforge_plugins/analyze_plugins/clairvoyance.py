@@ -52,7 +52,7 @@ def getNewRepository():
 def getWindowAnalyzeFile(fileName, repository=None):
 	'Open penultimate file with outside program.'
 	print('')
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(ClairvoyanceRepository())
 	gcodeProgram = repository.gcodeProgram.value
 	if gcodeProgram == '':

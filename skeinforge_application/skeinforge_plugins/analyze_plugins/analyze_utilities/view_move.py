@@ -59,7 +59,7 @@ class ViewpointMove( MouseToolBase ):
 
 	def motion( self, event, shift = False ):
 		"The mouse moved, <Motion> function."
-		if self.buttonOnePressedScreenCoordinate == None:
+		if self.buttonOnePressedScreenCoordinate is None:
 			return
 		motionCoordinate = complex( event.x, event.y )
 		relativeMotion = motionCoordinate - self.buttonOnePressedScreenCoordinate

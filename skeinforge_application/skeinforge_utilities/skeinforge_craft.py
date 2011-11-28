@@ -40,7 +40,7 @@ def getChainTextFromProcedures(fileName, procedures, text):
 	lastProcedureTime = time.time()
 	for procedure in procedures:
 		craftModule = getCraftModule(procedure)
-		if craftModule != None:
+		if craftModule is not None:
 			text = craftModule.getCraftedText(fileName, text)
 			if text == '':
 				print('Warning, the text was not recognized in getChainTextFromProcedures in skeinforge_craft for')
@@ -141,7 +141,7 @@ def writeChainTextWithNounMessage(fileName, procedure, shouldAnalyze=True):
 def writeOutput(fileName, shouldAnalyze=True):
 	"Craft a gcode file with the last module."
 	pluginModule = getLastModule()
-	if pluginModule != None:
+	if pluginModule is not None:
 		return pluginModule.writeOutput(fileName, shouldAnalyze)
 
 def writeSVGTextWithNounMessage(fileName, repository, shouldAnalyze=True):

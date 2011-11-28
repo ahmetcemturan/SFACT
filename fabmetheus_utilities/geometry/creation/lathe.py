@@ -51,7 +51,7 @@ def addNegativesPositives(derivation, negatives, paths, positives):
 			endMultiplier = 1.000001
 		loopListsByPath = getLoopListsByPath(derivation, endMultiplier, path)
 		geometryOutput = triangle_mesh.getPillarsOutput(loopListsByPath)
-		if endMultiplier == None:
+		if endMultiplier is None:
 			positives.append(geometryOutput)
 		else:
 			negatives.append(geometryOutput)
@@ -71,7 +71,7 @@ def addPositives(derivation, paths, positives):
 
 def getGeometryOutput(derivation, elementNode):
 	"Get triangle mesh from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = LatheDerivation(elementNode)
 	if len(euclidean.getConcatenatedList(derivation.target)) == 0:
 		print('Warning, in lathe there are no paths.')
@@ -100,7 +100,7 @@ def getLoopListsByPath(derivation, endMultiplier, path):
 	if len(derivation.loop) < 2:
 		return loopLists
 	for pointIndex, pointComplex in enumerate(derivation.loop):
-		if endMultiplier != None and not derivation.isEndCloseToStart:
+		if endMultiplier is not None and not derivation.isEndCloseToStart:
 			if pointIndex == 0:
 				nextPoint = derivation.loop[1]
 				pointComplex = endMultiplier * (pointComplex - nextPoint) + nextPoint
@@ -142,8 +142,8 @@ class LatheDerivation:
 			print(elementNode)
 			self.target = []
 			return
-		if self.axisStart == None:
-			if self.axisEnd == None:
+		if self.axisStart is None:
+			if self.axisEnd is None:
 				self.axisStart = firstPath[0]
 				self.axisEnd = firstPath[-1]
 			else:
@@ -165,7 +165,7 @@ class LatheDerivation:
 			return
 		firstVector3 /= firstVector3Length
 		self.axisProjectiveSpace = euclidean.ProjectiveSpace().getByBasisZFirst(self.axis, firstVector3)
-		if self.sides == None:
+		if self.sides is None:
 			distanceToLine = euclidean.getDistanceToLineByPaths(self.axisStart, self.axisEnd, self.target)
 			self.sides = evaluate.getSidesMinimumThreeBasedOnPrecisionSides(elementNode, distanceToLine)
 		endRadian = math.radians(self.end)
@@ -174,7 +174,3 @@ class LatheDerivation:
 		if len(self.loop) < 1:
 			self.loop = euclidean.getComplexPolygonByStartEnd(endRadian, 1.0, self.sides, startRadian)
 		self.normal = euclidean.getNormalByPath(firstPath)
-
-	def __repr__(self):
-		"Get the string representation of this LatheDerivation."
-		return str(self.__dict__)

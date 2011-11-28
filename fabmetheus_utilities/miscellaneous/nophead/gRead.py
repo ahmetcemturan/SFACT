@@ -90,7 +90,7 @@ class gRead:
         self.thread = []
 
     def linearMove( self, splitLine ):
-        if self.thread != None:
+        if self.thread is not None:
             pos = self.last_pos.copy()
             self.setPointComponent( pos, splitLine )
             if pos.z > self.max_z:

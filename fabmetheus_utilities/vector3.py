@@ -75,7 +75,7 @@ class Vector3:
 
 	def __eq__(self, other):
 		'Determine whether this vector is identical to other one.'
-		if other == None:
+		if other is None:
 			return False
 		if other.__class__ != self.__class__:
 			return False

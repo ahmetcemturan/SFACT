@@ -1,9 +1,12 @@
 """
 This page is in the table of contents.
-Temperature is a script to set the temperature for the object and raft.
+Temperature is a plugin to set the temperature for the entire extrusion.
+
+The temperature manual page is at:
+http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Temperature
 
 ==Operation==
-The default 'Activate Temperature' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Temperature' checkbox is on.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Rate===
@@ -101,7 +104,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Temperature a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'temperature'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( TemperatureRepository() )
 	if not repository.activateTemperature.value:
 		return gcodeText
@@ -122,6 +125,7 @@ class TemperatureRepository:
 		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.temperature.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Temperature', self, '')
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Temperature')
 		self.activateTemperature = settings.BooleanSetting().getFromValue('Activate Temperature', self, False )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Rate -', self )

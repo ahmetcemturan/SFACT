@@ -64,7 +64,7 @@ def getCraftedTextFromText( gcodeText, combRepository = None ):
 	"Comb a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'comb'):
 		return gcodeText
-	if combRepository == None:
+	if combRepository is None:
 		combRepository = settings.getReadRepository( CombRepository() )
 	if not combRepository.activateComb.value:
 		return gcodeText
@@ -164,7 +164,7 @@ class CombSkein:
 	def addIfTravel( self, splitLine ):
 		"Add travel move around loops if the extruder is off."
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
-		if not self.extruderActive and self.oldLocation != None:
+		if not self.extruderActive and self.oldLocation is not None:
 			if len( self.getBoundaries() ) > 0:
 				highestZ = max( location.z, self.oldLocation.z )
 				self.addGcodePathZ( self.travelFeedRateMinute, self.getPathsBetween( self.oldLocation.dropAxis(), location.dropAxis() ), highestZ )
@@ -172,14 +172,14 @@ class CombSkein:
 
 	def addToLoop(self, location):
 		"Add a location to loop."
-		if self.layer == None:
+		if self.layer is None:
 			if not self.oldZ in self.layerTable:
 				self.layerTable[ self.oldZ ] = []
 			self.layer = self.layerTable[ self.oldZ ]
-		if self.boundaryLoop == None:
+		if self.boundaryLoop is None:
 			self.boundaryLoop = [] #starting with an empty array because a closed loop does not have to restate its beginning
 			self.layer.append( self.boundaryLoop )
-		if self.boundaryLoop != None:
+		if self.boundaryLoop is not None:
 			self.boundaryLoop.append(location.dropAxis())
 
 	def getBetweens(self):
@@ -250,22 +250,22 @@ class CombSkein:
 			if endIndex < len(shortestPath):
 				end = shortestPath[endIndex]
 				centerEnd = intercircle.getWiddershinsByLength(end, center, self.combInset)
-			if centerPerpendicular == None:
+			if centerPerpendicular is None:
 				centerPerpendicular = centerEnd
-			elif centerEnd != None:
+			elif centerEnd is not None:
 				centerPerpendicular = 0.5 * (centerPerpendicular + centerEnd)
 			between = None
-			if centerPerpendicular == None:
+			if centerPerpendicular is None:
 				between = center
-			if between == None:
+			if between is None:
 				centerSideWiddershins = center + centerPerpendicular
 				if euclidean.isPointInsideLoop(loop, centerSideWiddershins) == loopWiddershins:
 					between = centerSideWiddershins
-			if between == None:
+			if between is None:
 				centerSideClockwise = center - centerPerpendicular
 				if euclidean.isPointInsideLoop(loop, centerSideClockwise) == loopWiddershins:
 					between = centerSideClockwise
-			if between == None:
+			if between is None:
 				between = center
 			pathBetween.append(between)
 		return pathBetween
@@ -376,9 +376,9 @@ class CombSkein:
 				return
 			elif firstWord == '(<perimeterWidth>':
 				perimeterWidth = float(splitLine[1])
-				self.combInset = perimeterWidth
-				self.betweenInset = perimeterWidth *0.5 *0.7854
-				self.uTurnWidth = 0.5 * self.betweenInset 
+				self.combInset = 0.7 * perimeterWidth
+				self.betweenInset = 0.4 * perimeterWidth
+				self.uTurnWidth = 0.5 * self.betweenInset
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
@@ -401,7 +401,7 @@ class CombSkein:
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('comb')
 			self.nextLayerZ = float(splitLine[1])
-			if self.layerZ == None:
+			if self.layerZ is None:
 				self.layerZ = self.nextLayerZ
 		self.distanceFeedRate.addLineCheckAlteration(line)
 

@@ -32,14 +32,18 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	scalePoints( elementNode, loop, prefix )
 	return [loop]
 
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return ScaleDerivation(elementNode)
+
 def manipulateElementNode(elementNode, target):
 	"Manipulate the xml element."
-	scaleTetragrid = matrix.getScaleTetragrid(elementNode, '')
-	if scaleTetragrid == None:
+	derivation = ScaleDerivation(elementNode)
+	if derivation.scaleTetragrid == None:
 		print('Warning, scaleTetragrid was None in scale so nothing will be done for:')
 		print(elementNode)
 		return
-	matrix.setAttributesToMultipliedTetragrid(target, scaleTetragrid)
+	matrix.setAttributesToMultipliedTetragrid(target, derivation.scaleTetragrid)
 
 def processElementNode(elementNode):
 	"Process the xml element."
@@ -47,11 +51,18 @@ def processElementNode(elementNode):
 
 def scalePoints(elementNode, points, prefix):
 	"Scale the points."
-	scaleDefaultVector3 = Vector3(1.0, 1.0, 1.0)
-	scaleVector3 = matrix.getCumulativeVector3Remove(scaleDefaultVector3.copy(), elementNode, prefix)
-	if scaleVector3 == scaleDefaultVector3:
+	scaleVector3Default = Vector3(1.0, 1.0, 1.0)
+	scaleVector3 = matrix.getCumulativeVector3Remove(scaleVector3Default.copy(), elementNode, prefix)
+	if scaleVector3 == scaleVector3Default:
 		return
 	for point in points:
 		point.x *= scaleVector3.x
 		point.y *= scaleVector3.y
 		point.z *= scaleVector3.z
+
+
+class ScaleDerivation:
+	"Class to hold scale variables."
+	def __init__(self, elementNode):
+		'Set defaults.'
+		self.scaleTetragrid = matrix.getScaleTetragrid(elementNode, '')

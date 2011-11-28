@@ -118,14 +118,14 @@ globalIsReplaceable = False
 def getIntegerFlagFromCharacterSplitLine(character, splitLine):
 	"Get the integer flag after the first occurence of the character in the split line."
 	lineFromCharacter = gcodec.getStringFromCharacterSplitLine(character, splitLine)
-	if lineFromCharacter == None:
+	if lineFromCharacter is None:
 		return 0
 	return 1
 
 def getIntegerFromCharacterLengthLineOffset( character, offset, splitLine, stepLength ):
 	"Get the integer after the first occurence of the character in the split line."
 	lineFromCharacter = gcodec.getStringFromCharacterSplitLine(character, splitLine)
-	if lineFromCharacter == None:
+	if lineFromCharacter is None:
 		return 0
 	floatValue = ( float( lineFromCharacter ) + offset ) / stepLength
 	return int( round( floatValue ) )
@@ -138,7 +138,7 @@ def getOutput( gcodeText, binary16ByteRepository = None ):
 	'Get the exported version of a gcode file.'
 	if gcodeText == '':
 		return ''
-	if binary16ByteRepository == None:
+	if binary16ByteRepository is None:
 		binary16ByteRepository = Binary16ByteRepository()
 		settings.getReadRepository( binary16ByteRepository )
 	return Binary16ByteSkein().getCraftedGcode( gcodeText, binary16ByteRepository )

@@ -85,7 +85,7 @@ def getCraftedTextFromText( gcodeText, splodgeRepository = None ):
 	"Splodge a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'splodge'):
 		return gcodeText
-	if splodgeRepository == None:
+	if splodgeRepository is None:
 		splodgeRepository = settings.getReadRepository( SplodgeRepository() )
 	if not splodgeRepository.activateSplodge.value:
 		return gcodeText
@@ -222,12 +222,12 @@ class SplodgeSkein:
 		locationComplex = location.dropAxis()
 		relativeStartComplex = None
 		nextLocationComplex = self.getNextActiveLocationComplex()
-		if nextLocationComplex != None:
+		if nextLocationComplex is not None:
 			if nextLocationComplex != locationComplex:
 				relativeStartComplex = locationComplex - nextLocationComplex
-		if relativeStartComplex == None:
+		if relativeStartComplex is None:
 			relativeStartComplex = complex( 19.9, 9.9 )
-			if self.oldLocation != None:
+			if self.oldLocation is not None:
 				oldLocationComplex = self.oldLocation.dropAxis()
 				if oldLocationComplex != locationComplex:
 					relativeStartComplex = oldLocationComplex - locationComplex

@@ -22,7 +22,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = SVGDerivation(elementNode)
 	return getGeometryOutputBySVGReader(elementNode, derivation.svgReader)
 
@@ -58,7 +58,3 @@ class SVGDerivation:
 		'Set defaults.'
 		self.svgReader = svg_reader.SVGReader()
 		self.svgReader.parseSVGByElementNode(elementNode)
-
-	def __repr__(self):
-		"Get the string representation of this SVGDerivation."
-		return str(self.__dict__)

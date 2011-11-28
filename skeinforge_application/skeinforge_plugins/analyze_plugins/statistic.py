@@ -133,7 +133,7 @@ def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
 	print('')
 	print('')
 	print('Statistics are being generated for the file ' + archive.getSummarizedFileName(fileName) )
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( StatisticRepository() )
 	skein = StatisticSkein()
 	statisticGcode = skein.getCraftedGcode(gcodeText, repository)
@@ -193,7 +193,7 @@ class StatisticSkein:
 
 	def addToPath(self, location):
 		"Add a point to travel and maybe extrusion."
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			travel = location.distance( self.oldLocation )
 			if self.feedRateMinute > 0.0:
 				self.totalBuildTime += 60.0 * travel / self.feedRateMinute
@@ -243,7 +243,7 @@ class StatisticSkein:
 		roundedExtent = euclidean.getRoundedPoint( extent )
 		axisString =  " axis extrusion starts at "
 		crossSectionArea = 0.9 * self.absolutePerimeterWidth * self.layerThickness # 0.9 if from the typical fill density
-		if self.extrusionDiameter != None:
+		if self.extrusionDiameter is not None:
 			crossSectionArea = math.pi / 4.0 * self.extrusionDiameter * self.extrusionDiameter
 		volumeExtruded = 0.001 * crossSectionArea * self.totalDistanceExtruded
 		mass = volumeExtruded / repository.density.value
@@ -264,18 +264,18 @@ class StatisticSkein:
 		self.addLine( "Build time is %s." % euclidean.getDurationString( self.totalBuildTime ) )
 		self.addLine( "Distance extruded is %s mm." % euclidean.getThreeSignificantFigures( self.totalDistanceExtruded ) )
 		self.addLine( "Distance traveled is %s mm." % euclidean.getThreeSignificantFigures( self.totalDistanceTraveled ) )
-		if self.extruderSpeed != None:
+		if self.extruderSpeed is not None:
 			self.addLine( "Extruder speed is %s" % euclidean.getThreeSignificantFigures( self.extruderSpeed ) )
 		self.addLine( "Extruder was extruding %s percent of the time." % euclidean.getThreeSignificantFigures( 100.0 * self.totalDistanceExtruded / self.totalDistanceTraveled ) )
 		self.addLine( "Extruder was toggled %s times." % self.extruderToggled )
-		if self.operatingFeedRatePerSecond != None:
+		if self.operatingFeedRatePerSecond is not None:
 			flowRate = crossSectionArea * self.operatingFeedRatePerSecond
 			self.addLine( "Operating flow rate is %s mm3/s." % euclidean.getThreeSignificantFigures( flowRate ) )
 		self.addLine( "Feed rate average is %s mm/s, (%s mm/min)." % ( euclidean.getThreeSignificantFigures( averageFeedRate ), euclidean.getThreeSignificantFigures( 60.0 * averageFeedRate ) ) )
 		self.addLine(' ')
 		self.addLine('Filament')
 		self.addLine( "Cross section area is %s mm2." % euclidean.getThreeSignificantFigures( crossSectionArea ) )
-		if self.extrusionDiameter != None:
+		if self.extrusionDiameter is not None:
 			self.addLine( "Extrusion diameter is %s mm." % euclidean.getThreeSignificantFigures( self.extrusionDiameter ) )
 		self.addLine('Extrusion fill density ratio is %s' % euclidean.getThreeSignificantFigures( crossSectionArea / self.absolutePerimeterWidth / self.layerThickness ) )
 		self.addLine(' ')
@@ -285,13 +285,13 @@ class StatisticSkein:
 		self.addLine(' ')
 		self.addLine('Meta')
 		self.addLine( "Text has %s lines and a size of %s KB." % ( self.numberOfLines, kilobytes ) )
-		if self.version != None:
+		if self.version is not None:
 			self.addLine( "Version is "  + self.version )
 		self.addLine(' ')
 		self.addLine( "Procedures" )
 		for procedure in self.procedures:
 			self.addLine(procedure)
-		if self.profileName != None:
+		if self.profileName is not None:
 			self.addLine(' ')
 			self.addLine( 'Profile' )
 			self.addLine(self.profileName)
@@ -312,7 +312,7 @@ class StatisticSkein:
 
 	def helicalMove( self, isCounterclockwise, splitLine ):
 		"Get statistics for a helical move."
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return
 		location = self.getLocationSetFeedRateToSplitLine(splitLine)
 		location += self.oldLocation

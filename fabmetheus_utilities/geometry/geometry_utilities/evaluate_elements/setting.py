@@ -29,7 +29,7 @@ def getCascadeFloatWithoutSelf(defaultFloat, elementNode, key):
 		value = elementNode.attributes[key]
 		functionName = 'get' + key[0].upper() + key[1 :]
 		if functionName in value:
-			if elementNode.parentNode == None:
+			if elementNode.parentNode is None:
 				return defaultFloat
 			else:
 				elementNode = elementNode.parentNode
@@ -37,7 +37,7 @@ def getCascadeFloatWithoutSelf(defaultFloat, elementNode, key):
 
 def getImportRadius(elementNode):
 	'Get the importRadius.'
-	if elementNode == None:
+	if elementNode is None:
 		return 0.36
 	preferences = skeinforge_craft.getCraftPreferences('carve')
 	importCoarseness = skeinforge_craft.getCraftValue('Import Coarseness', preferences)
@@ -58,7 +58,7 @@ def getInteriorOverhangRadians(elementNode):
 
 def getLayerThickness(elementNode):
 	'Get the layer thickness.'
-	if elementNode == None:
+	if elementNode is None:
 		return 0.4
 	preferences = skeinforge_craft.getCraftPreferences('carve')
 	return getCascadeFloatWithoutSelf(skeinforge_craft.getCraftValue('Layer Thickness', preferences), elementNode, 'layerThickness')
@@ -77,7 +77,7 @@ def getOverhangSpan(elementNode):
 
 def getPerimeterWidth(elementNode):
 	'Get the perimeter width.'
-	if elementNode == None:
+	if elementNode is None:
 		return 0.72
 	preferences = skeinforge_craft.getCraftPreferences('carve')
 	layerThickness = skeinforge_craft.getCraftValue('Layer Thickness', preferences)

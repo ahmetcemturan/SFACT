@@ -23,7 +23,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	'Get triangle mesh from attribute dictionary.'
-	if derivation == None:
+	if derivation is None:
 		derivation = ConcatenateDerivation(elementNode)
 	concatenatedList = euclidean.getConcatenatedList(derivation.target)[:]
 	if len(concatenatedList) == 0:
@@ -52,7 +52,3 @@ class ConcatenateDerivation:
 	def __init__(self, elementNode):
 		'Initialize.'
 		self.target = evaluate.getTransformedPathsByKey([], elementNode, 'target')
-
-	def __repr__(self):
-		'Get the string representation of this ConcatenateDerivation.'
-		return str(self.__dict__)

@@ -46,6 +46,10 @@ def getGeometryOutput(elementNode, radius):
 	addSphere(elementNode, faces, radius, vertexes)
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
+def getNewDerivation(elementNode):
+	'Get new derivation.'
+	return SphereDerivation(elementNode)
+
 def processElementNode(elementNode):
 	'Process the xml element.'
 	evaluate.processArchivable(Sphere, elementNode)
@@ -61,13 +65,19 @@ class Sphere(cube.Cube):
 		'Set to elementNode.'
 		attributes = elementNode.attributes
 		self.elementNode = elementNode
-		self.radius = evaluate.getVector3ByPrefixes( elementNode, ['demisize', 'radius'], Vector3(1.0, 1.0, 1.0) )
-		self.radius = evaluate.getVector3ByMultiplierPrefixes( elementNode, 2.0, ['diameter', 'size'], self.radius )
+		self.radius = SphereDerivation(elementNode).radius
 		if 'radius' in attributes:
 			del attributes['radius']
 		attributes['radius.x'] = self.radius.x
 		attributes['radius.y'] = self.radius.y
 		attributes['radius.z'] = self.radius.z
 		self.createShape()
-		self.liftByMinimumZ(-self.radius.z)
 		solid.processArchiveRemoveSolid(elementNode, self.getGeometryOutput())
+
+
+class SphereDerivation:
+	"Class to hold sphere variables."
+	def __init__(self, elementNode):
+		'Set defaults.'
+		self.radius = evaluate.getVector3ByPrefixes(elementNode, ['demisize', 'radius'], Vector3(1.0, 1.0, 1.0))
+		self.radius = evaluate.getVector3ByMultiplierPrefixes(elementNode, 2.0, ['diameter', 'size'], self.radius)

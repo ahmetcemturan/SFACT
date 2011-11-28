@@ -18,7 +18,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def processElementNode(elementNode):
 	"Process the xml element."
-	if elementNode.xmlObject == None:
+	if elementNode.xmlObject is None:
 		if 'condition' in elementNode.attributes:
 			value = elementNode.attributes['condition']
 			elementNode.xmlObject = evaluate.getEvaluatorSplitWords(value)

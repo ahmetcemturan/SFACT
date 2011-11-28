@@ -32,14 +32,18 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	translatePoints(elementNode, loop, prefix)
 	return [loop]
 
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return TranslateDerivation(elementNode)
+
 def manipulateElementNode(elementNode, target):
 	"Manipulate the xml element."
-	translateTetragrid = matrix.getTranslateTetragrid(elementNode, '')
-	if translateTetragrid == None:
+	derivation = TranslateDerivation(elementNode)
+	if derivation.translateTetragrid == None:
 		print('Warning, translateTetragrid was None in translate so nothing will be done for:')
 		print(elementNode)
 		return
-	matrix.setAttributesToMultipliedTetragrid(target, translateTetragrid)
+	matrix.setAttributesToMultipliedTetragrid(target, derivation.translateTetragrid)
 
 def processElementNode(elementNode):
 	"Process the xml element."
@@ -55,3 +59,10 @@ def translatePoints(elementNode, points, prefix):
 	translateVector3 = matrix.getCumulativeVector3Remove(Vector3(), elementNode, prefix)
 	if abs(translateVector3) > 0.0:
 		euclidean.translateVector3Path(points, translateVector3)
+
+
+class TranslateDerivation:
+	"Class to hold translate variables."
+	def __init__(self, elementNode):
+		'Set defaults.'
+		self.translateTetragrid = matrix.getTranslateTetragrid(elementNode, '')

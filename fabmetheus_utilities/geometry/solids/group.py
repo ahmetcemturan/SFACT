@@ -29,6 +29,10 @@ def convertElementNode(elementNode, geometryOutput):
 	"Convert the xml element to a group xml element."
 	convertContainerElementNode(elementNode, geometryOutput, Group())
 
+def getNewDerivation(elementNode):
+	'Get new derivation.'
+	return evaluate.EmptyObject(elementNode)
+
 def processElementNode(elementNode):
 	"Process the xml element."
 	evaluate.processArchivable(Group, elementNode)

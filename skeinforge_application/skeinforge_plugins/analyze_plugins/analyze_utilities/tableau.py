@@ -98,7 +98,7 @@ class ExportCanvasDialog:
 				settings.liftRepositoryDialogs(settings.globalRepositoryDialogListTable[repositoryDialog])
 				return
 		pluginModule = archive.getModuleWithDirectoryPath(getPluginsDirectoryPath(), self.name)
-		if pluginModule == None:
+		if pluginModule is None:
 			return None
 		pluginRepository = pluginModule.getNewRepository()
 		pluginRepository.setCanvasFileNameSuffix(self.canvas, self.fileName, self.suffix)
@@ -247,7 +247,7 @@ class TableauWindow:
 		self.gridPosition.master = self.root
 		for name in self.repository.frameList.value:
 			entity = self.getEntityFromName( name )
-			if entity != None:
+			if entity is not None:
 				self.gridPosition.incrementGivenNumberOfColumns(3)
 				entity.addToDialog( getGridHorizontalFrame( self.gridPosition ) )
 		for menuRadio in self.repository.mouseMode.menuRadios:
@@ -334,7 +334,7 @@ class TableauWindow:
 
 	def cancelTimer(self, event=None):
 		'Cancel the timer and set it to none.'
-		if self.timerID != None:
+		if self.timerID is not None:
 			self.canvas.after_cancel(self.timerID)
 			self.timerID = None
 
@@ -439,7 +439,7 @@ class TableauWindow:
 		untilDotFileName = self.addPhotoImage( fileName, gridPosition )
 		photoImage = self.photoImages[ untilDotFileName ]
 		photoButton = settings.Tkinter.Button( gridPosition.master, activebackground = 'black', activeforeground = 'white', command = commandFunction, text = untilDotFileName )
-		if photoImage != None:
+		if photoImage is not None:
 			photoButton['image'] = photoImage
 		photoButton.grid( row = gridPosition.row, column = gridPosition.column, sticky = settings.Tkinter.W )
 		return photoButton
@@ -643,7 +643,7 @@ class TableauWindow:
 	def setButtonImageText( self, button, text ):
 		'Set the text of the e periodic buttons.'
 		photoImage = self.photoImages[ text ]
-		if photoImage != None:
+		if photoImage is not None:
 			button['image'] = photoImage
 		button['text'] = text
 
@@ -764,7 +764,7 @@ class TableauWindow:
 
 	def updateMouseToolIfSelection(self):
 		'Update the mouse tool if it is a selection tool.'
-		if self.mouseTool == None:
+		if self.mouseTool is None:
 			return
 		if self.mouseTool.isSelectionTool():
 			self.mouseTool.update()

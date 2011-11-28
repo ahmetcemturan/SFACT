@@ -83,7 +83,7 @@ globalIsReplaceable = True
 def getCharacterIntegerString( character, offset, splitLine, step ):
 	"Get a character and integer string."
 	floatValue = getFloatFromCharacterSplitLine(character, splitLine)
-	if floatValue == None:
+	if floatValue is None:
 		return None
 	floatValue += offset
 	integerValue = int(round(float(floatValue / step)))
@@ -92,7 +92,7 @@ def getCharacterIntegerString( character, offset, splitLine, step ):
 def getFloatFromCharacterSplitLine(character, splitLine):
 	"Get the float after the first occurence of the character in the split line."
 	lineFromCharacter = gcodec.getStringFromCharacterSplitLine(character, splitLine)
-	if lineFromCharacter == None:
+	if lineFromCharacter is None:
 		return None
 	return float(lineFromCharacter)
 
@@ -104,7 +104,7 @@ def getOutput(gcodeText, repository=None):
 	'Get the exported version of a gcode file.'
 	if gcodeText == '':
 		return ''
-	if repository == None:
+	if repository is None:
 		repository = GcodeTimeSegmentRepository()
 		settings.getReadRepository(repository)
 	return GcodeTimeSegmentSkein().getCraftedGcode(gcodeText, repository)
@@ -173,7 +173,7 @@ class GcodeTimeSegmentSkein:
 
 	def addStringToLine( self, lineStringIO, wordString ):
 		"Add a character and integer to line string."
-		if wordString == None:
+		if wordString is None:
 			return
 		if self.repository.addSpaceBetweenWords.value:
 			lineStringIO.write(' ')
@@ -217,11 +217,11 @@ class GcodeTimeSegmentSkein:
 		self.addCharacterInteger('X', lineStringIO, self.repository.xOffset.value, splitLine, self.repository.xStep.value )
 		self.addCharacterInteger('Y', lineStringIO, self.repository.yOffset.value, splitLine, self.repository.yStep.value )
 		zString = getCharacterIntegerString('Z', self.repository.zOffset.value, splitLine, self.repository.zStep.value )
-		if zString == None:
+		if zString is None:
 			zString = self.oldZString
 		self.addStringToLine(lineStringIO, zString)
 		duration = self.repository.initialTime.value
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			distance = abs(location - self.oldLocation)
 			duration = 60.0 / self.feedRateMinute * distance
 		extrusionDistance = 0.0

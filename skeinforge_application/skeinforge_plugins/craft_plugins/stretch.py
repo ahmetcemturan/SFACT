@@ -97,7 +97,7 @@ def getCraftedTextFromText( gcodeText, stretchRepository = None ):
 	"Stretch a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'stretch'):
 		return gcodeText
-	if stretchRepository == None:
+	if stretchRepository is None:
 		stretchRepository = settings.getReadRepository( StretchRepository() )
 	if not stretchRepository.activateStretch.value:
 		return gcodeText
@@ -136,7 +136,7 @@ class LineIteratorBackward:
 		while self.lineIndex > 3:
 			if self.lineIndex == self.firstLineIndex:
 				raise StopIteration, "You've reached the end of the line."
-			if self.firstLineIndex == None:
+			if self.firstLineIndex is None:
 				self.firstLineIndex = self.lineIndex
 			nextLineIndex = self.lineIndex - 1
 			line = self.lines[self.lineIndex]
@@ -200,7 +200,7 @@ class LineIteratorForward:
 		while self.lineIndex < len(self.lines):
 			if self.lineIndex == self.firstLineIndex:
 				raise StopIteration, "You've reached the end of the line."
-			if self.firstLineIndex == None:
+			if self.firstLineIndex is None:
 				self.firstLineIndex = self.lineIndex
 			nextLineIndex = self.lineIndex + 1
 			line = self.lines[self.lineIndex]
@@ -334,7 +334,7 @@ class StretchSkein:
 		iteratorBackward = LineIteratorBackward( self.isLoop, indexPreviousStart, self.lines )
 		locationComplex = location.dropAxis()
 		relativeStretch = self.getRelativeStretch( locationComplex, iteratorForward ) + self.getRelativeStretch( locationComplex, iteratorBackward )
-		relativeStretch *= 0.7854
+		relativeStretch *= euclidean.globalQuarterPi
 #		print('relativeStretch')
 #		print( relativeStretch )
 		relativeStretch = self.getCrossLimitedStretch( relativeStretch, crossIteratorForward, locationComplex )

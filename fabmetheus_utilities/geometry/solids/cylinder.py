@@ -56,6 +56,10 @@ def getGeometryOutput(inradius, sides, topOverBottom):
 	addCylinder(faces, inradius, sides, topOverBottom, vertexes)
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
+def getNewDerivation(elementNode):
+	'Get new derivation.'
+	return CylinderDerivation(elementNode)
+
 def getTopOverBottom(angle, endZ, inradiusComplex, startZ):
 	'Get topOverBottom by angle in radians, endZ, inradius and start.'
 	return max(1.0 - abs(endZ - startZ) * math.tan(angle) / lineation.getRadiusAverage(inradiusComplex), 0.0)
@@ -84,10 +88,9 @@ class Cylinder( cube.Cube ):
 		'Set to elementNode.'
 		attributes = elementNode.attributes
 		self.elementNode = elementNode
-		self.inradius = evaluate.getVector3ByPrefixes(elementNode, ['demisize', 'inradius', 'radius'], Vector3(1.0, 1.0, 1.0))
-		self.inradius = evaluate.getVector3ByMultiplierPrefixes(elementNode, 2.0, ['diameter', 'size'], self.inradius)
-		self.inradius.z = 0.5 * evaluate.getEvaluatedFloat(self.inradius.z + self.inradius.z, elementNode, 'height')
-		self.topOverBottom = evaluate.getEvaluatedFloat(1.0, elementNode, 'topOverBottom')
+		derivation = CylinderDerivation(elementNode)
+		self.inradius = derivation.inradius
+		self.topOverBottom = derivation.topOverBottom
 		if 'inradius' in attributes:
 			del attributes['inradius']
 		attributes['height'] = self.inradius.z + self.inradius.z
@@ -95,5 +98,14 @@ class Cylinder( cube.Cube ):
 		attributes['radius.y'] = self.inradius.y
 		attributes['topOverBottom'] = self.topOverBottom
 		self.createShape()
-		self.liftByMinimumZ(-self.inradius.z)
 		solid.processArchiveRemoveSolid(elementNode, self.getGeometryOutput())
+
+
+class CylinderDerivation:
+	"Class to hold cylinder variables."
+	def __init__(self, elementNode):
+		'Set defaults.'
+		self.inradius = evaluate.getVector3ByPrefixes(elementNode, ['demisize', 'inradius', 'radius'], Vector3(1.0, 1.0, 1.0))
+		self.inradius = evaluate.getVector3ByMultiplierPrefixes(elementNode, 2.0, ['diameter', 'size'], self.inradius)
+		self.inradius.z = 0.5 * evaluate.getEvaluatedFloat(self.inradius.z + self.inradius.z, elementNode, 'height')
+		self.topOverBottom = evaluate.getEvaluatedFloat(1.0, elementNode, 'topOverBottom')

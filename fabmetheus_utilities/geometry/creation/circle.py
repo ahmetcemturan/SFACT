@@ -23,7 +23,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = CircleDerivation(elementNode)
 	angleTotal = math.radians(derivation.start)
 	loop = []
@@ -64,7 +64,7 @@ class CircleDerivation:
 		'Set defaults.'
 		self.radius = lineation.getRadiusComplex(elementNode, complex(1.0, 1.0))
 		self.sides = evaluate.getEvaluatedFloat(None, elementNode, 'sides')
-		if self.sides == None:
+		if self.sides is None:
 			radiusMaximum = max(self.radius.real, self.radius.imag)
 			self.sides = evaluate.getSidesMinimumThreeBasedOnPrecisionSides(elementNode, radiusMaximum)
 		self.radiusArealized = evaluate.getRadiusArealizedBasedOnAreaRadius(elementNode, self.radius, self.sides)
@@ -74,7 +74,3 @@ class CircleDerivation:
 		self.extent = evaluate.getEvaluatedFloat(end - self.start, elementNode, 'extent')
 		self.extent += 360.0 * (self.revolutions - 1.0)
 		self.spiral = evaluate.getVector3ByPrefix(None, elementNode, 'spiral')
-
-	def __repr__(self):
-		"Get the string representation of this CircleDerivation."
-		return str(self.__dict__)

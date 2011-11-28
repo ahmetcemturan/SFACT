@@ -27,7 +27,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def convertElementNode(elementNode, geometryOutput):
 	'Convert the xml element by geometryOutput.'
-	if geometryOutput == None:
+	if geometryOutput is None:
 		return
 	if len(geometryOutput) < 1:
 		return
@@ -80,7 +80,7 @@ class Path(dictionary.Dictionary):
 
 	def addXMLInnerSection(self, depth, output):
 		'Add the xml section for this object.'
-		if self.matrix4X4 != None:
+		if self.matrix4X4 is not None:
 			self.matrix4X4.addXML(depth, output)
 		xml_simple_writer.addXMLFromVertexes(depth, output, self.vertexes)
 
@@ -112,13 +112,13 @@ class Path(dictionary.Dictionary):
 
 	def getTransformedPaths(self):
 		'Get all transformed paths.'
-		if self.elementNode == None:
+		if self.elementNode is None:
 			return dictionary.getAllPaths([self.vertexes], self)
 		chainTetragrid = self.getMatrixChainTetragrid()
 		if self.oldChainTetragrid != chainTetragrid:
 			self.oldChainTetragrid = chainTetragrid
 			self.transformedPath = None
-		if self.transformedPath == None:
+		if self.transformedPath is None:
 			self.transformedPath = matrix.getTransformedVector3s(chainTetragrid, self.vertexes)
 		if len(self.transformedPath) > 0:
 			return dictionary.getAllTransformedPaths([self.transformedPath], self)

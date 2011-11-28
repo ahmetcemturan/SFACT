@@ -95,15 +95,15 @@ class GcodeSmallSkein:
 		zString = getStringFromCharacterSplitLine('Z', splitLine )
 		feedRateString = getStringFromCharacterSplitLine('F', splitLine )
 		self.output.write('G1')
-		if xString != None:
+		if xString is not None:
 			self.output.write(' X' + xString )
-		if yString != None:
+		if yString is not None:
 			self.output.write(' Y' + yString )
-		if zString != None and zString != self.lastZString:
+		if zString is not None and zString != self.lastZString:
 			self.output.write(' Z' + zString )
-		if feedRateString != None and feedRateString != self.lastFeedRateString:
+		if feedRateString is not None and feedRateString != self.lastFeedRateString:
 			self.output.write(' F' + feedRateString )
-		if eString != None:
+		if eString is not None:
 			self.output.write(' E' + eString )
 		self.lastFeedRateString = feedRateString
 		self.lastZString = zString

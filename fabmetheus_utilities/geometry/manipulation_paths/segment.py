@@ -25,33 +25,36 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get segment loop."
 	if len(loop) < 3:
 		return [loop]
-	path = evaluate.getPathByPrefix(elementNode, getSegmentPathDefault(), prefix)
-	if path == getSegmentPathDefault():
+	derivation = SegmentDerivation(elementNode, prefix)
+	if derivation.path == getSegmentPathDefault():
 		return [loop]
-	path = getXNormalizedVector3Path(path)
-	segmentCenter = evaluate.getVector3ByPrefix(None, elementNode, prefix + 'center')
+	path = getXNormalizedVector3Path(derivation.path)
 	if euclidean.getIsWiddershinsByVector3(loop):
 		path = path[: : -1]
 		for point in path:
 			point.x = 1.0 - point.x
-			if segmentCenter == None:
+			if derivation.center == None:
 				point.y = - point.y
 	segmentLoop = []
 	startEnd = StartEnd(elementNode, len(loop), prefix)
 	for pointIndex in xrange(len(loop)):
 		if pointIndex >= startEnd.start and pointIndex < startEnd.end:
-			segmentLoop += getSegmentPath(loop, path, pointIndex, segmentCenter)
+			segmentLoop += getSegmentPath(derivation.center, loop, path, pointIndex)
 		else:
 			segmentLoop.append(loop[pointIndex])
 	return [euclidean.getLoopWithoutCloseSequentialPoints( close, segmentLoop)]
 
-def getRadialPath( begin, end, path, segmentCenter ):
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return SegmentDerivation(elementNode, prefix)
+
+def getRadialPath(begin, center, end, path):
 	"Get radial path."
 	beginComplex = begin.dropAxis()
 	endComplex = end.dropAxis()
-	segmentCenterComplex = segmentCenter.dropAxis()
-	beginMinusCenterComplex = beginComplex - segmentCenterComplex
-	endMinusCenterComplex = endComplex - segmentCenterComplex
+	centerComplex = center.dropAxis()
+	beginMinusCenterComplex = beginComplex - centerComplex
+	endMinusCenterComplex = endComplex - centerComplex
 	beginMinusCenterComplexRadius = abs( beginMinusCenterComplex )
 	endMinusCenterComplexRadius = abs( endMinusCenterComplex )
 	if beginMinusCenterComplexRadius == 0.0 or endMinusCenterComplexRadius == 0.0:
@@ -65,19 +68,19 @@ def getRadialPath( begin, end, path, segmentCenter ):
 		weightBegin = 1.0 - weightEnd
 		weightedRadius = beginMinusCenterComplexRadius * weightBegin + endMinusCenterComplexRadius * weightEnd * ( 1.0 + point.y )
 		radialComplex = weightedRadius * euclidean.getWiddershinsUnitPolar( angleDifference * point.x ) * beginMinusCenterComplex
-		polygonPoint = segmentCenter + Vector3( radialComplex.real, radialComplex.imag, point.z )
+		polygonPoint = center + Vector3( radialComplex.real, radialComplex.imag, point.z )
 		radialPath.append( polygonPoint )
 	return radialPath
 
-def getSegmentPath( loop, path, pointIndex, segmentCenter ):
+def getSegmentPath(center, loop, path, pointIndex):
 	"Get segment path."
 	centerBegin = loop[pointIndex]
 	centerEnd = loop[(pointIndex + 1) % len(loop)]
 	centerEndMinusBegin = centerEnd - centerBegin
 	if abs( centerEndMinusBegin ) <= 0.0:
 		return [ centerBegin ]
-	if segmentCenter != None:
-		return getRadialPath( centerBegin, centerEnd, path, segmentCenter )
+	if center != None:
+		return getRadialPath(centerBegin, center, centerEnd, path)
 	begin = loop[(pointIndex + len(loop) - 1) % len(loop)]
 	end = loop[ ( pointIndex + 2 ) % len(loop) ]
 	return getWedgePath( begin, centerBegin, centerEnd, centerEndMinusBegin, end, path )
@@ -137,6 +140,14 @@ def getXNormalizedVector3Path(path):
 def processElementNode(elementNode):
 	"Process the xml element."
 	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)
+
+
+class SegmentDerivation:
+	"Class to hold segment variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.center = evaluate.getVector3ByPrefix(None, elementNode, prefix + 'center')
+		self.path = evaluate.getPathByPrefix(elementNode, getSegmentPathDefault(), prefix)
 
 
 class StartEnd:

@@ -624,7 +624,7 @@ def getGearProfileRack(derivation, toothProfile):
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = GearDerivation(elementNode)
 	creationFirst = derivation.creationType.lower()[: 1]
 	toothProfileComplement = getToothProfile(derivation, derivation.pitchRadiusComplement, derivation.teethComplement)
@@ -722,7 +722,7 @@ def getLiftedOutput(derivation, geometryOutput):
 
 def getLighteningHoles(derivation, gearHolePaths, pitchRadius):
 	'Get cutout circles.'
-	if gearHolePaths != None:
+	if gearHolePaths is not None:
 		if len(gearHolePaths) > 0:
 			return gearHolePaths
 	innerRadius = abs(pitchRadius) - derivation.dedendum
@@ -1150,7 +1150,3 @@ class GearDerivation:
 		self.addendum = self.toothProfileHalf[-1].imag - self.pitchRadius
 		self.dedendum = abs(self.toothProfileHalf[-1]) - self.pitchRadius + self.clearance
 		self.pinionToothProfile = getToothProfileCylinderByProfile(self, self.pitchRadius, self.teethPinion, self.toothProfileHalf)
-
-	def __repr__(self):
-		"Get the string representation of this GearDerivation."
-		return str(self.__dict__)

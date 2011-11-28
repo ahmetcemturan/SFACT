@@ -22,7 +22,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = ShaftDerivation(elementNode)
 	shaftPath = getShaftPath(derivation.depthBottom, derivation.depthTop, derivation.radius, derivation.sides)
 	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(shaftPath))
@@ -80,7 +80,3 @@ class ShaftDerivation:
 		self.depthTop = self.radius * self.depthTopOverRadius
 		self.depthTop = evaluate.getEvaluatedFloat(self.depthTop, elementNode, 'depth')
 		self.depthTop = evaluate.getEvaluatedFloat(self.depthTop, elementNode, 'depthTop')
-
-	def __repr__(self):
-		"Get the string representation of this ShaftDerivation."
-		return str(self.__dict__)

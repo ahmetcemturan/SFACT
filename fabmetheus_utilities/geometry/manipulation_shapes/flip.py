@@ -51,10 +51,9 @@ globalExecutionOrder = 200
 # return M
 def flipPoints(elementNode, points, prefix):
 	'Flip the points.'
-	origin = evaluate.getVector3ByPrefix(Vector3(), elementNode, prefix + 'origin')
-	axis = evaluate.getVector3ByPrefix(Vector3(1.0, 0.0, 0.0), elementNode, prefix + 'axis').getNormalized()
+	derivation = FlipDerivation(elementNode, prefix)
 	for point in points:
-		point.setToVector3(point - 2.0 * axis.dot(point - origin) * axis)
+		point.setToVector3(point - 2.0 * derivation.axis.dot(point - derivation.origin) * derivation.axis)
 
 def getFlippedLoop(elementNode, loop, prefix):
 	'Get flipped loop.'
@@ -72,6 +71,10 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	'Get flipped paths.'
 	return [getFlippedLoop(elementNode, loop, prefix)]
 
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return FlipDerivation(elementNode, prefix)
+
 def getShouldReverse(elementNode, prefix):
 	'Determine if the loop should be reversed.'
 	return evaluate.getEvaluatedBoolean(True, elementNode, prefix + 'reverse')
@@ -79,3 +82,11 @@ def getShouldReverse(elementNode, prefix):
 def processElementNode(elementNode):
 	'Process the xml element.'
 	solid.processElementNodeByFunctions(elementNode, getManipulatedGeometryOutput, getManipulatedPaths)
+
+
+class FlipDerivation:
+	"Class to hold flip variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.origin = evaluate.getVector3ByPrefix(Vector3(), elementNode, prefix + 'origin')
+		self.axis = evaluate.getVector3ByPrefix(Vector3(1.0, 0.0, 0.0), elementNode, prefix + 'axis').getNormalized()

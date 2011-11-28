@@ -34,7 +34,7 @@ def addNegativesByRadius(elementNode, end, negatives, radius, start):
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = TeardropDerivation(elementNode)
 	teardropPath = getTeardropPath(
 		derivation.inclination, derivation.overhangRadians, derivation.overhangSpan, derivation.radiusArealized, derivation.sides)
@@ -47,7 +47,7 @@ def getGeometryOutputByArguments(arguments, elementNode):
 
 def getInclination(end, start):
 	"Get inclination."
-	if end == None or start == None:
+	if end is None or start is None:
 		return 0.0
 	endMinusStart = end - start
 	return math.atan2(endMinusStart.z, abs(endMinusStart.dropAxis()))
@@ -108,13 +108,9 @@ class TeardropDerivation:
 		self.overhangSpan = setting.getOverhangSpan(elementNode)
 		self.radius = lineation.getFloatByPrefixBeginEnd(elementNode, 'radius', 'diameter', 1.0)
 		size = evaluate.getEvaluatedFloat(None, elementNode, 'size')
-		if size != None:
+		if size is not None:
 			self.radius = 0.5 * size
 		self.sides = evaluate.getEvaluatedFloat(None, elementNode, 'sides')
-		if self.sides == None:
+		if self.sides is None:
 			self.sides = evaluate.getSidesMinimumThreeBasedOnPrecisionSides(elementNode, self.radius)
 		self.radiusArealized = evaluate.getRadiusArealizedBasedOnAreaRadius(elementNode, self.radius, self.sides)
-
-	def __repr__(self):
-		"Get the string representation of this TeardropDerivation."
-		return str(self.__dict__)

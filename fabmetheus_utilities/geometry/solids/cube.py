@@ -37,6 +37,10 @@ def getGeometryOutput(elementNode, inradius):
 	addCube(elementNode, faces, inradius, vertexes)
 	return {'trianglemesh' : {'vertex' : vertexes, 'face' : faces}}
 
+def getNewDerivation(elementNode):
+	'Get new derivation.'
+	return CubeDerivation(elementNode)
+
 def processElementNode(elementNode):
 	'Process the xml element.'
 	evaluate.processArchivable(Cube, elementNode)
@@ -56,13 +60,19 @@ class Cube(triangle_mesh.TriangleMesh):
 		'Set to elementNode.'
 		attributes = elementNode.attributes
 		self.elementNode = elementNode
-		self.inradius = evaluate.getVector3ByPrefixes(elementNode, ['demisize', 'inradius'], Vector3(1.0, 1.0, 1.0))
-		self.inradius = evaluate.getVector3ByMultiplierPrefix(elementNode, 2.0, 'size', self.inradius)
+		self.inradius = CubeDerivation(elementNode).inradius
 		attributes['inradius.x'] = self.inradius.x
 		attributes['inradius.y'] = self.inradius.y
 		attributes['inradius.z'] = self.inradius.z
 		if 'inradius' in attributes:
 			del attributes['inradius']
 		self.createShape()
-		self.liftByMinimumZ(-self.inradius.z)
 		solid.processArchiveRemoveSolid(elementNode, self.getGeometryOutput())
+
+
+class CubeDerivation:
+	"Class to hold cube variables."
+	def __init__(self, elementNode):
+		'Set defaults.'
+		self.inradius = evaluate.getVector3ByPrefixes(elementNode, ['demisize', 'inradius'], Vector3(1.0, 1.0, 1.0))
+		self.inradius = evaluate.getVector3ByMultiplierPrefix(elementNode, 2.0, 'size', self.inradius)

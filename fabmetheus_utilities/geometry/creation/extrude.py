@@ -32,7 +32,7 @@ def addLoop(derivation, endMultiplier, loopLists, path, portionDirectionIndex, p
 	loops = loopLists[-1]
 	interpolationOffset = derivation.interpolationDictionary['offset']
 	offset = interpolationOffset.getVector3ByPortion( portionDirection )
-	if endMultiplier != None:
+	if endMultiplier is not None:
 		if portionDirectionIndex == 0:
 			setOffsetByMultiplier( interpolationOffset.path[1], interpolationOffset.path[0], endMultiplier, offset )
 		elif portionDirectionIndex == len( portionDirections ) - 1:
@@ -40,14 +40,14 @@ def addLoop(derivation, endMultiplier, loopLists, path, portionDirectionIndex, p
 	scale = derivation.interpolationDictionary['scale'].getComplexByPortion( portionDirection )
 	twist = derivation.interpolationDictionary['twist'].getYByPortion( portionDirection )
 	projectiveSpace = euclidean.ProjectiveSpace()
-	if derivation.tiltTop == None:
+	if derivation.tiltTop is None:
 		tilt = derivation.interpolationDictionary['tilt'].getComplexByPortion( portionDirection )
 		projectiveSpace = projectiveSpace.getByTilt( tilt )
 	else:
 		normals = getNormals( interpolationOffset, offset, portionDirection )
 		normalFirst = normals[0]
 		normalAverage = getNormalAverage(normals)
-		if derivation.tiltFollow and derivation.oldProjectiveSpace != None:
+		if derivation.tiltFollow and derivation.oldProjectiveSpace is not None:
 			projectiveSpace = derivation.oldProjectiveSpace.getNextSpace( normalAverage )
 		else:
 			projectiveSpace = projectiveSpace.getByBasisZTop( normalAverage, derivation.tiltTop )
@@ -84,7 +84,7 @@ def addNegativesPositives(derivation, negatives, paths, positives):
 			endMultiplier = 1.000001
 		loopLists = getLoopListsByPath(derivation, endMultiplier, path, portionDirections)
 		geometryOutput = triangle_mesh.getPillarsOutput(loopLists)
-		if endMultiplier == None:
+		if endMultiplier is None:
 			positives.append(geometryOutput)
 		else:
 			negatives.append(geometryOutput)
@@ -141,7 +141,7 @@ def comparePortionDirection( portionDirection, otherPortionDirection ):
 
 def getGeometryOutput(derivation, elementNode):
 	'Get triangle mesh from attribute dictionary.'
-	if derivation == None:
+	if derivation is None:
 		derivation = ExtrudeDerivation(elementNode)
 	if len(euclidean.getConcatenatedList(derivation.target)) == 0:
 		print('Warning, in extrude there are no paths.')
@@ -255,7 +255,7 @@ def insertTwistPortions(derivation, elementNode):
 		point.y = math.radians(point.y)
 	remainderPortionDirections = interpolationTwist.portionDirections[1 :]
 	interpolationTwist.portionDirections = [interpolationTwist.portionDirections[0]]
-	if elementNode != None:
+	if elementNode is not None:
 		twistPrecision = setting.getTwistPrecisionRadians(elementNode)
 	for remainderPortionDirection in remainderPortionDirections:
 		addTwistPortions(interpolationTwist, remainderPortionDirection, twistPrecision)
@@ -290,7 +290,7 @@ class ExtrudeDerivation:
 		scalePathDefault = [Vector3(1.0, 1.0, 0.0), Vector3(1.0, 1.0, 1.0)]
 		self.interpolationDictionary['scale'] = Interpolation().getByPrefixZ(elementNode, scalePathDefault, 'scale')
 		self.target = evaluate.getTransformedPathsByKey([], elementNode, 'target')
-		if self.tiltTop == None:
+		if self.tiltTop is None:
 			offsetPathDefault = [Vector3(), Vector3(0.0, 0.0, 1.0)]
 			self.interpolationDictionary['offset'] = Interpolation().getByPrefixZ(elementNode, offsetPathDefault, '')
 			tiltPathDefault = [Vector3(), Vector3(0.0, 0.0, 1.0)]
@@ -304,10 +304,6 @@ class ExtrudeDerivation:
 		self.twist = evaluate.getEvaluatedFloat(0.0, elementNode, 'twist')
 		self.twistPathDefault = [Vector3(), Vector3(1.0, self.twist) ]
 		insertTwistPortions(self, elementNode)
-
-	def __repr__(self):
-		'Get the string representation of this ExtrudeDerivation.'
-		return str(self.__dict__)
 
 
 class Interpolation:
@@ -341,7 +337,7 @@ class Interpolation:
 		if len(path) < 2:
 			print('Warning, path is too small in evaluate in Interpolation.')
 			return
-		if elementNode == None:
+		if elementNode is None:
 			self.path = path
 		else:
 			self.path = evaluate.getTransformedPathByPrefix(elementNode, path, prefix)
@@ -358,7 +354,7 @@ class Interpolation:
 		if len(path) < 2:
 			print('Warning, path is too small in evaluate in Interpolation.')
 			return
-		if elementNode == None:
+		if elementNode is None:
 			self.path = path
 		else:
 			self.path = evaluate.getTransformedPathByPrefix(elementNode, path, prefix)
@@ -372,7 +368,7 @@ class Interpolation:
 		if len(path) < 2:
 			print('Warning, path is too small in evaluate in Interpolation.')
 			return
-		if elementNode == None:
+		if elementNode is None:
 			self.path = path
 		else:
 			self.path = evaluate.getTransformedPathByPrefix(elementNode, path, prefix)

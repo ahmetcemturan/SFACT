@@ -47,15 +47,15 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation == None:
+	if derivation is None:
 		derivation = CarveDerivation(elementNode)
 	targetElementNode = derivation.targetElementNode
-	if targetElementNode == None:
+	if targetElementNode is None:
 		print('Warning, carve could not get target for:')
 		print(elementNode)
 		return
 	xmlObject = targetElementNode.xmlObject
-	if xmlObject == None:
+	if xmlObject is None:
 		print('Warning, processElementNodeByDerivation in carve could not get xmlObject for:')
 		print(targetElementNode)
 		print(derivation.elementNode)
@@ -93,7 +93,3 @@ class CarveDerivation:
 		self.importRadius = setting.getImportRadius(elementNode)
 		self.layerThickness = setting.getLayerThickness(elementNode)
 		self.targetElementNode = evaluate.getElementNodeByKey(elementNode, 'target')
-
-	def __repr__(self):
-		"Get the string representation of this CarveDerivation."
-		return str(self.__dict__)

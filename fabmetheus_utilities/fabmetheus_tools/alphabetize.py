@@ -27,7 +27,7 @@ def addTogetherList(functionList, togetherLists):
 		sorted = sortedList[functionIndex]
 		if function != sorted:
 			together = (function, sorted)
-			if togetherList == None:
+			if togetherList is None:
 				togetherList = []
 				togetherLists.append(togetherList)
 			togetherList.append(together)
@@ -214,7 +214,7 @@ class Snippet:
 		for characterIndex in xrange(self.characterIndex, len(fileText)):
 			character = fileText[characterIndex]
 			monad = monad.getNextMonad(character)
-			if monad == None:
+			if monad is None:
 				return
 
 	def __repr__(self):

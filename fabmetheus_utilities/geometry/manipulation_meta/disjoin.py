@@ -49,15 +49,15 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation == None:
+	if derivation is None:
 		derivation = DisjoinDerivation(elementNode)
 	targetElementNode = derivation.targetElementNode
-	if targetElementNode == None:
+	if targetElementNode is None:
 		print('Warning, disjoin could not get target for:')
 		print(elementNode)
 		return
 	xmlObject = targetElementNode.xmlObject
-	if xmlObject == None:
+	if xmlObject is None:
 		print('Warning, processElementNodeByDerivation in disjoin could not get xmlObject for:')
 		print(targetElementNode)
 		print(derivation.elementNode)
@@ -112,7 +112,3 @@ class DisjoinDerivation:
 		self.layerThickness = setting.getLayerThickness(elementNode)
 		self.sheetThickness = setting.getSheetThickness(elementNode)
 		self.targetElementNode = evaluate.getElementNodeByKey(elementNode, 'target')
-
-	def __repr__(self):
-		"Get the string representation of this DisjoinDerivation."
-		return str(self.__dict__)

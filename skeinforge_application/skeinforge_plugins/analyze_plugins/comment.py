@@ -150,7 +150,7 @@ class CommentSkein:
 
 	def setHelicalMoveEndpoint( self, splitLine ):
 		"Get the endpoint of a helical move."
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			print( "A helical move is relative and therefore must not be the first move of a gcode file." )
 			return
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)

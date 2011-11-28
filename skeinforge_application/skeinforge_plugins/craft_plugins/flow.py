@@ -54,7 +54,7 @@ def getCraftedTextFromText( gcodeText, flowRepository = None ):
 	"Flow a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'flow'):
 		return gcodeText
-	if flowRepository == None:
+	if flowRepository is None:
 		flowRepository = settings.getReadRepository( FlowRepository() )
 	if not flowRepository.activateFlow.value:
 		return gcodeText

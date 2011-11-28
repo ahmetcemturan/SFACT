@@ -46,7 +46,7 @@ class Document:
 	def getElementByID(self, idKey):
 		'Get element by id.'
 		elementByID = self.elementNode.getElementNodeByID(idKey)
-		if elementByID == None:
+		if elementByID is None:
 			print('Warning, could not get elementByID in getElementByID in document for:')
 			print(idKey)
 			print(self.elementNode)
@@ -55,7 +55,7 @@ class Document:
 	def getElementsByName(self, nameKey):
 		'Get element by name.'
 		elementsByName = self.elementNode.getElementNodesByName(nameKey)
-		if elementsByName == None:
+		if elementsByName is None:
 			print('Warning, could not get elementsByName in getElementsByName in document for:')
 			print(nameKey)
 			print(self.elementNode)
@@ -64,7 +64,7 @@ class Document:
 	def getElementsByTag(self, tagKey):
 		'Get element by tag.'
 		elementsByTag = self.elementNode.getElementNodesByTag(tagKey)
-		if elementsByTag == None:
+		if elementsByTag is None:
 			print('Warning, could not get elementsByTag in getElementsByTag in document for:')
 			print(tagKey)
 			print(self.elementNode)

@@ -66,7 +66,7 @@ class Dictionary:
 	def addXML(self, depth, output):
 		'Add xml for this object.'
 		attributeCopy = {}
-		if self.elementNode != None:
+		if self.elementNode is not None:
 			attributeCopy = evaluate.getEvaluatedDictionaryByCopyKeys(['paths', 'target', 'vertexes'], self.elementNode)
 		euclidean.removeElementsFromDictionary(attributeCopy, matrix.getKeysM())
 		euclidean.removeTrueFromDictionary(attributeCopy, 'visible')
@@ -89,7 +89,7 @@ class Dictionary:
 
 	def getAttributes(self):
 		'Get attribute table.'
-		if self.elementNode == None:
+		if self.elementNode is None:
 			return {}
 		return self.elementNode.attributes
 
@@ -114,7 +114,7 @@ class Dictionary:
 		shapeOutput = []
 		for visibleObject in visibleObjects:
 			visibleObjectOutput = visibleObject.getGeometryOutput()
-			if visibleObjectOutput != None:
+			if visibleObjectOutput is not None:
 				shapeOutput.append(visibleObjectOutput)
 		if len(shapeOutput) < 1:
 			return None

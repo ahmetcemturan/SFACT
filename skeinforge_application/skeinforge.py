@@ -230,10 +230,25 @@ import os
 import sys
 
 
-# document after stretch, then carve, comb, fill, home, inset, oozebane, raft, splodge, temperature once they are updated, maybe later subplugins like export static, maybe later mill cut and coil plugins, maybe later still export plugins & change file extension to output file extension  http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge
-# release
+# document raft, stretch, then carve, comb, fill, inset, oozebane, splodge, temperature, speed once they are updated
+# wiki document help, description, polyfile
+# subplugins like export static, maybe later mill cut and coil plugins, maybe later still export plugins & change file extension to output file extension  http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge
 #
-# command
+# solid should processElementNode
+# add wiki link conversion to wikifier
+# after removeIDParent.. ensure new object is addToIdentifiers
+# add copy process function getMatchingPlugins if > 0 then if paths do paths else do solid
+# some kind of gradual bed temperature
+# consolidate layerIndex and progress
+# add stretch progress indicator
+# backup demozendium links
+# replace layer thickness with layer height, replace baseLayerThickness.. with baseLayerHeightMultiplier, consolidate Object First Layer Flow
+# comb -> maybe add back running jump look at outside loops only for jump, find closest points, find slightly away inside points, link
+# global simplify pathBetween
+# comb documentation
+# retraction step leave
+# melt _extrusion
+#
 #
 # unimportant
 # minor outline problem when an end path goes through a path, like in the letter A
@@ -241,41 +256,34 @@ import sys
 # analyze doesn't save skeinlayer settings, remember xy in skeiniso
 #
 #
+#
 # resolve getGcodeWithoutDuplication, make better consolidate gcode command function, remove comments from addRaftedLine
 # think about http://code.google.com/p/skeinarchiver/ and/or undo
-# consolidate layerIndex and progress
 # add volume fraction to fill
 # consider removing tower
-# add copy process function getMatchingPlugins if > 0 then if paths do paths else do solid
 # use fileSettingName to change perimeter width to extrusion width, globalSubstitutionDictionary
-# derivation starting with _inset
 # check globalExecutionOrder, ensure that bottom order is really high
 # set temperature in temperature
-# add stretch progress indicator
+# maybe rename geometry_plugins xml
+# dwindle or dawdle or taper
 # voronoi average location intersection looped inset intercircles
 # skin layers without something over the infill
-# check for last existing then remove unneeded fill code (getLastExistingFillLoops) from euclidean, add fill in penultimate loops
-# backup demozendium links
+# check for last existing then remove unneeded fill code (getLastExistingFillLoops) from euclidean, add fill in penultimate loops, if there is no fill it should not use perimeter - skin should work
 # delete commented addInfillPerimeter
 # unpause slow flow rate instead of speeding feed rate
-# replace getRadiusByPrefix with getFloatByPrefixSide(defaultValue, elementNode, prefix + 'radius', sideLength)
-# replace getStrokeRadius in inset and outset with getRadius
 # maybe in svgReader if loop intersection with previous union else add
 # add links download manual svg_writer, add left right arrow keys to layer
+# delete location from wipe, in other words Arrival X instead of Location Arrival X, also convert Location Arrival to Arrival Location
+# command
 # manipulation derivations
-# infuse _extrusion
 # cutting ahmet
 #
-# comb -> maybe add back running jump look at outside loops only for jump, find closest points, find slightly away inside points, link
-# global simplify pathBetween
-# comb documentation
-#
 # When opening a file for craft I wondered if there is an option to set the file type to .stl as it currently defaults to .xml
+# then add Retraction Scaling Exponent
 # check inset loop for intersection with loopLayer.loops
 # maybe make vectorwrite prominent, not skeiniso, probably not because it doesn't work on Mac
 # close, getPillarByLoopLists, addConcave, polymorph original graph section, loop, add step object, add continuous object
 # chamber: heated bed off at a layer http://blog.makerbot.com/2011/03/17/if-you-cant-stand-the-heat/
-# derivations for shapes
 # profile copy / rename   /   delete, maybe move craft type to profile
 # think about rectangular getVector3RemoveByPre..
 # del previous, add begin & end if far  get actual path

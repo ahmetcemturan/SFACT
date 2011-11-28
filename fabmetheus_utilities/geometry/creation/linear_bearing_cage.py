@@ -204,10 +204,6 @@ class LinearBearingCageDerivation:
 			self.setAssemblyCage()
 		self.rectangleCenterX = self.demiwidth - self.demilength
 
-	def __repr__(self):
-		'Get the string representation of this LinearBearingCageDerivation.'
-		return str(self.__dict__)
-
 	def setAssemblyCage(self):
 		'Set two piece assembly parameters.'
 		self.grooveDepthOverRadius = evaluate.getEvaluatedFloat(0.15, self.elementNode, 'grooveDepthOverRadius')

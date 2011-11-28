@@ -64,7 +64,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Limit a gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'limit'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(LimitRepository())
 	if not repository.activateLimit.value:
 		return gcodeText
@@ -85,6 +85,7 @@ class LimitRepository:
 		'Set the default settings, execute title & settings fileName.'
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.limit.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Limit', self, '')
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Limit')
 		self.activateLimit = settings.BooleanSetting().getFromValue('Activate Limit', self, False)
 		self.maximumInitialFeedRate = settings.FloatSpin().getFromValue(0.5, 'Maximum Initial Feed Rate (mm/s):', self, 10.0, 1.0)
 		self.executeTitle = 'Limit'
@@ -118,7 +119,7 @@ class LimitSkein:
 
 	def getLimitedInitialMovement(self, line, splitLine):
 		'Get a limited linear movement.'
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			line = self.distanceFeedRate.getLineWithFeedRate(60.0 * self.repository.maximumInitialFeedRate.value, line, splitLine)
 		return line
 
@@ -133,7 +134,7 @@ class LimitSkein:
 	def getZLimitedLineArc(self, line, splitLine):
 		'Get a replaced z limited gcode arc movement line.'
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
-		if self.feedRateMinute == None or self.oldLocation == None:
+		if self.feedRateMinute is None or self.oldLocation is None:
 			return line
 		relativeLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.oldLocation += relativeLocation
@@ -146,7 +147,7 @@ class LimitSkein:
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 		if location == self.oldLocation:
 			return ''
-		if self.feedRateMinute == None or self.oldLocation == None:
+		if self.feedRateMinute is None or self.oldLocation is None:
 			return line
 		deltaZ = abs(location.z - self.oldLocation.z)
 		distance = abs(location - self.oldLocation)

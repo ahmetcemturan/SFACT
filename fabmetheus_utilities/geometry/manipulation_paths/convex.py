@@ -8,6 +8,7 @@ from __future__ import absolute_import
 import __init__
 
 from fabmetheus_utilities.geometry.creation import lineation
+from fabmetheus_utilities.geometry.geometry_utilities import evaluate
 from fabmetheus_utilities import euclidean
 
 
@@ -26,6 +27,10 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 		return [loop]
 	loopComplex = euclidean.getComplexPath(loop)
 	return euclidean.getVector3Paths([euclidean.getLoopConvex(loopComplex)], loop[0].z)
+
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return evaluate.EmptyObject()
 
 def processElementNode(elementNode):
 	"Process the xml element."

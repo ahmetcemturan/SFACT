@@ -273,7 +273,7 @@ class ProfileListboxSetting( settings.StringSetting ):
 	def getSelectedFolder(self):
 		"Get the selected folder."
 		settingProfileSubfolder = settings.getSubfolderWithBasename( self.value, archive.getProfilesPath( self.listSetting.craftTypeName ) )
-		if settingProfileSubfolder != None:
+		if settingProfileSubfolder is not None:
 			return settingProfileSubfolder
 		toolProfileSubfolder = settings.getSubfolderWithBasename( self.value, settings.getProfilesDirectoryInAboveDirectory( self.listSetting.craftTypeName ) )
 		return toolProfileSubfolder
@@ -300,9 +300,9 @@ class ProfileListboxSetting( settings.StringSetting ):
 	def setValueToString( self, valueString ):
 		"Set the value to the value string."
 		self.value = valueString
-		if self.getSelectedFolder() == None:
+		if self.getSelectedFolder() is None:
 			self.value = self.defaultValue
-		if self.getSelectedFolder() == None:
+		if self.getSelectedFolder() is None:
 			if len( self.listSetting.value ) > 0:
 				self.value = self.listSetting.value[0]
 

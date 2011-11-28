@@ -26,7 +26,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = SpongeDerivation(elementNode)
 	awayPoints = []
 	vector3Path = euclidean.getVector3Path(euclidean.getSquareLoopWiddershins(-derivation.inradius, derivation.inradius))
@@ -144,11 +144,11 @@ class SpongeDerivation:
 		self.minimumRadius = evaluate.getEvaluatedFloat(self.minimumRadiusOverThickness * self.wallThickness, elementNode, 'minimumRadius')
 		self.inradiusMinusRadiusThickness = self.inradiusMinusThickness - complex(self.minimumRadius, self.minimumRadius)
 		self.potentialBubbleArea = 4.0 * self.inradiusMinusThickness.real * self.inradiusMinusThickness.imag
-		if self.path == None:
+		if self.path is None:
 			radiusPlusHalfThickness = self.minimumRadius + self.halfWallThickness
 			numberOfPoints = int(math.ceil(self.density * self.potentialBubbleArea / math.pi / radiusPlusHalfThickness / radiusPlusHalfThickness))
 			self.path = []
-			if self.seed == None:
+			if self.seed is None:
 				self.seed = time.time()
 				print('Sponge seed used was: %s' % self.seed)
 			random.seed(self.seed)

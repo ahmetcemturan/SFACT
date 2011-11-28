@@ -33,14 +33,18 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	transformPoints(elementNode, loop, prefix)
 	return [loop]
 
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return TransformDerivation(elementNode, prefix)
+
 def manipulateElementNode(elementNode, target):
 	'Manipulate the xml element.'
-	transformTetragrid = matrix.getTransformTetragrid(elementNode, '')
-	if transformTetragrid == None:
+	derivation = TransformDerivation(elementNode, '')
+	if derivation.transformTetragrid == None:
 		print('Warning, transformTetragrid was None in transform so nothing will be done for:')
 		print(elementNode)
 		return
-	matrix.setAttributesToMultipliedTetragrid(target, transformTetragrid)
+	matrix.setAttributesToMultipliedTetragrid(target, derivation.transformTetragrid)
 
 def processElementNode(elementNode):
 	'Process the xml element.'
@@ -48,10 +52,17 @@ def processElementNode(elementNode):
 
 def transformPoints(elementNode, points, prefix):
 	'Transform the points.'
-	transformTetragrid = matrix.getTransformTetragrid(elementNode, prefix)
-	if transformTetragrid == None:
+	derivation = TransformDerivation(elementNode, prefix)
+	if derivation.transformTetragrid == None:
 		print('Warning, transformTetragrid was None in transform so nothing will be done for:')
 		print(elementNode)
 		return
 	for point in points:
-		matrix.transformVector3ByMatrix(transformTetragrid, point)
+		matrix.transformVector3ByMatrix(derivation.transformTetragrid, point)
+
+
+class TransformDerivation:
+	"Class to hold transform variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.transformTetragrid = matrix.getTransformTetragrid(elementNode, prefix)

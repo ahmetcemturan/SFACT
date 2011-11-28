@@ -25,7 +25,7 @@ def processElementNode(elementNode):
 		return
 	function = functions[-1]
 	evaluate.setLocalAttribute(elementNode)
-	if elementNode.xmlObject.value == None:
+	if elementNode.xmlObject.value is None:
 		print('Warning, elementNode.xmlObject.value is None in processElementNode in statement for:')
 		print(elementNode)
 		return

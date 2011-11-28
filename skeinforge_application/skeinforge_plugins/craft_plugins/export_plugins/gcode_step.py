@@ -98,7 +98,7 @@ globalIsReplaceable = True
 def getCharacterIntegerString(character, offset, splitLine, stepLength):
 	'Get a character and integer string.'
 	floatValue = getFloatFromCharacterSplitLine(character, splitLine)
-	if floatValue == None:
+	if floatValue is None:
 		return ''
 	floatValue += offset
 	integerValue = int(round(float(floatValue / stepLength)))
@@ -107,7 +107,7 @@ def getCharacterIntegerString(character, offset, splitLine, stepLength):
 def getFloatFromCharacterSplitLine(character, splitLine):
 	'Get the float after the first occurence of the character in the split line.'
 	lineFromCharacter = gcodec.getStringFromCharacterSplitLine(character, splitLine)
-	if lineFromCharacter == None:
+	if lineFromCharacter is None:
 		return None
 	return float(lineFromCharacter)
 
@@ -119,7 +119,7 @@ def getOutput(gcodeText, repository=None):
 	'Get the exported version of a gcode file.'
 	if gcodeText == '':
 		return ''
-	if repository == None:
+	if repository is None:
 		repository = GcodeStepRepository()
 		settings.getReadRepository(repository)
 	return GcodeStepSkein().getCraftedGcode(repository, gcodeText)

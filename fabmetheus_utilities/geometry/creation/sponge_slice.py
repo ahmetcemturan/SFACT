@@ -26,7 +26,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation == None:
+	if derivation is None:
 		derivation = SpongeSliceDerivation(elementNode)
 	awayPoints = []
 	vector3Path = euclidean.getVector3Path(euclidean.getSquareLoopWiddershins(-derivation.inradius, derivation.inradius))
@@ -144,18 +144,14 @@ class SpongeSliceDerivation:
 		self.minimumRadius = evaluate.getEvaluatedFloat(self.minimumRadiusOverThickness * self.wallThickness, elementNode, 'minimumRadius')
 		self.inradiusMinusRadiusThickness = self.inradiusMinusThickness - complex(self.minimumRadius, self.minimumRadius)
 		self.potentialBubbleArea = 4.0 * self.inradiusMinusThickness.real * self.inradiusMinusThickness.imag
-		if self.path == None:
+		if self.path is None:
 			radiusPlusHalfThickness = self.minimumRadius + self.halfWallThickness
 			numberOfPoints = int(math.ceil(self.density * self.potentialBubbleArea / math.pi / radiusPlusHalfThickness / radiusPlusHalfThickness))
 			self.path = []
-			if self.seed == None:
+			if self.seed is None:
 				self.seed = time.time()
 				print('Sponge slice seed used was: %s' % self.seed)
 			random.seed(self.seed)
 			for pointIndex in xrange(numberOfPoints):
 				point = euclidean.getRandomComplex(-self.inradiusMinusRadiusThickness, self.inradiusMinusRadiusThickness)
 				self.path.append(Vector3(point.real, point.imag))
-
-	def __repr__(self):
-		"Get the string representation of this SpongeSliceDerivation."
-		return str(self.__dict__)

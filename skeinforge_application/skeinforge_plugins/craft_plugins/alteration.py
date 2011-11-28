@@ -78,7 +78,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Alteration a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'alteration'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(AlterationRepository())
 	if not repository.activateAlteration.value:
 		return gcodeText
@@ -159,7 +159,7 @@ class AlterationSkein:
 
 	def getReplacedAlterationText(self):
 		'Replace the alteration lines if there are settings.'
-		if self.settingDictionary == None:
+		if self.settingDictionary is None:
 			return self.distanceFeedRate.output.getvalue().replace('(<alterationDeleteThisPrefix/>)', '')
 		lines = archive.getTextLines(self.distanceFeedRate.output.getvalue())
  		distanceFeedRate = gcodec.DistanceFeedRate()
@@ -186,7 +186,7 @@ class AlterationSkein:
 		for line in self.lines:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
-			if firstWord == '(<setting>' and self.settingDictionary != None:
+			if firstWord == '(<setting>' and self.settingDictionary is not None:
 				if len(splitLine) > 4:
 					procedure = splitLine[1]
 					name = splitLine[2].replace('_', ' ').replace(' ', '')

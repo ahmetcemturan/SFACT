@@ -53,7 +53,7 @@ def getGeometryOutput(elementNode):
 		gridPath = getRandomGrid(derivation, diameter, elementNode, loopsComplex, maximumComplex, minimumComplex)
 	elif typeStringTwoCharacters == 're' or typeStringFirstCharacter == 'e':
 		gridPath = getRectangularGrid(diameter, loopsComplex, maximumComplex, minimumComplex, derivation.zigzag)
-	if gridPath == None:
+	if gridPath is None:
 		print('Warning, the step type was not one of (hexagonal, random or rectangular) in getGeometryOutput in grid for:')
 		print(derivation.typeString)
 		print(elementNode)
@@ -116,7 +116,7 @@ def getRandomGrid(derivation, diameter, elementNode, loopsComplex, maximumComple
 	elements = evaluate.getEvaluatedInt(elements, elementNode, 'elements')
 	failedPlacementAttempts = 0
 	pixelDictionary = {}
-	if derivation.seed != None:
+	if derivation.seed is not None:
 		random.seed(derivation.seed)
 	successfulPlacementAttempts = 0
 	while failedPlacementAttempts < 100:
@@ -164,7 +164,3 @@ class GridDerivation:
 		self.typeMenuRadioStrings = 'hexagonal random rectangular'.split()
 		self.typeString = evaluate.getEvaluatedString('rectangular', elementNode, 'type')
 		self.zigzag = evaluate.getEvaluatedBoolean(True, elementNode, 'zigzag')
-
-	def __repr__(self):
-		'Get the string representation of this GridDerivation.'
-		return str(self.__dict__)

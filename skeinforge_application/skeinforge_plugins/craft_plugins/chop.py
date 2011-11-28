@@ -112,9 +112,9 @@ def getCraftedText( fileName, gcodeText = '', repository=None):
 		if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'chop'):
 			return gcodeText
 	carving = svg_writer.getCarving(fileName)
-	if carving == None:
+	if carving is None:
 		return ''
-	if repository == None:
+	if repository is None:
 		repository = ChopRepository()
 		settings.getReadRepository(repository)
 	return ChopSkein().getCarvedSVG( carving, fileName, repository )

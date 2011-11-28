@@ -33,14 +33,18 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	rotatePoints(elementNode, loop, prefix)
 	return [loop]
 
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return RotateDerivation(elementNode, prefix)
+
 def manipulateElementNode(elementNode, target):
 	'Manipulate the xml element.'
-	rotateTetragrid = matrix.getRotateTetragrid(elementNode, '')
-	if rotateTetragrid == None:
+	derivation = RotateDerivation(elementNode, '')
+	if derivation.rotateTetragrid == None:
 		print('Warning, rotateTetragrid was None in rotate so nothing will be done for:')
 		print(elementNode)
 		return
-	matrix.setAttributesToMultipliedTetragrid(target, rotateTetragrid)
+	matrix.setAttributesToMultipliedTetragrid(target, derivation.rotateTetragrid)
 
 def processElementNode(elementNode):
 	'Process the xml element.'
@@ -48,10 +52,17 @@ def processElementNode(elementNode):
 
 def rotatePoints(elementNode, points, prefix):
 	'Rotate the points.'
-	rotateTetragrid = matrix.getRotateTetragrid(elementNode, prefix)
-	if rotateTetragrid == None:
+	derivation = RotateDerivation(elementNode, prefix)
+	if derivation.rotateTetragrid == None:
 		print('Warning, rotateTetragrid was None in rotate so nothing will be done for:')
 		print(elementNode)
 		return
 	for point in points:
-		matrix.transformVector3ByMatrix(rotateTetragrid, point)
+		matrix.transformVector3ByMatrix(derivation.rotateTetragrid, point)
+
+
+class RotateDerivation:
+	"Class to hold rotate variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.rotateTetragrid = matrix.getRotateTetragrid(elementNode, prefix)

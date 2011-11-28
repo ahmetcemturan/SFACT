@@ -63,11 +63,9 @@ def getMinimumZ(geometryObject):
 	booleanGeometry.layerThickness = setting.getLayerThickness(geometryObject.elementNode)
 	archivableMinimumZ = booleanGeometry.getMinimumZ()
 	geometryMinimumZ = geometryObject.getMinimumZ()
-	if archivableMinimumZ == None and geometryMinimumZ == None:
-		return None
 	if archivableMinimumZ == None:
 		return geometryMinimumZ
-	if geometryMinimumZ == None:
+	if geometryMinimumZ is None:
 		return archivableMinimumZ
 	return min(archivableMinimumZ, geometryMinimumZ)
 
@@ -97,7 +95,7 @@ class BooleanGeometry:
 
 	def getCarveBoundaryLayers(self):
 		'Get the boundary layers.'
-		if self.getMinimumZ() == None:
+		if self.getMinimumZ() is None:
 			return []
 		z = self.minimumZ + 0.5 * self.layerThickness
 		self.loopLayers = getLoopLayers(self.archivableObjects, self.importRadius, self.layerThickness, self.maximumZ, True, z, self.zoneArrangement)

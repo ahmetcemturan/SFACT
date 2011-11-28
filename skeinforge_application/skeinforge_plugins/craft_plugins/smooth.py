@@ -3,7 +3,8 @@ This page is in the table of contents.
 This plugin smooths jagged extruder paths.  It takes shortcuts through jagged paths and decreases the feed rate to compensate.
 
 Smooth is based on ideas in Nophead's frequency limit post: 
-http://hydraraptor.blogspot.com/2010/12/frequency-limit.html:
+
+http://hydraraptor.blogspot.com/2010/12/frequency-limit.html
 
 The smooth manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Smooth
@@ -65,7 +66,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Smooth a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'smooth'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(SmoothRepository())
 	if not repository.activateSmooth.value:
 		return gcodeText
@@ -202,7 +203,7 @@ class SmoothSkein:
 			self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 			location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			self.oldLocation = location
-			if self.infill != None:
+			if self.infill is not None:
 				self.infill.append(location.dropAxis())
 				return
 		elif firstWord == '(<infill>)':
@@ -215,12 +216,12 @@ class SmoothSkein:
 			if self.boundaryLayerIndex >= 0:
 				self.boundaryLayerIndex += 1
 		elif firstWord == 'M101':
-			if self.infill != None:
+			if self.infill is not None:
 				if len(self.infill) > 1:
 					self.infill = [self.infill[0]]
 				return
 		elif firstWord == 'M103':
-			if self.infill != None:
+			if self.infill is not None:
 				self.addSmoothedInfill()
 				self.infill = []
 				return

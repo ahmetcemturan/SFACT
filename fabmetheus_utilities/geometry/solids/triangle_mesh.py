@@ -362,7 +362,7 @@ def getIndexedLoopFromIndexedGrid( indexedGrid ):
 def getInfillDictionary(aroundInset, arounds, aroundWidth, infillInset, infillWidth, pixelTable, rotatedLoops, testLoops=None):
 	'Get combined fill loops which include most of the points.'
 	slightlyGreaterThanInfillInset = intercircle.globalIntercircleMultiplier * infillInset
-	allPoints = intercircle.getPointsFromLoops(rotatedLoops, infillInset, 0.7)#todo 0.7854
+	allPoints = intercircle.getPointsFromLoops(rotatedLoops, infillInset, 0.7)
 	centers = intercircle.getCentersFromPoints(allPoints, slightlyGreaterThanInfillInset)
 	infillDictionary = {}
 	for center in centers:
@@ -492,14 +492,18 @@ def getMeldedPillarOutput(loops):
 	addMeldedPillarByLoops(faces, loops)
 	return getGeometryOutputByFacesVertexes(faces, vertexes)
 
-def getNextEdgeIndexAroundZ( edge, faces, remainingEdgeTable ):
+def getNewDerivation(elementNode):
+	'Get new derivation.'
+	return evaluate.EmptyObject(elementNode)
+
+def getNextEdgeIndexAroundZ(edge, faces, remainingEdgeTable):
 	'Get the next edge index in the mesh carve.'
 	for faceIndex in edge.faceIndexes:
-		face = faces[ faceIndex ]
+		face = faces[faceIndex]
 		for edgeIndex in face.edgeIndexes:
 			if edgeIndex in remainingEdgeTable:
 				return edgeIndex
-	return - 1
+	return -1
 
 def getOrientedLoops(loops):
 	'Orient the loops which must be in descending order.'
@@ -862,7 +866,7 @@ class TriangleMesh( group.Group ):
 			return self.vertexes
 		chainTetragrid = self.getMatrixChainTetragrid()
 		if self.oldChainTetragrid != chainTetragrid:
-			self.oldChainTetragrid = chainTetragrid
+			self.oldChainTetragrid = matrix.getTetragridCopy(chainTetragrid)
 			self.transformedVertexes = None
 		if self.transformedVertexes == None:
 			if len(self.edges) > 0:
@@ -878,15 +882,6 @@ class TriangleMesh( group.Group ):
 		'Get all vertexes.'
 		self.transformedVertexes = None
 		return self.vertexes
-
-	def liftByMinimumZ(self, minimumZ):
-		'Lift the triangle mesh to the altitude.'
-		altitude = evaluate.getEvaluatedFloat(None, self.elementNode, 'altitude')
-		if altitude == None:
-			return
-		lift = altitude - minimumZ
-		for vertex in self.vertexes:
-			vertex.z += lift
 
 	def setCarveImportRadius( self, importRadius ):
 		'Set the import radius.'

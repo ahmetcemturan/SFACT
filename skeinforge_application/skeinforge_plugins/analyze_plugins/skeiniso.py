@@ -269,7 +269,7 @@ def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
 	"Display a skeiniso gcode file for a gcode file."
 	if gcodeText == '':
 		return None
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( SkeinisoRepository() )
 	skeinWindow = getWindowGivenTextRepository( fileName, gcodeText, repository )
 	skeinWindow.updateDeiconify()
@@ -379,7 +379,7 @@ class SkeinisoSkein:
 
 	def addToPath( self, line, location ):
 		'Add a point to travel and maybe extrusion.'
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return
 		begin = self.scale * self.oldLocation - self.scaleCenterBottom
 		end = self.scale * location - self.scaleCenterBottom
@@ -426,7 +426,7 @@ class SkeinisoSkein:
 
 	def linearMove( self, line, location ):
 		"Get statistics for a linear move."
-		if self.skeinPane == None:
+		if self.skeinPane is None:
 			return
 		self.addToPath(line, location)
 

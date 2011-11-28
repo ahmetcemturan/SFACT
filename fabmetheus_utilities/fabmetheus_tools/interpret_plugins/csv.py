@@ -33,7 +33,7 @@ def getCarving(fileName=''):
 	csvParser = CSVSimpleParser( fileName, None, csvText )
 	lowerLocalName = csvParser.getDocumentElement().getNodeName().lower()
 	pluginModule = archive.getModuleWithDirectoryPath( getPluginsDirectoryPath(), lowerLocalName )
-	if pluginModule == None:
+	if pluginModule is None:
 		return None
 	return pluginModule.getCarvingFromParser( csvParser )
 
@@ -64,7 +64,7 @@ class CSVElement( xml_simple_reader.XMLElement ):
 
 	def continueParsingTable( self, line, lineStripped ):
 		"Parse replaced line."
-		if self.headingDictionary == None:
+		if self.headingDictionary is None:
 			self.headingDictionary = getLineDictionary(line)
 			return
 		csvElement = self
@@ -80,7 +80,7 @@ class CSVElement( xml_simple_reader.XMLElement ):
 				value = lineDictionary[ columnIndex ]
 				csvElement.attributes[key] = value
 		csvElement.addToIdentifierDictionaries()
-		if len( csvElement.attributes ) == 0 or oldAttributesLength == 0 or self.parentNode == None:
+		if len( csvElement.attributes ) == 0 or oldAttributesLength == 0 or self.parentNode is None:
 			return
 		self.parentNode.childNodes.append( csvElement )
 
@@ -103,7 +103,7 @@ class CSVElement( xml_simple_reader.XMLElement ):
 
 	def getNumberOfParents(self):
 		"Get the number of parent nodes."
-		if self.parentNode == None:
+		if self.parentNode is None:
 			return 0
 		return self.parentNode.getNumberOfParents() + 1
 
@@ -122,9 +122,9 @@ class CSVSimpleParser( xml_simple_reader.DocumentNode ):
 
 	def getNewCSVElement( self, leadingTabCount, lineStripped ):
 		"Get a new csv element."
-		if self.documentElement != None and self.extraLeadingTabCount == None:
+		if self.documentElement is not None and self.extraLeadingTabCount is None:
 			self.extraLeadingTabCount = 1 - leadingTabCount
-		if self.extraLeadingTabCount != None:
+		if self.extraLeadingTabCount is not None:
 			leadingTabCount += self.extraLeadingTabCount
 		if lineStripped[ : len('_table') ] == '_table' or lineStripped[ : len('_t') ] == '_t':
 			self.oldCSVElement = CSVElement().getElementFromTable( leadingTabCount, lineStripped, self.oldCSVElement )
@@ -142,11 +142,11 @@ class CSVSimpleParser( xml_simple_reader.DocumentNode ):
 		leadingTabCount = leadingPart.count('\t')
 		if lineStripped[ : len('_') ] == '_':
 			self.getNewCSVElement( leadingTabCount, lineStripped )
-			if self.documentElement == None:
+			if self.documentElement is None:
 				self.documentElement = self.oldCSVElement
 				self.documentElement.document = self
 			return
-		if self.continueFunction != None:
+		if self.continueFunction is not None:
 			self.continueFunction( line, lineStripped )
 
 

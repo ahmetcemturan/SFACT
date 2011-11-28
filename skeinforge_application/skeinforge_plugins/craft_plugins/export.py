@@ -129,7 +129,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Export a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'export'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(ExportRepository())
 	if not repository.activateExport.value:
 		return gcodeText
@@ -139,17 +139,17 @@ def getDescriptionCarve(lines):
 	'Get the description for carve.'
 	descriptionCarve = ''
 	layerThicknessString = getSettingString(lines, 'carve', 'Layer Thickness')
-	if layerThicknessString != None:
+	if layerThicknessString is not None:
 		descriptionCarve += layerThicknessString.replace('.', '') + 'h'
 	perimeterWidthString = getSettingString(lines, 'carve', 'Perimeter Width over Thickness')
-	if perimeterWidthString != None:
+	if perimeterWidthString is not None:
 		descriptionCarve += 'x%sw' % str(float(perimeterWidthString) * float(layerThicknessString)).replace('.', '')
 	return descriptionCarve
 
 def getDescriptionFill(lines):
 	'Get the description for fill.'
 	activateFillString = getSettingString(lines, 'fill', 'Activate Fill')
-	if activateFillString == None or activateFillString == 'False':
+	if activateFillString is None or activateFillString == 'False':
 		return ''
 	infillSolidityString = getSettingString(lines, 'fill', 'Infill Solidity')
 	return '_' + infillSolidityString.replace('.', '') + 'fill'
@@ -157,7 +157,7 @@ def getDescriptionFill(lines):
 def getDescriptionMultiply(lines):
 	'Get the description for multiply.'
 	activateMultiplyString = getSettingString(lines, 'multiply', 'Activate Multiply')
-	if activateMultiplyString == None or activateMultiplyString == 'False':
+	if activateMultiplyString is None or activateMultiplyString == 'False':
 		return ''
 	columnsString = getSettingString(lines, 'multiply', 'Number of Columns')
 	rowsString = getSettingString(lines, 'multiply', 'Number of Rows')
@@ -168,7 +168,7 @@ def getDescriptionMultiply(lines):
 def getDescriptionSpeed(lines):
 	'Get the description for speed.'
 	activateSpeedString = getSettingString(lines, 'speed', 'Activate Speed')
-	if activateSpeedString == None or activateSpeedString == 'False':
+	if activateSpeedString is None or activateSpeedString == 'False':
 		return ''
 	feedRateString = getSettingString(lines, 'speed', 'Feed Rate')
 	flowRateString = getSettingString(lines, 'speed', 'Flow Rate')
@@ -192,7 +192,7 @@ def getDistanceGcode(exportText):
 			firstWord = splitLine[0]
 		if firstWord == 'G1':
 			location = gcodec.getLocationFromSplitLine(oldLocation, splitLine)
-			if oldLocation != None:
+			if oldLocation is not None:
 				distance = location.distance(oldLocation)
 				print( distance )
 			oldLocation = location
@@ -279,8 +279,6 @@ def writeOutput(fileName, shouldAnalyze=True):
 	if repository.addProfileExtension.value:
 		fileNameSuffix += '.' + getFirstValue(gcodeText, '(<profileName>')
 	if repository.addDescriptiveExtension.value:
-		print(  'getDescriptiveExtension(gcodeText)')
-		print(  getDescriptiveExtension(gcodeText))
 		fileNameSuffix += getDescriptiveExtension(gcodeText)
 	if repository.addTimestampExtension.value:
 		fileNameSuffix += '.' + getFirstValue(gcodeText, '(<timeStampPreface>')
@@ -297,19 +295,19 @@ def writeOutput(fileName, shouldAnalyze=True):
 		window = skeinforge_analyze.writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWritten, gcodeText)
 	replaceableExportGcode = None
 	selectedPluginModule = getSelectedPluginModule(repository.exportPlugins)
-	if selectedPluginModule == None:
+	if selectedPluginModule is None:
 		replaceableExportGcode = exportGcode
 	else:
 		if selectedPluginModule.globalIsReplaceable:
 			replaceableExportGcode = selectedPluginModule.getOutput(exportGcode)
 		else:
 			selectedPluginModule.writeOutput(fileNameSuffix, exportGcode)
-	if replaceableExportGcode != None:
+	if replaceableExportGcode is not None:
 		replaceableExportGcode = getReplaceableExportGcode(repository.nameOfReplaceFile.value, replaceableExportGcode)
 		archive.writeFileText( fileNameSuffix, replaceableExportGcode )
 		print('The exported file is saved as ' + archive.getSummarizedFileName(fileNameSuffix))
 	if repository.alsoSendOutputTo.value != '':
-		if replaceableExportGcode == None:
+		if replaceableExportGcode is None:
 			replaceableExportGcode = selectedPluginModule.getOutput(exportGcode)
 		sendOutputTo(repository.alsoSendOutputTo.value, replaceableExportGcode)
 	print('It took %s to export the file.' % euclidean.getDurationString(time.time() - startTime))
@@ -394,7 +392,7 @@ class ExportSkein:
 	def getLineWithTruncatedNumber(self, character, line, splitLine):
 		'Get a line with the number after the character truncated.'
 		numberString = gcodec.getStringFromCharacterSplitLine(character, splitLine)
-		if numberString == None:
+		if numberString is None:
 			return line
 		roundedNumberString = euclidean.getRoundedToPlacesString(self.decimalPlacesExported, float(numberString))
 		return gcodec.getLineWithValueString(character, line, splitLine, roundedNumberString)

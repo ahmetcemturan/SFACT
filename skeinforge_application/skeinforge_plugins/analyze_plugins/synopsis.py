@@ -126,7 +126,7 @@ def getWindowAnalyzeFileGivenText(fileName, gcodeText, repository=None):
 	'Write scalable vector graphics for a gcode file given the settings.'
 	if gcodeText == '':
 		return None
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(SynopsisRepository())
 	startTime = time.time()
 	suffixFileNameWithoutExtension = fileName[: fileName.rfind('.')] + '_synopsis.'

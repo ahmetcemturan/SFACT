@@ -1,13 +1,13 @@
 """
 This page is in the table of contents.
-The unpause script is based on the Shane Hathaway's patch to speed up a line segment to compensate for the delay of the microprocessor.  The description is at:
+The unpause plugin is based on the Shane Hathaway's patch to speed up a line segment to compensate for the delay of the microprocessor.  The description is at:
 http://shane.willowrise.com/archives/delay-compensation-in-firmware/
 
 The unpause manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Unpause
 
 ==Operation==
-The default 'Activate Unpause' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Unpause' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Delay===
@@ -65,7 +65,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Unpause a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'unpause'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( UnpauseRepository() )
 	if not repository.activateUnpause.value:
 		return gcodeText
@@ -131,7 +131,7 @@ class UnpauseSkein:
 	def getUnpausedArcMovement( self, line, splitLine ):
 		"Get an unpaused arc movement."
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return line
 		relativeLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.oldLocation += relativeLocation
@@ -142,7 +142,7 @@ class UnpauseSkein:
 		"Get an unpaused linear movement."
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			self.oldLocation = location
 			return line
 		distance = abs(self.oldLocation - location)

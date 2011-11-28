@@ -182,13 +182,13 @@ class CDATASectionNode:
 
 	def removeFromIDNameParent(self):
 		'Remove this from the id and name dictionaries and the childNodes of the parentNode.'
-		if self.parentNode != None:
+		if self.parentNode is not None:
 			self.parentNode.childNodes.remove(self)
 
 	def setParentAddToChildNodes(self, parentNode):
 		'Set the parentNode and add this to its childNodes.'
 		self.parentNode = parentNode
-		if self.parentNode != None:
+		if self.parentNode is not None:
 			self.parentNode.childNodes.append(self)
 
 	attributes = property(getAttributes)
@@ -421,10 +421,10 @@ class ElementNode:
 		ownerDocument = self.getOwnerDocument()
 		importNameChain = self.getImportNameChain()
 		idKey = self.getStrippedAttributesValue('id')
-		if idKey != None:
+		if idKey is not None:
 			ownerDocument.idDictionary[importNameChain + idKey] = self
 		nameKey = self.getStrippedAttributesValue('name')
-		if nameKey != None:
+		if nameKey is not None:
 			euclidean.addElementToListDictionaryIfNotThere(self, importNameChain + nameKey, ownerDocument.nameDictionary)
 		for tagKey in self.getTagKeys():
 			euclidean.addElementToListDictionaryIfNotThere(self, tagKey, ownerDocument.tagDictionary)
@@ -455,7 +455,7 @@ class ElementNode:
 		'Get the cascade boolean.'
 		if key in self.attributes:
 			value = evaluate.getEvaluatedBoolean(None, self, key)
-			if value != None:
+			if value is not None:
 				return value
 		return self.parentNode.getCascadeBoolean(defaultBoolean, key)
 
@@ -463,7 +463,7 @@ class ElementNode:
 		'Get the cascade float.'
 		if key in self.attributes:
 			value = evaluate.getEvaluatedFloat(None, self, key)
-			if value != None:
+			if value is not None:
 				return value
 		return self.parentNode.getCascadeFloat(defaultFloat, key)
 
@@ -485,7 +485,7 @@ class ElementNode:
 
 	def getCopyShallow(self, attributes=None):
 		'Copy the xml element and set its dictionary and parentNode.'
-		if attributes == None: # to evade default initialization bug where a dictionary is initialized to the last dictionary
+		if attributes is None: # to evade default initialization bug where a dictionary is initialized to the last dictionary
 			attributes = {}
 		copyShallow = ElementNode(self.parentNode)
 		copyShallow.attributes = attributes
@@ -535,14 +535,14 @@ class ElementNode:
 		suffix = self.localName
 		if 'id' in self.attributes:
 			suffix = self.attributes['id']
-		if elementIndex == None:
+		if elementIndex is None:
 			return '_%s' % suffix
 		return '_%s_%s' % (suffix, elementIndex)
 
 	def getImportNameChain(self, suffix=''):
 		'Get the import name chain with the suffix at the end.'
 		importName = self.getStrippedAttributesValue('_importName')
-		if importName != None:
+		if importName is not None:
 			suffix = '%s.%s' % (importName, suffix)
 		return self.parentNode.getImportNameChain(suffix)
 
@@ -564,13 +564,13 @@ class ElementNode:
 
 	def getPaths(self):
 		'Get all paths.'
-		if self.xmlObject == None:
+		if self.xmlObject is None:
 			return []
 		return self.xmlObject.getPaths()
 
 	def getPreviousElementNode(self):
 		'Get previous ElementNode if it exists.'
-		if self.parentNode == None:
+		if self.parentNode is None:
 			return None
 		previousElementNodeIndex = self.parentNode.childNodes.index(self) - 1
 		if previousElementNodeIndex < 0:
@@ -579,9 +579,9 @@ class ElementNode:
 
 	def getPreviousVertex(self, defaultVector3=None):
 		'Get previous vertex if it exists.'
-		if self.parentNode == None:
+		if self.parentNode is None:
 			return defaultVector3
-		if self.parentNode.xmlObject == None:
+		if self.parentNode.xmlObject is None:
 			return defaultVector3
 		if len(self.parentNode.xmlObject.vertexes) < 1:
 			return defaultVector3
@@ -602,7 +602,7 @@ class ElementNode:
 				if childNode.attributes['bf:id'] == idReference:
 					return childNode
 			subChildWithID = childNode.getSubChildWithID( idReference )
-			if subChildWithID != None:
+			if subChildWithID is not None:
 				return subChildWithID
 		return None
 
@@ -643,7 +643,7 @@ class ElementNode:
 
 	def getVertexes(self):
 		'Get the vertexes.'
-		if self.xmlObject == None:
+		if self.xmlObject is None:
 			return []
 		return self.xmlObject.getVertexes()
 
@@ -677,7 +677,7 @@ class ElementNode:
 		'Print all variables and the document element variables.'
 		self.printAllVariables()
 		documentElement = self.getDocumentElement()
-		if documentElement != None:
+		if documentElement is not None:
 			print('')
 			print('Root variables:')
 			documentElement.printAllVariables()
@@ -692,23 +692,23 @@ class ElementNode:
 		'Remove this from the id and name dictionaries and the childNodes of the parentNode.'
 		self.removeChildNodesFromIDNameParent()
 		idKey = self.getStrippedAttributesValue('id')
-		if idKey != None:
+		if idKey is not None:
 			idDictionary = self.getOwnerDocument().idDictionary
 			idKey = self.getImportNameChain() + idKey
 			if idKey in idDictionary:
 				del idDictionary[idKey]
 		nameKey = self.getStrippedAttributesValue('name')
-		if nameKey != None:
+		if nameKey is not None:
 			euclidean.removeElementFromListTable(self, self.getImportNameChain() + nameKey, self.getOwnerDocument().nameDictionary)
 		for tagKey in self.getTagKeys():
 			euclidean.removeElementFromListTable(self, tagKey, self.getOwnerDocument().tagDictionary)
-		if self.parentNode != None:
+		if self.parentNode is not None:
 			self.parentNode.childNodes.remove(self)
 
 	def setParentAddToChildNodes(self, parentNode):
 		'Set the parentNode and add this to its childNodes.'
 		self.parentNode = parentNode
-		if self.parentNode != None:
+		if self.parentNode is not None:
 			self.parentNode.childNodes.append(self)
 
 	def setTextContent(self, textContent=''):
@@ -837,7 +837,7 @@ class ValueMonad:
 
 	def getNextMonad(self, character):
 		'Get the next monad.'
-		if self.quoteCharacter == None:
+		if self.quoteCharacter is None:
 			if character == '"' or character == "'":
 				self.quoteCharacter = character
 			return self

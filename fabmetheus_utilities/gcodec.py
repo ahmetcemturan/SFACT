@@ -88,7 +88,7 @@ def getDoubleFromCharacterSplitLine(character, splitLine):
 def getDoubleFromCharacterSplitLineValue(character, splitLine, value):
 	'Get the double value of the string after the first occurence of the character in the split line, if it does not exist return the value.'
 	splitLineFloat = getDoubleFromCharacterSplitLine(character, splitLine)
-	if splitLineFloat == None:
+	if splitLineFloat is None:
 		return value
 	return splitLineFloat
 

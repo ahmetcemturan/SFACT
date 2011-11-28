@@ -77,13 +77,13 @@ def addHorizontallyBoundedPoint(begin, center, end, horizontalBegin, horizontalE
 	if center.real >= horizontalEnd and center.real <= horizontalBegin:
 		path.append(center)
 		return
-	if end != None:
+	if end is not None:
 		if center.real > horizontalBegin and end.real <= horizontalBegin:
 			centerMinusEnd = center - end
 			along = (center.real - horizontalBegin) / centerMinusEnd.real
 			path.append(center - along * centerMinusEnd)
 			return
-	if begin != None:
+	if begin is not None:
 		if center.real < horizontalEnd and begin.real >= horizontalEnd:
 			centerMinusBegin = center - begin
 			along = (center.real - horizontalEnd) / centerMinusBegin.real
@@ -299,7 +299,7 @@ def addXIntersectionIndexesFromLoopY( loop, solidIndex, xIntersectionIndexList, 
 		pointFirst = loop[pointIndex]
 		pointSecond = loop[(pointIndex + 1) % len(loop)]
 		xIntersection = getXIntersectionIfExists( pointFirst, pointSecond, y )
-		if xIntersection != None:
+		if xIntersection is not None:
 			xIntersectionIndexList.append( XIntersectionIndex( solidIndex, xIntersection ) )
 
 def addXIntersectionIndexesFromSegment( index, segment, xIntersectionIndexList ):
@@ -323,7 +323,7 @@ def addXIntersections( loop, xIntersections, y ):
 		pointFirst = loop[pointIndex]
 		pointSecond = loop[(pointIndex + 1) % len(loop)]
 		xIntersection = getXIntersectionIfExists( pointFirst, pointSecond, y )
-		if xIntersection != None:
+		if xIntersection is not None:
 			xIntersections.append( xIntersection )
 
 def addXIntersectionsFromLoopForTable(loop, xIntersectionsTable, width):
@@ -368,16 +368,16 @@ def concatenateRemovePath( connectedPaths, pathIndex, paths, pixelDictionary, se
 	'Get connected paths from paths.'
 	bottomSegment = segments[ pathIndex ]
 	path = paths[ pathIndex ]
-	if bottomSegment == None:
+	if bottomSegment is None:
 		connectedPaths.append(path)
 		return
 	endpoints = getEndpointsFromSegments( segments[ pathIndex + 1 : ] )
 	bottomSegmentEndpoint = bottomSegment[0]
 	nextEndpoint = bottomSegmentEndpoint.getClosestMissCheckEndpointPath( endpoints, bottomSegmentEndpoint.path, pixelDictionary, width )
-	if nextEndpoint == None:
+	if nextEndpoint is None:
 		bottomSegmentEndpoint = bottomSegment[1]
 		nextEndpoint = bottomSegmentEndpoint.getClosestMissCheckEndpointPath( endpoints, bottomSegmentEndpoint.path, pixelDictionary, width )
-	if nextEndpoint == None:
+	if nextEndpoint is None:
 		connectedPaths.append(path)
 		return
 	if len( bottomSegmentEndpoint.path ) > 0 and len( nextEndpoint.path ) > 0:
@@ -818,9 +818,9 @@ def getEnumeratorKeysExceptForOneArgument(enumerator, keys):
 	beginIndex = keys[0]
 	endIndex = keys[1]
 	if len(keys) == 2:
-		if beginIndex == None:
+		if beginIndex is None:
 			beginIndex = 0
-		if endIndex == None:
+		if endIndex is None:
 			endIndex = len(enumerator)
 		return range(beginIndex, endIndex)
 	step = keys[2]
@@ -829,9 +829,9 @@ def getEnumeratorKeysExceptForOneArgument(enumerator, keys):
 	if step < 0:
 		beginIndexDefault = endIndexDefault - 1
 		endIndexDefault = -1
-	if beginIndex == None:
+	if beginIndex is None:
 		beginIndex = beginIndexDefault
-	if endIndex == None:
+	if endIndex is None:
 		endIndex = endIndexDefault
 	return range(beginIndex, endIndex, step)
 
@@ -853,7 +853,7 @@ def getFloatDefaultByDictionary( defaultFloat, dictionary, key ):
 	evaluatedFloat = None
 	if key in dictionary:
 		evaluatedFloat = getFloatFromValue(dictionary[key])
-	if evaluatedFloat == None:
+	if evaluatedFloat is None:
 		return defaultFloat
 	return evaluatedFloat
 
@@ -867,7 +867,7 @@ def getFloatFromValue(value):
 
 def getFourSignificantFigures(number):
 	'Get number rounded to four significant figures as a string.'
-	if number == None:
+	if number is None:
 		return None
 	absoluteNumber = abs(number)
 	if absoluteNumber >= 100.0:
@@ -1104,7 +1104,7 @@ def getLoopConvex(points):
 					greatestDotProduct = dotProduct
 					greatestPoint = point
 					greatestSegment = nextSegment
-		if greatestPoint == None:
+		if greatestPoint is None:
 			return loopConvex
 		lastPoint = greatestPoint
 		loopConvex.append(greatestPoint)
@@ -1282,7 +1282,7 @@ def getNumberOfIntersectionsToLeft(loop, point):
 		firstPointComplex = loop[pointIndex]
 		secondPointComplex = loop[(pointIndex + 1) % len(loop)]
 		xIntersection = getXIntersectionIfExists(firstPointComplex, secondPointComplex, point.imag)
-		if xIntersection != None:
+		if xIntersection is not None:
 			if xIntersection < point.real:
 				numberOfIntersectionsToLeft += 1
 	return numberOfIntersectionsToLeft
@@ -1346,7 +1346,7 @@ def getPathsFromEndpoints(endpoints, maximumConnectionLength, pixelDictionary, w
 	paths = [path]
 	if len(endpoints) > 1:
 		nextEndpoint = otherEndpoint.getClosestMiss(endpoints, path, pixelDictionary, width)
-		if nextEndpoint != None:
+		if nextEndpoint is not None:
 			if abs(nextEndpoint.point - endpointFirst.point) < abs(nextEndpoint.point - otherEndpoint.point):
 				endpointFirst = endpointFirst.otherEndpoint
 				otherEndpoint = endpointFirst.otherEndpoint
@@ -1362,7 +1362,7 @@ def getPathsFromEndpoints(endpoints, maximumConnectionLength, pixelDictionary, w
 				return []
 		endpoints = getSquareValuesFromPoint(endpointTable, otherEndpoint.point * oneOverEndpointWidth)
 		nextEndpoint = otherEndpoint.getClosestMiss(endpoints, path, pixelDictionary, width)
-		if nextEndpoint == None:
+		if nextEndpoint is None:
 			path = []
 			paths.append(path)
 			endpoints = getListTableElements(endpointTable)
@@ -1370,7 +1370,7 @@ def getPathsFromEndpoints(endpoints, maximumConnectionLength, pixelDictionary, w
 # this commented code should be faster than the getListTableElements code, but it isn't, someday a spiral algorithim could be tried
 #			endpoints = getSquareValuesFromPoint( endpointTable, otherEndpoint.point * oneOverEndpointWidth )
 #			nextEndpoint = otherEndpoint.getClosestEndpoint(endpoints)
-#			if nextEndpoint == None:
+#			if nextEndpoint is None:
 #				endpoints = []
 #				for endpointTableValue in endpointTable.values():
 #					endpoints.append( endpointTableValue[0] )
@@ -1459,8 +1459,12 @@ def getRoundedToPlaces(decimalPlaces, number):
 	return round(number, decimalPlacesRounded )
 
 def getRoundedToPlacesString(decimalPlaces, number):
-	'Get number rounded to a number of decimal places as a string.'
-	return str(getRoundedToPlaces(decimalPlaces, number))
+	'Get number rounded to a number of decimal places as a string, without exponential formatting.'
+	roundedToPlaces = getRoundedToPlaces(decimalPlaces, number)
+	roundedToPlacesString = str(roundedToPlaces)
+	if 'e' in roundedToPlacesString:
+		return ('%.15f' % roundedToPlaces).rstrip('0')
+	return roundedToPlacesString
 
 def getRoundedToThreePlaces(number):
 	'Get number rounded to three places as a string.'
@@ -1702,7 +1706,7 @@ def getXIntersectionsFromIntersections( xIntersectionIndexList ):
 
 def getXYComplexFromVector3(vector3):
 	'Get an xy complex from a vector3 if it exists, otherwise return None.'
-	if vector3 == None:
+	if vector3 is None:
 		return None
 	return vector3.dropAxis()
 
@@ -1724,7 +1728,7 @@ def isInsideOtherLoops( loopIndex, loops ):
 def isLineIntersectingInsideXSegment( beginComplex, endComplex, segmentFirstX, segmentSecondX, y ):
 	'Determine if the line is crossing inside the x segment.'
 	xIntersection = getXIntersectionIfExists( beginComplex, endComplex, y )
-	if xIntersection == None:
+	if xIntersection is None:
 		return False
 	if xIntersection < min( segmentFirstX, segmentSecondX ):
 		return False
@@ -2014,7 +2018,7 @@ def transferClosestFillLoop(extrusionHalfWidth, oldOrderedLocation, remainingFil
 			closestDistance = distance
 			closestFillLoop = remainingFillLoop
 	newClosestFillLoop = getLoopInsideContainingLoop(closestFillLoop, remainingFillLoops)
-	while newClosestFillLoop != None:
+	while newClosestFillLoop is not None:
 		closestFillLoop = newClosestFillLoop
 		newClosestFillLoop = getLoopInsideContainingLoop(closestFillLoop, remainingFillLoops)
 	remainingFillLoops.remove(closestFillLoop)
@@ -2252,7 +2256,7 @@ class NestedBand(NestedRing):
 
 	def addPerimeterInner(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence):
 		'Add to the perimeter and the inner island.'
-		if self.loop == None:
+		if self.loop is None:
 			skein.distanceFeedRate.addLine('(<perimeterPath>)')
 			transferClosestPaths(oldOrderedLocation, self.perimeterPaths[:], skein)
 			skein.distanceFeedRate.addLine('(</perimeterPath>)')
@@ -2268,7 +2272,7 @@ class NestedBand(NestedRing):
 
 	def addToLoop(self, vector3):
 		'Add vector3 to loop.'
-		if self.loop == None:
+		if self.loop is None:
 			self.loop = []
 		self.loop.append(vector3.dropAxis())
 		self.z = vector3.z
@@ -2287,10 +2291,10 @@ class NestedBand(NestedRing):
 		fillLoops = self.getLoopsToBeFilled()[:]
 		surroundingBoundaries = self.getSurroundingBoundaries()
 		withinLoops = []
-		if penultimateFillLoops == None:
+		if penultimateFillLoops is None:
 			penultimateFillLoops = self.penultimateFillLoops
-		if penultimateFillLoops == None:
-			print('Warning, penultimateFillLoops == None in getFillLoops in NestedBand in euclidean.')
+		if penultimateFillLoops is None:
+			print('Warning, penultimateFillLoops is None in getFillLoops in NestedBand in euclidean.')
 			return fillLoops
 		for penultimateFillLoop in penultimateFillLoops:
 			if len(penultimateFillLoop) > 2:
@@ -2311,7 +2315,7 @@ class NestedBand(NestedRing):
 
 	def getLoopsToBeFilled(self):
 		'Get last fill loops from the outside loop and the loops inside the inside loops.'
-		if self.lastFillLoops == None:
+		if self.lastFillLoops is None:
 			return self.getSurroundingBoundaries()
 		return self.lastFillLoops
 
@@ -2493,7 +2497,7 @@ class XIntersectionIndex:
 
 	def __eq__(self, other):
 		'Determine whether this XIntersectionIndex is identical to other one.'
-		if other == None:
+		if other is None:
 			return False
 		if other.__class__ != self.__class__:
 			return False

@@ -39,7 +39,7 @@ class MillingRepository:
 	"A class to handle the milling settings."
 	def __init__(self):
 		"Set the default settings, execute title & settings fileName."
-		skeinforge_profile.addListsSetCraftProfile( getCraftSequence(), 'end_mill', self, 'skeinforge_plugins.profile_plugins.milling.html')
+		skeinforge_profile.addListsSetCraftProfile( getCraftSequence(), 'end_mill', self, 'skeinforge_application.skeinforge_plugins.profile_plugins.milling.html')
 
 
 def main():

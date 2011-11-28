@@ -55,7 +55,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Outset the preface gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'outset'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( OutsetRepository() )
 	if not repository.activateOutset.value:
 		return gcodeText
@@ -153,7 +153,7 @@ class OutsetSkein:
 		elif firstWord == '(<nestedRing>)':
 			self.boundary = []
 			self.loopLayer.loops.append( self.boundary )
-		if self.loopLayer == None:
+		if self.loopLayer is None:
 			self.distanceFeedRate.addLine(line)
 
 

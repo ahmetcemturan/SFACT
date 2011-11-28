@@ -91,7 +91,7 @@ def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
 	'Write scalable vector graphics for a gcode file given the settings.'
 	if gcodeText == '':
 		return None
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( VectorwriteRepository() )
 	startTime = time.time()
 	vectorwriteGcode = VectorwriteSkein().getCarvedSVG( fileName, gcodeText, repository )
@@ -323,7 +323,7 @@ class VectorwriteSkein:
 			self.boundaryLoop = None
 		elif firstWord == '(<boundaryPoint>':
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
-			if self.boundaryLoop == None:
+			if self.boundaryLoop is None:
 				self.boundaryLoop = []
 				self.threadLayer.boundaryLoops.append( self.boundaryLoop )
 			self.boundaryLoop.append(location.dropAxis())

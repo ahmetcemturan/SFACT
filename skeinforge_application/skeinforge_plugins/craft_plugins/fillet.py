@@ -89,7 +89,7 @@ def getCraftedTextFromText( gcodeText, repository = None ):
 	"Fillet a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'fillet'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( FilletRepository() )
 	if not repository.activateFillet.value:
 		return gcodeText
@@ -133,7 +133,7 @@ class BevelSkein:
 		"Get the corner feed rate, which may be based on the intermediate feed rate."
 		feedRateMinute = self.feedRateMinute
 		if self.repository.useIntermediateFeedRateInCorners.value:
-			if self.oldFeedRateMinute != None:
+			if self.oldFeedRateMinute is not None:
 				feedRateMinute = 0.5 * ( self.oldFeedRateMinute + self.feedRateMinute )
 		return feedRateMinute * self.cornerFeedRateMultiplier
 
@@ -188,9 +188,9 @@ class BevelSkein:
 		"Bevel a linear move."
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			nextLocation = self.getNextLocation()
-			if nextLocation != None:
+			if nextLocation is not None:
 				location = self.splitPointGetAfter( location, nextLocation )
 		self.oldLocation = location
 		self.oldFeedRateMinute = self.feedRateMinute
@@ -246,7 +246,7 @@ class BevelSkein:
 		if thirdBeforeSegmentLength < self.minimumRadius:
 			return location
 		extruderOffReversalPoint = self.getExtruderOffReversalPoint( afterSegment, afterSegmentComplex, beforeSegment, beforeSegmentComplex, location )
-		if extruderOffReversalPoint != None:
+		if extruderOffReversalPoint is not None:
 			return extruderOffReversalPoint
 		bevelRadius = min( thirdAfterSegmentLength, self.filletRadius )
 		bevelRadius = min( thirdBeforeSegmentLength, bevelRadius )
@@ -287,7 +287,7 @@ class ArcSegmentSkein( BevelSkein ):
 		if thirdBeforeSegmentLength < self.minimumRadius:
 			return location
 		extruderOffReversalPoint = self.getExtruderOffReversalPoint( afterSegment, afterSegmentComplex, beforeSegment, beforeSegmentComplex, location )
-		if extruderOffReversalPoint != None:
+		if extruderOffReversalPoint is not None:
 			return extruderOffReversalPoint
 		bevelRadius = min( thirdAfterSegmentLength, self.filletRadius )
 		bevelRadius = min( thirdBeforeSegmentLength, bevelRadius )
@@ -338,7 +338,7 @@ class ArcPointSkein( ArcSegmentSkein ):
 			return
 		line = self.distanceFeedRate.getFirstWordMovement( firstWord, afterPointMinusBefore ) + self.getRelativeCenter( centerMinusBeforeComplex )
 		cornerFeedRate = self.getCornerFeedRate()
-		if cornerFeedRate != None:
+		if cornerFeedRate is not None:
 			line += ' F' + self.distanceFeedRate.getRounded(cornerFeedRate)
 		self.distanceFeedRate.addLine(line)
 

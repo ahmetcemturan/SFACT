@@ -66,7 +66,7 @@ def getCraftedTextFromText( gcodeText, lashRepository = None ):
 	"Get a lashed gcode linear move text from text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'lash'):
 		return gcodeText
-	if lashRepository == None:
+	if lashRepository is None:
 		lashRepository = settings.getReadRepository( LashRepository() )
 	if not lashRepository.activateLash.value:
 		return gcodeText
@@ -123,7 +123,7 @@ class LashSkein:
 
 	def getLashedLine( self, line, location, splitLine ):
 		"Get lashed gcode line."
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return line
 		if location.x > self.oldLocation.x:
 			line = self.distanceFeedRate.getLineWithX( line, splitLine, location.x + self.xBacklash )

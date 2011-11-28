@@ -76,7 +76,7 @@ def getCraftedTextFromText(fileName, svgText, repository=None):
 	"Bottom and convert an svgText."
 	if gcodec.isProcedureDoneOrFileIsEmpty(svgText, 'bottom'):
 		return svgText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(BottomRepository())
 	if not repository.activateBottom.value:
 		return svgText
@@ -120,7 +120,7 @@ class BottomSkein:
 		"Parse svgText and store the bottom svgText."
 		svgReader = SVGReader()
 		svgReader.parseSVG('', svgText)
-		if svgReader.sliceDictionary == None:
+		if svgReader.sliceDictionary is None:
 			print('Warning, nothing will be done because the sliceDictionary could not be found getCraftedGcode in preface.')
 			return ''
 		decimalPlacesCarried = int(svgReader.sliceDictionary['decimalPlacesCarried'])

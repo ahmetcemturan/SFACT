@@ -119,7 +119,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Cool a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'cool'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(CoolRepository())
 	if not repository.activateCool.value:
 		return gcodeText
@@ -218,7 +218,7 @@ class CoolSkein:
 			minimumCorner = center - self.halfCorner
 			largestLoop = euclidean.getSquareLoopWiddershins(minimumCorner, maximumCorner)
 		pointComplex = euclidean.getXYComplexFromVector3(self.oldLocation)
-		if pointComplex != None:
+		if pointComplex is not None:
 			largestLoop = euclidean.getLoopStartingClosest(self.perimeterWidth, pointComplex, largestLoop)
 		intercircle.addOrbitsIfLarge(
 			self.distanceFeedRate, largestLoop, self.orbitalFeedRatePerSecond, remainingOrbitTime, self.highestZ)
@@ -228,7 +228,7 @@ class CoolSkein:
 		layerCool = self.repository.maximumCool.value * remainingOrbitTime / self.repository.minimumLayerTime.value
 		if self.isBridgeLayer:
 			layerCool = max(self.repository.bridgeCool.value, layerCool)
-		if self.oldTemperature != None and layerCool != 0.0:
+		if self.oldTemperature is not None and layerCool != 0.0:
 			self.coolTemperature = self.oldTemperature - layerCool
 			self.addTemperature(self.coolTemperature)
 
@@ -242,7 +242,7 @@ class CoolSkein:
 
 	def addOrbitsIfNecessary(self, remainingOrbitTime):
 		'Parse a gcode line and add it to the cool skein.'
-		if remainingOrbitTime > 0.0 and self.boundaryLayer != None:
+		if remainingOrbitTime > 0.0 and self.boundaryLayer is not None:
 			self.addCoolOrbits(remainingOrbitTime)
 
 	def addTemperature(self, temperature):
@@ -252,7 +252,12 @@ class CoolSkein:
 	def getCoolMove(self, line, location, splitLine):
 		'Get cool line according to time spent on layer.'
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
-		return self.distanceFeedRate.getLineWithFeedRate(self.multiplier * self.feedRateMinute, line, splitLine)
+		calcCoolFeedrate = self.multiplier * self.feedRateMinute
+		if calcCoolFeedrate >= self.repository.minimumLayerFeedrate.value*60:
+			coolFeedrate = calcCoolFeedrate
+		else:
+			coolFeedrate = self.repository.minimumLayerFeedrate.value*60
+		return self.distanceFeedRate.getLineWithFeedRate(coolFeedrate, line, splitLine)
 
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the cool gcode.'
@@ -288,7 +293,7 @@ class CoolSkein:
 			if firstWord == 'G1':
 				location = gcodec.getLocationFromSplitLine(lastThreadLocation, splitLine)
 				feedRateMinute = gcodec.getFeedRateMinute(feedRateMinute, splitLine)
-				if lastThreadLocation != None:
+				if lastThreadLocation is not None:
 					feedRateSecond = feedRateMinute / 60.0
 					layerTime += location.distance(lastThreadLocation) / feedRateSecond
 				lastThreadLocation = location
@@ -311,7 +316,7 @@ class CoolSkein:
 			if firstWord == 'G1':
 				location = gcodec.getLocationFromSplitLine(lastThreadLocation, splitLine)
 				feedRateMinute = gcodec.getFeedRateMinute(feedRateMinute, splitLine)
-				if lastThreadLocation != None and isExtruderActive:
+				if lastThreadLocation is not None and isExtruderActive:
 					feedRateSecond = feedRateMinute / 60.0
 					layerTime += location.distance(lastThreadLocation) / feedRateSecond
 				lastThreadLocation = location
@@ -391,7 +396,7 @@ class CoolSkein:
 		elif firstWord == '(</layer>)':
 			self.isBridgeLayer = False
 			self.multiplier = 1.0
-			if self.coolTemperature != None:
+			if self.coolTemperature is not None:
 				self.addTemperature(self.oldTemperature)
 				self.coolTemperature = None
 #			self.addFlowRate(self.oldFlowRate)

@@ -71,7 +71,7 @@ def getCraftedTextFromText( gcodeText, hopRepository = None ):
 	"Hop a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'hop'):
 		return gcodeText
-	if hopRepository == None:
+	if hopRepository is None:
 		hopRepository = settings.getReadRepository( HopRepository() )
 	if not hopRepository.activateHop.value:
 		return gcodeText
@@ -137,7 +137,7 @@ class HopSkein:
 			return line
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		highestZ = location.z
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			highestZ = max( highestZ, self.oldLocation.z )
 		highestZHop = highestZ + self.hopHeight
 		locationComplex = location.dropAxis()

@@ -27,7 +27,7 @@ globalExecutionOrder = 400
 def bottomElementNode(derivation, target):
 	"Bottom target."
 	xmlObject = target.xmlObject
-	if xmlObject == None:
+	if xmlObject is None:
 		print('Warning, bottomTarget in bottom could not get xmlObject for:')
 		print(target)
 		print(derivation.elementNode)
@@ -70,7 +70,7 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 		point.z += lift
 	return [loop]
 
-def getNewDerivation(elementNode):
+def getNewDerivation(elementNode, prefix, sideLength):
 	'Get new derivation.'
 	return BottomDerivation(elementNode, '')
 
@@ -80,7 +80,7 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation == None:
+	if derivation is None:
 		derivation = BottomDerivation(elementNode, '')
 	targets = evaluate.getElementNodesByKey(elementNode, 'target')
 	if len(targets) < 1:
@@ -98,10 +98,6 @@ class BottomDerivation:
 		self.altitude = evaluate.getEvaluatedFloat(0.0, elementNode, prefix + 'altitude')
 		self.elementNode = elementNode
 		self.liftPath = evaluate.getEvaluatedBoolean(True, elementNode, prefix + 'liftPath')
-
-	def __repr__(self):
-		"Get the string representation of this BottomDerivation."
-		return str(self.__dict__)
 
 	def getAdditionalPathLift(self):
 		"Get path lift."

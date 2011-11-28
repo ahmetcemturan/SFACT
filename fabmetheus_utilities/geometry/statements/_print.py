@@ -31,7 +31,7 @@ def printAttributesKey( attributesKey, elementNode):
 	"Print the attributesKey."
 	if attributesKey.lower() == '_localdictionary':
 		localDictionary = getLocalDictionary( attributesKey, elementNode)
-		if localDictionary != None:
+		if localDictionary is not None:
 			localDictionaryKeys = localDictionary.keys()
 			attributeValue = elementNode.attributes[attributesKey]
 			if attributeValue != '':

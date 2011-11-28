@@ -121,7 +121,7 @@ def getArcComplexes(begin, end, largeArcFlag, radius, sweepFlag, xAxisRotation):
 def getChainMatrixSVG(elementNode, matrixSVG):
 	"Get chain matrixSVG by svgElement."
 	matrixSVG = matrixSVG.getOtherTimesSelf(getMatrixSVG(elementNode).tricomplex)
-	if elementNode.parentNode != None:
+	if elementNode.parentNode is not None:
 		matrixSVG = getChainMatrixSVG(elementNode.parentNode, matrixSVG)
 	return matrixSVG
 
@@ -153,7 +153,7 @@ def getFontReader(fontFamily):
 	if fontLower in globalFontReaderDictionary:
 		return globalFontReaderDictionary[fontLower]
 	global globalFontFileNames
-	if globalFontFileNames == None:
+	if globalFontFileNames is None:
 		globalFontFileNames = archive.getFileNamesByFilePaths(archive.getFilePathsByDirectory(getFontsDirectoryPath()))
 	if fontLower not in globalFontFileNames:
 		print('Warning, the %s font was not found in the fabmetheus_utilities/fonts folder, so Gentium Basic Regular will be substituted.' % fontFamily)
@@ -243,7 +243,7 @@ def getStyleValue(defaultValue, elementNode, key):
 				return words[1]
 	if key in elementNode.attributes:
 		return elementNode.attributes[key]
-	if elementNode.parentNode == None:
+	if elementNode.parentNode is None:
 		return defaultValue
 	return getStyleValue(defaultValue, elementNode.parentNode, key)
 
@@ -376,7 +376,7 @@ def processSVGElementg(elementNode, svgReader):
 	if zIndex < 0:
 		return
 	floatFromValue = euclidean.getFloatFromValue(idStringLower[zIndex + len('z:') :].strip())
-	if floatFromValue != None:
+	if floatFromValue is not None:
 		svgReader.z = floatFromValue
 
 def processSVGElementline(elementNode, svgReader):
@@ -508,7 +508,7 @@ class FontReader:
 	def getGlyph(self, character, yAxisPointingUpward):
 		"Get the glyph for the character."
 		if character not in self.glyphElementNodeDictionary:
-			if self.missingGlyph == None:
+			if self.missingGlyph is None:
 				missingGlyphElementNode = self.fontElementNode.getFirstChildByLocalName('missing-glyph')
 				self.missingGlyph = Glyph(missingGlyphElementNode, self.unitsPerEM, yAxisPointingUpward)
 			return self.missingGlyph
@@ -556,23 +556,23 @@ class MatrixSVG:
 
 	def getOtherTimesSelf(self, otherTricomplex):
 		"Get the other matrix multiplied by this matrix."
-		if otherTricomplex == None:
+		if otherTricomplex is None:
 			return MatrixSVG(self.tricomplex)
-		if self.tricomplex == None:
+		if self.tricomplex is None:
 			return MatrixSVG(otherTricomplex)
 		return MatrixSVG(getTricomplexTimesOther(otherTricomplex, self.tricomplex))
 
 	def getSelfTimesOther(self, otherTricomplex):
 		"Get this matrix multiplied by the other matrix."
-		if otherTricomplex == None:
+		if otherTricomplex is None:
 			return MatrixSVG(self.tricomplex)
-		if self.tricomplex == None:
+		if self.tricomplex is None:
 			return MatrixSVG(otherTricomplex)
 		return MatrixSVG(getTricomplexTimesOther(self.tricomplex, otherTricomplex))
 
 	def getTransformedPath(self, path):
 		"Get transformed path."
-		if self.tricomplex == None:
+		if self.tricomplex is None:
 			return path
 		complexX = self.tricomplex[0]
 		complexY = self.tricomplex[1]
@@ -586,7 +586,7 @@ class MatrixSVG:
 
 	def getTransformedPaths(self, paths):
 		"Get transformed paths."
-		if self.tricomplex == None:
+		if self.tricomplex is None:
 			return paths
 		transformedPaths = []
 		for path in paths:
@@ -641,7 +641,7 @@ class PathReader:
 		"Add a cubic curve to the path from a reflected control point."
 		begin = self.getOldPoint()
 		controlPointBegin = begin
-		if self.controlPoints != None:
+		if self.controlPoints is not None:
 			if len(self.controlPoints) == 2:
 				controlPointBegin = begin + begin - self.controlPoints[-1]
 		self.controlPoints = [controlPointBegin, controlPoint]
@@ -664,7 +664,7 @@ class PathReader:
 	def addPathLineByFunction( self, lineFunction ):
 		"Add a line to the path by line function."
 		while 1:
-			if self.getFloatByExtraIndex() == None:
+			if self.getFloatByExtraIndex() is None:
 				return
 			self.path.append(lineFunction())
 			self.wordIndex += 2
@@ -690,7 +690,7 @@ class PathReader:
 		"Add a quadratic curve to the path from a reflected control point."
 		begin = self.getOldPoint()
 		controlPoint = begin
-		if self.controlPoints != None:
+		if self.controlPoints is not None:
 			if len( self.controlPoints ) == 1:
 				controlPoint = begin + begin - self.controlPoints[-1]
 		self.controlPoints = [ controlPoint ]
@@ -746,7 +746,7 @@ class PathReader:
 		self.addPathLineAxis(complex(float(self.words[self.wordIndex + 1]), beginY))
 		while 1:
 			floatByExtraIndex = self.getFloatByExtraIndex()
-			if floatByExtraIndex == None:
+			if floatByExtraIndex is None:
 				return
 			self.path.append(complex(floatByExtraIndex, beginY))
 			self.wordIndex += 1
@@ -757,7 +757,7 @@ class PathReader:
 		self.addPathLineAxis(complex(float(self.words[self.wordIndex + 1]) + begin.real, begin.imag))
 		while 1:
 			floatByExtraIndex = self.getFloatByExtraIndex()
-			if floatByExtraIndex == None:
+			if floatByExtraIndex is None:
 				return
 			self.path.append(complex(floatByExtraIndex + self.getOldPoint().real, begin.imag))
 			self.wordIndex += 1
@@ -810,7 +810,7 @@ class PathReader:
 		self.addPathLineAxis(complex(beginX, float(self.words[self.wordIndex + 1])))
 		while 1:
 			floatByExtraIndex = self.getFloatByExtraIndex()
-			if floatByExtraIndex == None:
+			if floatByExtraIndex is None:
 				return
 			self.path.append(complex(beginX, floatByExtraIndex))
 			self.wordIndex += 1
@@ -821,7 +821,7 @@ class PathReader:
 		self.addPathLineAxis(complex(begin.real, float(self.words[self.wordIndex + 1]) + begin.imag))
 		while 1:
 			floatByExtraIndex = self.getFloatByExtraIndex()
-			if floatByExtraIndex == None:
+			if floatByExtraIndex is None:
 				return
 			self.path.append(complex(begin.real, floatByExtraIndex + self.getOldPoint().imag))
 			self.wordIndex += 1
@@ -861,7 +861,7 @@ class SVGReader:
 
 	def getLoopLayer(self):
 		"Return the rotated loop layer."
-		if self.z != None:
+		if self.z is not None:
 			loopLayer = euclidean.LoopLayer(self.z)
 			self.loopLayers.append(loopLayer)
 			self.z = None
@@ -872,7 +872,7 @@ class SVGReader:
 		self.fileName = fileName
 		xmlParser = DocumentNode(fileName, svgText)
 		self.documentElement = xmlParser.getDocumentElement()
-		if self.documentElement == None:
+		if self.documentElement is None:
 			print('Warning, documentElement was None in parseSVG in SVGReader, so nothing will be done for:')
 			print(fileName)
 			return

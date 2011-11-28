@@ -23,7 +23,7 @@ def processElementNode(elementNode):
 		return
 	function = functions[-1]
 	function.shouldReturn = True
-	if elementNode.xmlObject == None:
+	if elementNode.xmlObject is None:
 		if 'return' in elementNode.attributes:
 			value = elementNode.attributes['return']
 			elementNode.xmlObject = evaluate.getEvaluatorSplitWords(value)

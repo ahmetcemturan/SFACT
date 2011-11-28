@@ -58,7 +58,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Drill a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'drill'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( DrillRepository() )
 	if not repository.activateDrill.value:
 		return gcodeText
@@ -152,7 +152,7 @@ class DrillSkein:
 
 	def addThreadLayerIfNone(self):
 		"Add a thread layer if it is none."
-		if self.threadLayer != None:
+		if self.threadLayer is not None:
 			return
 		self.threadLayer = ThreadLayer( self.layerZ )
 		self.threadLayers.append( self.threadLayer )
@@ -233,7 +233,7 @@ class DrillSkein:
 			self.extruderActive = False
 		elif firstWord == '(<boundaryPoint>':
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
-			if self.boundary == None:
+			if self.boundary is None:
 				self.boundary = []
 			self.boundary.append(location.dropAxis())
 		elif firstWord == '(<layer>':
@@ -242,7 +242,7 @@ class DrillSkein:
 		elif firstWord == '(<boundaryPerimeter>)':
 			self.addThreadLayerIfNone()
 		elif firstWord == '(</boundaryPerimeter>)':
-			if self.boundary != None:
+			if self.boundary is not None:
 				self.threadLayer.points.append( getPolygonCenter( self.boundary ) )
 				self.boundary = None
 

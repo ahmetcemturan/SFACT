@@ -93,9 +93,9 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation == None:
+	if derivation is None:
 		derivation = ArrayDerivation(elementNode)
-	if derivation.target == None:
+	if derivation.target is None:
 		print('Warning, array could not get target for:')
 		print(elementNode)
 		return
@@ -127,7 +127,3 @@ class ArrayDerivation:
 		self.target = evaluate.getElementNodeByKey(elementNode, 'target')
 		self.track = evaluate.getEvaluatedBoolean(True, elementNode, 'track')
 		self.visible = evaluate.getEvaluatedBoolean(True, elementNode, 'visible')
-
-	def __repr__(self):
-		"Get the string representation of this ArrayDerivation."
-		return str(self.__dict__)

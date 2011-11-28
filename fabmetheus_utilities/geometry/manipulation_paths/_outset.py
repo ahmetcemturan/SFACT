@@ -8,6 +8,7 @@ from __future__ import absolute_import
 import __init__
 
 from fabmetheus_utilities.geometry.creation import lineation
+from fabmetheus_utilities.geometry.geometry_utilities.evaluate_elements import setting
 from fabmetheus_utilities.geometry.geometry_utilities import evaluate
 from fabmetheus_utilities import intercircle
 
@@ -23,9 +24,20 @@ globalExecutionOrder = 80
 
 def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get outset path."
-	radius = lineation.getStrokeRadiusByPrefix(elementNode, prefix)
-	return intercircle.getInsetLoopsFromVector3Loop(loop, -radius)
+	derivation = OutsetDerivation(elementNode, prefix)
+	return intercircle.getInsetLoopsFromVector3Loop(loop, -derivation.radius)
+
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return OutsetDerivation(elementNode, prefix)
 
 def processElementNode(elementNode):
 	"Process the xml element."
 	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)
+
+
+class OutsetDerivation:
+	"Class to hold outset variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.radius = evaluate.getEvaluatedFloat(2.0 * setting.getPerimeterWidth(elementNode), elementNode, prefix + 'radius')

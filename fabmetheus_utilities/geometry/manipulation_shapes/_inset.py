@@ -43,8 +43,8 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 
 def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	'Get inset geometryOutput.'
-	radius = evaluate.getEvaluatedFloat(2.0 * setting.getPerimeterWidth(elementNode), elementNode, prefix + 'radius')
-	if radius == 0.0:
+	derivation = InsetDerivation(elementNode, prefix)
+	if derivation.radius == 0.0:
 		return geometryOutput
 	copyShallow = elementNode.getCopyShallow()
 	solid.processElementNodeByGeometry(copyShallow, geometryOutput)
@@ -66,7 +66,7 @@ def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	loopLayers += boolean_geometry.getLoopLayers(copyShallowObjects, importRadius, layerThickness, maximumZ, False, z, zoneArrangement)
 	copyShallow.parentNode.xmlObject.archivableObjects.remove(copyShallow.xmlObject)
 	belowLoop = []
-	diagonalRadius = math.sqrt(0.5) * radius
+	diagonalRadius = math.sqrt(0.5) * derivation.radius
 	insetDiagonalLoops = []
 	loops = []
 	vertexes = []
@@ -74,7 +74,7 @@ def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 		insetDiagonalLoops.append(intercircle.getLargestInsetLoopFromLoop(loopLayer.loops[0], diagonalRadius))
 	for loopLayerIndex, loopLayer in enumerate(loopLayers):
 		vector3Loop = []
-		insetLoop = intercircle.getLargestInsetLoopFromLoop(loopLayer.loops[0], radius)
+		insetLoop = intercircle.getLargestInsetLoopFromLoop(loopLayer.loops[0], derivation.radius)
 		loopLists = [[getLoopOrEmpty(loopLayerIndex - 1, insetDiagonalLoops)], [insetLoop]]
 		largestLoop = euclidean.getLargestLoop(boolean_solid.getLoopsIntersection(importRadius, loopLists))
 		if evaluate.getEvaluatedBoolean(True, elementNode, prefix + 'insetTop'):
@@ -98,6 +98,17 @@ def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	geometryOutput = triangle_mesh.getMeldedPillarOutput(loops)
 	return geometryOutput
 
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return OutsetDerivation(elementNode, prefix)
+
 def processElementNode(elementNode):
 	"Process the xml element."
 	solid.processElementNodeByFunctions(elementNode, getManipulatedGeometryOutput, getManipulatedPaths)
+
+
+class InsetDerivation:
+	"Class to hold inset variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.radius = evaluate.getEvaluatedFloat(2.0 * setting.getPerimeterWidth(elementNode), elementNode, prefix + 'radius')

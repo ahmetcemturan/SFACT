@@ -125,9 +125,9 @@ def getCraftedText( fileName, gcodeText = '', repository=None):
 		if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'carve'):
 			return gcodeText
 	carving = svg_writer.getCarving(fileName)
-	if carving == None:
+	if carving is None:
 		return ''
-	if repository == None:
+	if repository is None:
 		repository = CarveRepository()
 		settings.getReadRepository(repository)
 	return CarveSkein().getCarvedSVG( carving, fileName, repository )
@@ -168,10 +168,6 @@ class CarveRepository:
 		settings.LabelDisplay().getFromName('- Layers to print -', self )
 		self.layersFrom = settings.IntSpin().getFromValue( 0, 'Print from Layer No::', self, 3333, 0 )
 		self.layersTo = settings.IntSpin().getSingleIncrementFromValue( 0, 'Print up to Layer No:', self, 912345678, 912345678 )
-		settings.LabelSeparator().getFromRepository(self)		
-		settings.LabelDisplay().getFromName('- Checked for technical parts, unchecked for organic pieces -', self )		
-		self.infillInDirectionOfBridge = settings.BooleanSetting().getFromValue('Infill in Direction of Bridge', self, True )
-		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Do not touch those below -', self )
 		settings.LabelSeparator().getFromRepository(self)
@@ -209,7 +205,7 @@ class CarveSkein:
 			return ''
 		layerThickness = carving.getCarveLayerThickness()
 		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerThickness)
-		perimeterWidth = repository.perimeterWidthOverThickness.value #todo why twice?
+#		perimeterWidth = repository.perimeterWidthOverThickness.value #todo why twice?
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),

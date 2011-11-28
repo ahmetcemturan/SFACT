@@ -108,14 +108,13 @@ def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 		print('Warning, loop has less than three sides in getManipulatedPaths in overhang for:')
 		print(elementNode)
 		return [loop]
-	overhangRadians = setting.getOverhangRadians(elementNode)
-	overhangPlaneAngle = euclidean.getWiddershinsUnitPolar(0.5 * math.pi - overhangRadians)
-	overhangVerticalRadians = math.radians(evaluate.getEvaluatedFloat(0.0, elementNode,  prefix + 'inclination'))
-	if overhangVerticalRadians != 0.0:
-		overhangVerticalCosine = abs(math.cos(overhangVerticalRadians))
-		if overhangVerticalCosine == 0.0:
+	derivation = OverhangDerivation(elementNode, prefix)
+	overhangPlaneAngle = euclidean.getWiddershinsUnitPolar(0.5 * math.pi - derivation.overhangRadians)
+	if derivation.overhangInclinationRadians != 0.0:
+		overhangInclinationCosine = abs(math.cos(derivation.overhangInclinationRadians))
+		if overhangInclinationCosine == 0.0:
 			return [loop]
-		imaginaryTimesCosine = overhangPlaneAngle.imag * overhangVerticalCosine
+		imaginaryTimesCosine = overhangPlaneAngle.imag * overhangInclinationCosine
 		overhangPlaneAngle = euclidean.getNormalized(complex(overhangPlaneAngle.real, imaginaryTimesCosine))
 	alongAway = AlongAway(loop, overhangPlaneAngle)
 	if euclidean.getIsWiddershinsByVector3(loop):
@@ -130,6 +129,10 @@ def getMinimumYByPath(path):
 	for point in path:
 		minimumYByPath = min( minimumYByPath, point.y )
 	return minimumYByPath
+
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return OverhangDerivation(elementNode, prefix)
 
 def processElementNode(elementNode):
 	"Process the xml element."
@@ -165,13 +168,13 @@ class AlongAway:
 			if begin != point and end != point:
 				self.awayIndexes.append( pointIndex )
 				yIntersection = euclidean.getYIntersectionIfExists( begin.dropAxis(), end.dropAxis(), point.x )
-				if yIntersection != None:
+				if yIntersection is not None:
 					numberOfIntersectionsBelow += ( yIntersection < point.y )
 			if begin == point:
 				self.pointIndex = pointIndex
 		if numberOfIntersectionsBelow % 2 == 0:
 			return True
-		if self.pointIndex == None:
+		if self.pointIndex is None:
 			return True
 		if self.getIsPointSupportedBySegment( self.pointIndex - 1 + len( self.loop ) ):
 			return True
@@ -197,13 +200,13 @@ class AlongAway:
 			if begin != point and end != point:
 				self.awayIndexes.append( pointIndex )
 				yIntersection = euclidean.getYIntersectionIfExists( begin.dropAxis(), end.dropAxis(), point.x )
-				if yIntersection != None:
+				if yIntersection is not None:
 					numberOfIntersectionsBelow += ( yIntersection < point.y )
 			if begin == point:
 				self.pointIndex = pointIndex
 		if numberOfIntersectionsBelow % 2 == 1:
 			return True
-		if self.pointIndex == None:
+		if self.pointIndex is None:
 			return True
 		if self.getIsPointSupportedBySegment( self.pointIndex - 1 + len( self.loop ) ):
 			return True
@@ -268,6 +271,14 @@ class OverhangClockwise:
 		self.alongAway.loop[ unsupportedBeginIndex : endIndex ] = supportPoints
 
 
+class OverhangDerivation:
+	"Class to hold overhang variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.overhangRadians = setting.getOverhangRadians(elementNode)
+		self.overhangInclinationRadians = math.radians(evaluate.getEvaluatedFloat(0.0, elementNode,  prefix + 'inclination'))
+
+
 class OverhangWiddershinsLeft:
 	"Class to get the intersection from the point down to the left."
 	def __init__( self, alongAway ):
@@ -283,13 +294,13 @@ class OverhangWiddershinsLeft:
 	def alterLoop(self):
 		"Alter alongAway loop."
 		insertedPoint = self.alongAway.point.copy()
-		if self.closestXIntersectionIndex != None:
+		if self.closestXIntersectionIndex is not None:
 			self.alongAway.loop = self.getIntersectLoop()
 			intersectionRelativeComplex = self.closestXDistance * self.intersectionPlaneAngle
 			intersectionPoint = insertedPoint + Vector3( intersectionRelativeComplex.real, intersectionRelativeComplex.imag )
 			self.alongAway.loop.append( intersectionPoint )
 			return
-		if self.closestBottomPoint == None:
+		if self.closestBottomPoint is None:
 			return
 		if self.closestBottomPoint not in self.alongAway.loop:
 			return
@@ -308,7 +319,7 @@ class OverhangWiddershinsLeft:
 		"Get distance between point and closest intersection or bottom point along line."
 		self.pointMinusBottomY = self.alongAway.point.y - self.alongAway.minimumY
 		self.diagonalDistance = self.pointMinusBottomY * self.diagonalRatio
-		if self.alongAway.pointIndex == None:
+		if self.alongAway.pointIndex is None:
 			return self.getDistanceToBottom()
 		rotatedLoop = euclidean.getRotatedComplexes( self.intersectionYMirror,  euclidean.getComplexPath( self.alongAway.loop ) )
 		rotatedPointComplex = rotatedLoop[ self.alongAway.pointIndex ]
@@ -319,7 +330,7 @@ class OverhangWiddershinsLeft:
 			beginComplex = rotatedLoop[pointIndex]
 			endComplex = rotatedLoop[ (pointIndex + 1) % len( rotatedLoop ) ]
 			xIntersection = euclidean.getXIntersectionIfExists( beginComplex, endComplex, rotatedPointComplex.imag )
-			if xIntersection != None:
+			if xIntersection is not None:
 				if xIntersection >= beginX and xIntersection < endX:
 					xIntersectionIndexList.append( euclidean.XIntersectionIndex( pointIndex, xIntersection ) )
 		self.closestXDistance = 987654321.0
@@ -329,7 +340,7 @@ class OverhangWiddershinsLeft:
 			if xDistance < self.closestXDistance:
 				self.closestXIntersectionIndex = xIntersectionIndex
 				self.closestXDistance = xDistance
-		if self.closestXIntersectionIndex != None:
+		if self.closestXIntersectionIndex is not None:
 			return self.closestXDistance
 		return self.getDistanceToBottom()
 

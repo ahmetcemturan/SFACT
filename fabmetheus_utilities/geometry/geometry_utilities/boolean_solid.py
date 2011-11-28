@@ -51,7 +51,7 @@ def addLineLoopsIntersections( loopLoopsIntersections, loops, pointBegin, pointE
 def addLineXSegmentIntersection( lineLoopsIntersections, segmentFirstX, segmentSecondX, vector3First, vector3Second, y ):
 	'Add intersections of the line with the x segment.'
 	xIntersection = euclidean.getXIntersectionIfExists( vector3First, vector3Second, y )
-	if xIntersection == None:
+	if xIntersection is None:
 		return
 	if xIntersection < min( segmentFirstX, segmentSecondX ):
 		return
