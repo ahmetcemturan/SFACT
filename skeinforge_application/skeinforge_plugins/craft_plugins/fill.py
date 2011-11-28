@@ -890,7 +890,7 @@ class FillSkein:
 				extraShells = self.repository.extraShellsBase.value
 		if rotatedLayer.rotation is not None:
 			extraShells = extraShellsBridgeLayer
-			self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value * 2 #*euclidean.globalQuarterPi #  self.scaledBridgeWidthMultiplier * self.repository.infillPerimeterOverlap.value # self.bridgeWidthMultiplier
+			self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value * 0.9 #*euclidean.globalQuarterPi #  self.scaledBridgeWidthMultiplier * self.repository.infillPerimeterOverlap.value # self.bridgeWidthMultiplier
 			self.distanceFeedRate.addLine('(<bridgeRotation> %s )' % rotatedLayer.rotation)
 		self.distanceFeedRate.addLine('(<rotation> %s )' % layerRotation)
 		aroundInset = 0.24321 * self.infillWidth
