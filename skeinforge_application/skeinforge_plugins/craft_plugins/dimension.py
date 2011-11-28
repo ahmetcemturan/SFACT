@@ -495,7 +495,7 @@ class DimensionSkein:
 		elif firstWord == 'M101':
 			if self.repository.activateFixedRetract.value :
 #				self.distanceFeedRate.addLine('M84 E')
-				self.self.distanceFeedRate.addLine('G1 E'+ str(round((self.restartDistance * self.retractionRatio),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
+				self.distanceFeedRate.addLine('G1 E'+ str(round((self.restartDistance * self.retractionRatio),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
 			elif not self.repository.activateFixedRetract.value :
 #				self.distanceFeedRate.addLine('M84 E')
 				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
