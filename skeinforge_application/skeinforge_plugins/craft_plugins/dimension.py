@@ -494,10 +494,10 @@ class DimensionSkein:
 #			print 'Creating the Gcode for Layer',self.layerIndex
 		elif firstWord == 'M101':
 			if self.repository.activateFixedRetract.value :
-#				self.distanceFeedRate.addLine('M88')
+#				self.distanceFeedRate.addLine('M84 E')
 				self.self.distanceFeedRate.addLine('G1 E'+ str(round((self.restartDistance * self.retractionRatio),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
 			elif not self.repository.activateFixedRetract.value :
-#				self.distanceFeedRate.addLine('M88')
+#				self.distanceFeedRate.addLine('M84 E')
 				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
 				self.distanceFeedRate.addLine('G1 E'+ str(round((self.repository.afterOooze.value / self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString) #extruding(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
 
@@ -509,13 +509,13 @@ class DimensionSkein:
 			self.isExtruderActive = True
 		elif firstWord == 'M103':
 			if self.repository.activateFixedRetract.value :
-#				self.distanceFeedRate.addLine('M88')
+#				self.distanceFeedRate.addLine('M84 E')
 				self.distanceFeedRate.addLine('G4 P'+ retractDwell )
 				self.distanceFeedRate.addLine('G1 E'+ str(round((-self.repository.retractionDistance.value * self.retractionRatio),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
 				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
 			elif not self.repository.activateFixedRetract.value :
 				self.retractionRatio = self.getRetractionRatio(lineIndex)
-				self.distanceFeedRate.addLine('M88 '+'S'+ retractDwell)
+				self.distanceFeedRate.addLine('M84 E '+'S'+ retractDwell)
 #				self.distanceFeedRate.addLine('G4 P'+ retractDwell )
 #				self.distanceFeedRate.addLine('G1 E'+ str(round((-self.repository.afterOooze.value/self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
 #				self.addLinearMoveExtrusionDistanceLine(-self.repository.afterOooze.value/self.extrusionReduction)
