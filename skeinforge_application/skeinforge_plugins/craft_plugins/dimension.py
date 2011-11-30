@@ -495,18 +495,24 @@ class DimensionSkein:
 		elif firstWord == 'M101':
 			if self.repository.activateFixedRetract.value :
 				self.distanceFeedRate.addLine('G92 E0')
+				self.totalExtrusionDistance = 0.0
 #				self.distanceFeedRate.addLine('M84 E')
 				self.distanceFeedRate.addLine('G1 E'+ str(round((self.restartDistance * self.retractionRatio),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
+				self.distanceFeedRate.addLine('G92 E0')
 				self.totalExtrusionDistance = 0.0
 			elif not self.repository.activateFixedRetract.value :
 
 #				self.distanceFeedRate.addLine('M84 E')
-				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
+#				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
+
 				self.distanceFeedRate.addLine('G92 E0')
+				self.totalExtrusionDistance = 0.0				
 				self.distanceFeedRate.addLine('G1 E'+ str(round((self.repository.afterOooze.value / self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString) #extruding(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
 				self.distanceFeedRate.addLine('G92 E0')
+				self.totalExtrusionDistance = 0.0				
 				self.distanceFeedRate.addLine('G1 E'+ str(round((self.autoRetractDistance / self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString) #extruding(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
 # self.addLinearMoveExtrusionDistanceLine((self.xxyTravel))  #extruding(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
+				self.distanceFeedRate.addLine('G92 E0')
 				self.totalExtrusionDistance = 0.0
 			if self.totalExtrusionDistance > self.repository.maximumEValueBeforeReset.value or self.repository.relativeExtrusionDistance.value:
 				self.distanceFeedRate.addLine('G92 E0')
@@ -516,20 +522,24 @@ class DimensionSkein:
 			if self.repository.activateFixedRetract.value :
 
 #				self.distanceFeedRate.addLine('M84 E')
-				self.distanceFeedRate.addLine('G4 P'+ retractDwell )
+#				self.distanceFeedRate.addLine('G4 P'+ retractDwell )
 				self.distanceFeedRate.addLine('G92 E0')
+				self.totalExtrusionDistance = 0.0
 				self.distanceFeedRate.addLine('G1 E'+ str(round((-self.repository.retractionDistance.value * self.retractionRatio),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
-				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
+#				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
+				self.distanceFeedRate.addLine('G92 E0')
 				self.totalExtrusionDistance = 0.0
 			elif not self.repository.activateFixedRetract.value :
 				self.retractionRatio = self.getRetractionRatio(lineIndex)
-				self.distanceFeedRate.addLine('M84 E '+'S'+ retractDwell)
+#				self.distanceFeedRate.addLine('M84 E '+'S'+ retractDwell)
 #				self.distanceFeedRate.addLine('G4 P'+ retractDwell )
 #				self.distanceFeedRate.addLine('G1 E'+ str(round((-self.repository.afterOooze.value/self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
 #				self.addLinearMoveExtrusionDistanceLine(-self.repository.afterOooze.value/self.extrusionReduction)
 				self.distanceFeedRate.addLine('G92 E0')
+				self.totalExtrusionDistance = 0.0				
 				self.distanceFeedRate.addLine('G1 E'+ str(round((- (self.autoRetractDistance + self.repository.afterOooze.value/2)/self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString) #retracting
-				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
+#				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
+				self.distanceFeedRate.addLine('G92 E0')
 				self.totalExtrusionDistance = 0.0
 			self.isExtruderActive = False
 		elif firstWord == 'M108':

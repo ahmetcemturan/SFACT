@@ -102,8 +102,8 @@ class AlterationRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName(fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Alteration', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Alteration')
 		self.activateAlteration = settings.BooleanSetting().getFromValue('Activate Alteration', self, True)
-		self.nameOfEndFile = settings.StringSetting().getFromValue('Name of End File:', self, 'end.gcode')
-		self.nameOfStartFile = settings.StringSetting().getFromValue('Name of Start File:', self, 'start.gcode')
+		self.nameOfEndFile = settings.StringSetting().getFromValue('Name of End File:', self, 'end.gmc')
+		self.nameOfStartFile = settings.StringSetting().getFromValue('Name of Start File:', self, 'start.gmc')
 		self.replaceVariableWithSetting = settings.BooleanSetting().getFromValue('Replace Variable with Setting', self, True)
 		self.executeTitle = 'Alteration'
 
