@@ -659,7 +659,7 @@ class RaftSkein:
 						flowRate = self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value
 					temperature = self.objectFirstLayerPerimeterTemperature
 				else:
-					feedRateMinuteMultiplied = self.objectFirstLayerTravelSpeed *60
+					feedRateMinuteMultiplied = self.firstLayertravelFeedRateMinute
 					if flowRate is not None:
 						flowRate *= self.objectFirstLayerFlowRateInfillMultiplier
 					temperature = self.objectFirstLayerInfillTemperature
@@ -725,7 +725,7 @@ class RaftSkein:
 			feedRateMinuteMultiplied = self.objectFirstLayerFeedRateInfillMultiplier * 60
 			if supportFlowRateMultiplied is not None:
 				supportFlowRateMultiplied = supportFlowRateMultiplied *1.25
-			self.travelFeedRateMinute = self.objectFirstLayerTravelSpeed * 60
+			self.travelFeedRateMinute = self.firstLayertravelFeedRateMinute
 		self.addFlowRate(supportFlowRateMultiplied)
 		for path in paths:
 			self.distanceFeedRate.addGcodeFromFeedRateThreadZ(feedRateMinuteMultiplied, path, self.travelFeedRateMinute, z)
@@ -950,6 +950,8 @@ class RaftSkein:
 				self.supportedLayersTemperature = float(splitLine[1])
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
+			elif firstWord == '(<firstLayertravelFeedRatePerSecond>':
+				self.firstLayertravelFeedRateMinute = 60.0 * float(splitLine[1])
 			elif firstWord == '(<nozzleDiameter>':
 				self.nozzleDiameter = float(splitLine[1])
 			elif firstWord == '(<nozzleXsection>':
