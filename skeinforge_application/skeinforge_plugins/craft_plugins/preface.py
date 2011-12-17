@@ -112,10 +112,10 @@ class PrefaceRepository:
 		self.setPositioningToAbsolute = settings.BooleanSetting().getFromValue('Set Positioning to Absolute', self, True )
 		self.setUnitsToMillimeters = settings.BooleanSetting().getFromValue('Set Units to Millimeters', self, True )
 		self.startAtHome = settings.BooleanSetting().getFromValue('Home before Print', self, False )
-#		self.resetExtruder = settings.BooleanSetting().getFromValue('Reset Extruder before Print', self, True )
+		self.resetExtruder = settings.BooleanSetting().getFromValue('Reset Extruder before Print', self, True )
 		settings.LabelSeparator().getFromRepository(self)
-#		settings.LabelDisplay().getFromName('- Turn Extruder Off -', self )
-#		self.turnExtruderOffAtShutDown = settings.BooleanSetting().getFromValue('Turn Extruder Off at Shut Down', self, True )
+		settings.LabelDisplay().getFromName('- Turn Extruder Off -', self )
+		self.turnExtruderOffAtShutDown = settings.BooleanSetting().getFromValue('Turn Extruder Off at Shut Down', self, True )
 #		self.turnExtruderOffAtStartUp = settings.BooleanSetting().getFromValue('Turn Extruder Off at Start Up', self, True )
 		self.executeTitle = 'Preface'
 
@@ -154,8 +154,8 @@ class PrefaceSkein:
 			self.distanceFeedRate.addLine('G21 ;set units to millimeters') # Set units to millimeters.
 		if self.repository.startAtHome.value:
 			self.distanceFeedRate.addLine('G28 ;start at home') # Start at home.
-#		if self.repository.resetExtruder.value:
-#			self.distanceFeedRate.addLine('G92 E0 ;reset extruder distance') # Start at home.
+		if self.repository.resetExtruder.value:
+			self.distanceFeedRate.addLine('G92 E0 ;reset extruder distance') # Start at home.
 #		if self.repository.turnExtruderOffAtStartUp.value:
 #			self.distanceFeedRate.addLine('M103') # Turn extruder off.
 		craftTypeName = skeinforge_profile.getCraftTypeName()
@@ -191,8 +191,8 @@ class PrefaceSkein:
 	def addShutdownToOutput(self):
 		"Add shutdown gcode to the output."
 		self.distanceFeedRate.addLine('(</crafting>)') # GCode formatted comment
-#		if self.repository.turnExtruderOffAtShutDown.value:
-#			self.distanceFeedRate.addLine('M103') # Turn extruder motor off.
+		if self.repository.turnExtruderOffAtShutDown.value:
+			self.distanceFeedRate.addLine('M103') # Turn extruder motor off.
 
 	def addToolSettingLines(self, pluginName):
 		"Add tool setting lines."

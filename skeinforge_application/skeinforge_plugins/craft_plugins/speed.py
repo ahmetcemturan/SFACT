@@ -230,18 +230,6 @@ class SpeedSkein:
 		self.oldFlowRate = None
 		self.oldAccelerationRate = None
 		
-#	def getFlowRateString(self):
-#		"Get the flow rate string."
-#		self.nozzleXsection = (self.nozzleDiameter/2) ** 2 * math.pi
-#		extrusionXsection = ((self.absolutePerimeterWidth + self.layerThickness)/4) ** 2 * math.pi#todo transfer to inset
-#		if not self.repository.addFlowRate.value:
-#			return None
-#		flowRate = self.repository.flowRateSetting.value
-#		if self.isBridgeLayer:
-#			flowRate = self.repository.bridgeFlowRateMultiplier.value * self.repository.perimeterFlowRateMultiplier.value * (self.nozzleXsection / extrusionXsection)
-#		if self.isPerimeterPath:
-#			flowRate = self.repository.perimeterFlowRateMultiplier.value
-#		return euclidean.getFourSignificantFigures( flowRate )
 
 	def addFlowRateLine(self):
 		"Add flow rate line."
@@ -314,16 +302,13 @@ class SpeedSkein:
 			if self.isPerimeterPath:
 				tempfeedRateMinute = self.repository.perimeterFeedRateMultiplier.value * 60
 			if self.isBridgeLayer:
-#				print 'Bridge'
 				tempfeedRateMinute = self.repository.bridgeFeedRateMultiplier.value * self.repository.perimeterFeedRateMultiplier.value * 60
 		if self.isExtruderActive is True:
 			feedRateMinute = tempfeedRateMinute
 		if self.isExtruderActive is False:
 			feedRateMinute = travelFeedRateMinute
-#		print feedRateMinute/60
 		self.addFlowRateLine()
 		self.addAccelerationRateLine()
-#		self.oldfeedRateMinute = feedRateMinute
 		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line , splitLine)
 
 	def parseInitialization(self):
@@ -363,39 +348,31 @@ class SpeedSkein:
 		if len(splitLine) < 1:
 			return
 		firstWord = splitLine[0]
-#		print self.layerIndex, line
 		if firstWord == '(<bridgeRotation>':
 			self.isBridgeLayer = True
-#		print 'thats a bridge Layer>'
 		if firstWord == '(<crafting>)':
 			self.distanceFeedRate.addLine(line)
 			self.addParameterString('M113', self.repository.dutyCycleAtBeginning.value ) # Set duty cycle .
-#			print 'crafting'
 			return
-		if firstWord == 'G1':
+		elif firstWord == 'G1':
 			line = self.getSpeededLine(line, splitLine)
-		if firstWord == 'M101':
+		elif firstWord == 'M101':
 			self.isExtruderActive = True
-#			print 'M101',self.layerIndex
-		if firstWord == 'M103':
+		elif firstWord == 'M103':
 			self.isExtruderActive = False
-#			print 'M103'
 
-		if firstWord == '(<layer>':
+		elif firstWord == '(<layer>':
 			self.layerIndex += 1
-#			print 'layer',self.layerIndex
 			settings.printProgress(self.layerIndex, 'speed')
 			self.isBridgeLayer = False
 			self.addFlowRateLine()
 			self.addAccelerationRateLine()
 
 
-		if firstWord == '(<perimeter>' or firstWord == '(<perimeterPath>)':
+		elif firstWord == '(<perimeter>' or firstWord == '(<perimeterPath>)':
 			self.isPerimeterPath = True
-#			print 'perimeter'
-		if firstWord == '(</perimeter>)' or firstWord == '(</perimeterPath>)':
+		elif firstWord == '(</perimeter>)' or firstWord == '(</perimeterPath>)':
 			self.isPerimeterPath = False
-#			print 'end of perimeter'
 		self.distanceFeedRate.addLine(line)
 
 

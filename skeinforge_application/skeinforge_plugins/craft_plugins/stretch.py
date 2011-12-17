@@ -250,6 +250,7 @@ class StretchSkein:
 		self.extruderActive = False
 		self.feedRateMinute = 959.0
 		self.isLoop = False
+		self.layerCount = settings.LayerCount()
 		self.lineIndex = 0
 		self.lines = None
 		self.oldLocation = None
@@ -335,11 +336,8 @@ class StretchSkein:
 		locationComplex = location.dropAxis()
 		relativeStretch = self.getRelativeStretch( locationComplex, iteratorForward ) + self.getRelativeStretch( locationComplex, iteratorBackward )
 		relativeStretch *= euclidean.globalQuarterPi
-#		print('relativeStretch')
-#		print( relativeStretch )
 		relativeStretch = self.getCrossLimitedStretch( relativeStretch, crossIteratorForward, locationComplex )
 		relativeStretch = self.getCrossLimitedStretch( relativeStretch, crossIteratorBackward, locationComplex )
-#		print( relativeStretch )
 		relativeStretchLength = abs( relativeStretch )
 		if relativeStretchLength > 1.0:
 			relativeStretch /= relativeStretchLength
@@ -396,6 +394,8 @@ class StretchSkein:
 		elif firstWord == 'M103':
 			self.extruderActive = False
 			self.setStretchToPath()
+		elif firstWord == '(<layer>':
+			self.layerCount.printProgressIncrement('stretch')
 		elif firstWord == '(<loop>':
 			self.isLoop = True
 			self.threadMaximumAbsoluteStretch = self.loopMaximumAbsoluteStretch

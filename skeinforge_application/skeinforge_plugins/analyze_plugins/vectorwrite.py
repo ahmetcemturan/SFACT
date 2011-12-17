@@ -133,6 +133,7 @@ class SVGWriterVectorwrite( svg_writer.SVGWriter ):
 
 	def addLoopLayerToOutput( self, layerIndex, threadLayer ):
 		'Add rotated boundary layer to the output.'
+		settings.printProgress(self.layerIndex, 'vectorwrite')
 		self.addLayerBegin( layerIndex, threadLayer )
 		transformString = self.getTransformString()
 		self.pathDictionary['d'] = self.getSVGStringForLoops( threadLayer.boundaryLoops )

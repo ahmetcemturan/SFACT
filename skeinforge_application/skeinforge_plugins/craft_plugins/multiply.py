@@ -140,7 +140,6 @@ class MultiplySkein:
 	def __init__(self):
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.isExtrusionActive = False
-		self.layerCount = settings.LayerCount()
 		self.layerIndex = 0
 		self.layerLines = []
 		self.lineIndex = 0
@@ -167,7 +166,6 @@ class MultiplySkein:
 
 	def addLayer(self):
 		'Add multiplied layer to the output.'
-		self.layerCount.printProgressIncrement('multiply')
 		self.addRemoveThroughLayer()
 		offset = self.centerOffset - self.arrayCenter - self.shapeCenter
 		for rowIndex in xrange(self.repository.numberOfRows.value):
@@ -181,6 +179,7 @@ class MultiplySkein:
 				elementOffset = complex(offset.real + xColumnOffset, offset.imag + yRowOffset)
 				self.addElement(elementOffset)
 			self.rowIndex += 1
+		settings.printProgress(self.layerIndex, 'multiply')
 		if len(self.layerLines) > 1:
 			self.layerIndex += 1
 		self.layerLines = []

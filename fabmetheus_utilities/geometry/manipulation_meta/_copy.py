@@ -7,6 +7,8 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from fabmetheus_utilities.geometry.creation import lineation
+from fabmetheus_utilities.geometry.creation import solid
 from fabmetheus_utilities.geometry.geometry_utilities import evaluate
 from fabmetheus_utilities.geometry.geometry_utilities import matrix
 from fabmetheus_utilities import euclidean
@@ -46,6 +48,21 @@ def processElementNodeByDerivation(derivation, elementNode):
 	elementNode.getXMLProcessor().processElementNode(elementNode)
 	if copyMatrix is not None and targetMatrix is not None:
 		elementNode.xmlObject.matrix4X4 = copyMatrix.getSelfTimesOther(targetMatrix.tetragrid)
+	if elementNode.xmlObject == None:
+		return
+	if len(elementNode.xmlObject.getPaths()) > 0:
+		lineation.processElementNode(elementNode)
+		return
+	geometryOutput = elementNode.xmlObject.getGeometryOutput()
+	if geometryOutput == None:
+		return
+	solidMatchingPlugins = solid.getSolidMatchingPlugins(elementNode)
+	if len(solidMatchingPlugins) == 0:
+		return
+	geometryOutput = solid.getGeometryOutputByManipulation(elementNode, geometryOutput)
+	elementNode.xmlObject.transformGeometryOutput(geometryOutput)
+	lineation.removeChildNodesFromElementObject(elementNode)
+	elementNode.getXMLProcessor().convertElementNode(elementNode, geometryOutput)
 
 
 class CopyDerivation:

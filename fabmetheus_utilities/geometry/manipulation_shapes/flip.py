@@ -81,7 +81,7 @@ def getShouldReverse(elementNode, prefix):
 
 def processElementNode(elementNode):
 	'Process the xml element.'
-	solid.processElementNodeByFunctions(elementNode, getManipulatedGeometryOutput, getManipulatedPaths)
+	solid.processElementNodeByFunctionPair(elementNode, getManipulatedGeometryOutput, getManipulatedPaths)
 
 
 class FlipDerivation:

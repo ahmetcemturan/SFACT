@@ -234,21 +234,11 @@ import sys
 # wiki document help, description, polyfile
 # subplugins like export static, maybe later mill cut and coil plugins, maybe later still export plugins & change file extension to output file extension  http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge
 #
-# solid should processElementNode
-# add wiki link conversion to wikifier
-# after removeIDParent.. ensure new object is addToIdentifiers
-# add copy process function getMatchingPlugins if > 0 then if paths do paths else do solid
-# some kind of gradual bed temperature
-# consolidate layerIndex and progress
-# add stretch progress indicator
+# some kind of gradual bed temperature Bed Temperature Begin Change Height, End Change Height, End
 # backup demozendium links
 # replace layer thickness with layer height, replace baseLayerThickness.. with baseLayerHeightMultiplier, consolidate Object First Layer Flow
-# comb -> maybe add back running jump look at outside loops only for jump, find closest points, find slightly away inside points, link
-# global simplify pathBetween
-# comb documentation
-# retraction step leave
-# melt _extrusion
-#
+# announce
+# question, should 'Infill Odd Layer Extra Rotation' be dropped
 #
 # unimportant
 # minor outline problem when an end path goes through a path, like in the letter A
@@ -257,6 +247,11 @@ import sys
 #
 #
 #
+# comb -> maybe add back running jump look at outside loops only for jump, find closest points, find slightly away inside points, link
+# global simplify pathBetween
+# comb documentation
+# retraction step leave
+# melt _extrusion
 # resolve getGcodeWithoutDuplication, make better consolidate gcode command function, remove comments from addRaftedLine
 # think about http://code.google.com/p/skeinarchiver/ and/or undo
 # add volume fraction to fill
@@ -264,6 +259,7 @@ import sys
 # use fileSettingName to change perimeter width to extrusion width, globalSubstitutionDictionary
 # check globalExecutionOrder, ensure that bottom order is really high
 # set temperature in temperature
+# contract wipe titles
 # maybe rename geometry_plugins xml
 # dwindle or dawdle or taper
 # voronoi average location intersection looped inset intercircles

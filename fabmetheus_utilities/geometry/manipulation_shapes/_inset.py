@@ -104,7 +104,7 @@ def getNewDerivation(elementNode, prefix, sideLength):
 
 def processElementNode(elementNode):
 	"Process the xml element."
-	solid.processElementNodeByFunctions(elementNode, getManipulatedGeometryOutput, getManipulatedPaths)
+	solid.processElementNodeByFunctionPair(elementNode, getManipulatedGeometryOutput, getManipulatedPaths)
 
 
 class InsetDerivation:

@@ -158,29 +158,14 @@ class DimensionRepository:
 		self.activateCalibration = settings.BooleanSetting().getFromValue('Are You Calibrating?', self, False )
 		self.MeasuredXSection = settings.FloatSpin().getFromValue(0.20, 'Measured Width of Extrusion:', self, 2.0, 0.6)
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- Fighting Oooze -', self )
 		settings.LabelDisplay().getFromName('- Filament Retraction Settings -', self )
-#		retractionMethodLatentStringVar = settings.LatentStringVar()
-#		self.retractionMethodChoiceLabel = settings.LabelDisplay().getFromName('Retraction Method: ', self )
-#		settings.Radio().getFromRadio( retractionMethodLatentStringVar, 'Use fixed Retraction', self, True )
-#		self.activateFixedRetract = settings.Radio().getFromRadio( retractionMethodLatentStringVar, 'Use adaptive Retraction', self, False )
-		self.activateFixedRetract = settings.BooleanSetting().getFromValue('Use fixed Retraction?', self, False )
-#		self.activateAdaptiveRetract = settings.BooleanSetting().getFromValue('Use adaptive Retraction', self, True )
-		settings.LabelDisplay().getFromName('- - Common Retraction Settings -', self )
-		self.extruderRetractionSpeed = settings.FloatSpin().getFromValue( 4.0, 'Extruder Retraction Speed (mm/s):', self, 34.0, 13.3 )
-		self.extruderRetractionDwell = settings.FloatSpin().getFromValue( 0, 'Extruder Retraction Dwell (mS):', self, 500, 100 )
-		settings.LabelDisplay().getFromName('- - - Fixed retraction settings -', self )
+		self.extruderRetractionSpeed = settings.FloatSpin().getFromValue( 10, 'Extruder Retraction Speed (mm/s):', self, 50, 30 )
+#		self.extruderRetractionDwell = settings.FloatSpin().getFromValue( 0, 'Extruder Retraction Dwell (mS):', self, 500, 100 )
 		self.retractionDistance = settings.FloatSpin().getFromValue( 0.0, 'Retraction Distance (millimeters):', self, 3.0, 1.0 )
 		self.restartExtraDistance = settings.FloatSpin().getFromValue( 0.0, 'Restart Extra Distance (millimeters):', self, 1.0, 0.1 )
 		self.retractWithinIsland = settings.BooleanSetting().getFromValue('Retract Within Island', self, False)
 		self.minimumTravelForRetraction = settings.FloatSpin().getFromValue(0.0, 'Minimum Travelmove after Retraction (millimeters):', self, 2.0, 1.0)
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- - - Adaptive retraction settings -', self )
-		self.oozeRate = settings.FloatSpin().getFromValue( 0.0, 'Oozerate (extrusion_mm/min):', self, 300.0, 100 )
-		self.afterOooze = settings.FloatSpin().getFromValue( 0.0, 'Retraction loss (extrusion_mm):', self, 3.0, 0.3 )
-		self.maxRetract = settings.FloatSpin().getFromValue( 0, 'Maximum Retract Limit (Filament_mm):', self, 300, 120 )
-		self.minRetract = settings.FloatSpin().getFromValue( 0, 'Minimum Retract threshold(Filament_mm):', self, 3.0 , 0.2 )
-
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Firmware Related Stuff -', self )
 #		self.useFilamentDiameter = settings.BooleanSetting().getFromValue('Consider Filament Diameter?', self, True )
@@ -205,7 +190,6 @@ class DimensionSkein:
 	'A class to dimension a skein of extrusions.'
 	def __init__(self):
 		'Initialize.'
-		self.repository =  settings.getReadRepository( DimensionRepository() )
 		self.absoluteDistanceMode = True
 		self.boundaryLayers = []
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
@@ -221,24 +205,23 @@ class DimensionSkein:
 		self.travelFeedRatePerSecond = None
 		self.zDistanceRatio = 1.0
 		self.oldFlowRateString = None
-		self.autoRetractDistance = 0
-		self.timeToNextThread = None
 		self.layerThickness = 0
 		self.perimeterWidth = 0
 		self.filamentXsection = 0
 		self.nozzleXsection = 0
 		self.flowRate = 0
-		self.xxyTravel = 0
 		self.extrusionReduction = 1
+		self.oldExtrusionDistance = 0
+		self.restartDistance = 0
 
-#	def addLinearMoveExtrusionDistanceLine(self, extrusionDistance):
+	def addLinearMoveExtrusionDistanceLine(self, extrusionDistance):
 		'Get the extrusion distance string from the extrusion distance.'
-#The lines that are inserted before extrusion starts
-#		if self.repository.extruderRetractionSpeed.value != 0.0:
+#		The lines that are inserted before extrusion starts
+		if self.repository.extruderRetractionSpeed.value != 0.0:
+			retractionString = self.getExtrusionDistanceStringFromExtrusionDistance(extrusionDistance) +' F'+ self.extruderRetractionSpeedMinuteString
 #			self.distanceFeedRate.output.write('G1 F%s\n' % self.extruderRetractionSpeedMinuteString)
-#			self.distanceFeedRate.output.write('G1%s\n' % self.getExtrusionDistanceStringFromExtrusionDistance(extrusionDistance))
+			self.distanceFeedRate.output.write('G1%s\n' % retractionString)
 #			self.distanceFeedRate.output.write('G1 F%s\n' % self.distanceFeedRate.getRounded(self.feedRateMinute))
-
 
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the dimension gcode.'
@@ -249,8 +232,6 @@ class DimensionSkein:
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		self.filamentXsection = filamentRadius ** 2 * math.pi
-		self.scaledMaxRetract = self.repository.maxRetract.value / self.filamentXsection
-		self.scaledMinRetract = self.repository.maxRetract.value / self.filamentXsection
 		self.extrusionXsection=(((self.layerThickness+self.perimeterWidth)/4)*((self.layerThickness+self.perimeterWidth)/4)) * math.pi
 		if not self.repository.retractWithinIsland.value:
 			self.parseBoundaries()
@@ -292,7 +273,6 @@ class DimensionSkein:
 	def getDimensionedLinearMovement( self, line, splitLine ):
 		'Get a dimensioned linear movement.'
 		distance = 0.0
-
 		if self.absoluteDistanceMode:
 			location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			if self.oldLocation is not None:
@@ -317,58 +297,26 @@ class DimensionSkein:
 			line = self.lines[afterIndex]
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
-			xyTravel = 0
-			zTravel = 0
-
 			if firstWord == 'G1':
 				if isActive:
-						if not self.repository.retractWithinIsland.value:
-							locationEnclosureIndex = self.getSmallestEnclosureIndex(location.dropAxis())
-							if locationEnclosureIndex != self.getSmallestEnclosureIndex(self.oldLocation.dropAxis()):
-								return None
-						locationMinusOld = location - self.oldLocation
-						xyTravel = abs(locationMinusOld.dropAxis())
-						zTravelMultiplied = locationMinusOld.z * self.zDistanceRatio
-						return math.hypot(xyTravel,zTravelMultiplied)
-				else:
-						location = gcodec.getLocationFromSplitLine(location, splitLine)
-						locationMinusOld = location - self.oldLocation
-						xyTravel += abs(locationMinusOld.dropAxis())
-						self.xxyTravel = xyTravel
-						zTravel += locationMinusOld.z
-#						print '2' , self.xxyTravel , zTravel
-						self.frm = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine ) #the current feedrate
+					location = gcodec.getLocationFromSplitLine(location, splitLine)
+					if not self.repository.retractWithinIsland.value:
+						locationEnclosureIndex = self.getSmallestEnclosureIndex(location.dropAxis())
+						if locationEnclosureIndex != self.getSmallestEnclosureIndex(self.oldLocation.dropAxis()):
+							return None
+					locationMinusOld = location - self.oldLocation
+					xyTravel = abs(locationMinusOld.dropAxis())
+					zTravelMultiplied = locationMinusOld.z * self.zDistanceRatio
+					return math.hypot(xyTravel , zTravelMultiplied)
 
-						self.timeToNextThread = math.hypot(self.xxyTravel, zTravel) / (self.frm/60)
-						oozeRatescaled = self.repository.oozeRate.value/60
-						self.retractDistance = (self.timeToNextThread * oozeRatescaled *100)**0.333
-						if self.retractDistance < self.repository.minRetract.value :
-							self.autoRetractDistance = self.scaledMinRetract
-
-						elif self.retractDistance > self.repository.maxRetract.value :
-							self.autoRetractDistance = self.scaledMaxRetract
-
-						else:
-							self.autoRetractDistance = self.retractDistance
-				location = gcodec.getLocationFromSplitLine(location, splitLine)
 
 			elif firstWord == 'M101':
 				isActive = True
 			elif firstWord == 'M103':
 				isActive = False
 		return None
-	def getTimeToNextThread(self, lineIndex):
-		'Get the Time it takes to the next thread.'
-		firstWord = gcodec.getFirstWord(splitLine)
-		if getDistanceToNextThread is None:
-			return None
-		elif firstWord == 'M101':
-			self.timeToNextThread =  self.xxyTravel / (self.frm/60)
-			TTN = self.timeToNextThread
-		elif firstWord == 'M103':
-			self.timeToNextThread =  self.xxyTravel / (self.frm/60)
-			TTN = self.timeToNextThread
-		return
+
+
 	def getExtrusionDistanceString( self, distance, splitLine ):
 		'Get the extrusion distance string.'
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
@@ -381,18 +329,13 @@ class DimensionSkein:
 			print(distance)
 			print(splitLine)
 			return ''
-		scaledXSection = (self.flowRate *  self.extrusionXsection )
-		return self.getExtrusionDistanceStringFromExtrusionDistance(((scaledXSection * distance) / self.extrusionReduction))
+		scaledXSection = self.flowRate *  self.extrusionXsection 
+		return self.getExtrusionDistanceStringFromExtrusionDistance((scaledXSection * distance) / self.extrusionReduction)
 
 	def getExtrusionDistanceStringFromExtrusionDistance( self, extrusionDistance ):
 		'Get the extrusion distance string from the extrusion distance.'
+		self.oldExtrusionDistance = self.distanceFeedRate.getRounded(extrusionDistance)
 		if self.repository.relativeExtrusionDistance.value:
-			if self.distanceFeedRate.getRounded(extrusionDistance) == '9e-05':
-				print(  'extrusionDistance')
-				print(  extrusionDistance)
-				print(  self.distanceFeedRate.getRounded(extrusionDistance))
-				print(  self.distanceFeedRate.decimalPlacesCarried)
-				print(  round(extrusionDistance, self.distanceFeedRate.decimalPlacesCarried))
 			return ' E' + self.distanceFeedRate.getRounded(extrusionDistance)
 		self.totalExtrusionDistance += extrusionDistance
 		return ' E' + self.distanceFeedRate.getRounded( self.totalExtrusionDistance )
@@ -400,14 +343,13 @@ class DimensionSkein:
 	def getRetractionRatio(self, lineIndex):
 		'Get the retraction ratio.'
 		distanceToNextThread = self.getDistanceToNextThread(lineIndex)
-#		print 'TTNT' , self.timeToNextThread
 		if distanceToNextThread is None:
-			return 1.0
+			return 0.0
 		if distanceToNextThread >= self.doubleMinimumTravelForRetraction:
 			return 1.0
 		if distanceToNextThread <= self.minimumTravelForRetraction:
 			return 0.0
-		return (distanceToNextThread - self.minimumTravelForRetraction) / self.minimumTravelForRetraction
+		return #(distanceToNextThread - self.minimumTravelForRetraction) / self.minimumTravelForRetraction
 
 	def getSmallestEnclosureIndex(self, point):
 		'Get the index of the smallest boundary loop which encloses the point.'
@@ -470,14 +412,18 @@ class DimensionSkein:
 				self.nozzleDiameter = float(splitLine[1])
 				self.nozzleXsection = (self.nozzleDiameter/2)**2*math.pi
 			self.distanceFeedRate.addLine(line)
+
 	def parseLine( self, lineIndex ):
 		'Parse a gcode line and add it to the dimension skein.'
 		line = self.lines[lineIndex].lstrip()
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
-		retractDwell = str(self.repository.extruderRetractionDwell.value)
 		if len(splitLine) < 1:
 			return
 		firstWord = splitLine[0]
+		if firstWord == '(<crafting>)':
+			if not self.repository.relativeExtrusionDistance.value:
+				self.distanceFeedRate.addLine('M82')
+			else: self.distanceFeedRate.addLine('M83')
 		if firstWord == 'G2' or firstWord == 'G3':
 			line = self.getDimensionedArcMovement( line, splitLine )
 		if firstWord == 'G1':
@@ -487,65 +433,21 @@ class DimensionSkein:
 		elif firstWord == 'G91':
 			self.absoluteDistanceMode = False
 		elif firstWord == '(<layer>':
-			if not self.repository.relativeExtrusionDistance.value:
-				self.distanceFeedRate.addLine('M82')
-			else: self.distanceFeedRate.addLine('M83')
 			self.layerIndex += 1
-#			print 'Creating the Gcode for Layer',self.layerIndex
-		elif firstWord == 'M101':
-			if self.repository.activateFixedRetract.value :
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0
-#				self.distanceFeedRate.addLine('M84 E')
-				self.distanceFeedRate.addLine('G1 E'+ str(round((self.restartDistance * self.retractionRatio),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0
-			elif not self.repository.activateFixedRetract.value :
-
-#				self.distanceFeedRate.addLine('M84 E')
-#				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
-
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0				
-				self.distanceFeedRate.addLine('G1 E'+ str(round((self.repository.afterOooze.value / self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString) #extruding(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0				
-				self.distanceFeedRate.addLine('G1 E'+ str(round((self.autoRetractDistance / self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString) #extruding(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
-# self.addLinearMoveExtrusionDistanceLine((self.xxyTravel))  #extruding(self.restartDistance * self.retractionRatio))#* self.autoRetractDistance)
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0
-			if self.totalExtrusionDistance > self.repository.maximumEValueBeforeReset.value or self.repository.relativeExtrusionDistance.value:
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0
+			settings.printProgress(self.layerIndex, 'dimension')
+		elif firstWord == 'M101': #counterretract
+			self.addLinearMoveExtrusionDistanceLine(self.restartDistance * self.retractionRatio)
+			if self.totalExtrusionDistance > self.repository.maximumEValueBeforeReset.value:
+				if not self.repository.relativeExtrusionDistance.value:
+					self.distanceFeedRate.addLine('G92 E0')
+					self.totalExtrusionDistance = 0.0
 			self.isExtruderActive = True
-		elif firstWord == 'M103':
-			if self.repository.activateFixedRetract.value :
-
-#				self.distanceFeedRate.addLine('M84 E')
-#				self.distanceFeedRate.addLine('G4 P'+ retractDwell )
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0
-				self.distanceFeedRate.addLine('G1 E'+ str(round((-self.repository.retractionDistance.value * self.retractionRatio),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
-#				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0
-			elif not self.repository.activateFixedRetract.value :
-				self.retractionRatio = self.getRetractionRatio(lineIndex)
-#				self.distanceFeedRate.addLine('M84 E '+'S'+ retractDwell)
-#				self.distanceFeedRate.addLine('G4 P'+ retractDwell )
-#				self.distanceFeedRate.addLine('G1 E'+ str(round((-self.repository.afterOooze.value/self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString)
-#				self.addLinearMoveExtrusionDistanceLine(-self.repository.afterOooze.value/self.extrusionReduction)
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0				
-				self.distanceFeedRate.addLine('G1 E'+ str(round((- (self.autoRetractDistance + self.repository.afterOooze.value/2)/self.extrusionReduction),3))+ ' F' + self.extruderRetractionSpeedMinuteString) #retracting
-#				self.distanceFeedRate.addLine('G4 P'+ retractDwell)
-				self.distanceFeedRate.addLine('G92 E0')
-				self.totalExtrusionDistance = 0.0
+		elif firstWord == 'M103': #retract
+			self.addLinearMoveExtrusionDistanceLine(-self.repository.retractionDistance.value*self.retractionRatio)
 			self.isExtruderActive = False
 		elif firstWord == 'M108':
 			self.flowRate = float( splitLine[1][1 :] )
 		self.distanceFeedRate.addLine(line)
-#		print line
 
 
 def main():

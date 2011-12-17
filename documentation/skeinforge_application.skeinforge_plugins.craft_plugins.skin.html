@@ -13,14 +13,14 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.scale.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.skirt.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Skin is a script to smooth the surface skin of an object by replacing the perimeter surface with a surface printed at half the carve<br>
+Skin is a plugin to smooth the surface skin of an object by replacing the perimeter surface with a surface printed at a fraction of the carve<br>
 height.  This gives the impression that the object was carved at a much thinner height giving a high-quality finish, but still prints <br>
 in a relatively short time.  The latest process has some similarities with a description at:<br>
+ <br>
 <a href="http://adventuresin3-dprinting.blogspot.com/2011/05/skinning.html">http://adventuresin3-dprinting.blogspot.com/2011/05/skinning.html</a><br>
  <br>
 The skin manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skin">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skin</a><br>
- <br>
  <br>
 <br />
 <a href="#Operation">Operation</a><br />
@@ -31,7 +31,7 @@ The skin manual page is at:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Vertical Divisions">Vertical Divisions</a><br />
 &nbsp;&nbsp;<a href="#Hop When Extruding Infill">Hop When Extruding Infill</a><br />
 &nbsp;&nbsp;<a href="#Layers From">Layers From</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Tips">Tips</a><br />
+<a href="#Tips">Tips</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
@@ -74,12 +74,12 @@ Default: 1<br>
  <br>
 Defines which layer of the print the skinning process starts from. It is not wise to set this to zero, skinning the bottom layer is likely to cause the bottom perimeter not to adhere well to the print surface.<br>
  <br>
-<a name="Tips" id="Tips"></a><h4>Tips</h4>
+<a name="Tips" id="Tips"></a><h2>Tips</h2>
+<hr>
 
 Due to the very small Z-axis moves skinning can generate as it prints the perimeter, it can cause the Z-axis speed to be limited by the Limit plug-in, if you have it enabled. This can cause some printers to pause excessively during each layer change. To overcome this, ensure that the Z-axis max speed in the Limit tool is set to an appropriate value for your printer, e.g. 10mm/s<br>
  <br>
-Since Skin prints two half-height perimeter layers for each layer, printing the perimeter last causes the print head to travel down from the current print height. Depending on the shape of your extruder nozzle, you may get higher quality prints if you print the perimeters first, so the print head always travels up.  This is set via the Thread Sequence Choice setting in the Fill tool.<br>
- <br>
+Since Skin prints a number of fractional-height perimeter layers for each layer, printing the perimeter last causes the print head to travel down from the current print height. Depending on the shape of your extruder nozzle, you may get higher quality prints if you print the perimeters first, so the print head always travels up.  This is set via the Thread Sequence Choice setting in the Fill tool.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>

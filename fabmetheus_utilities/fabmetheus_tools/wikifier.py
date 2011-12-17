@@ -19,6 +19,9 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
+globalWikiLinkStart = '[<a href='
+
+
 def addToHeadings(headingLineTable, headings, line):
 	'Add the line to the headings.'
 	for depth in xrange(4, -1, -1):
@@ -26,6 +29,17 @@ def addToHeadings(headingLineTable, headings, line):
 		if line[: equalSymbolLength] == '=' * equalSymbolLength:
 			headings.append(Heading(depth).getFromLine(headingLineTable, line))
 			return
+
+def getLinkLine(line):
+	'Get the link line with the wiki style link converted into a hypertext link.'
+	linkStartIndex = line.find(globalWikiLinkStart)
+	squareEndBracketIndex = line.find(']', linkStartIndex)
+	greaterThanIndex = line.find('>', linkStartIndex, squareEndBracketIndex)
+	greaterThanIndexPlusOne = greaterThanIndex + 1
+	closeATagIndex = line.find('</a>', greaterThanIndexPlusOne, squareEndBracketIndex)
+	linkText = line[closeATagIndex + len('</a>') + 1: squareEndBracketIndex]
+	linkLine = line[: linkStartIndex] + line[linkStartIndex + 1: greaterThanIndexPlusOne] + linkText + '</a>' + line[squareEndBracketIndex + 1 :]
+	return linkLine
 
 def getNavigationHypertext(fileText, transferredFileNameIndex, transferredFileNames):
 	'Get the hypertext help with navigation lines.'
@@ -49,8 +63,10 @@ def getNavigationHypertext(fileText, transferredFileNameIndex, transferredFileNa
 				headingsToBeenAdded = False
 			if line in headingLineTable:
 				line = headingLineTable[line]
-		if line.find('&lt;a href=') > -1:
+		if '&lt;a href=' in line:
 			line = line.replace('&lt;', '<').replace('&gt;', '>')
+		while globalWikiLinkStart in line and ']' in line:
+			line = getLinkLine(line)
 		output.write(line + '\n')
 	helpText = output.getvalue()
 	previousFileName = 'contents.html'

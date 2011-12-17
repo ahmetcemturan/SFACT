@@ -205,7 +205,7 @@ class CarveSkein:
 			return ''
 		layerThickness = carving.getCarveLayerThickness()
 		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerThickness)
-#		perimeterWidth = repository.perimeterWidthOverThickness.value #todo why twice?
+		perimeterWidth = repository.perimeterWidthOverThickness.value #todo why twice?
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),

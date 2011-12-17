@@ -31,15 +31,12 @@ def addVertexes(geometryOutput, vertexes):
 		for element in geometryOutput:
 			addVertexes(element, vertexes)
 		return
-	if geometryOutput.__class__ != dict:
-		return
-	for geometryOutputKey in geometryOutput.keys():
-		geometryOutputValue = geometryOutput[geometryOutputKey]
-		if geometryOutputKey == 'vertex':
-			for vertex in geometryOutputValue:
-				vertexes.append(vertex)
-		else:
-			addVertexes(geometryOutputValue, vertexes)
+	if geometryOutput.__class__ == dict:
+		for geometryOutputKey in geometryOutput.keys():
+			if geometryOutputKey == 'vertex':
+				vertexes += geometryOutput[geometryOutputKey]
+			else:
+				addVertexes(geometryOutput[geometryOutputKey], vertexes)
 
 def getBranchMatrix(elementNode):
 	'Get matrix starting from the object if it exists, otherwise get a matrix starting from stratch.'
@@ -95,6 +92,23 @@ def getIdentityTetragrid(tetragrid=None):
 	if tetragrid is None:
 		return [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]]
 	return tetragrid
+
+def getIsIdentityTetragrid(tetragrid):
+	'Determine if the tetragrid is the identity tetragrid.'
+	for column in xrange(4):
+		for row in xrange(4):
+			if column == row:
+				if tetragrid[column][row] != 1.0:
+					return False
+			elif tetragrid[column][row] != 0.0:
+				return False
+	return True
+
+def getIsIdentityTetragridOrNone(tetragrid):
+	'Determine if the tetragrid is None or if it is the identity tetragrid.'
+	if tetragrid == None:
+		return True
+	return getIsIdentityTetragrid(tetragrid)
 
 def getKeyA(row, column, prefix=''):
 	'Get the a format key string from row & column, counting from zero.'
@@ -336,8 +350,12 @@ def getTransformedByList(floatList, point):
 
 def getTransformedVector3(tetragrid, vector3):
 	'Get the vector3 multiplied by a matrix.'
-	if tetragrid is None:
+	if getIsIdentityTetragridOrNone(tetragrid):
 		return vector3.copy()
+	return getTransformedVector3Blindly(tetragrid, vector3)
+
+def getTransformedVector3Blindly(tetragrid, vector3):
+	'Get the vector3 multiplied by a tetragrid without checking if the tetragrid exists.'
 	return Vector3(
 		getTransformedByList(tetragrid[0], vector3),
 		getTransformedByList(tetragrid[1], vector3),
@@ -345,9 +363,11 @@ def getTransformedVector3(tetragrid, vector3):
 
 def getTransformedVector3s(tetragrid, vector3s):
 	'Get the vector3s multiplied by a matrix.'
+	if getIsIdentityTetragridOrNone(tetragrid):
+		return euclidean.getPathCopy(vector3s)
 	transformedVector3s = []
 	for vector3 in vector3s:
-		transformedVector3s.append(getTransformedVector3(tetragrid, vector3))
+		transformedVector3s.append(getTransformedVector3Blindly(tetragrid, vector3))
 	return transformedVector3s
 
 def getTransformTetragrid(elementNode, prefix):
@@ -387,9 +407,27 @@ def setElementNodeDictionaryMatrix(elementNode, matrix4X4):
 	else:
 		elementNode.xmlObject.matrix4X4 = matrix4X4
 
-def transformVector3ByMatrix( tetragrid, vector3 ):
+def transformVector3Blindly(tetragrid, vector3):
+	'Transform the vector3 by a tetragrid without checking to see if it exists.'
+	x = getTransformedByList(tetragrid[0], vector3)
+	y = getTransformedByList(tetragrid[1], vector3)
+	z = getTransformedByList(tetragrid[2], vector3)
+	vector3.x = x
+	vector3.y = y
+	vector3.z = z
+
+def transformVector3ByMatrix(tetragrid, vector3):
 	'Transform the vector3 by a matrix.'
-	vector3.setToVector3(getTransformedVector3(tetragrid, vector3))
+	if getIsIdentityTetragridOrNone(tetragrid):
+		return
+	transformVector3Blindly(tetragrid, vector3)
+
+def transformVector3sByMatrix(tetragrid, vector3s):
+	'Transform the vector3s by a matrix.'
+	if getIsIdentityTetragridOrNone(tetragrid):
+		return
+	for vector3 in vector3s:
+		transformVector3Blindly(tetragrid, vector3)
 
 
 class Matrix:

@@ -1,13 +1,10 @@
 """
 This page is in the table of contents.
-The slc.py script is an import translator plugin to get a carving from an slc file.
+The slc.py script is an import translator plugin to get a carving from an [http://rapid.lpt.fi/archives/rp-ml-1999/0713.html slc file].
 
 An import plugin is a script in the interpret_plugins folder which has the function getCarving.  It is meant to be run from the interpret tool.  To ensure that the plugin works on platforms which do not handle file capitalization properly, give the plugin a lower case name.
 
 The getCarving function takes the file name of an slc file and returns the carving.
-
-An explanation of the SLC format can be found at:
-http://rapid.lpt.fi/archives/rp-ml-1999/0713.html
 
 """
 

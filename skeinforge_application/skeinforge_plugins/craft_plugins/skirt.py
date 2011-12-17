@@ -251,7 +251,7 @@ class SkirtSkein:
 				layerIndex += 1
 				if layerIndex > self.repository.layersTo.value:
 					return
-				self.layerCount.printProgressIncrement('skirt')
+				settings.printProgress(layerIndex, 'skirt')
 
 	def parseInitialization(self):
 		'Parse gcode initialization and store the parameters.'

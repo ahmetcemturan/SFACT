@@ -245,8 +245,8 @@ class WipeSkein:
 			self.addWipeTravel(splitLine)
 			self.oldLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		elif firstWord == '(<layer>':
-			settings.printProgress(self.layerIndex, 'wipe')
 			self.layerIndex += 1
+			settings.printProgress(self.layerIndex, 'wipe')
 			if self.layerIndex % self.wipePeriod == 0:
 				self.shouldWipe = True
 		elif firstWord == 'M101':

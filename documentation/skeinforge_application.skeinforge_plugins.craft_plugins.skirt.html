@@ -13,33 +13,39 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.skin.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.smooth.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Skirt is a script to give the extruder some extra time to begin extruding properly before beginning the object, and to put a baffle around the model in order to keep the extrusion warm.<br>
+Skirt is a plugin to give the extruder some extra time to begin extruding properly before beginning the object, and to put a baffle around the model in order to keep the extrusion warm.<br>
+ <br>
+The skirt manual page is at:<br>
+<a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skirt">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skirt</a><br>
  <br>
 It is loosely based on Lenbook's outline plugin:<br>
+ <br>
 <a href="http://www.thingiverse.com/thing:4918">http://www.thingiverse.com/thing:4918</a><br>
  <br>
 it is also loosely based on the outline that Nophead sometimes uses:<br>
+ <br>
 <a href="http://hydraraptor.blogspot.com/2010/01/hot-metal-and-serendipity.html">http://hydraraptor.blogspot.com/2010/01/hot-metal-and-serendipity.html</a><br>
  <br>
 and also loosely based on the baffles that Nophead made to keep corners warm:<br>
+ <br>
 <a href="http://hydraraptor.blogspot.com/2010/09/some-corners-like-it-hot.html">http://hydraraptor.blogspot.com/2010/09/some-corners-like-it-hot.html</a><br>
  <br>
 If you want only an outline, set 'Layers To' to one.  This gives the extruder some extra time to begin extruding properly before beginning your object, and gives you an early verification of where your object will be extruded.<br>
  <br>
-If you also want an insulating skirt around the entire object, set 'Layers To' to a huge number, like 9876554321.  This will additionally make an insulating baffle around the object; to prevent moving air from cooling the object, which increases warping, especially in corners.<br>
+If you also want an insulating skirt around the entire object, set 'Layers To' to a huge number, like 912345678.  This will additionally make an insulating baffle around the object; to prevent moving air from cooling the object, which increases warping, especially in corners.<br>
  <br>
 <br />
 <a href="#Operation">Operation</a><br />
 <a href="#Settings">Settings</a><br />
 &nbsp;&nbsp;<a href="#Convex">Convex</a><br />
 &nbsp;&nbsp;<a href="#Gap over Perimeter Width">Gap over Perimeter Width</a><br />
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layers To">Layers To</a><br />
+&nbsp;&nbsp;<a href="#Layers To">Layers To</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
 
-The default 'Activate Skirt' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.<br>
+The default 'Activate Skirt' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.<br>
  <br>
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
@@ -56,11 +62,11 @@ Default is three.<br>
  <br>
 Defines the ratio of the gap between the object and the skirt over the perimeter width.  If the ratio is too low, the skirt will connect to the object, if the ratio is too high, the skirt willl not provide much insulation for the object.<br>
  <br>
-<a name="Layers To" id="Layers To"></a><h4>Layers To</h4>
+<a name="Layers To" id="Layers To"></a><h3>Layers To</h3>
 
 Default is a one.<br>
  <br>
-Defines the number of layers of the skirt.  If you want only an outline, set 'Layers To' to one.  If you want an insulating skirt around the entire object, set 'Layers To' to a huge number, like 9876554321.<br>
+Defines the number of layers of the skirt.  If you want only an outline, set 'Layers To' to one.  If you want an insulating skirt around the entire object, set 'Layers To' to a huge number, like 912345678.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>

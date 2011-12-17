@@ -57,8 +57,7 @@ def transformPoints(elementNode, points, prefix):
 		print('Warning, transformTetragrid was None in transform so nothing will be done for:')
 		print(elementNode)
 		return
-	for point in points:
-		matrix.transformVector3ByMatrix(derivation.transformTetragrid, point)
+	matrix.transformVector3sByMatrix(derivation.transformTetragrid, points)
 
 
 class TransformDerivation:

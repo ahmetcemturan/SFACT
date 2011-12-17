@@ -147,7 +147,6 @@ class SkinSkein:
 		self.infill = None
 		self.infillBoundaries = None
 		self.infillBoundary = None
-		self.layerCount = settings.LayerCount()
 		self.layerIndex = -1
 		self.lineIndex = 0
 		self.lines = None
@@ -349,8 +348,8 @@ class SkinSkein:
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
 				self.infillBoundary.append(location.dropAxis())
 		elif firstWord == '(<layer>':
-			self.layerCount.printProgressIncrement('skin')
 			self.layerIndex += 1
+			settings.printProgress(self.layerIndex, 'skin')
 		elif firstWord == 'M101' or firstWord == 'M103':
 			if self.infillBoundaries is not None or self.perimeter is not None:
 				return

@@ -110,12 +110,12 @@ class Dictionary:
 
 	def getGeometryOutput(self):
 		'Get geometry output dictionary.'
-		visibleObjects = evaluate.getVisibleObjects(self.archivableObjects)
 		shapeOutput = []
-		for visibleObject in visibleObjects:
-			visibleObjectOutput = visibleObject.getGeometryOutput()
-			if visibleObjectOutput is not None:
-				shapeOutput.append(visibleObjectOutput)
+		for visibleObject in evaluate.getVisibleObjects(self.archivableObjects):
+			geometryOutput = visibleObject.getGeometryOutput()
+			if geometryOutput != None:
+				visibleObject.transformGeometryOutput(geometryOutput)
+				shapeOutput.append(geometryOutput)
 		if len(shapeOutput) < 1:
 			return None
 		return {self.getXMLLocalName() : {'shapes' : shapeOutput}}
@@ -171,3 +171,8 @@ class Dictionary:
 		'Set the shape of this carvable object info.'
 		self.elementNode = elementNode
 		elementNode.parentNode.xmlObject.archivableObjects.append(self)
+
+	def transformGeometryOutput(self, geometryOutput):
+		'Transform the geometry output by the local matrix4x4.'
+		if self.getMatrix4X4() != None:
+			matrix.transformVector3sByMatrix(self.getMatrix4X4().tetragrid, matrix.getVertexes(geometryOutput))

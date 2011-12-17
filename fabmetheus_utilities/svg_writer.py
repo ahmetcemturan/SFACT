@@ -130,6 +130,20 @@ class SVGWriter:
 		self.pathElementNode = self.graphicsCopy.getFirstChildByLocalName('path')
 		self.pathDictionary = self.pathElementNode.attributes
 
+	def addLoopLayersToOutput(self, loopLayers):
+		'Add rotated boundary layers to the output.'
+		for loopLayerIndex, loopLayer in enumerate(loopLayers):
+			self.addLoopLayerToOutput(loopLayerIndex, loopLayer)
+
+	def addLoopLayerToOutput(self, layerIndex, loopLayer):
+		'Add rotated boundary layer to the output.'
+		self.addLayerBegin(layerIndex, loopLayer)
+		if self.addLayerTemplateToSVG:
+			self.pathDictionary['transform'] = self.getTransformString()
+		else:
+			del self.pathDictionary['transform']
+		self.pathDictionary['d'] = self.getSVGStringForLoops(loopLayer.loops)
+
 	def addOriginalAsComment(self, elementNode):
 		'Add original elementNode as a comment.'
 		if elementNode is None:
@@ -152,20 +166,6 @@ class SVGWriter:
 			if '-->' in lineStripped:
 				isComment = False
 		xml_simple_reader.CommentNode(self.svgElement, '%s%s-->\n' % (globalOriginalTextString, commentNodeOutput.getvalue())).appendSelfToParent()
-
-	def addLoopLayersToOutput(self, loopLayers):
-		'Add rotated boundary layers to the output.'
-		for loopLayerIndex, loopLayer in enumerate(loopLayers):
-			self.addLoopLayerToOutput(loopLayerIndex, loopLayer)
-
-	def addLoopLayerToOutput(self, layerIndex, loopLayer):
-		'Add rotated boundary layer to the output.'
-		self.addLayerBegin(layerIndex, loopLayer)
-		if self.addLayerTemplateToSVG:
-			self.pathDictionary['transform'] = self.getTransformString()
-		else:
-			del self.pathDictionary['transform']
-		self.pathDictionary['d'] = self.getSVGStringForLoops(loopLayer.loops)
 
 	def getReplacedSVGTemplate(self, fileName, loopLayers, procedureName, elementNode=None):
 		'Get the lines of text from the layer_template.svg file.'

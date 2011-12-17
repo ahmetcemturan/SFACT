@@ -29,9 +29,22 @@
     
 <tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl>
-<dt><font face="helvetica, arial"><a href="fabmetheus_utilities.geometry.manipulation_paths.segment.html#StartEnd">StartEnd</a>
+<dt><font face="helvetica, arial"><a href="fabmetheus_utilities.geometry.manipulation_paths.segment.html#SegmentDerivation">SegmentDerivation</a>
+</font></dt><dt><font face="helvetica, arial"><a href="fabmetheus_utilities.geometry.manipulation_paths.segment.html#StartEnd">StartEnd</a>
 </font></dt></dl>
  <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SegmentDerivation">class <strong>SegmentDerivation</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;to&nbsp;hold&nbsp;segment&nbsp;variables.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="SegmentDerivation-__init__"><strong>__init__</strong></a>(self, elementNode, prefix)</dt><dd><tt>Set&nbsp;defaults.</tt></dd></dl>
+
+</td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -53,8 +66,9 @@
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-getManipulatedPaths"><strong>getManipulatedPaths</strong></a>(close, elementNode, loop, prefix, sideLength)</dt><dd><tt>Get&nbsp;segment&nbsp;loop.</tt></dd></dl>
- <dl><dt><a name="-getRadialPath"><strong>getRadialPath</strong></a>(begin, end, path, segmentCenter)</dt><dd><tt>Get&nbsp;radial&nbsp;path.</tt></dd></dl>
- <dl><dt><a name="-getSegmentPath"><strong>getSegmentPath</strong></a>(loop, path, pointIndex, segmentCenter)</dt><dd><tt>Get&nbsp;segment&nbsp;path.</tt></dd></dl>
+ <dl><dt><a name="-getNewDerivation"><strong>getNewDerivation</strong></a>(elementNode, prefix, sideLength)</dt><dd><tt>Get&nbsp;new&nbsp;derivation.</tt></dd></dl>
+ <dl><dt><a name="-getRadialPath"><strong>getRadialPath</strong></a>(begin, center, end, path)</dt><dd><tt>Get&nbsp;radial&nbsp;path.</tt></dd></dl>
+ <dl><dt><a name="-getSegmentPath"><strong>getSegmentPath</strong></a>(center, loop, path, pointIndex)</dt><dd><tt>Get&nbsp;segment&nbsp;path.</tt></dd></dl>
  <dl><dt><a name="-getSegmentPathDefault"><strong>getSegmentPathDefault</strong></a>()</dt><dd><tt>Get&nbsp;segment&nbsp;path&nbsp;default.</tt></dd></dl>
  <dl><dt><a name="-getWedgePath"><strong>getWedgePath</strong></a>(begin, centerBegin, centerEnd, centerEndMinusBegin, end, path)</dt><dd><tt>Get&nbsp;segment&nbsp;path.</tt></dd></dl>
  <dl><dt><a name="-getWiddershinsAverageByVector3"><strong>getWiddershinsAverageByVector3</strong></a>(centerMinusBeginComplex, endMinusCenterComplex)</dt><dd><tt>Get&nbsp;the&nbsp;normalized&nbsp;average&nbsp;of&nbsp;the&nbsp;widdershins&nbsp;vectors.</tt></dd></dl>

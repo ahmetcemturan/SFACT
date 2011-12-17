@@ -115,6 +115,7 @@ class HopSkein:
 		self.hopHeight = 0.4
 		self.hopDistance = self.hopHeight
 		self.justDeactivated = False
+		self.layerCount = settings.LayerCount()
 		self.lineIndex = 0
 		self.lines = None
 		self.oldLocation = None
@@ -201,6 +202,8 @@ class HopSkein:
 			line = self.getHopLine(line)
 			self.oldLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			self.justDeactivated = False
+		elif firstWord == '(<layer>':
+			self.layerCount.printProgressIncrement('hop')
 		elif firstWord == 'M101':
 			self.extruderActive = True
 		elif firstWord == 'M103':

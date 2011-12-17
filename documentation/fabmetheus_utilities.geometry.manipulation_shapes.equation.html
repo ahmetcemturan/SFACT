@@ -30,9 +30,24 @@
     
 <tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl>
-<dt><font face="helvetica, arial"><a href="fabmetheus_utilities.geometry.manipulation_shapes.equation.html#EquationResult">EquationResult</a>
+<dt><font face="helvetica, arial"><a href="fabmetheus_utilities.geometry.manipulation_shapes.equation.html#EquationDerivation">EquationDerivation</a>
+</font></dt><dt><font face="helvetica, arial"><a href="fabmetheus_utilities.geometry.manipulation_shapes.equation.html#EquationResult">EquationResult</a>
 </font></dt></dl>
  <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="EquationDerivation">class <strong>EquationDerivation</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Class&nbsp;to&nbsp;hold&nbsp;equation&nbsp;variables.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="EquationDerivation-__init__"><strong>__init__</strong></a>(self, elementNode, prefix)</dt><dd><tt>Set&nbsp;defaults.</tt></dd></dl>
+
+<dl><dt><a name="EquationDerivation-addEquationResult"><strong>addEquationResult</strong></a>(self, elementNode, equationFunction, prefix)</dt><dd><tt>Add&nbsp;equation&nbsp;result&nbsp;to&nbsp;equationResults.</tt></dd></dl>
+
+</td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -42,9 +57,9 @@
 <td colspan=2><tt>Class&nbsp;to&nbsp;get&nbsp;equation&nbsp;results.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="EquationResult-__init__"><strong>__init__</strong></a>(self, elementNode, key, revolutions)</dt><dd><tt>Initialize.</tt></dd></dl>
+<dl><dt><a name="EquationResult-__init__"><strong>__init__</strong></a>(self, elementNode, equationFunction, key)</dt><dd><tt>Initialize.</tt></dd></dl>
 
-<dl><dt><a name="EquationResult-getReturnValue"><strong>getReturnValue</strong></a>(self, point)</dt><dd><tt>Get&nbsp;return&nbsp;value.</tt></dd></dl>
+<dl><dt><a name="EquationResult-getReturnValue"><strong>getReturnValue</strong></a>(self, point, revolutions)</dt><dd><tt>Get&nbsp;return&nbsp;value.</tt></dd></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -55,12 +70,12 @@
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-equate"><strong>equate</strong></a>(point, returnValue)</dt><dd><tt>Get&nbsp;equation&nbsp;for&nbsp;rectangular.</tt></dd></dl>
  <dl><dt><a name="-equatePoints"><strong>equatePoints</strong></a>(elementNode, points, prefix, revolutions)</dt><dd><tt>Equate&nbsp;the&nbsp;points.</tt></dd></dl>
- <dl><dt><a name="-equateVertexesByFunction"><strong>equateVertexesByFunction</strong></a>(elementNode, equationFunction, points, prefix, revolutions)</dt><dd><tt>Get&nbsp;equated&nbsp;points&nbsp;by&nbsp;equation&nbsp;function.</tt></dd></dl>
  <dl><dt><a name="-equateX"><strong>equateX</strong></a>(point, returnValue)</dt><dd><tt>Get&nbsp;equation&nbsp;for&nbsp;rectangular&nbsp;x.</tt></dd></dl>
  <dl><dt><a name="-equateY"><strong>equateY</strong></a>(point, returnValue)</dt><dd><tt>Get&nbsp;equation&nbsp;for&nbsp;rectangular&nbsp;y.</tt></dd></dl>
  <dl><dt><a name="-equateZ"><strong>equateZ</strong></a>(point, returnValue)</dt><dd><tt>Get&nbsp;equation&nbsp;for&nbsp;rectangular&nbsp;z.</tt></dd></dl>
  <dl><dt><a name="-getManipulatedGeometryOutput"><strong>getManipulatedGeometryOutput</strong></a>(elementNode, geometryOutput, prefix)</dt><dd><tt>Get&nbsp;equated&nbsp;geometryOutput.</tt></dd></dl>
  <dl><dt><a name="-getManipulatedPaths"><strong>getManipulatedPaths</strong></a>(close, elementNode, loop, prefix, sideLength)</dt><dd><tt>Get&nbsp;equated&nbsp;paths.</tt></dd></dl>
+ <dl><dt><a name="-getNewDerivation"><strong>getNewDerivation</strong></a>(elementNode, prefix, sideLength)</dt><dd><tt>Get&nbsp;new&nbsp;derivation.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

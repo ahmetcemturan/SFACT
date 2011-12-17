@@ -175,7 +175,6 @@ class MillSkein:
 		self.boundaryLayers = []
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.isExtruderActive = False
-		self.layerCount = settings.LayerCount()
 		self.layerIndex = 0
 		self.lineIndex = 0
 		self.lines = None
@@ -359,7 +358,7 @@ class MillSkein:
 		elif firstWord == 'M103':
 			self.isExtruderActive = False
 		elif firstWord == '(<layer>':
-			self.layerCount.printProgressIncrement('mill')
+			settings.printProgress(self.layerIndex, 'mill')
 			self.aroundPixelTable = {}
 			self.average.reset()
 		elif firstWord == '(</layer>)':

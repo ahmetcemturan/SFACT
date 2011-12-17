@@ -57,8 +57,7 @@ def rotatePoints(elementNode, points, prefix):
 		print('Warning, rotateTetragrid was None in rotate so nothing will be done for:')
 		print(elementNode)
 		return
-	for point in points:
-		matrix.transformVector3ByMatrix(derivation.rotateTetragrid, point)
+	matrix.transformVector3sByMatrix(derivation.rotateTetragrid, points)
 
 
 class RotateDerivation:
