@@ -34,7 +34,7 @@ import __init__
 from fabmetheus_utilities import xml_simple_writer
 import math
 import operator
-import sys
+
 
 __author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __credits__ = 'Nophead <http://forums.reprap.org/profile.php?12,28>\nArt of Illusion <http://www.artofillusion.org/>'
@@ -75,7 +75,7 @@ class Vector3:
 
 	def __eq__(self, other):
 		'Determine whether this vector is identical to other one.'
-		if other == None:
+		if other is None:
 			return False
 		if other.__class__ != self.__class__:
 			return False
@@ -84,12 +84,6 @@ class Vector3:
 	def __floordiv__(self, other):
 		'Get a new Vector3 by floor dividing each component of this one.'
 		return Vector3( self.x // other, self.y // other, self.z // other )
-
-	def _getAccessibleAttribute(self, attributeName):
-		'Get the accessible attribute.'
-		if attributeName in globalGetAccessibleAttributeSet:
-			return getattr(self, attributeName, None)
-		return None
 
 	def __hash__(self):
 		'Determine whether this vector is identical to other one.'
@@ -151,13 +145,13 @@ class Vector3:
 	def __nonzero__(self):
 		return self.x != 0 or self.y != 0 or self.z != 0
 
-	def __repr__(self):
-		'Get the string representation of this Vector3.'
-		return '(%s, %s, %s)' % ( self.x, self.y, self.z )
-
 	def __rdiv__(self, other):
 		'Get a new Vector3 by dividing each component of this one.'
 		return Vector3( other / self.x, other / self.y, other / self.z )
+
+	def __repr__(self):
+		'Get the string representation of this Vector3.'
+		return '(%s, %s, %s)' % ( self.x, self.y, self.z )
 
 	def __rfloordiv__(self, other):
 		'Get a new Vector3 by floor dividing each component of this one.'
@@ -171,11 +165,6 @@ class Vector3:
 		'Get a new Vector3 by true dividing each component of this one.'
 		return Vector3( operator.truediv( other , self.x ), operator.truediv( other, self.y ), operator.truediv( other, self.z ) )
 
-	def _setAccessibleAttribute(self, attributeName, value):
-		'Set the accessible attribute.'
-		if attributeName in globalSetAccessibleAttributeSet:
-			setattr(self, attributeName, value)
-
 	def __sub__(self, other):
 		'Get the difference between the Vector3 and other one.'
 		return Vector3( self.x - other.x, self.y - other.y, self.z - other.z )
@@ -183,6 +172,17 @@ class Vector3:
 	def __truediv__(self, other):
 		'Get a new Vector3 by true dividing each component of this one.'
 		return Vector3( operator.truediv( self.x, other ), operator.truediv( self.y, other ), operator.truediv( self.z, other ) )
+
+	def _getAccessibleAttribute(self, attributeName):
+		'Get the accessible attribute.'
+		if attributeName in globalGetAccessibleAttributeSet:
+			return getattr(self, attributeName, None)
+		return None
+
+	def _setAccessibleAttribute(self, attributeName, value):
+		'Set the accessible attribute.'
+		if attributeName in globalSetAccessibleAttributeSet:
+			setattr(self, attributeName, value)
 
 	def cross(self, other):
 		'Calculate the cross product of this vector with other one.'
@@ -278,20 +278,8 @@ globalSetAccessibleAttributeSet = globalGetAccessibleAttributeSet
 class Vector3:
 	__slots__ = ['x', 'y', 'z']
 
-	def __init__(self, x, y, z):
-		self.x = x
-		self.y = y
-		self.z = z
-
-	def __copy__(self):
-		return self.__class__(self.x, self.y, self.z)
 
 	copy = __copy__
-
-	def __repr__(self):
-		return 'Vector3(%.2f, %.2f, %.2f)' % (self.x,
-											  self.y,
-											  self.z)
 
 	def __eq__(self, other):
 		if isinstance(other, Vector3):
@@ -304,32 +292,26 @@ class Vector3:
 				   self.y == other[1] and \
 				   self.z == other[2]
 
-	def __ne__(self, other):
-		return not self.__eq__(other)
-
-	def __nonzero__(self):
-		return self.x != 0 or self.y != 0 or self.z != 0
-
-	def __len__(self):
-		return 3
-
-	def __getitem__(self, key):
-		return (self.x, self.y, self.z)[key]
-
-	def __setitem__(self, key, value):
-		l = [self.x, self.y, self.z]
-		l[key] = value
-		self.x, self.y, self.z = l
-
-	def __iter__(self):
-		return iter((self.x, self.y, self.z))
-
 	def __getattr__(self, name):
 		try:
 			return tuple([(self.x, self.y, self.z)['xyz'.index(c)] \
 						  for c in name])
 		except ValueError:
 			raise AttributeError, name
+
+	def __getitem__(self, key):
+		return (self.x, self.y, self.z)[key]
+
+	def __iter__(self):
+		return iter((self.x, self.y, self.z))
+
+	def __len__(self):
+		return 3
+
+	def __repr__(self):
+		return 'Vector3(%.2f, %.2f, %.2f)' % (self.x,
+											  self.y,
+											  self.z)
 
 	if _enable_swizzle_set:
 		# This has detrimental performance on ordinary setattr as well
@@ -346,183 +328,9 @@ class Vector3:
 				except ValueError:
 					raise AttributeError, name
 
+	def __setitem__(self, key, value):
+		l = [self.x, self.y, self.z]
+		l[key] = value
+		self.x, self.y, self.z = l
 
-	def __add__(self, other):
-		if isinstance(other, Vector3):
-			# Vector + Vector -> Vector
-			# Vector + Point -> Point
-			# Point + Point -> Vector
-			if self.__class__ is other.__class__:
-				_class = Vector3
-			else:
-				_class = Point3
-			return _class(self.x + other.x,
-						  self.y + other.y,
-						  self.z + other.z)
-		else:
-			assert hasattr(other, '__len__') and len(other) == 3
-			return Vector3(self.x + other[0],
-						   self.y + other[1],
-						   self.z + other[2])
-	__radd__ = __add__
-
-	def __iadd__(self, other):
-		if isinstance(other, Vector3):
-			self.x += other.x
-			self.y += other.y
-			self.z += other.z
-		else:
-			self.x += other[0]
-			self.y += other[1]
-			self.z += other[2]
-		return self
-
-	def __sub__(self, other):
-		if isinstance(other, Vector3):
-			# Vector - Vector -> Vector
-			# Vector - Point -> Point
-			# Point - Point -> Vector
-			if self.__class__ is other.__class__:
-				_class = Vector3
-			else:
-				_class = Point3
-			return Vector3(self.x - other.x,
-						   self.y - other.y,
-						   self.z - other.z)
-		else:
-			assert hasattr(other, '__len__') and len(other) == 3
-			return Vector3(self.x - other[0],
-						   self.y - other[1],
-						   self.z - other[2])
-
-   
-	def __rsub__(self, other):
-		if isinstance(other, Vector3):
-			return Vector3(other.x - self.x,
-						   other.y - self.y,
-						   other.z - self.z)
-		else:
-			assert hasattr(other, '__len__') and len(other) == 3
-			return Vector3(other.x - self[0],
-						   other.y - self[1],
-						   other.z - self[2])
-
-	def __mul__(self, other):
-		if isinstance(other, Vector3):
-			# TODO component-wise mul/div in-place and on Vector2; docs.
-			if self.__class__ is Point3 or other.__class__ is Point3:
-				_class = Point3
-			else:
-				_class = Vector3
-			return _class(self.x * other.x,
-						  self.y * other.y,
-						  self.z * other.z)
-		else: 
-			assert type(other) in (int, long, float)
-			return Vector3(self.x * other,
-						   self.y * other,
-						   self.z * other)
-
-	__rmul__ = __mul__
-
-	def __imul__(self, other):
-		assert type(other) in (int, long, float)
-		self.x *= other
-		self.y *= other
-		self.z *= other
-		return self
-
-	def __div__(self, other):
-		assert type(other) in (int, long, float)
-		return Vector3(operator.div(self.x, other),
-					   operator.div(self.y, other),
-					   operator.div(self.z, other))
-
-
-	def __rdiv__(self, other):
-		assert type(other) in (int, long, float)
-		return Vector3(operator.div(other, self.x),
-					   operator.div(other, self.y),
-					   operator.div(other, self.z))
-
-	def __floordiv__(self, other):
-		assert type(other) in (int, long, float)
-		return Vector3(operator.floordiv(self.x, other),
-					   operator.floordiv(self.y, other),
-					   operator.floordiv(self.z, other))
-
-
-	def __rfloordiv__(self, other):
-		assert type(other) in (int, long, float)
-		return Vector3(operator.floordiv(other, self.x),
-					   operator.floordiv(other, self.y),
-					   operator.floordiv(other, self.z))
-
-	def __truediv__(self, other):
-		assert type(other) in (int, long, float)
-		return Vector3(operator.truediv(self.x, other),
-					   operator.truediv(self.y, other),
-					   operator.truediv(self.z, other))
-
-
-	def __rtruediv__(self, other):
-		assert type(other) in (int, long, float)
-		return Vector3(operator.truediv(other, self.x),
-					   operator.truediv(other, self.y),
-					   operator.truediv(other, self.z))
-	
-	def __neg__(self):
-		return Vector3(-self.x,
-						-self.y,
-						-self.z)
-
-	__pos__ = __copy__
-	
-	def __abs__(self):
-		return math.sqrt(self.x ** 2 + \
-						 self.y ** 2 + \
-						 self.z ** 2)
-
-	magnitude = __abs__
-
-	def magnitude_squared(self):
-		return self.x ** 2 + \
-			   self.y ** 2 + \
-			   self.z ** 2
-
-	def normalize(self):
-		d = self.magnitude()
-		if d:
-			self.x /= d
-			self.y /= d
-			self.z /= d
-		return self
-
-	def normalized(self):
-		d = self.magnitude()
-		if d:
-			return Vector3(self.x / d, 
-						   self.y / d, 
-						   self.z / d)
-		return self.copy()
-
-	def dot(self, other):
-		assert isinstance(other, Vector3)
-		return self.x * other.x + \
-			   self.y * other.y + \
-			   self.z * other.z
-
-	def cross(self, other):
-		assert isinstance(other, Vector3)
-		return Vector3(self.y * other.z - self.z * other.y,
-					   -self.x * other.z + self.z * other.x,
-					   self.x * other.y - self.y * other.x)
-
-	def reflect(self, normal):
-		# assume normal is normalized
-		assert isinstance(normal, Vector3)
-		d = 2 * (self.x * normal.x + self.y * normal.y + self.z * normal.z)
-		return Vector3(self.x - d * normal.x,
-					   self.y - d * normal.y,
-					   self.z - d * normal.z)
 """

@@ -1,12 +1,12 @@
 """
 This page is in the table of contents.
-Skeiniso is an analysis script to display a gcode file in an isometric view.
+Skeiniso is an analyze viewer to display a gcode file in an isometric view.
 
 The skeiniso manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skeiniso
 
 ==Operation==
-The default 'Activate Skeiniso' checkbox is on.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Skeiniso' checkbox is on, when skeiniso is run directly.
+The default 'Activate Skeiniso' checkbox is off.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Skeiniso' checkbox is on, when skeiniso is run directly.
 
 Skeiniso requires skeinforge comments in the gcode file to distinguish the loops and perimeters.  If the comments are deleted, all threads will be displayed as generic threads.  To get the penultimate file of the tool chain, just before export deletes the comments, select 'Save Penultimate Gcode' in export, and open the gcode file with the suffix '_penultimate.gcode' with skeiniso.
 
@@ -91,7 +91,7 @@ Default is 'Display Line'.
 The mouse tool can be changed from the 'Mouse Mode' menu button or picture button.  The mouse tools listen to the arrow keys when the canvas has the focus.  Clicking in the canvas gives the canvas the focus, and when the canvas has the focus a thick black border is drawn around the canvas.
 
 ====Display Line====
-The 'Display Line' tool will display the highlight the selected line, and display the file line count, counting from one, and the gcode line itself.  When the 'Display Line' tool is active, clicking the canvas will select the nearest line to the mouse click.
+The 'Display Line' tool will display the highlight the selected line, and display the file line count, counting from one, and the gcode line itself.  When the 'Display Line' tool is active, clicking the canvas will select the closest line to the mouse click.
 
 ====Viewpoint Move====
 The 'Viewpoint Move' tool will move the viewpoint in the xy plane when the mouse is clicked and dragged on the canvas.
@@ -241,7 +241,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -269,7 +269,7 @@ def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
 	"Display a skeiniso gcode file for a gcode file."
 	if gcodeText == '':
 		return None
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( SkeinisoRepository() )
 	skeinWindow = getWindowGivenTextRepository( fileName, gcodeText, repository )
 	skeinWindow.updateDeiconify()
@@ -302,7 +302,7 @@ class SkeinisoRepository( tableau.TableauRepository ):
 		self.baseNameSynonym = 'behold.csv'
 		self.fileNameInput = settings.FileNameInput().getFromFileName( [ ('Gcode text files', '*.gcode') ], 'Open File for Skeiniso', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skeiniso')
-		self.activateSkeiniso = settings.BooleanSetting().getFromValue('Activate Skeiniso', self, True )
+		self.activateSkeiniso = settings.BooleanSetting().getFromValue('Activate Skeiniso', self, False)
 		self.addAnimation()
 		self.axisRulings = settings.BooleanSetting().getFromValue('Axis Rulings', self, True )
 		settings.LabelSeparator().getFromRepository(self)
@@ -363,7 +363,7 @@ class SkeinisoSkein:
 	def __init__(self):
 		self.coloredThread = []
 		self.feedRateMinute = 960.1
-		self.hasASurroundingLoopBeenReached = False
+		self.hasANestedRingBeenReached = False
 		self.isLoop = False
 		self.isPerimeter = False
 		self.isOuter = False
@@ -379,7 +379,7 @@ class SkeinisoSkein:
 
 	def addToPath( self, line, location ):
 		'Add a point to travel and maybe extrusion.'
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return
 		begin = self.scale * self.oldLocation - self.scaleCenterBottom
 		end = self.scale * location - self.scaleCenterBottom
@@ -426,7 +426,7 @@ class SkeinisoSkein:
 
 	def linearMove( self, line, location ):
 		"Get statistics for a linear move."
-		if self.skeinPane == None:
+		if self.skeinPane is None:
 			return
 		self.addToPath(line, location)
 
@@ -448,7 +448,7 @@ class SkeinisoSkein:
 		if self.isLoop:
 			self.setColoredThread( ( 255.0, 255.0, 0.0 ), self.skeinPane.loopLines ) #yellow
 			return
-		if not self.hasASurroundingLoopBeenReached:
+		if not self.hasANestedRingBeenReached:
 			self.setColoredThread( ( 165.0, 42.0, 42.0 ), self.skeinPane.raftLines ) #brown
 			return
 		if layerZoneIndex < self.repository.numberOfFillBottomLayers.value:
@@ -477,7 +477,7 @@ class SkeinisoSkein:
 			self.extruderActive = True
 		elif firstWord == 'M103':
 			self.extruderActive = False
-		elif firstWord == '(<layerThickness>':#todo
+		elif firstWord == '(<layerThickness>':
 			self.thirdLayerThickness = 0.33333333333 * float(splitLine[1])
 		if firstWord == '(<nestedRing>)':
 			if self.layerTopZ > self.getLayerTop():
@@ -572,7 +572,7 @@ class SkeinisoSkein:
 			self.moveColoredThreadToSkeinPane()
 			self.isLoop = False
 		elif firstWord == '(<nestedRing>)':
-			self.hasASurroundingLoopBeenReached = True
+			self.hasANestedRingBeenReached = True
 		elif firstWord == '(<perimeter>':
 			self.isPerimeter = True
 			self.isOuter = ( splitLine[1] == 'outer')
@@ -746,16 +746,16 @@ class SkeinWindow( tableau.TableauWindow ):
 		if self.repository.widthOfAxisPositiveSide.value > 0:
 			self.getDrawnColoredLine('last', self.positiveAxisLineZ, projectiveSpace, self.positiveAxisLineZ.tagString, self.repository.widthOfAxisPositiveSide.value )
 
+	def getCanvasRadius(self):
+		"Get half of the minimum of the canvas height and width."
+		return 0.5 * min( float( self.canvasHeight ), float( self.canvasWidth ) )
+
 	def getCentered( self, coordinate ):
 		"Get the centered coordinate."
 		relativeToCenter = complex( coordinate.real - self.center.real, self.center.imag - coordinate.imag )
 		if abs( relativeToCenter ) < 1.0:
 			relativeToCenter = complex( 0.0, 1.0 )
 		return relativeToCenter
-
-	def getCanvasRadius(self):
-		"Get half of the minimum of the canvas height and width."
-		return 0.5 * min( float( self.canvasHeight ), float( self.canvasWidth ) )
 
 	def getCenteredScreened( self, coordinate ):
 		"Get the normalized centered coordinate."

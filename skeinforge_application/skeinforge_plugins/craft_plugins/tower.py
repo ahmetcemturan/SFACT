@@ -6,21 +6,21 @@ The tower manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Tower
 
 ==Operation==
-The default 'Activate Tower' checkbox is off.  The default is off because tower could result in the extruder colliding with an already extruded part of the shape and because extruding in one region for more than one layer could result in the shape melting.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Tower' checkbox is off.  The default is off because tower could result in the extruder colliding with an already extruded part of the shape and because extruding in one region for more than one layer could result in the shape melting.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Maximum Tower Height===
-Default is five.
+Default: 5
 
 Defines the maximum number of layers that the extruder will extrude in one region before going to another.  This is the most important value for tower.
 
 ===Extruder Possible Collision Cone Angle===
-Default is sixty degrees.
+Default: 60 degrees
 
 Tower works by looking for islands in each layer and if it finds another island in the layer above, it goes to the next layer above instead of going across to other regions on the original layer.  It checks for collision with shapes already extruded within a cone from the nozzle tip.  The 'Extruder Possible Collision Cone Angle' setting is the angle of that cone.  Realistic values for the cone angle range between zero and ninety.  The higher the angle, the less likely a collision with the rest of the shape is, generally the extruder will stay in the region for only a few layers before a collision is detected with the wide cone.
 
 ===Tower Start Layer===
-Default is one.
+Default: 1
 
 Defines the layer index which the script starts extruding towers, after the last raft layer which does not have support material.  It is best to not tower at least the first layer because the temperature of the first layer is sometimes different than that of the other layers.
 
@@ -57,7 +57,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -69,7 +69,7 @@ def getCraftedTextFromText( gcodeText, towerRepository = None ):
 	"Tower a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'tower'):
 		return gcodeText
-	if towerRepository == None:
+	if towerRepository is None:
 		towerRepository = settings.getReadRepository( TowerRepository() )
 	if not towerRepository.activateTower.value:
 		return gcodeText
@@ -93,14 +93,14 @@ class Island:
 
 	def addToBoundary( self, splitLine ):
 		"Add to the boundary if it is not complete."
-		if self.boundingLoop == None:
+		if self.boundingLoop is None:
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
 			self.boundary.append(location.dropAxis())
 			self.z = location.z
 
 	def createBoundingLoop(self):
 		"Create the bounding loop if it is not already created."
-		if self.boundingLoop == None:
+		if self.boundingLoop is None:
 			self.boundingLoop = intercircle.BoundingLoop().getFromLoop( self.boundary )
 
 
@@ -168,7 +168,7 @@ class TowerSkein:
 
 	def addHighThread(self, location):
 		"Add thread with a high move if necessary to clear the previous extrusion."
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			if self.oldLocation.z + self.minimumBelow < self.highestZ:
 				self.distanceFeedRate.addGcodeMovementZWithFeedRate( self.travelFeedRateMinute, self.oldLocation.dropAxis(), self.highestZ )
 		if location.z + self.minimumBelow < self.highestZ:
@@ -176,7 +176,7 @@ class TowerSkein:
 
 	def addThreadLayerIfNone(self):
 		"Add a thread layer if it is none."
-		if self.threadLayer != None:
+		if self.threadLayer is not None:
 			return
 		self.threadLayer = ThreadLayer()
 		self.threadLayers.append( self.threadLayer )
@@ -186,13 +186,13 @@ class TowerSkein:
 	def addTowers(self):
 		"Add towers."
 		bottomLayerIndex = self.getBottomLayerIndex()
-		if bottomLayerIndex == None:
+		if bottomLayerIndex is None:
 			return
 		removedIsland = self.getRemovedIslandAddLayerLinesIfDifferent( self.threadLayers[ bottomLayerIndex ].islands, bottomLayerIndex )
 		while 1:
 			self.climbTower( removedIsland )
 			bottomLayerIndex = self.getBottomLayerIndex()
-			if bottomLayerIndex == None:
+			if bottomLayerIndex is None:
 				return
 			removedIsland = self.getRemovedIslandAddLayerLinesIfDifferent( self.threadLayers[ bottomLayerIndex ].islands, bottomLayerIndex )
 
@@ -244,37 +244,37 @@ class TowerSkein:
 			self.oldLayerIndex = layerIndex
 			threadLayer = self.threadLayers[layerIndex]
 			self.distanceFeedRate.addLines( threadLayer.beforeExtrusionLines )
-		removedIsland = self.getTransferClosestSurroundingLoopLines( self.oldOrderedLocation, islands )
-		if threadLayer != None:
+		removedIsland = self.getTransferClosestNestedRingLines( self.oldOrderedLocation, islands )
+		if threadLayer is not None:
 			self.distanceFeedRate.addLines( threadLayer.afterExtrusionLines )
 		return removedIsland
 
-	def getTransferClosestSurroundingLoopLines( self, oldOrderedLocation, remainingNestedRings ):
-		"Get and transfer the closest remaining surrounding loop."
+	def getTransferClosestNestedRingLines( self, oldOrderedLocation, remainingNestedRings ):
+		"Get and transfer the closest remaining nested ring."
 		if len( remainingNestedRings ) > 0:
 			oldOrderedLocation.z = remainingNestedRings[0].z
 		closestDistance = 999999999987654321.0
-		closestSurroundingLoop = None
-		for remainingSurroundingLoop in remainingNestedRings:
-			distance = euclidean.getNearestDistanceIndex( oldOrderedLocation.dropAxis(), remainingSurroundingLoop.boundary ).distance
+		closestNestedRing = None
+		for remainingNestedRing in remainingNestedRings:
+			distance = euclidean.getClosestDistanceIndexToLine(oldOrderedLocation.dropAxis(), remainingNestedRing.boundary).distance
 			if distance < closestDistance:
 				closestDistance = distance
-				closestSurroundingLoop = remainingSurroundingLoop
-		remainingNestedRings.remove( closestSurroundingLoop )
+				closestNestedRing = remainingNestedRing
+		remainingNestedRings.remove(closestNestedRing)
 		hasTravelledHighRoad = False
-		for line in closestSurroundingLoop.lines:
+		for line in closestNestedRing.lines:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
 			if firstWord == 'G1':
 				location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 				if not hasTravelledHighRoad:
 					hasTravelledHighRoad = True
-					self.addHighThread( location )
+					self.addHighThread(location)
 				if location.z > self.highestZ:
 					self.highestZ = location.z
 				self.oldLocation = location
 			self.distanceFeedRate.addLine(line)
-		return closestSurroundingLoop
+		return closestNestedRing
 
 	def isInsideRemovedOutsideCone( self, island, removedBoundingLoop, untilLayerIndex ):
 		"Determine if the island is entirely inside the removed bounding loop and outside the collision cone of the remaining islands."
@@ -311,7 +311,7 @@ class TowerSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> tower </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('tower')
 			elif firstWord == '(<layer>':
 				return
 			elif firstWord == '(<layerThickness>':
@@ -345,20 +345,20 @@ class TowerSkein:
 			self.threadLayer = None
 			return
 		elif firstWord == '(</layer>)':
-			if self.threadLayer != None:
+			if self.threadLayer is not None:
 				self.threadLayer.afterExtrusionLines = self.afterExtrusionLines
 			self.afterExtrusionLines = []
 		elif firstWord == '(</loop>)':
 			self.afterExtrusionLines = []
 		elif firstWord == '(<nestedRing>)':
 			self.nestedRingCount += 1
-			if self.island == None:
+			if self.island is None:
 				self.island = Island()
 				self.addThreadLayerIfNone()
 				self.threadLayer.islands.append( self.island )
 		elif firstWord == '(</perimeter>)':
 			self.afterExtrusionLines = []
-		if self.island != None:
+		if self.island is not None:
 			self.island.lines.append(line)
 		if firstWord == '(</nestedRing>)':
 			self.afterExtrusionLines = []

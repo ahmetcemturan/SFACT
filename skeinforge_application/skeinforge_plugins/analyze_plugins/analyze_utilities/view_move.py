@@ -15,7 +15,7 @@ import __init__
 from skeinforge_application.skeinforge_plugins.analyze_plugins.analyze_utilities.mouse_tool_base import MouseToolBase
 from fabmetheus_utilities import settings
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -59,7 +59,7 @@ class ViewpointMove( MouseToolBase ):
 
 	def motion( self, event, shift = False ):
 		"The mouse moved, <Motion> function."
-		if self.buttonOnePressedScreenCoordinate == None:
+		if self.buttonOnePressedScreenCoordinate is None:
 			return
 		motionCoordinate = complex( event.x, event.y )
 		relativeMotion = motionCoordinate - self.buttonOnePressedScreenCoordinate

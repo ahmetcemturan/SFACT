@@ -8,6 +8,7 @@ from __future__ import absolute_import
 import __init__
 
 from fabmetheus_utilities.geometry.creation import lineation
+from fabmetheus_utilities.geometry.geometry_utilities.evaluate_elements import setting
 from fabmetheus_utilities.geometry.geometry_utilities import evaluate
 from fabmetheus_utilities.vector3 import Vector3
 from fabmetheus_utilities import euclidean
@@ -23,19 +24,30 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 80
 
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get path with outline."
 	if len(loop) < 2:
 		return [loop]
-	isClosed = evaluate.getEvaluatedBoolean(False, prefix + 'closed', xmlElement)
-	radius = lineation.getStrokeRadiusByPrefix(prefix, xmlElement )
+	derivation = OutlineDerivation(elementNode, prefix, sideLength)
 	loopComplex = euclidean.getComplexPath(loop)
-	if isClosed:
-		loopComplexes = intercircle.getAroundsFromLoop(loopComplex, radius)
+	if derivation.isClosed:
+		loopComplexes = intercircle.getAroundsFromLoop(loopComplex, derivation.radius)
 	else:
-		loopComplexes = intercircle.getAroundsFromPath(loopComplex, radius)
+		loopComplexes = intercircle.getAroundsFromPath(loopComplex, derivation.radius)
 	return euclidean.getVector3Paths(loopComplexes, loop[0].z)
 
-def processXMLElement(xmlElement):
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return OutlineDerivation(elementNode, prefix, sideLength)
+
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)
+
+
+class OutlineDerivation:
+	"Class to hold outline variables."
+	def __init__(self, elementNode, prefix, sideLength):
+		'Set defaults.'
+		self.isClosed = evaluate.getEvaluatedBoolean(False, elementNode, prefix + 'closed')
+		self.radius = evaluate.getEvaluatedFloat(setting.getPerimeterWidth(elementNode), elementNode, prefix + 'radius')

@@ -2,7 +2,9 @@
 """
 This page is in the table of contents.
 Bottom sets the bottom of the carving to the defined altitude.
-Adjusts the Z heights of each layer.
+
+The bottom manual page is at:
+http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Bottom
 
 ==Operation==
 The default 'Activate Bottom' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
@@ -46,7 +48,6 @@ from datetime import date
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 from fabmetheus_utilities.svg_reader import SVGReader
 from fabmetheus_utilities.vector3 import Vector3
-from fabmetheus_utilities.xml_simple_reader import XMLSimpleReader
 from fabmetheus_utilities import archive
 from fabmetheus_utilities import euclidean
 from fabmetheus_utilities import gcodec
@@ -62,7 +63,7 @@ import sys
 import time
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -75,7 +76,7 @@ def getCraftedTextFromText(fileName, svgText, repository=None):
 	"Bottom and convert an svgText."
 	if gcodec.isProcedureDoneOrFileIsEmpty(svgText, 'bottom'):
 		return svgText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(BottomRepository())
 	if not repository.activateBottom.value:
 		return svgText
@@ -98,6 +99,7 @@ class BottomRepository:
 			'skeinforge_application.skeinforge_plugins.craft_plugins.bottom.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName(
 			fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Bottom', self, '')
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Bottom')
 		self.activateBottom = settings.BooleanSetting().getFromValue('Activate Bottom... and dont change anything else here!!!', self, True)
 		self.additionalHeightOverLayerThickness = settings.FloatSpin().getFromValue(
 			0.0, 'Additional Height (ratio):', self, 1.0, 0.5)
@@ -118,22 +120,22 @@ class BottomSkein:
 		"Parse svgText and store the bottom svgText."
 		svgReader = SVGReader()
 		svgReader.parseSVG('', svgText)
-		if svgReader.sliceDictionary == None:
+		if svgReader.sliceDictionary is None:
 			print('Warning, nothing will be done because the sliceDictionary could not be found getCraftedGcode in preface.')
 			return ''
 		decimalPlacesCarried = int(svgReader.sliceDictionary['decimalPlacesCarried'])
 		layerThickness = float(svgReader.sliceDictionary['layerThickness'])
 		perimeterWidth = float(svgReader.sliceDictionary['perimeterWidth'])
-		rotatedLoopLayers = svgReader.rotatedLoopLayers
+		loopLayers = svgReader.loopLayers
 		zMinimum = 987654321.0
-		for rotatedLoopLayer in rotatedLoopLayers:
-			zMinimum = min(rotatedLoopLayer.z, zMinimum)
+		for loopLayer in loopLayers:
+			zMinimum = min(loopLayer.z, zMinimum)
 		deltaZ = repository.altitude.value + repository.additionalHeightOverLayerThickness.value * layerThickness - zMinimum
-		for rotatedLoopLayer in rotatedLoopLayers:
-			rotatedLoopLayer.z += deltaZ
+		for loopLayer in loopLayers:
+			loopLayer.z += deltaZ
 		cornerMaximum = Vector3(-912345678.0, -912345678.0, -912345678.0)
 		cornerMinimum = Vector3(912345678.0, 912345678.0, 912345678.0)
-		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, rotatedLoopLayers)
+		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, loopLayers)
 		svgWriter = svg_writer.SVGWriter(
 			True,
 			cornerMaximum,
@@ -141,9 +143,9 @@ class BottomSkein:
 			decimalPlacesCarried,
 			layerThickness,
 			perimeterWidth)
-		commentElement = svg_writer.getCommentElement(svgReader.root)
+		commentElement = svg_writer.getCommentElement(svgReader.documentElement)
 		procedureNameString = svgReader.sliceDictionary['procedureName'] + ',bottom'
-		return svgWriter.getReplacedSVGTemplate(fileName, procedureNameString, rotatedLoopLayers, commentElement)
+		return svgWriter.getReplacedSVGTemplate(fileName, loopLayers, procedureNameString, commentElement)
 
 
 def main():

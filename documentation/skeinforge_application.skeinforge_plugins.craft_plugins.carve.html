@@ -13,7 +13,9 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.bottom.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.chamber.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Carve is a script to carve a shape into svg slice layers.<br>
+Carve is the most important plugin to define for your printer.<br>
+ <br>
+It carves a shape into svg slice layers.  It also sets the layer thickness and perimeter width for the rest of the tool chain.<br>
  <br>
 The carve manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve</a><br>
@@ -26,7 +28,6 @@ On the Arcol Blog a method of deriving the layer thickness is posted.  That arti
 &nbsp;&nbsp;<a href="#Add Layer Template to SVG">Add Layer Template to SVG</a><br />
 &nbsp;&nbsp;<a href="#Extra Decimal Places">Extra Decimal Places</a><br />
 &nbsp;&nbsp;<a href="#Import Coarseness">Import Coarseness</a><br />
-&nbsp;&nbsp;<a href="#Infill in Direction of Bridge">Infill in Direction of Bridge</a><br />
 &nbsp;&nbsp;<a href="#Layer Thickness">Layer Thickness</a><br />
 &nbsp;&nbsp;<a href="#Layers">Layers</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layers From">Layers From</a><br />
@@ -61,17 +62,13 @@ Default is one.<br>
  <br>
 When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.<br>
  <br>
-<a name="Infill in Direction of Bridge" id="Infill in Direction of Bridge"></a><h3>Infill in Direction of Bridge</h3>
-
-Default is on.<br>
- <br>
-When selected, the infill will be in the direction of any bridge across a gap, so that the fill will be able to span a bridge easier.<br>
- <br>
 <a name="Layer Thickness" id="Layer Thickness"></a><h3>Layer Thickness</h3>
 
 Default is 0.4 mm.<br>
  <br>
-Defines the thickness of the extrusion layer at default extruder speed, this is the most important carve setting.<br>
+Defines the the thickness of the layers skeinforge will cut your object into, in the z direction.  This is the most important carve setting, many values in the toolchain are derived from the layer thickness.<br>
+ <br>
+For a 0.5 mm nozzle usable values are 0.3 mm to 0.5 mm.  Note; if you are using thinner layers make sure to adjust the extrusion speed as well.<br>
  <br>
 <a name="Layers" id="Layers"></a><h3>Layers</h3>
 
@@ -83,11 +80,15 @@ Default is zero.<br>
  <br>
 Defines the index of the bottom layer that will be carved.  If the 'Layers From' is the default zero, the carving will start from the lowest layer.  If the 'Layers From' index is negative, then the carving will start from the 'Layers From' index below the top layer.<br>
  <br>
+For example if your object is 5 mm tall and your layer thicknes is 1 mm if you set layers from to 3 you will ignore the first 3 mm and start from 3 mm.<br>
+ <br>
 <a name="Layers To" id="Layers To"></a><h4>Layers To</h4>
 
 Default is a huge number, which will be limited to the highest index layer.<br>
  <br>
 Defines the index of the top layer that will be carved.  If the 'Layers To' index is a huge number like the default, the carving will go to the top of the model.  If the 'Layers To' index is negative, then the carving will go to the 'Layers To' index below the top layer.<br>
+ <br>
+This is the same as layers from, only it defines when to end the generation of gcode.<br>
  <br>
 <a name="Mesh Type" id="Mesh Type"></a><h3>Mesh Type</h3>
 
@@ -105,7 +106,11 @@ When selected, carve will use the gap spanning algorithm from the start.  The pr
 
 Default is 1.8.<br>
  <br>
-Defines the ratio of the extrusion perimeter width to the layer thickness.  The higher the value the more the perimeter will be inset, the default is 1.8.  A ratio of one means the extrusion is a circle, a typical ratio of 1.8 means the extrusion is a wide oval.  These values should be measured from a test extrusion line.<br>
+Defines the ratio of the extrusion perimeter width to the layer thickness.  This parameter tells skeinforge how wide the perimeter wall is expected to be in relation to the layer thickness.  Default value of 1.8 for the default layer thickness of 0.4 states that a single filament perimeter wall should be 0.4 mm * 1.8 = 0.72 mm wide.  The higher the value the more the perimeter will be inset.  A ratio of one means the extrusion is a circle, the default ratio of 1.8 means the extrusion is a wide oval.<br>
+ <br>
+This is an important value because if you are calibrating your machine you need to ensure that the speed of the head and the extrusion rate in combination produce a wall that is 'Layer Thickness' * 'Perimeter Width over Thickness' wide. To start with 'Perimeter Width over Thickness' is probably best left at the default of 1.8 and the extrusion rate adjusted to give the correct calculated wall thickness.<br>
+ <br>
+Adjustment is in the 'Speed' section with 'Feed Rate' controlling speed of the head in X &amp; Y and 'Flow Rate' controlling the extrusion rate.  Initially it is probably easier to start adjusting the flow rate only a little at a time until you get a single filament of the correct width. If you change too many parameters at once you can get in a right mess.<br>
  <br>
 <a name="SVG Viewer" id="SVG Viewer"></a><h3>SVG Viewer</h3>
 

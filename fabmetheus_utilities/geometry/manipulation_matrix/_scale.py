@@ -22,36 +22,47 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 340
 
 
-def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
+def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	"Get equated geometryOutput."
-	scalePoints( matrix.getVertexes(geometryOutput), prefix, xmlElement )
+	scalePoints( elementNode, matrix.getVertexes(geometryOutput), prefix )
 	return geometryOutput
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get equated paths."
-	scalePoints( loop, prefix, xmlElement )
+	scalePoints( elementNode, loop, prefix )
 	return [loop]
 
-def manipulateXMLElement(target, xmlElement):
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return ScaleDerivation(elementNode)
+
+def manipulateElementNode(elementNode, target):
 	"Manipulate the xml element."
-	scaleTetragrid = matrix.getScaleTetragrid('', xmlElement)
-	if scaleTetragrid == None:
+	derivation = ScaleDerivation(elementNode)
+	if derivation.scaleTetragrid == None:
 		print('Warning, scaleTetragrid was None in scale so nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	matrix.setAttributeDictionaryToMultipliedTetragrid(scaleTetragrid, target)
+	matrix.setAttributesToMultipliedTetragrid(target, derivation.scaleTetragrid)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	solid.processXMLElementByFunction( manipulateXMLElement, xmlElement)
+	solid.processElementNodeByFunction(elementNode, manipulateElementNode)
 
-def scalePoints(points, prefix, xmlElement):
+def scalePoints(elementNode, points, prefix):
 	"Scale the points."
-	scaleDefaultVector3 = Vector3(1.0, 1.0, 1.0)
-	scaleVector3 = matrix.getCumulativeVector3Remove(scaleDefaultVector3.copy(), prefix, xmlElement)
-	if scaleVector3 == scaleDefaultVector3:
+	scaleVector3Default = Vector3(1.0, 1.0, 1.0)
+	scaleVector3 = matrix.getCumulativeVector3Remove(scaleVector3Default.copy(), elementNode, prefix)
+	if scaleVector3 == scaleVector3Default:
 		return
 	for point in points:
 		point.x *= scaleVector3.x
 		point.y *= scaleVector3.y
 		point.z *= scaleVector3.z
+
+
+class ScaleDerivation:
+	"Class to hold scale variables."
+	def __init__(self, elementNode):
+		'Set defaults.'
+		self.scaleTetragrid = matrix.getScaleTetragrid(elementNode, '')

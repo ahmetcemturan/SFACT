@@ -48,7 +48,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_help
 import os
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -58,11 +58,11 @@ def addToMenu( master, menu, repository, window ):
 	path = settings.getPathInFabmetheusFromFileNameHelp( repository.fileNameHelp )
 	capitalizedBasename = os.path.basename(path).capitalize()
 	helpRepository = settings.getReadRepository( skeinforge_help.HelpRepository() )
-	if repository.openWikiManualHelpPage != None and helpRepository.wikiManualPrimary.value:
+	if repository.openWikiManualHelpPage is not None and helpRepository.wikiManualPrimary.value:
 		menu.add_command( label = 'Local ' + capitalizedBasename, command = repository.openLocalHelpPage )
 	else:
 		settings.addAcceleratorCommand('<F1>', repository.openLocalHelpPage, master, menu, 'Local ' + capitalizedBasename )
-	if repository.openWikiManualHelpPage != None:
+	if repository.openWikiManualHelpPage is not None:
 		if helpRepository.wikiManualPrimary.value:
 			settings.addAcceleratorCommand('<F1>', repository.openWikiManualHelpPage, master, menu, 'Wiki Manual ' + capitalizedBasename )
 		else:

@@ -19,28 +19,7 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-class Heading:
-	'A class to hold the heading and subheadings.'
-	def __init__(self, depth=0):
-		'Initialize.'
-		self.depth = depth
-
-	def addToOutput(self, output):
-		'Add to the output.'
-		line = '&nbsp;&nbsp;' * self.depth + '<a href="#%s">%s</a><br />\n' % (self.name, self.name)
-		output.write(line)
-
-	def getFromLine(self, headingLineTable, line):
-		'Get the heading from a line.'
-		heading = 'h%s' % (self.depth + 2)
-		nextLine = '\n<hr>\n'
-		if self.depth > 0:
-			nextLine = '\n'
-		self.name = line.replace('=', '').replace('<br>', '')
-		name = self.name
-		headingLine = '<a name="%s" id="%s"></a><%s>%s</%s>%s' % (name, name, heading, name, heading, nextLine)
-		headingLineTable[line] = headingLine
-		return self
+globalWikiLinkStart = '[<a href='
 
 
 def addToHeadings(headingLineTable, headings, line):
@@ -50,6 +29,17 @@ def addToHeadings(headingLineTable, headings, line):
 		if line[: equalSymbolLength] == '=' * equalSymbolLength:
 			headings.append(Heading(depth).getFromLine(headingLineTable, line))
 			return
+
+def getLinkLine(line):
+	'Get the link line with the wiki style link converted into a hypertext link.'
+	linkStartIndex = line.find(globalWikiLinkStart)
+	squareEndBracketIndex = line.find(']', linkStartIndex)
+	greaterThanIndex = line.find('>', linkStartIndex, squareEndBracketIndex)
+	greaterThanIndexPlusOne = greaterThanIndex + 1
+	closeATagIndex = line.find('</a>', greaterThanIndexPlusOne, squareEndBracketIndex)
+	linkText = line[closeATagIndex + len('</a>') + 1: squareEndBracketIndex]
+	linkLine = line[: linkStartIndex] + line[linkStartIndex + 1: greaterThanIndexPlusOne] + linkText + '</a>' + line[squareEndBracketIndex + 1 :]
+	return linkLine
 
 def getNavigationHypertext(fileText, transferredFileNameIndex, transferredFileNames):
 	'Get the hypertext help with navigation lines.'
@@ -73,8 +63,10 @@ def getNavigationHypertext(fileText, transferredFileNameIndex, transferredFileNa
 				headingsToBeenAdded = False
 			if line in headingLineTable:
 				line = headingLineTable[line]
-		if line.find('&lt;a href=') > -1:
+		if '&lt;a href=' in line:
 			line = line.replace('&lt;', '<').replace('&gt;', '>')
+		while globalWikiLinkStart in line and ']' in line:
+			line = getLinkLine(line)
 		output.write(line + '\n')
 	helpText = output.getvalue()
 	previousFileName = 'contents.html'
@@ -189,6 +181,30 @@ def writeHypertext():
 		readWriteNavigationHelp(documentDirectoryPath, transferredFileNameIndex, transferredFileNames)
 	writeContentsFile(documentDirectoryPath, transferredFileNames)
 	print('%s files were wrapped.' % len(transferredFileNames))
+
+
+class Heading:
+	'A class to hold the heading and subheadings.'
+	def __init__(self, depth=0):
+		'Initialize.'
+		self.depth = depth
+
+	def addToOutput(self, output):
+		'Add to the output.'
+		line = '&nbsp;&nbsp;' * self.depth + '<a href="#%s">%s</a><br />\n' % (self.name, self.name)
+		output.write(line)
+
+	def getFromLine(self, headingLineTable, line):
+		'Get the heading from a line.'
+		heading = 'h%s' % (self.depth + 2)
+		nextLine = '\n<hr>\n'
+		if self.depth > 0:
+			nextLine = '\n'
+		self.name = line.replace('=', '').replace('<br>', '')
+		name = self.name
+		headingLine = '<a name="%s" id="%s"></a><%s>%s</%s>%s' % (name, name, heading, name, heading, nextLine)
+		headingLineTable[line] = headingLine
+		return self
 
 
 def main():

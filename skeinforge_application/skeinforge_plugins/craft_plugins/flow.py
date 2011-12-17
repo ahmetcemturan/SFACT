@@ -41,7 +41,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -54,7 +54,7 @@ def getCraftedTextFromText( gcodeText, flowRepository = None ):
 	"Flow a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'flow'):
 		return gcodeText
-	if flowRepository == None:
+	if flowRepository is None:
 		flowRepository = settings.getReadRepository( FlowRepository() )
 	if not flowRepository.activateFlow.value:
 		return gcodeText
@@ -92,15 +92,15 @@ class FlowSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.lineIndex = 0
 		self.lines = None
-		self.oldFlowRateString = None
+		self.oldFlowRate = None
 		self.oldLocation = None
 
-	def addFlowRateLineIfNecessary(self):
+	def addFlowRateLine(self):
 		"Add flow rate line."
-		flowRateString = euclidean.getRoundedToThreePlaces( self.flowRepository.flowRate.value )
-		if flowRateString != self.oldFlowRateString:
-			self.distanceFeedRate.addLine('M108 S' + flowRateString )
-		self.oldFlowRateString = flowRateString
+		flowRate = self.flowRepository.flowRate.value
+		if flowRate != self.oldFlowRate:
+			self.distanceFeedRate.addLine('M108 S' + euclidean.getFourSignificantFigures(flowRate))
+		self.oldFlowRate = flowRate
 
 	def getCraftedGcode( self, gcodeText, flowRepository ):
 		"Parse gcode text and store the flow gcode."
@@ -119,7 +119,7 @@ class FlowSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> flow </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('flow')
 				return
 			self.distanceFeedRate.addLine(line)
 
@@ -130,7 +130,7 @@ class FlowSkein:
 			return
 		firstWord = splitLine[0]
 		if firstWord == 'G1' or firstWord == '(<layer>':
-			self.addFlowRateLineIfNecessary()
+			self.addFlowRateLine()
 		self.distanceFeedRate.addLine(line)
 
 

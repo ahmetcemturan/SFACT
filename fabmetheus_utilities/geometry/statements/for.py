@@ -16,57 +16,57 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def processChildNodesByIndexValue( function, index, indexValue, value, xmlElement ):
+def processChildNodesByIndexValue( elementNode, function, index, indexValue, value ):
 	"Process childNodes by index value."
 	if indexValue.indexName != '':
 		function.localDictionary[ indexValue.indexName ] = index
 	if indexValue.valueName != '':
 		function.localDictionary[ indexValue.valueName ] = value
-	function.processChildNodes(xmlElement)
+	function.processChildNodes(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	if xmlElement.xmlObject == None:
-		xmlElement.xmlObject = IndexValue(xmlElement)
-	if xmlElement.xmlObject.inSplitWords == None:
+	if elementNode.xmlObject is None:
+		elementNode.xmlObject = IndexValue(elementNode)
+	if elementNode.xmlObject.inSplitWords is None:
 		return
-	xmlProcessor = xmlElement.getXMLProcessor()
+	xmlProcessor = elementNode.getXMLProcessor()
 	if len( xmlProcessor.functions ) < 1:
-		print('Warning, "for" element is not in a function in processXMLElement in for.py for:')
-		print(xmlElement)
+		print('Warning, "for" element is not in a function in processElementNode in for.py for:')
+		print(elementNode)
 		return
 	function = xmlProcessor.functions[-1]
-	inValue = evaluate.getEvaluatedExpressionValueBySplitLine( xmlElement.xmlObject.inSplitWords, xmlElement )
+	inValue = evaluate.getEvaluatedExpressionValueBySplitLine(elementNode, elementNode.xmlObject.inSplitWords)
 	if inValue.__class__ == list or inValue.__class__ == str:
 		for index, value in enumerate( inValue ):
-			processChildNodesByIndexValue( function, index, xmlElement.xmlObject, value, xmlElement )
+			processChildNodesByIndexValue( elementNode, function, index, elementNode.xmlObject, value )
 		return
 	if inValue.__class__ == dict:
 		inKeys = inValue.keys()
 		inKeys.sort()
 		for inKey in inKeys:
-			processChildNodesByIndexValue( function, inKey, xmlElement.xmlObject, inValue[ inKey ], xmlElement )
+			processChildNodesByIndexValue( elementNode, function, inKey, elementNode.xmlObject, inValue[ inKey ] )
 
 
 class IndexValue:
 	"Class to get the in attribute, the index name and the value name."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		"Initialize."
 		self.inSplitWords = None
 		self.indexName = ''
-		if 'index' in xmlElement.attributeDictionary:
-			self.indexName = xmlElement.attributeDictionary['index']
+		if 'index' in elementNode.attributes:
+			self.indexName = elementNode.attributes['index']
 		self.valueName = ''
-		if 'value' in xmlElement.attributeDictionary:
-			self.valueName = xmlElement.attributeDictionary['value']
-		if 'in' in xmlElement.attributeDictionary:
-			self.inSplitWords = evaluate.getEvaluatorSplitWords( xmlElement.attributeDictionary['in'] )
+		if 'value' in elementNode.attributes:
+			self.valueName = elementNode.attributes['value']
+		if 'in' in elementNode.attributes:
+			self.inSplitWords = evaluate.getEvaluatorSplitWords( elementNode.attributes['in'] )
 		else:
 			print('Warning, could not find the "in" attribute in IndexValue in for.py for:')
-			print(xmlElement)
+			print(elementNode)
 			return
 		if len( self.inSplitWords ) < 1:
 			self.inSplitWords = None
 			print('Warning, could not get split words for the "in" attribute in IndexValue in for.py for:')
-			print(xmlElement)
+			print(elementNode)
 

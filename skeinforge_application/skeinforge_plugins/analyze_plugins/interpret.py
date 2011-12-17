@@ -1,6 +1,9 @@
 """
 This page is in the table of contents.
-Interpret is a script to interpret a file, turning it into xml.
+Interpret is an analyze plugin to interpret a file, turning a 2D file into svg and a 3D file into constructive solid geometry xml.
+
+The comment manual page is at:
+http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Interpret
 
 ==Operation==
 The default 'Activate Interpret' checkbox is off.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the tool chain.  The functions will still be called, whether or not the 'Activate Interpret' checkbox is on, when interpret is run directly.
@@ -16,6 +19,15 @@ Default is webbrowser.
 
 If the 'Text Program' is set the default 'webbrowser', the XML file will be sent to the default browser to be opened.  If the 'Text Program' is set to a program name, the XML file will be sent to that program to be opened.
 
+==Examples==
+Below are examples of interpret being used.  These examples are run in a terminal in the folder which contains Screw_Holder.stl and interpret.py.
+
+> python interpret.py
+This brings up the interpret dialog.
+
+> python interpret.py Screw_Holder.stl
+The comment file is saved as Screw_Holder_interpret.xml
+
 """
 
 from __future__ import absolute_import
@@ -27,7 +39,7 @@ from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 

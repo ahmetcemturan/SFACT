@@ -22,7 +22,7 @@ import sys
 import time
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -40,7 +40,7 @@ def getChainTextFromProcedures(fileName, procedures, text):
 	lastProcedureTime = time.time()
 	for procedure in procedures:
 		craftModule = getCraftModule(procedure)
-		if craftModule != None:
+		if craftModule is not None:
 			text = craftModule.getCraftedText(fileName, text)
 			if text == '':
 				print('Warning, the text was not recognized in getChainTextFromProcedures in skeinforge_craft for')
@@ -51,9 +51,20 @@ def getChainTextFromProcedures(fileName, procedures, text):
 				lastProcedureTime = time.time()
 	return text
 
-def getCraftModule(fileName):
-	"Get craft module."
-	return archive.getModuleWithDirectoryPath(getPluginsDirectoryPath(), fileName)
+def getCraftModule(pluginName):
+	'Get craft module.'
+	return archive.getModuleWithDirectoryPath(getPluginsDirectoryPath(), pluginName)
+
+def getCraftPreferences(pluginName):
+	'Get craft preferences.'
+	return settings.getReadRepository(getCraftModule(pluginName).getNewRepository()).preferences
+
+def getCraftValue(preferenceName, preferences):
+	"Get craft preferences value."
+	for preference in preferences:
+		if preference.name.startswith(preferenceName):
+			return preference.value
+	return None
 
 def getLastModule():
 	"Get the last tool."
@@ -66,15 +77,15 @@ def getNewRepository():
 	'Get new repository.'
 	return CraftRepository()
 
-def getPluginsDirectoryPath():
-	"Get the plugins directory path."
-	return archive.getSkeinforgePluginsPath('craft_plugins')
-
 def getPluginFileNames():
 	"Get craft plugin fileNames."
 	craftSequence = getReadCraftSequence()
 	craftSequence.sort()
 	return craftSequence
+
+def getPluginsDirectoryPath():
+	"Get the plugins directory path."
+	return archive.getCraftPluginsDirectoryPath()
 
 def getProcedures( procedure, text ):
 	"Get the procedures up to and including the given procedure."
@@ -130,7 +141,7 @@ def writeChainTextWithNounMessage(fileName, procedure, shouldAnalyze=True):
 def writeOutput(fileName, shouldAnalyze=True):
 	"Craft a gcode file with the last module."
 	pluginModule = getLastModule()
-	if pluginModule != None:
+	if pluginModule is not None:
 		return pluginModule.writeOutput(fileName, shouldAnalyze)
 
 def writeSVGTextWithNounMessage(fileName, repository, shouldAnalyze=True):

@@ -15,6 +15,10 @@
 <p><tt><br>
 Scale scales the carving to compensate for shrinkage after the extrusion has cooled.<br>
  <br>
+The scale manual page is at:<br>
+ <br>
+<a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Scale">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Scale</a><br>
+ <br>
 It is best to only change the XY Plane Scale, because that does not affect other variables.  If you choose to change the Z Axis Scale, that increases the layer thickness so you must increase the feed rate in speed by the same amount and maybe some other variables which depend on layer thickness.<br>
  <br>
 <br />
@@ -28,7 +32,7 @@ It is best to only change the XY Plane Scale, because that does not affect other
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
 
-The default 'Activate Scale' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.<br>
+The default 'Activate Scale' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.<br>
  <br>
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
@@ -43,7 +47,7 @@ Defines the amount the xy plane of the carving will be scaled.  The xy coordinat
 
 Default is one.<br>
  <br>
-Defines the amount the z axis of the carving will be scaled.  The default is one because changing this changes many variables related to the layer thickness.  For example, the feedRate should be multiplied by the Z Axis Scale because the layers would be farther apart..<br>
+Defines the amount the z axis of the carving will be scaled.  The default is one because changing this changes many variables related to the layer thickness.  For example, the feedRate should be multiplied by the Z Axis Scale because the layers would be farther apart.<br>
  <br>
 <a name="SVG Viewer" id="SVG Viewer"></a><h3>SVG Viewer</h3>
 
@@ -142,7 +146,7 @@ The scale tool has created the file:<br>
  <dl><dt><a name="-getCraftedTextFromText"><strong>getCraftedTextFromText</strong></a>(fileName, svgText, repository<font color="#909090">=None</font>)</dt><dd><tt>Scale&nbsp;and&nbsp;convert&nbsp;an&nbsp;svgText.</tt></dd></dl>
  <dl><dt><a name="-getNewRepository"><strong>getNewRepository</strong></a>()</dt><dd><tt>Get&nbsp;new&nbsp;repository.</tt></dd></dl>
  <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Display&nbsp;the&nbsp;scale&nbsp;dialog.</tt></dd></dl>
- <dl><dt><a name="-setLoopLayerScale"><strong>setLoopLayerScale</strong></a>(rotatedLoopLayer, xyPlaneScale, zAxisScale)</dt><dd><tt>Set&nbsp;the&nbsp;slice&nbsp;element&nbsp;scale.</tt></dd></dl>
+ <dl><dt><a name="-setLoopLayerScale"><strong>setLoopLayerScale</strong></a>(loopLayer, xyPlaneScale, zAxisScale)</dt><dd><tt>Set&nbsp;the&nbsp;slice&nbsp;element&nbsp;scale.</tt></dd></dl>
  <dl><dt><a name="-writeOutput"><strong>writeOutput</strong></a>(fileName, shouldAnalyze<font color="#909090">=True</font>)</dt><dd><tt>Scale&nbsp;the&nbsp;carving.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

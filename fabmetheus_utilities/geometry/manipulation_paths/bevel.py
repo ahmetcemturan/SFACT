@@ -40,21 +40,32 @@ def getBevelPath( begin, center, close, end, radius ):
 	spikeComplex = centerComplex + centerComplex - midpointComplex
 	return [ beginBevel, Vector3( spikeComplex.real, spikeComplex.imag, center.z ), endBevel ]
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get bevel loop."
 	if len(loop) < 3:
 		return [loop]
-	radius = lineation.getRadiusByPrefix( prefix, sideLength, xmlElement )
-	if radius == 0.0:
+	derivation = BevelDerivation(elementNode, prefix, sideLength)
+	if derivation.radius == 0.0:
 		return loop
 	bevelLoop = []
 	for pointIndex in xrange(len(loop)):
 		begin = loop[(pointIndex + len(loop) - 1) % len(loop)]
 		center = loop[pointIndex]
 		end = loop[(pointIndex + 1) % len(loop)]
-		bevelLoop += getBevelPath( begin, center, close, end, radius )
-	return [ euclidean.getLoopWithoutCloseSequentialPoints( close, bevelLoop ) ]
+		bevelLoop += getBevelPath(begin, center, close, end, derivation.radius)
+	return [euclidean.getLoopWithoutCloseSequentialPoints(close, bevelLoop)]
 
-def processXMLElement(xmlElement):
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return BevelDerivation(elementNode, prefix, sideLength)
+
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)
+
+
+class BevelDerivation:
+	"Class to hold bevel variables."
+	def __init__(self, elementNode, prefix, sideLength):
+		'Set defaults.'
+		self.radius = lineation.getFloatByPrefixSide(0.0, elementNode, prefix + 'radius', sideLength)

@@ -1,18 +1,21 @@
 """
 This page is in the table of contents.
-Jitter jitters the loop end position to a different place on each layer to prevent the a ridge from forming.
+This craft tool jitters the loop end position to a different place on each layer to prevent a ridge from being created on the side of the object.
 
 The jitter manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Jitter
 
 ==Operation==
-The default 'Activate Jitter' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Jitter' checkbox is on.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Jitter Over Perimeter Width===
-Default is two.
+Default: 2
 
 Defines the amount the loop ends will be jittered over the perimeter width.  A high value means the loops will start all over the place and a low value means loops will start at roughly the same place on each layer.
+
+For example if you turn jitter off and print a cube every outside shell on the cube will start from exactly the same point so you will have a visible "mark/line/seam" on the side of the cube.  Using the jitter tool you move that start point around hence you avoid that visible seam. 
+
 
 ==Examples==
 The following examples jitter the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and jitter.py.
@@ -46,7 +49,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -59,7 +62,7 @@ def getCraftedTextFromText( gcodeText, jitterRepository = None ):
 	'Jitter a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'jitter'):
 		return gcodeText
-	if jitterRepository == None:
+	if jitterRepository is None:
 		jitterRepository = settings.getReadRepository( JitterRepository() )
 	if not jitterRepository.activateJitter.value:
 		return gcodeText
@@ -153,7 +156,7 @@ class JitterSkein:
 
 	def addGcodeMovementZ(self, feedRateMinute, point, z):
 		'Add a movement to the output.'
-		if feedRateMinute == None:
+		if feedRateMinute is None:
 			feedRateMinute = self.operatingFeedRatePerMinute
 		self.distanceFeedRate.addGcodeMovementZWithFeedRate(feedRateMinute, point, z)
 
@@ -188,7 +191,7 @@ class JitterSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> jitter </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('jitter')
 				return
 			elif firstWord == '(<operatingFeedRatePerSecond>':
 				self.operatingFeedRatePerMinute = 60.0 * float(splitLine[1])
@@ -207,19 +210,19 @@ class JitterSkein:
 		firstWord = splitLine[0]
 		if firstWord == 'G1':
 			self.setFeedRateLocationLoopPath(line, splitLine)
-			if self.loopPath != None:
+			if self.loopPath is not None:
 				self.loopPath.path.append(self.oldLocation.dropAxis())
 				return
 		elif firstWord == 'M101':
-			if self.loopPath != None:
+			if self.loopPath is not None:
 				return
 		elif firstWord == 'M103':
 			self.isLoopPerimeter = False
-			if self.loopPath != None:
+			if self.loopPath is not None:
 				self.addTailoredLoopPath()
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('jitter')
-			self.layerGolden = math.fmod(self.layerGolden + 0.61803398874989479, 1.0)  # x-n*y
+			self.layerGolden = math.fmod(self.layerGolden + 0.61803398874989479, 1.0)
 			self.layerJitter = self.jitter * self.layerGolden - 0.5
 		elif firstWord == '(<loop>' or firstWord == '(<perimeter>':
 			self.isLoopPerimeter = True
@@ -229,7 +232,7 @@ class JitterSkein:
 		'Set the feedRateMinute, oldLocation and loopPath.'
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 		self.oldLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
-		if not self.isLoopPerimeter or self.loopPath != None:
+		if not self.isLoopPerimeter or self.loopPath is not None:
 			return
 		for afterIndex in xrange(self.lineIndex + 1, len(self.lines)):
 			line = self.lines[afterIndex]

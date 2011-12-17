@@ -23,35 +23,45 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 320
 
 
-def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
+def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	'Get equated geometryOutput.'
-	transformPoints(matrix.getVertexes(geometryOutput), prefix, xmlElement)
+	transformPoints(elementNode, matrix.getVertexes(geometryOutput), prefix)
 	return geometryOutput
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	'Get equated paths.'
-	transformPoints(loop, prefix, xmlElement)
+	transformPoints(elementNode, loop, prefix)
 	return [loop]
 
-def manipulateXMLElement(target, xmlElement):
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return TransformDerivation(elementNode, prefix)
+
+def manipulateElementNode(elementNode, target):
 	'Manipulate the xml element.'
-	transformTetragrid = matrix.getTransformTetragrid('', xmlElement)
-	if transformTetragrid == None:
+	derivation = TransformDerivation(elementNode, '')
+	if derivation.transformTetragrid == None:
 		print('Warning, transformTetragrid was None in transform so nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	matrix.setAttributeDictionaryToMultipliedTetragrid(transformTetragrid, target)
+	matrix.setAttributesToMultipliedTetragrid(target, derivation.transformTetragrid)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	solid.processXMLElementByFunction(manipulateXMLElement, xmlElement)
+	solid.processElementNodeByFunction(elementNode, manipulateElementNode)
 
-def transformPoints(points, prefix, xmlElement):
+def transformPoints(elementNode, points, prefix):
 	'Transform the points.'
-	transformTetragrid = matrix.getTransformTetragrid(prefix, xmlElement)
-	if transformTetragrid == None:
+	derivation = TransformDerivation(elementNode, prefix)
+	if derivation.transformTetragrid == None:
 		print('Warning, transformTetragrid was None in transform so nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	for point in points:
-		matrix.transformVector3ByMatrix(transformTetragrid, point)
+	matrix.transformVector3sByMatrix(derivation.transformTetragrid, points)
+
+
+class TransformDerivation:
+	"Class to hold transform variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.transformTetragrid = matrix.getTransformTetragrid(elementNode, prefix)

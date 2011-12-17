@@ -11,7 +11,7 @@ The widen manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Widen
 
 ==Operation==
-The default 'Activate Widen' checkbox is off.  When it is on, widen will work, when it is off, widen will not be called.
+The default 'Activate Widen' checkbox is off.  When it is on, widen will work, when it is off, nothing will be done.
 
 ==Examples==
 The following examples widen the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and widen.py.
@@ -52,7 +52,7 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/28/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -65,7 +65,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Widen the preface gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'widen'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( WidenRepository() )
 	if not repository.activateWiden.value:
 		return gcodeText
@@ -138,20 +138,20 @@ class WidenSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.layerCount = settings.LayerCount()
 		self.lineIndex = 0
-		self.rotatedLoopLayer = None
+		self.loopLayer = None
 
-	def addWiden(self, rotatedLoopLayer):
+	def addWiden(self, loopLayer):
 		'Add widen to the layer.'
-		triangle_mesh.sortLoopsInOrderOfArea(False, rotatedLoopLayer.loops)
+		triangle_mesh.sortLoopsInOrderOfArea(False, loopLayer.loops)
 		widdershinsLoops = []
 		clockwiseInsetLoops = []
-		for loopIndex in xrange(len(rotatedLoopLayer.loops)):
-			loop = rotatedLoopLayer.loops[loopIndex]
+		for loopIndex in xrange(len(loopLayer.loops)):
+			loop = loopLayer.loops[loopIndex]
 			if euclidean.isWiddershins(loop):
-				otherLoops = rotatedLoopLayer.loops[: loopIndex] + rotatedLoopLayer.loops[loopIndex + 1 :]
+				otherLoops = loopLayer.loops[: loopIndex] + loopLayer.loops[loopIndex + 1 :]
 				leftPoint = euclidean.getLeftPoint(loop)
 				if getIsPointInsideALoop(otherLoops, leftPoint):
-					self.distanceFeedRate.addGcodeFromLoop(loop, rotatedLoopLayer.z)
+					self.distanceFeedRate.addGcodeFromLoop(loop, loopLayer.z)
 				else:
 					widdershinsLoops.append(loop)
 			else:
@@ -159,11 +159,11 @@ class WidenSkein:
 #				clockwiseInsetLoop.reverse()
 #				clockwiseInsetLoops.append(clockwiseInsetLoop)
 				clockwiseInsetLoops += intercircle.getInsetLoopsFromLoop(loop, self.doublePerimeterWidth)
-				self.distanceFeedRate.addGcodeFromLoop(loop, rotatedLoopLayer.z)
+				self.distanceFeedRate.addGcodeFromLoop(loop, loopLayer.z)
 		for widdershinsLoop in widdershinsLoops:
 			outsetLoop = intercircle.getLargestInsetLoopFromLoop(widdershinsLoop, -self.doublePerimeterWidth)
 			widenedLoop = getWidenedLoop(widdershinsLoop, clockwiseInsetLoops, outsetLoop, self.perimeterWidth)
-			self.distanceFeedRate.addGcodeFromLoop(widenedLoop, rotatedLoopLayer.z)
+			self.distanceFeedRate.addGcodeFromLoop(widenedLoop, loopLayer.z)
 
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the widen gcode.'
@@ -182,7 +182,7 @@ class WidenSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addTagBracketedLine('procedureName', 'widen')
+				self.distanceFeedRate.addTagBracketedProcedure('widen')
 			elif firstWord == '(<crafting>)':
 				self.distanceFeedRate.addLine(line)
 				return
@@ -202,15 +202,15 @@ class WidenSkein:
 			self.boundary.append(location.dropAxis())
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('widen')
-			self.rotatedLoopLayer = euclidean.RotatedLoopLayer(float(splitLine[1]))
+			self.loopLayer = euclidean.LoopLayer(float(splitLine[1]))
 			self.distanceFeedRate.addLine(line)
 		elif firstWord == '(</layer>)':
-			self.addWiden( self.rotatedLoopLayer )
-			self.rotatedLoopLayer = None
+			self.addWiden( self.loopLayer )
+			self.loopLayer = None
 		elif firstWord == '(<nestedRing>)':
 			self.boundary = []
-			self.rotatedLoopLayer.loops.append( self.boundary )
-		if self.rotatedLoopLayer == None or firstWord == '(<bridgeRotation>':
+			self.loopLayer.loops.append( self.boundary )
+		if self.loopLayer is None:
 			self.distanceFeedRate.addLine(line)
 
 

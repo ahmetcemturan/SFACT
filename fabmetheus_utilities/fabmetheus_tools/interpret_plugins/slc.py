@@ -1,13 +1,10 @@
 """
 This page is in the table of contents.
-The slc.py script is an import translator plugin to get a carving from an slc file.
+The slc.py script is an import translator plugin to get a carving from an [http://rapid.lpt.fi/archives/rp-ml-1999/0713.html slc file].
 
 An import plugin is a script in the interpret_plugins folder which has the function getCarving.  It is meant to be run from the interpret tool.  To ensure that the plugin works on platforms which do not handle file capitalization properly, give the plugin a lower case name.
 
 The getCarving function takes the file name of an slc file and returns the carving.
-
-An explanation of the SLC format can be found at:
-http://rapid.lpt.fi/archives/rp-ml-1999/0713.html
 
 """
 
@@ -78,10 +75,10 @@ class SLCCarving:
 	"An slc carving."
 	def __init__(self):
 		"Add empty lists."
+		self.layerThickness = None
+		self.loopLayers = []
 		self.maximumZ = - 987654321.0
 		self.minimumZ = 987654321.0
-		self.layerThickness = None
-		self.rotatedLoopLayers = []
 	
 	def __repr__(self):
 		"Get the string representation of this carving."
@@ -89,7 +86,11 @@ class SLCCarving:
 
 	def addXML(self, depth, output):
 		"Add xml for this object."
-		xml_simple_writer.addXMLFromObjects(depth, self.rotatedLoopLayers, output)
+		xml_simple_writer.addXMLFromObjects(depth, self.loopLayers, output)
+
+	def getCarveBoundaryLayers(self):
+		"Get the  boundary layers."
+		return self.loopLayers
 
 	def getCarveCornerMaximum(self):
 		"Get the corner maximum of the vertexes."
@@ -101,19 +102,15 @@ class SLCCarving:
 
 	def getCarvedSVG(self):
 		"Get the carved svg text."
-		if len(self.rotatedLoopLayers) < 1:
+		if len(self.loopLayers) < 1:
 			return ''
 		decimalPlaces = max(0, 2 - int(math.floor(math.log10(self.layerThickness))))
 		self.svgWriter = svg_writer.SVGWriter(True, self.cornerMaximum, self.cornerMinimum, decimalPlaces, self.layerThickness)
-		return self.svgWriter.getReplacedSVGTemplate(self.fileName, 'basic', self.rotatedLoopLayers)
+		return self.svgWriter.getReplacedSVGTemplate(self.fileName, self.loopLayers, 'basic')
 
 	def getCarveLayerThickness(self):
 		"Get the layer thickness."
 		return self.layerThickness
-
-	def getCarveRotatedBoundaryLayers(self):
-		"Get the rotated boundary layers."
-		return self.rotatedLoopLayers
 
 	def getFabmetheusXML(self):
 		"Return the fabmetheus XML."
@@ -130,13 +127,13 @@ class SLCCarving:
 			numContours = getLittleEndianUnsignedLongGivenFile( file )
 			if numContours == 0xFFFFFFFF:
 				return
-			rotatedLoopLayer = euclidean.RotatedLoopLayer( minLayer )
-			self.rotatedLoopLayers.append( rotatedLoopLayer )
+			loopLayer = euclidean.LoopLayer( minLayer )
+			self.loopLayers.append( loopLayer )
 			for contourIndex in xrange( numContours ):
 				numPoints = getLittleEndianUnsignedLongGivenFile( file )
 				numGaps = getLittleEndianUnsignedLongGivenFile( file )
 				if numPoints > 2:
-					rotatedLoopLayer.loops.append( getPointsFromFile( numPoints, file ) )
+					loopLayer.loops.append( getPointsFromFile( numPoints, file ) )
 
 	def readFile( self, fileName ):
 		"Read SLC and store the layers."
@@ -149,10 +146,10 @@ class SLCCarving:
 		pslcfile.close()
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, self.maximumZ)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, self.minimumZ)
-		for rotatedLoopLayer in self.rotatedLoopLayers:
-			for loop in rotatedLoopLayer.loops:
+		for loopLayer in self.loopLayers:
+			for loop in loopLayer.loops:
 				for point in loop:
-					pointVector3 = Vector3(point.real, point.imag, rotatedLoopLayer.z)
+					pointVector3 = Vector3(point.real, point.imag, loopLayer.z)
 					self.cornerMaximum.maximize(pointVector3)
 					self.cornerMinimum.minimize(pointVector3)
 		halfLayerThickness = 0.5 * self.layerThickness
@@ -169,20 +166,16 @@ class SLCCarving:
 			sampleTableEntry = SampleTableEntry( file )
 			self.layerThickness = sampleTableEntry.layer_thickness
 
-	def setCarveInfillInDirectionOfBridge( self, infillInDirectionOfBridge ):
-		'Set the infill in direction of bridge.'
-		pass
-
-	def setCarveLayerThickness( self, layerThickness ):
-		"Set the layer thickness."
-		pass
-
 	def setCarveImportRadius( self, importRadius ):
 		"Set the import radius."
 		pass
 
 	def setCarveIsCorrectMesh( self, isCorrectMesh ):
 		"Set the is correct mesh flag."
+		pass
+
+	def setCarveLayerThickness( self, layerThickness ):
+		"Set the layer thickness."
 		pass
 
 

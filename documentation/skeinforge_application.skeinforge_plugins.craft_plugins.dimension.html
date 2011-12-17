@@ -13,16 +13,20 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.cool.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.drill.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Dimension adds Adrian's extruder distance E value to the gcode movement lines, as described at:<br>
+Dimension adds Adrian's extruder distance E value so firmware does not have to calculate it on it's own and can set the extruder speed in relation to the distance that needs to be extruded.  Some printers don't support this.  Extruder distance is described at:<br>
+ <br>
 <a href="http://blog.reprap.org/2009/05/4d-printing.html">http://blog.reprap.org/2009/05/4d-printing.html</a><br>
  <br>
 and in Erik de Bruijn's conversion script page at:<br>
+ <br>
 <a href="http://objects.reprap.org/wiki/3D-to-5D-Gcode.php">http://objects.reprap.org/wiki/3D-to-5D-Gcode.php</a><br>
  <br>
 The dimension manual page is at:<br>
+ <br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Dimension">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Dimension</a><br>
  <br>
 Nophead wrote an excellent article on how to set the filament parameters:<br>
+ <br>
 <a href="http://hydraraptor.blogspot.com/2011/03/spot-on-flow-rate.html">http://hydraraptor.blogspot.com/2011/03/spot-on-flow-rate.html</a><br>
  <br>
 <br />
@@ -35,6 +39,9 @@ Nophead wrote an excellent article on how to set the filament parameters:<br>
 &nbsp;&nbsp;<a href="#Filament">Filament</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Filament Diameter">Filament Diameter</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Filament Packing Density">Filament Packing Density</a><br />
+&nbsp;&nbsp;<a href="#Maximum E Value before Reset">Maximum E Value before Reset</a><br />
+&nbsp;&nbsp;<a href="#Minimum Travel for Retraction">Minimum Travel for Retraction</a><br />
+&nbsp;&nbsp;<a href="#Retract Within Island">Retract Within Island</a><br />
 &nbsp;&nbsp;<a href="#Retraction Distance">Retraction Distance</a><br />
 &nbsp;&nbsp;<a href="#Restart Extra Distance">Restart Extra Distance</a><br />
 <a href="#Examples">Examples</a><br />
@@ -49,7 +56,7 @@ The default 'Activate Dimension' checkbox is off.  When it is on, the functions 
 
 <a name="Extrusion Distance Format Choice" id="Extrusion Distance Format Choice"></a><h3>Extrusion Distance Format Choice</h3>
 
-Default is 'Absolute Extrusion Distance' because in Adrian's description the distance is absolute.  In future, because the relative distances are smaller than the cumulative absolute distances, hopefully the firmaware will be able to use relative distance.<br>
+Default is 'Absolute Extrusion Distance' because in Adrian's description the distance is absolute.  In future, because the relative distances are smaller than the cumulative absolute distances, hopefully the firmware will be able to use relative distance.<br>
  <br>
 <a name="Absolute Extrusion Distance" id="Absolute Extrusion Distance"></a><h4>Absolute Extrusion Distance</h4>
 
@@ -63,7 +70,9 @@ When selected, the extrusion distance output will be the extrusion distance from
 
 Default is 13.3 mm/s.<br>
  <br>
-Defines the extruder retraction feed rate.<br>
+Defines the extruder retraction feed rate.  A high value will allow the retraction operation to complete before much material oozes out.  If your extruder can handle it, this value should be much larger than your feed rate.<br>
+ <br>
+As an example, I have a feed rate of 48 mm/s and a 'Extruder Retraction Speed' of 150 mm/s.<br>
  <br>
 <a name="Filament" id="Filament"></a><h3>Filament</h3>
 
@@ -83,17 +92,37 @@ The default value is so low for ABS because ABS is relatively soft and with a pi
  <br>
 Overall, you'll have to find the optimal filament packing density by experiment.<br>
  <br>
+<a name="Maximum E Value before Reset" id="Maximum E Value before Reset"></a><h3>Maximum E Value before Reset</h3>
+
+Default: 91234.0<br>
+ <br>
+Defines the maximum E value before it is reset with the 'G92 E0' command line.  The reason it is reset only after the maximum E value is reached is because at least one firmware takes time to reset.  The problem with waiting until the E value is high before resetting is that more characters are sent.  So if your firmware takes a lot of time to reset, set this parameter to a high value, if it doesn't set this parameter to a low value or even zero.<br>
+ <br>
+<a name="Minimum Travel for Retraction" id="Minimum Travel for Retraction"></a><h3>Minimum Travel for Retraction</h3>
+
+Default: 1.0 millimeter<br>
+ <br>
+Defines the minimum distance that the extruder head has to travel from the end of one thread to the beginning of another, in order to trigger the extruder retraction.  Setting this to a high value means the extruder will retract only occasionally, setting it to a low value means the extruder will retract most of the time.<br>
+ <br>
+<a name="Retract Within Island" id="Retract Within Island"></a><h3>Retract Within Island</h3>
+
+Default is off.<br>
+ <br>
+When selected, retraction will work even when the next thread is within the same island.  If it is not selected, retraction will only work when crossing a boundary.<br>
+ <br>
 <a name="Retraction Distance" id="Retraction Distance"></a><h3>Retraction Distance</h3>
 
 Default is zero.<br>
  <br>
-Defines the retraction distance when the thread ends.<br>
+Defines the amount the extruder retracts (sucks back) the extruded filament whenever an extruder stop is commanded.  Using this seems to help prevent stringing.  e.g. If set to 10 the extruder reverses the distance required to pull back 10mm of filament.  In fact this does not actually happen but if you set this distance by trial and error you can get to a point where there is very little ooze from the extruder when it stops which is not normally the case. <br>
  <br>
 <a name="Restart Extra Distance" id="Restart Extra Distance"></a><h3>Restart Extra Distance</h3>
 
 Default is zero.<br>
  <br>
 Defines the restart extra distance when the thread restarts.  The restart distance will be the retraction distance plus the restart extra distance.<br>
+ <br>
+If this is greater than zero when the extruder starts this distance is added to the retract value giving extra filament.  It can be a negative value in which case it is subtracted from the retraction distance.  On some Repstrap machines a negative value can stop the build up of plastic that can occur at the start of perimeters.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>

@@ -49,33 +49,44 @@ globalExecutionOrder = 200
 # M[:3, :3] -= 2.0 * numpy.outer(normal, normal)
 # M[:3, 3] = (2.0 * numpy.dot(point[:3], normal)) * normal
 # return M
-def flipPoints(points, prefix, xmlElement):
+def flipPoints(elementNode, points, prefix):
 	'Flip the points.'
-	origin = evaluate.getVector3ByPrefix(Vector3(), prefix + 'origin', xmlElement)
-	axis = evaluate.getVector3ByPrefix(Vector3(1.0, 0.0, 0.0), prefix + 'axis', xmlElement).getNormalized()
+	derivation = FlipDerivation(elementNode, prefix)
 	for point in points:
-		point.setToVector3(point - 2.0 * axis.dot(point - origin) * axis)
+		point.setToVector3(point - 2.0 * derivation.axis.dot(point - derivation.origin) * derivation.axis)
 
-def getFlippedLoop(loop, prefix, xmlElement):
+def getFlippedLoop(elementNode, loop, prefix):
 	'Get flipped loop.'
-	flipPoints(loop, prefix, xmlElement)
-	if getShouldReverse(prefix, xmlElement):
+	flipPoints(elementNode, loop, prefix)
+	if getShouldReverse(elementNode, prefix):
 		loop.reverse()
 	return loop
 
-def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
+def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	'Get equated geometryOutput.'
-	flipPoints(matrix.getVertexes(geometryOutput), prefix, xmlElement)
+	flipPoints(elementNode, matrix.getVertexes(geometryOutput), prefix)
 	return geometryOutput
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	'Get flipped paths.'
-	return [getFlippedLoop(loop, prefix, xmlElement)]
+	return [getFlippedLoop(elementNode, loop, prefix)]
 
-def getShouldReverse(prefix, xmlElement):
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return FlipDerivation(elementNode, prefix)
+
+def getShouldReverse(elementNode, prefix):
 	'Determine if the loop should be reversed.'
-	return evaluate.getEvaluatedBoolean(True, prefix + 'reverse', xmlElement)
+	return evaluate.getEvaluatedBoolean(True, elementNode, prefix + 'reverse')
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	solid.processXMLElementByFunctions(getManipulatedGeometryOutput, getManipulatedPaths, xmlElement)
+	solid.processElementNodeByFunctionPair(elementNode, getManipulatedGeometryOutput, getManipulatedPaths)
+
+
+class FlipDerivation:
+	"Class to hold flip variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.origin = evaluate.getVector3ByPrefix(Vector3(), elementNode, prefix + 'origin')
+		self.axis = evaluate.getVector3ByPrefix(Vector3(1.0, 0.0, 0.0), elementNode, prefix + 'axis').getNormalized()

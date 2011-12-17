@@ -1,6 +1,8 @@
 """
 Solid.
 
+Solid has some of the same functions as lineation, however you can not define geometry by dictionary string in the target because there is no getGeometryOutputByArguments function.  You would have to define a shape by making the shape element.  Also, you can not define geometry by 'get<Creation Name>, because the target only gets element.  Instead you would have the shape element, and set the target in solid to that element.
+
 """
 
 from __future__ import absolute_import
@@ -22,116 +24,122 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getGeometryOutput(derivation, xmlElement):
-	'Get geometry output from paths.'
-	if derivation == None:
-		derivation = SolidDerivation(xmlElement)
-	geometryOutput = []
-	for path in derivation.target:
-		sideLoop = SideLoop(path)
-		geometryOutput += getGeometryOutputByLoop( sideLoop, xmlElement )
-	return geometryOutput
-
-def getGeometryOutputByArguments(arguments, xmlElement):
-	'Get triangle mesh from attribute dictionary by arguments.'
-	return getGeometryOutput(None, xmlElement)
-#
-#def getGeometryOutputByLoop( sideLoop, xmlElement ):
-#	'Get geometry output by side loop.'
-#	sideLoop.rotate(xmlElement)
-#	return getUnpackedLoops( getGeometryOutputByManipulation( sideLoop, xmlElement ) )
-#
-#def processXMLElement(xmlElement):
-#	'Process the xml element.'
-#	processXMLElementByGeometry(getGeometryOutput(None, xmlElement), xmlElement)
-
-def getGeometryOutputByFunction(geometryFunction, xmlElement):
+def getGeometryOutputByFunction(elementNode, geometryFunction):
 	'Get geometry output by manipulationFunction.'
-	if xmlElement.xmlObject == None:
+	if elementNode.xmlObject is None:
 		print('Warning, there is no object in getGeometryOutputByFunction in solid for:')
-		print(xmlElement)
+		print(elementNode)
 		return None
-	geometryOutput = xmlElement.xmlObject.getGeometryOutput()
-	if geometryOutput == None:
+	geometryOutput = elementNode.xmlObject.getGeometryOutput()
+	if geometryOutput is None:
 		print('Warning, there is no geometryOutput in getGeometryOutputByFunction in solid for:')
-		print(xmlElement)
+		print(elementNode)
 		return None
-	return geometryFunction(geometryOutput, '', xmlElement)
+	return geometryFunction(elementNode, geometryOutput, '')
 
-def getGeometryOutputByManipulation(geometryOutput, xmlElement):
+def getGeometryOutputByManipulation(elementNode, geometryOutput):
 	'Get geometryOutput manipulated by the plugins in the manipulation shapes & solids folders.'
-	xmlProcessor = xmlElement.getXMLProcessor()
-	matchingPlugins = getSolidMatchingPlugins(xmlElement)
+	xmlProcessor = elementNode.getXMLProcessor()
+	matchingPlugins = getSolidMatchingPlugins(elementNode)
 	matchingPlugins.sort(evaluate.compareExecutionOrderAscending)
 	for matchingPlugin in matchingPlugins:
 		prefix = matchingPlugin.__name__.replace('_', '') + '.'
-		geometryOutput = matchingPlugin.getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement)
+		geometryOutput = matchingPlugin.getManipulatedGeometryOutput(elementNode, geometryOutput, prefix)
 	return geometryOutput
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return SolidDerivation(xmlElement)
+	return SolidDerivation(elementNode)
 
-def getSolidMatchingPlugins(xmlElement):
+def getSolidMatchingPlugins(elementNode):
 	'Get solid plugins in the manipulation matrix, shapes & solids folders.'
-	xmlProcessor = xmlElement.getXMLProcessor()
-	matchingPlugins = evaluate.getMatchingPlugins(xmlProcessor.manipulationMatrixDictionary, xmlElement)
-	return matchingPlugins + evaluate.getMatchingPlugins(xmlProcessor.manipulationShapeDictionary, xmlElement)
+	xmlProcessor = elementNode.getXMLProcessor()
+	matchingPlugins = evaluate.getMatchingPlugins(elementNode, xmlProcessor.manipulationMatrixDictionary)
+	return matchingPlugins + evaluate.getMatchingPlugins(elementNode, xmlProcessor.manipulationShapeDictionary)
 
-def processArchiveRemoveSolid(geometryOutput, xmlElement):
+def processArchiveRemoveSolid(elementNode, geometryOutput):
 	'Process the target by the manipulationFunction.'
-	solidMatchingPlugins = getSolidMatchingPlugins(xmlElement)
-	if len(solidMatchingPlugins) < 1:
-		xmlElement.parentNode.xmlObject.archivableObjects.append(xmlElement.xmlObject)
+	solidMatchingPlugins = getSolidMatchingPlugins(elementNode)
+	if len(solidMatchingPlugins) == 0:
+		elementNode.parentNode.xmlObject.archivableObjects.append(elementNode.xmlObject)
+		matrix.getBranchMatrixSetElementNode(elementNode)
 		return
-	processXMLElementByGeometry(getGeometryOutputByManipulation(geometryOutput, xmlElement), xmlElement)
-	xmlElement.removeFromIDNameParent()
-	matrix.getBranchMatrixSetXMLElement(xmlElement)
+	processElementNodeByGeometry(elementNode, getGeometryOutputByManipulation(elementNode, geometryOutput))
 
-def processTargetByFunctions(geometryFunction, pathFunction, target):
-	'Process the target by the manipulationFunction.'
+def processElementNode(elementNode):
+	'Process the xml element.'
+	processElementNodeByDerivation(None, elementNode)
+
+def processElementNodeByDerivation(derivation, elementNode):
+	'Process the xml element by derivation.'
+	if derivation == None:
+		derivation = SolidDerivation(elementNode)
+	elementAttributesCopy = elementNode.attributes.copy()
+	for target in derivation.targets:
+		targetAttributesCopy = target.attributes.copy()
+		target.attributes = elementAttributesCopy
+		processTarget(target)
+		target.attributes = targetAttributesCopy
+
+def processElementNodeByFunction(elementNode, manipulationFunction):
+	'Process the xml element.'
+	if 'target' not in elementNode.attributes:
+		print('Warning, there was no target in processElementNodeByFunction in solid for:')
+		print(elementNode)
+		return
+	target = evaluate.getEvaluatedLinkValue(elementNode, str(elementNode.attributes['target']).strip())
+	if target.__class__.__name__ == 'ElementNode':
+		manipulationFunction(elementNode, target)
+		return
+	path.convertElementNode(elementNode, target)
+	manipulationFunction(elementNode, elementNode)
+
+def processElementNodeByFunctionPair(elementNode, geometryFunction, pathFunction):
+	'Process the xml element by the appropriate manipulationFunction.'
+	elementAttributesCopy = elementNode.attributes.copy()
+	targets = evaluate.getElementNodesByKey(elementNode, 'target')
+	for target in targets:
+		targetAttributesCopy = target.attributes.copy()
+		target.attributes = elementAttributesCopy
+		processTargetByFunctionPair(geometryFunction, pathFunction, target)
+		target.attributes = targetAttributesCopy
+
+def processElementNodeByGeometry(elementNode, geometryOutput):
+	'Process the xml element by geometryOutput.'
+	if geometryOutput != None:
+		elementNode.getXMLProcessor().convertElementNode(elementNode, geometryOutput)
+
+def processTarget(target):
+	'Process the target.'
 	if target.xmlObject == None:
+		print('Warning, there is no object in processElementNode in solid for:')
+		print(target)
+		return
+	geometryOutput = target.xmlObject.getGeometryOutput()
+	if geometryOutput == None:
+		print('Warning, there is no geometryOutput in processElementNode in solid for:')
+		print(target.xmlObject)
+		return
+	geometryOutput = getGeometryOutputByManipulation(target, geometryOutput)
+	lineation.removeChildNodesFromElementObject(target)
+	target.getXMLProcessor().convertElementNode(target, geometryOutput)
+
+def processTargetByFunctionPair(geometryFunction, pathFunction, target):
+	'Process the target by the manipulationFunction.'
+	if target.xmlObject is None:
+		print('Warning, there is no object in processTargetByFunctions in solid for:')
+		print(target)
 		return
 	if len(target.xmlObject.getPaths()) > 0:
 		lineation.processTargetByFunction(pathFunction, target)
 		return
-	geometryOutput = getGeometryOutputByFunction(geometryFunction, target)
+	geometryOutput = getGeometryOutputByFunction(target, geometryFunction)
 	lineation.removeChildNodesFromElementObject(target)
-	xmlProcessor = target.getXMLProcessor()
-	xmlProcessor.convertXMLElement(geometryOutput, target)
-
-def processXMLElementByFunction(manipulationFunction, xmlElement):
-	'Process the xml element.'
-	if 'target' not in xmlElement.attributeDictionary:
-		print('Warning, there was no target in processXMLElementByFunction in solid for:')
-		print(xmlElement)
-		return
-	target = evaluate.getEvaluatedLinkValue(str(xmlElement.attributeDictionary['target']).strip(), xmlElement)
-	if target.__class__.__name__ == 'XMLElement':
-		manipulationFunction(target, xmlElement)
-		return
-	path.convertXMLElement(target, xmlElement)
-	manipulationFunction(xmlElement, xmlElement)
-
-def processXMLElementByFunctions(geometryFunction, pathFunction, xmlElement):
-	'Process the xml element by the appropriate manipulationFunction.'
-	targets = evaluate.getXMLElementsByKey('target', xmlElement)
-	for target in targets:
-		processTargetByFunctions(geometryFunction, pathFunction, target)
-
-def processXMLElementByGeometry(geometryOutput, xmlElement):
-	'Process the xml element by geometryOutput.'
-	if geometryOutput == None:
-		return
-	xmlElement.getXMLProcessor().convertXMLElement(geometryOutput, xmlElement)
+	target.getXMLProcessor().convertElementNode(target, geometryOutput)
 
 
 class SolidDerivation:
 	'Class to hold solid variables.'
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.target = evaluate.getTransformedPathsByKey([], 'target', xmlElement)
-
-	def __repr__(self):
-		'Get the string representation of this SolidDerivation.'
-		return str(self.__dict__)
+		self.targets = evaluate.getElementNodesByKey(elementNode, 'target')

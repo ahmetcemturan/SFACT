@@ -35,6 +35,10 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
+def getCarving(fileName):
+	"Get the carving for the gts file."
+	return getFromGNUTriangulatedSurfaceText( archive.getFileText(fileName), triangle_mesh.TriangleMesh() )
+
 def getFromGNUTriangulatedSurfaceText( gnuTriangulatedSurfaceText, triangleMesh ):
 	"Initialize from a GNU Triangulated Surface Text."
 	if gnuTriangulatedSurfaceText == '':
@@ -74,7 +78,3 @@ def getFromGNUTriangulatedSurfaceText( gnuTriangulatedSurfaceText, triangleMesh 
 			edgeIndexes.append( int(word) - 1 )
 		triangleMesh.faces.append( face.Face().getFromEdgeIndexes( edgeIndexes, triangleMesh.edges, faceIndex ) )
 	return triangleMesh
-
-def getCarving(fileName):
-	"Get the carving for the gts file."
-	return getFromGNUTriangulatedSurfaceText( archive.getFileText(fileName), triangle_mesh.TriangleMesh() )

@@ -3,10 +3,14 @@
 This page is in the table of contents.
 Scale scales the carving to compensate for shrinkage after the extrusion has cooled.
 
+The scale manual page is at:
+
+http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Scale
+
 It is best to only change the XY Plane Scale, because that does not affect other variables.  If you choose to change the Z Axis Scale, that increases the layer thickness so you must increase the feed rate in speed by the same amount and maybe some other variables which depend on layer thickness.
 
 ==Operation==
-The default 'Activate Scale' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Scale' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===XY Plane Scale===
@@ -17,7 +21,7 @@ Defines the amount the xy plane of the carving will be scaled.  The xy coordinat
 ===Z Axis Scale===
 Default is one.
 
-Defines the amount the z axis of the carving will be scaled.  The default is one because changing this changes many variables related to the layer thickness.  For example, the feedRate should be multiplied by the Z Axis Scale because the layers would be farther apart..
+Defines the amount the z axis of the carving will be scaled.  The default is one because changing this changes many variables related to the layer thickness.  For example, the feedRate should be multiplied by the Z Axis Scale because the layers would be farther apart.
 
 ===SVG Viewer===
 Default is webbrowser.
@@ -47,7 +51,6 @@ from datetime import date
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 from fabmetheus_utilities.svg_reader import SVGReader
 from fabmetheus_utilities.vector3 import Vector3
-from fabmetheus_utilities.xml_simple_reader import XMLSimpleReader
 from fabmetheus_utilities import archive
 from fabmetheus_utilities import euclidean
 from fabmetheus_utilities import gcodec
@@ -63,7 +66,7 @@ import sys
 import time
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -76,7 +79,7 @@ def getCraftedTextFromText(fileName, svgText, repository=None):
 	"Scale and convert an svgText."
 	if gcodec.isProcedureDoneOrFileIsEmpty(svgText, 'scale'):
 		return svgText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(ScaleRepository())
 	if repository.activateScale.value:
 		return ScaleSkein().getCraftedGcode(fileName, repository, svgText)
@@ -86,12 +89,12 @@ def getNewRepository():
 	'Get new repository.'
 	return ScaleRepository()
 
-def setLoopLayerScale(rotatedLoopLayer, xyPlaneScale, zAxisScale):
+def setLoopLayerScale(loopLayer, xyPlaneScale, zAxisScale):
 	"Set the slice element scale."
-	for loop in rotatedLoopLayer.loops:
+	for loop in loopLayer.loops:
 		for pointIndex in xrange(len(loop)):
 			loop[pointIndex] *= xyPlaneScale
-	rotatedLoopLayer.z *= zAxisScale
+	loopLayer.z *= zAxisScale
 
 def writeOutput(fileName, shouldAnalyze=True):
 	'Scale the carving.'
@@ -104,9 +107,10 @@ class ScaleRepository:
 		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.scale.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName(fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Scale', self, '')
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Scale')
 		self.activateScale = settings.BooleanSetting().getFromValue('Activate Scale to finetune print size (try to find the fault somewhere else..):', self, False)
-		self.xyPlaneScale = settings.FloatSpin().getFromValue(0.90, 'XY Plane Scale (ratio):', self, 1.10, 1.00)
-		self.zAxisScale = settings.FloatSpin().getFromValue(0.90, 'Z Axis Scale (ratio):', self, 1.10, 1.0)
+		self.xyPlaneScale = settings.FloatSpin().getFromValue(0.99, 'XY Plane Scale (ratio):', self, 1.03, 1.01)
+		self.zAxisScale = settings.FloatSpin().getFromValue(0.99, 'Z Axis Scale (ratio):', self, 1.02, 1.0)
 		self.svgViewer = settings.StringSetting().getFromValue('SVG Viewer:', self, 'webbrowser')
 		self.executeTitle = 'Scale'
 
@@ -123,7 +127,7 @@ class ScaleSkein:
 		"Parse svgText and store the scale svgText."
 		svgReader = SVGReader()
 		svgReader.parseSVG('', svgText)
-		if svgReader.sliceDictionary == None:
+		if svgReader.sliceDictionary is None:
 			print('Warning, nothing will be done because the sliceDictionary could not be found getCraftedGcode in preface.')
 			return ''
 		xyPlaneScale = repository.xyPlaneScale.value
@@ -131,12 +135,12 @@ class ScaleSkein:
 		decimalPlacesCarried = int(svgReader.sliceDictionary['decimalPlacesCarried'])
 		layerThickness = zAxisScale * float(svgReader.sliceDictionary['layerThickness'])
 		perimeterWidth = float(svgReader.sliceDictionary['perimeterWidth'])
-		rotatedLoopLayers = svgReader.rotatedLoopLayers
-		for rotatedLoopLayer in rotatedLoopLayers:
-			setLoopLayerScale(rotatedLoopLayer, xyPlaneScale, zAxisScale)
+		loopLayers = svgReader.loopLayers
+		for loopLayer in loopLayers:
+			setLoopLayerScale(loopLayer, xyPlaneScale, zAxisScale)
 		cornerMaximum = Vector3(-912345678.0, -912345678.0, -912345678.0)
 		cornerMinimum = Vector3(912345678.0, 912345678.0, 912345678.0)
-		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, rotatedLoopLayers)
+		svg_writer.setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, loopLayers)
 		svgWriter = svg_writer.SVGWriter(
 			True,
 			cornerMaximum,
@@ -144,9 +148,9 @@ class ScaleSkein:
 			decimalPlacesCarried,
 			layerThickness,
 			perimeterWidth)
-		commentElement = svg_writer.getCommentElement(svgReader.root)
+		commentElement = svg_writer.getCommentElement(svgReader.documentElement)
 		procedureNameString = svgReader.sliceDictionary['procedureName'] + ',scale'
-		return svgWriter.getReplacedSVGTemplate(fileName, procedureNameString, rotatedLoopLayers, commentElement)
+		return svgWriter.getReplacedSVGTemplate(fileName, loopLayers, procedureNameString, commentElement)
 
 
 def main():

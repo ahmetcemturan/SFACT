@@ -13,14 +13,11 @@
 <a href="fabmetheus_utilities.fabmetheus_tools.interpret_plugins.obj.html">Previous</a> / <a href="fabmetheus_utilities.fabmetheus_tools.interpret_plugins.stl.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-The slc.py script is an import translator plugin to get a carving from an slc file.<br>
+The slc.py script is an import translator plugin to get a carving from an <a href="http://rapid.lpt.fi/archives/rp-ml-1999/0713.html">slc file</a>.<br>
  <br>
 An import plugin is a script in the interpret_plugins folder which has the function getCarving.  It is meant to be run from the interpret tool.  To ensure that the plugin works on platforms which do not handle file capitalization properly, give the plugin a lower case name.<br>
  <br>
-The getCarving function takes the file name of an slc file and returns the carving.<br>
- <br>
-An explanation of the SLC format can be found at:<br>
-<a href="http://rapid.lpt.fi/archives/rp-ml-1999/0713.html">http://rapid.lpt.fi/archives/rp-ml-1999/0713.html</a></tt>
+The getCarving function takes the file name of an slc file and returns the carving.</tt>
 <br />
 <br />
 <p>
@@ -68,13 +65,13 @@ An explanation of the SLC format can be found at:<br>
 
 <dl><dt><a name="SLCCarving-addXML"><strong>addXML</strong></a>(self, depth, output)</dt><dd><tt>Add&nbsp;xml&nbsp;for&nbsp;this&nbsp;object.</tt></dd></dl>
 
+<dl><dt><a name="SLCCarving-getCarveBoundaryLayers"><strong>getCarveBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;&nbsp;boundary&nbsp;layers.</tt></dd></dl>
+
 <dl><dt><a name="SLCCarving-getCarveCornerMaximum"><strong>getCarveCornerMaximum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;maximum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="SLCCarving-getCarveCornerMinimum"><strong>getCarveCornerMinimum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;minimum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="SLCCarving-getCarveLayerThickness"><strong>getCarveLayerThickness</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;layer&nbsp;thickness.</tt></dd></dl>
-
-<dl><dt><a name="SLCCarving-getCarveRotatedBoundaryLayers"><strong>getCarveRotatedBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;rotated&nbsp;boundary&nbsp;layers.</tt></dd></dl>
 
 <dl><dt><a name="SLCCarving-getCarvedSVG"><strong>getCarvedSVG</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;carved&nbsp;svg&nbsp;text.</tt></dd></dl>
 
@@ -89,8 +86,6 @@ An explanation of the SLC format can be found at:<br>
 <dl><dt><a name="SLCCarving-readTableEntry"><strong>readTableEntry</strong></a>(self, file)</dt><dd><tt>Read&nbsp;in&nbsp;the&nbsp;sampling&nbsp;table&nbsp;section.&nbsp;It&nbsp;contains&nbsp;a&nbsp;table&nbsp;length&nbsp;(byte)&nbsp;and&nbsp;the&nbsp;table&nbsp;entries.</tt></dd></dl>
 
 <dl><dt><a name="SLCCarving-setCarveImportRadius"><strong>setCarveImportRadius</strong></a>(self, importRadius)</dt><dd><tt>Set&nbsp;the&nbsp;import&nbsp;radius.</tt></dd></dl>
-
-<dl><dt><a name="SLCCarving-setCarveInfillInDirectionOfBridge"><strong>setCarveInfillInDirectionOfBridge</strong></a>(self, infillInDirectionOfBridge)</dt><dd><tt>Set&nbsp;the&nbsp;infill&nbsp;in&nbsp;direction&nbsp;of&nbsp;bridge.</tt></dd></dl>
 
 <dl><dt><a name="SLCCarving-setCarveIsCorrectMesh"><strong>setCarveIsCorrectMesh</strong></a>(self, isCorrectMesh)</dt><dd><tt>Set&nbsp;the&nbsp;is&nbsp;correct&nbsp;mesh&nbsp;flag.</tt></dd></dl>
 

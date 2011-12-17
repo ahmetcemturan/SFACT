@@ -48,6 +48,17 @@ def addFacesGivenText( objText, triangleMesh ):
 		elif firstWord == 'f':
 			triangleMesh.faces.append( getFaceGivenLine( line, triangleMesh ) )
 
+def getCarving(fileName=''):
+	"Get the triangle mesh for the obj file."
+	if fileName == '':
+		return None
+	objText = archive.getFileText(fileName, True, 'rb')
+	if objText == '':
+		return None
+	triangleMesh = triangle_mesh.TriangleMesh()
+	addFacesGivenText(objText, triangleMesh)
+	return triangleMesh
+
 def getFaceGivenLine( line, triangleMesh ):
 	"Add face given line index and lines."
 	faceGivenLine = face.Face()
@@ -60,17 +71,6 @@ def getFaceGivenLine( line, triangleMesh ):
 		vertexIndex = int( vertexStringSplit[0] ) - 1
 		faceGivenLine.vertexIndexes.append(vertexIndex)
 	return faceGivenLine
-
-def getCarving(fileName=''):
-	"Get the triangle mesh for the obj file."
-	if fileName == '':
-		return None
-	objText = archive.getFileText(fileName, True, 'rb')
-	if objText == '':
-		return None
-	triangleMesh = triangle_mesh.TriangleMesh()
-	addFacesGivenText(objText, triangleMesh)
-	return triangleMesh
 
 def getVertexGivenLine(line):
 	"Get vertex given obj vertex line."

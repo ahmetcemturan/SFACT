@@ -7,6 +7,7 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
+from skeinforge_application.skeinforge_utilities import skeinforge_craft
 import math
 
 
@@ -16,129 +17,152 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def _getAccessibleAttribute(attributeName, xmlElement):
+def _getAccessibleAttribute(attributeName, elementNode):
 	'Get the accessible attribute.'
 	if attributeName in globalGetAccessibleAttributeSet:
-		return getattr(Setting(xmlElement), attributeName, None)
+		return getattr(Setting(elementNode), attributeName, None)
 	return None
 
-def getCascadeFloatWithoutSelf(defaultFloat, key, xmlElement):
-	'Get the importRadius.'
-	if key in xmlElement.attributeDictionary:
-		value = xmlElement.attributeDictionary[key]
+def getCascadeFloatWithoutSelf(defaultFloat, elementNode, key):
+	'Get the cascade float.'
+	if key in elementNode.attributes:
+		value = elementNode.attributes[key]
 		functionName = 'get' + key[0].upper() + key[1 :]
 		if functionName in value:
-			if xmlElement.parentNode == None:
+			if elementNode.parentNode is None:
 				return defaultFloat
 			else:
-				xmlElement = xmlElement.parentNode
-	return xmlElement.getCascadeFloat(defaultFloat, key)
+				elementNode = elementNode.parentNode
+	return elementNode.getCascadeFloat(defaultFloat, key)
 
-def getImportRadius(xmlElement):
+def getImportRadius(elementNode):
 	'Get the importRadius.'
-	if xmlElement == None:
-		return 0.6
-	return getCascadeFloatWithoutSelf(1.5 * getLayerThickness(xmlElement), 'importRadius', xmlElement)
+	if elementNode is None:
+		return 0.36
+	preferences = skeinforge_craft.getCraftPreferences('carve')
+	importCoarseness = skeinforge_craft.getCraftValue('Import Coarseness', preferences)
+	importCoarseness = getCascadeFloatWithoutSelf(importCoarseness, elementNode, 'importCoarseness')
+	layerThickness = skeinforge_craft.getCraftValue('Layer Thickness', preferences)
+	layerThickness = getCascadeFloatWithoutSelf(layerThickness, elementNode, 'layerThickness')
+	perimeterWidthOverThickness = skeinforge_craft.getCraftValue('Perimeter Width over Thickness', preferences)
+	perimeterWidthOverThickness = getCascadeFloatWithoutSelf(perimeterWidthOverThickness, elementNode, 'perimeterWidthOverThickness')
+	return getCascadeFloatWithoutSelf(0.5 * importCoarseness * layerThickness * perimeterWidthOverThickness, elementNode, 'importRadius')
 
-def getInteriorOverhangAngle(xmlElement):
+def getInteriorOverhangAngle(elementNode):
 	'Get the interior overhang support angle in degrees.'
-	return getCascadeFloatWithoutSelf(30.0, 'interiorOverhangAngle', xmlElement)
+	return getCascadeFloatWithoutSelf(30.0, elementNode, 'interiorOverhangAngle')
 
-def getInteriorOverhangRadians(xmlElement):
+def getInteriorOverhangRadians(elementNode):
 	'Get the interior overhang support angle in radians.'
-	return math.radians(getInteriorOverhangAngle(xmlElement))
+	return math.radians(getInteriorOverhangAngle(elementNode))
 
-def getLayerThickness(xmlElement):
+def getLayerThickness(elementNode):
 	'Get the layer thickness.'
-	if xmlElement == None:
+	if elementNode is None:
 		return 0.4
-	return getCascadeFloatWithoutSelf(0.4, 'layerThickness', xmlElement)
+	preferences = skeinforge_craft.getCraftPreferences('carve')
+	return getCascadeFloatWithoutSelf(skeinforge_craft.getCraftValue('Layer Thickness', preferences), elementNode, 'layerThickness')
 
-def getOverhangSpan(xmlElement):
-	'Get the overhang span.'
-	return getCascadeFloatWithoutSelf(2.0 * getLayerThickness(xmlElement), 'overhangSpan', xmlElement)
-
-def getOverhangAngle(xmlElement):
+def getOverhangAngle(elementNode):
 	'Get the overhang support angle in degrees.'
-	return getCascadeFloatWithoutSelf(45.0, 'overhangAngle', xmlElement)
+	return getCascadeFloatWithoutSelf(45.0, elementNode, 'overhangAngle')
 
-def getOverhangRadians(xmlElement):
+def getOverhangRadians(elementNode):
 	'Get the overhang support angle in radians.'
-	return math.radians(getOverhangAngle(xmlElement))
+	return math.radians(getOverhangAngle(elementNode))
 
-def getPrecision(xmlElement):
+def getOverhangSpan(elementNode):
+	'Get the overhang span.'
+	return getCascadeFloatWithoutSelf(2.0 * getLayerThickness(elementNode), elementNode, 'overhangSpan')
+
+def getPerimeterWidth(elementNode):
+	'Get the perimeter width.'
+	if elementNode is None:
+		return 0.72
+	preferences = skeinforge_craft.getCraftPreferences('carve')
+	layerThickness = skeinforge_craft.getCraftValue('Layer Thickness', preferences)
+	layerThickness = getCascadeFloatWithoutSelf(layerThickness, elementNode, 'layerThickness')
+	perimeterWidthOverThickness = skeinforge_craft.getCraftValue('Perimeter Width over Thickness', preferences)
+	perimeterWidthOverThickness = getCascadeFloatWithoutSelf(perimeterWidthOverThickness, elementNode, 'perimeterWidthOverThickness')
+	return getCascadeFloatWithoutSelf(perimeterWidthOverThickness, elementNode, 'perimeterWidth')
+
+def getPrecision(elementNode):
 	'Get the cascade precision.'
-	return getCascadeFloatWithoutSelf(0.2 * getLayerThickness(xmlElement), 'precision', xmlElement)
+	return getCascadeFloatWithoutSelf(0.2 * getLayerThickness(elementNode), elementNode, 'precision')
 
-def getSheetThickness(xmlElement):
+def getSheetThickness(elementNode):
 	'Get the sheet thickness.'
-	return getCascadeFloatWithoutSelf(3.0, 'sheetThickness', xmlElement)
+	return getCascadeFloatWithoutSelf(3.0, elementNode, 'sheetThickness')
 
-def getTwistPrecision(xmlElement):
+def getTwistPrecision(elementNode):
 	'Get the twist precision in degrees.'
-	return getCascadeFloatWithoutSelf(5.0, 'twistPrecision', xmlElement)
+	return getCascadeFloatWithoutSelf(5.0, elementNode, 'twistPrecision')
 
-def getTwistPrecisionRadians(xmlElement):
+def getTwistPrecisionRadians(elementNode):
 	'Get the twist precision in radians.'
-	return math.radians(getTwistPrecision(xmlElement))
+	return math.radians(getTwistPrecision(elementNode))
 
 
 class Setting:
-	'Class to get handle xmlElements in a setting.'
-	def __init__(self, xmlElement):
+	'Class to get handle elementNodes in a setting.'
+	def __init__(self, elementNode):
 		'Initialize.'
-		self.xmlElement = xmlElement
+		self.elementNode = elementNode
 
 	def __repr__(self):
 		'Get the string representation of this Setting.'
-		return self.xmlElement
+		return self.elementNode
 
 	def getImportRadius(self):
 		'Get the importRadius.'
-		return getImportRadius(self.xmlElement)
+		return getImportRadius(self.elementNode)
 
 	def getInteriorOverhangAngle(self):
 		'Get the interior overhang support angle in degrees.'
-		return getInteriorOverhangAngle(self.xmlElement)
+		return getInteriorOverhangAngle(self.elementNode)
 
 	def getInteriorOverhangRadians(self):
 		'Get the interior overhang support angle in radians.'
-		return getInteriorOverhangRadians(self.xmlElement)
+		return getInteriorOverhangRadians(self.elementNode)
 
 	def getLayerThickness(self):
 		'Get the layer thickness.'
-		return getLayerThickness(self.xmlElement)
-
-	def getOverhangSpan(self):
-		'Get the overhang span.'
-		return getOverhangSpan(self.xmlElement)
+		return getLayerThickness(self.elementNode)
 
 	def getOverhangAngle(self):
 		'Get the overhang support angle in degrees.'
-		return getOverhangAngle(self.xmlElement)
+		return getOverhangAngle(self.elementNode)
 
 	def getOverhangRadians(self):
 		'Get the overhang support angle in radians.'
-		return getOverhangRadians(self.xmlElement)
+		return getOverhangRadians(self.elementNode)
+
+	def getOverhangSpan(self):
+		'Get the overhang span.'
+		return getOverhangSpan(self.elementNode)
+
+	def getPerimeterWidth(self):
+		'Get the perimeter width.'
+		return getPerimeterWidth(self.elementNode)
 
 	def getPrecision(self):
 		'Get the cascade precision.'
-		return getPrecision(self.xmlElement)
+		return getPrecision(self.elementNode)
 
 	def getSheetThickness(self):
 		'Get the sheet thickness.'
-		return getSheetThickness(self.xmlElement)
+		return getSheetThickness(self.elementNode)
 
 	def getTwistPrecision(self):
 		'Get the twist precision in degrees.'
-		return getTwistPrecision(self.xmlElement)
+		return getTwistPrecision(self.elementNode)
 
 	def getTwistPrecisionRadians(self):
 		'Get the twist precision in radians.'
-		return getTwistPrecisionRadians(self.xmlElement)
+		return getTwistPrecisionRadians(self.elementNode)
 
 
-globalAccessibleAttributes = 'getImportRadius getInteriorOverhangAngle getInteriorOverhangRadians'.split()
-globalAccessibleAttributes += 'getLayerThickness getOverhangSpan getOverhangAngle getOverhangRadians'.split()
-globalAccessibleAttributes += 'getPrecision getSheetThickness getTwistPrecision getTwistPrecisionRadians'.split()
-globalGetAccessibleAttributeSet = set(globalAccessibleAttributes)
+globalAccessibleAttributeDictionary = 'getImportRadius getInteriorOverhangAngle getInteriorOverhangRadians'.split()
+globalAccessibleAttributeDictionary += 'getLayerThickness getOverhangSpan getOverhangAngle getOverhangRadians'.split()
+globalAccessibleAttributeDictionary += 'getPerimeterWidth getPrecision getSheetThickness getTwistPrecision getTwistPrecisionRadians'.split()
+globalGetAccessibleAttributeSet = set(globalAccessibleAttributeDictionary)

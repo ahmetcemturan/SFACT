@@ -6,7 +6,7 @@ The fillet manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Fillet
 
 ==Operation==
-The default 'Activate Fillet' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Fillet' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Fillet Procedure Choice===
@@ -24,10 +24,10 @@ When selected, the corners will be filleted with an arc composed of several segm
 ====Bevel====
 When selected, the corners will be beveled.
 
-===Corner Feed Rate over Operating Feed Rate===
-Default is one.
+===Corner Feed Rate Multiplier===
+Default: 1.0
 
-Defines the ratio of the feed rate in corners over the operating feed rate.  With a high value the extruder will move quickly in corners, accelerating quickly and leaving a thin extrusion.  With a low value, the extruder will move slowly in corners, accelerating gently and leaving a thick extrusion.
+Defines the ratio of the feed rate in corners over the original feed rate.  With a high value the extruder will move quickly in corners, accelerating quickly and leaving a thin extrusion.  With a low value, the extruder will move slowly in corners, accelerating gently and leaving a thick extrusion.
 
 ===Fillet Radius over Perimeter Width===
 Default is 0.35.
@@ -76,7 +76,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -89,7 +89,7 @@ def getCraftedTextFromText( gcodeText, repository = None ):
 	"Fillet a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'fillet'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( FilletRepository() )
 	if not repository.activateFillet.value:
 		return gcodeText
@@ -133,13 +133,13 @@ class BevelSkein:
 		"Get the corner feed rate, which may be based on the intermediate feed rate."
 		feedRateMinute = self.feedRateMinute
 		if self.repository.useIntermediateFeedRateInCorners.value:
-			if self.oldFeedRateMinute != None:
+			if self.oldFeedRateMinute is not None:
 				feedRateMinute = 0.5 * ( self.oldFeedRateMinute + self.feedRateMinute )
-		return feedRateMinute * self.cornerFeedRateOverOperatingFeedRate
+		return feedRateMinute * self.cornerFeedRateMultiplier
 
 	def getCraftedGcode( self, repository, gcodeText ):
 		"Parse gcode text and store the bevel gcode."
-		self.cornerFeedRateOverOperatingFeedRate = repository.cornerFeedRateOverOperatingFeedRate.value
+		self.cornerFeedRateMultiplier = repository.cornerFeedRateMultiplier.value
 		self.lines = archive.getTextLines(gcodeText)
 		self.repository = repository
 		self.parseInitialization( repository )
@@ -188,9 +188,9 @@ class BevelSkein:
 		"Bevel a linear move."
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			nextLocation = self.getNextLocation()
-			if nextLocation != None:
+			if nextLocation is not None:
 				location = self.splitPointGetAfter( location, nextLocation )
 		self.oldLocation = location
 		self.oldFeedRateMinute = self.feedRateMinute
@@ -203,7 +203,7 @@ class BevelSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> fillet </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('fillet')
 				return
 			elif firstWord == '(<perimeterWidth>':
 				perimeterWidth = abs(float(splitLine[1]))
@@ -246,7 +246,7 @@ class BevelSkein:
 		if thirdBeforeSegmentLength < self.minimumRadius:
 			return location
 		extruderOffReversalPoint = self.getExtruderOffReversalPoint( afterSegment, afterSegmentComplex, beforeSegment, beforeSegmentComplex, location )
-		if extruderOffReversalPoint != None:
+		if extruderOffReversalPoint is not None:
 			return extruderOffReversalPoint
 		bevelRadius = min( thirdAfterSegmentLength, self.filletRadius )
 		bevelRadius = min( thirdBeforeSegmentLength, bevelRadius )
@@ -287,7 +287,7 @@ class ArcSegmentSkein( BevelSkein ):
 		if thirdBeforeSegmentLength < self.minimumRadius:
 			return location
 		extruderOffReversalPoint = self.getExtruderOffReversalPoint( afterSegment, afterSegmentComplex, beforeSegment, beforeSegmentComplex, location )
-		if extruderOffReversalPoint != None:
+		if extruderOffReversalPoint is not None:
 			return extruderOffReversalPoint
 		bevelRadius = min( thirdAfterSegmentLength, self.filletRadius )
 		bevelRadius = min( thirdBeforeSegmentLength, bevelRadius )
@@ -338,7 +338,7 @@ class ArcPointSkein( ArcSegmentSkein ):
 			return
 		line = self.distanceFeedRate.getFirstWordMovement( firstWord, afterPointMinusBefore ) + self.getRelativeCenter( centerMinusBeforeComplex )
 		cornerFeedRate = self.getCornerFeedRate()
-		if cornerFeedRate != None:
+		if cornerFeedRate is not None:
 			line += ' F' + self.distanceFeedRate.getRounded(cornerFeedRate)
 		self.distanceFeedRate.addLine(line)
 
@@ -369,7 +369,7 @@ class FilletRepository:
 		self.arcRadius = settings.Radio().getFromRadio( filletLatentStringVar, 'Arc Radius', self, False )
 		self.arcSegment = settings.Radio().getFromRadio( filletLatentStringVar, 'Arc Segment', self, False )
 		self.bevel = settings.Radio().getFromRadio( filletLatentStringVar, 'Bevel', self, True )
-		self.cornerFeedRateOverOperatingFeedRate = settings.FloatSpin().getFromValue( 0.8, 'Corner Feed Rate over Operating Feed Rate (ratio):', self, 1.2, 1.0 )
+		self.cornerFeedRateMultiplier = settings.FloatSpin().getFromValue(0.8, 'Corner Feed Rate Multiplier (ratio):', self, 1.2, 1.0)
 		self.filletRadiusOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.25, 'Fillet Radius over Perimeter Width (ratio):', self, 0.65, 0.35 )
 		self.reversalSlowdownDistanceOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.3, 'Reversal Slowdown Distance over Perimeter Width (ratio):', self, 0.7, 0.5 )
 		self.useIntermediateFeedRateInCorners = settings.BooleanSetting().getFromValue('Use Intermediate Feed Rate in Corners', self, True )

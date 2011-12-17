@@ -13,7 +13,7 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.flow.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.hop.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Home is a script to home the tool.<br>
+Plugin to home the tool at beginning of each layer.<br>
  <br>
 The home manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Home">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Home</a><br>
@@ -21,22 +21,22 @@ The home manual page is at:<br>
 <br />
 <a href="#Operation">Operation</a><br />
 <a href="#Settings">Settings</a><br />
-&nbsp;&nbsp;<a href="#Name of Homing File">Name of Homing File</a><br />
+&nbsp;&nbsp;<a href="#Name of Home File">Name of Home File</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
 
-The default 'Activate Home' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.<br>
+The default 'Activate Home' checkbox is on.  When it is on, the functions described below will work, when it is off, nothing will be done.<br>
  <br>
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
 
-<a name="Name of Homing File" id="Name of Homing File"></a><h3>Name of Homing File</h3>
+<a name="Name of Home File" id="Name of Home File"></a><h3>Name of Home File</h3>
 
-Default is homing.gcode.<br>
+Default: home.gcode<br>
  <br>
-At the beginning of a each layer, home will add the commands of a gcode script with the name of the "Name of Homing File" setting, if one exists.  Home does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  Home looks for those files in the alterations folder in the .skeinforge folder in the home directory. If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.<br>
+At the beginning of a each layer, home will add the commands of a gcode script with the name of the "Name of Home File" setting, if one exists.  Home does not care if the text file names are capitalized, but some file systems do not handle file name cases properly, so to be on the safe side you should give them lower case names.  Home looks for those files in the alterations folder in the .skeinforge folder in the home directory. If it doesn't find the file it then looks in the alterations folder in the skeinforge_plugins folder.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>

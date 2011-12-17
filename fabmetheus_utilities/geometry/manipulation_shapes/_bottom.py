@@ -24,15 +24,15 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 400
 
 
-def bottomXMLElement(derivation, target):
+def bottomElementNode(derivation, target):
 	"Bottom target."
 	xmlObject = target.xmlObject
-	if xmlObject == None:
+	if xmlObject is None:
 		print('Warning, bottomTarget in bottom could not get xmlObject for:')
 		print(target)
-		print(derivation.xmlElement)
+		print(derivation.elementNode)
 		return
-	targetMatrix = matrix.getBranchMatrixSetXMLElement(target)
+	targetMatrix = matrix.getBranchMatrixSetElementNode(target)
 	lift = derivation.altitude
 	transformedPaths = xmlObject.getTransformedPaths()
 	if len(transformedPaths) > 0:
@@ -41,15 +41,15 @@ def bottomXMLElement(derivation, target):
 		lift -= boolean_geometry.getMinimumZ(xmlObject)
 	targetMatrix.tetragrid = matrix.getIdentityTetragrid(targetMatrix.tetragrid)
 	targetMatrix.tetragrid[2][3] += lift
-	matrix.setXMLElementDictionaryMatrix(targetMatrix, target)
+	matrix.setElementNodeDictionaryMatrix(target, targetMatrix)
 
-def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
+def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	'Get bottomed geometryOutput.'
-	derivation = BottomDerivation(prefix, xmlElement)
-	copyShallow = xmlElement.getCopyShallow()
-	solid.processXMLElementByGeometry(geometryOutput, copyShallow)
-	targetMatrix = matrix.getBranchMatrixSetXMLElement(xmlElement)
-	matrix.setXMLElementDictionaryMatrix(targetMatrix, copyShallow)
+	derivation = BottomDerivation(elementNode, prefix)
+	copyShallow = elementNode.getCopyShallow()
+	solid.processElementNodeByGeometry(copyShallow, geometryOutput)
+	targetMatrix = matrix.getBranchMatrixSetElementNode(elementNode)
+	matrix.setElementNodeDictionaryMatrix(copyShallow, targetMatrix)
 	minimumZ = boolean_geometry.getMinimumZ(copyShallow.xmlObject)
 	copyShallow.parentNode.xmlObject.archivableObjects.remove(copyShallow.xmlObject)
 	lift = derivation.altitude - minimumZ
@@ -58,51 +58,47 @@ def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
 		vertex.z += lift
 	return geometryOutput
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	'Get flipped paths.'
 	if len(loop) < 1:
 		return [[]]
-	derivation = BottomDerivation(prefix, xmlElement)
-	targetMatrix = matrix.getBranchMatrixSetXMLElement(xmlElement)
+	derivation = BottomDerivation(elementNode, prefix)
+	targetMatrix = matrix.getBranchMatrixSetElementNode(elementNode)
 	transformedLoop = matrix.getTransformedVector3s(matrix.getIdentityTetragrid(targetMatrix.tetragrid), loop)
 	lift = derivation.altitude + derivation.getAdditionalPathLift() - euclidean.getBottomByPath(transformedLoop)
 	for point in loop:
 		point.z += lift
 	return [loop]
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode, prefix, sideLength):
 	'Get new derivation.'
-	return BottomDerivation('', xmlElement)
+	return BottomDerivation(elementNode, '')
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	processXMLElementByDerivation(None, xmlElement)
+	processElementNodeByDerivation(None, elementNode)
 
-def processXMLElementByDerivation(derivation, xmlElement):
+def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation == None:
-		derivation = BottomDerivation('', xmlElement)
-	targets = evaluate.getXMLElementsByKey('target', xmlElement)
+	if derivation is None:
+		derivation = BottomDerivation(elementNode, '')
+	targets = evaluate.getElementNodesByKey(elementNode, 'target')
 	if len(targets) < 1:
-		print('Warning, processXMLElement in bottom could not get targets for:')
-		print(xmlElement)
+		print('Warning, processElementNode in bottom could not get targets for:')
+		print(elementNode)
 		return
 	for target in targets:
-		bottomXMLElement(derivation, target)
+		bottomElementNode(derivation, target)
 
 
 class BottomDerivation:
 	"Class to hold bottom variables."
-	def __init__(self, prefix, xmlElement):
+	def __init__(self, elementNode, prefix):
 		'Set defaults.'
-		self.altitude = evaluate.getEvaluatedFloat(0.0, prefix + 'altitude', xmlElement)
-		self.liftPath = evaluate.getEvaluatedBoolean(True, prefix + 'liftPath', xmlElement)
-		self.xmlElement = xmlElement
-
-	def __repr__(self):
-		"Get the string representation of this BottomDerivation."
-		return str(self.__dict__)
+		self.altitude = evaluate.getEvaluatedFloat(0.0, elementNode, prefix + 'altitude')
+		self.elementNode = elementNode
+		self.liftPath = evaluate.getEvaluatedBoolean(True, elementNode, prefix + 'liftPath')
 
 	def getAdditionalPathLift(self):
 		"Get path lift."
-		return 0.5 * setting.getLayerThickness(self.xmlElement) * float(self.liftPath)
+		return 0.5 * setting.getLayerThickness(self.elementNode) * float(self.liftPath)

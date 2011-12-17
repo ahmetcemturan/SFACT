@@ -16,7 +16,7 @@ from skeinforge_application.skeinforge_plugins.analyze_plugins.analyze_utilities
 import math
 import os
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -47,6 +47,10 @@ def getIsLayerStart(firstWord, skein, splitLine):
 def getLengthMinusOneMinimumOne( elementList ):
 	'Get the length of the length minus one, minimum one.'
 	return max( 1, len( elementList ) - 1 )
+
+def getPluginsDirectoryPath():
+	'Get the plugins directory path.'
+	return archive.getAnalyzePluginsDirectoryPath('export_canvas_plugins')
 
 def getScrollbarCanvasPortion( scrollbar ):
 	'Get the canvas portion of the scrollbar.'
@@ -90,16 +94,15 @@ class ExportCanvasDialog:
 		'Display the export canvas repository dialog.'
 		for repositoryDialog in settings.globalRepositoryDialogListTable:
 			if repositoryDialog.repository.lowerName == self.name:
-				repositoryDialog.setCanvasFileNameSuffix( self.canvas, self.skein.fileName, self.suffix )
-				settings.liftRepositoryDialogs( settings.globalRepositoryDialogListTable[ repositoryDialog ] )
+				repositoryDialog.setCanvasFileNameSuffix(self.canvas, self.skein.fileName, self.suffix)
+				settings.liftRepositoryDialogs(settings.globalRepositoryDialogListTable[repositoryDialog])
 				return
-		exportCanvasPluginsFolderPath = archive.getAbsoluteFolderPath( os.path.dirname(__file__), 'export_canvas_plugins')
-		pluginModule = archive.getModuleWithDirectoryPath( exportCanvasPluginsFolderPath, self.name )
-		if pluginModule == None:
+		pluginModule = archive.getModuleWithDirectoryPath(getPluginsDirectoryPath(), self.name)
+		if pluginModule is None:
 			return None
 		pluginRepository = pluginModule.getNewRepository()
-		pluginRepository.setCanvasFileNameSuffix( self.canvas, self.fileName, self.suffix )
-		settings.getDisplayedDialogFromConstructor( pluginRepository )
+		pluginRepository.setCanvasFileNameSuffix(self.canvas, self.fileName, self.suffix)
+		settings.getDisplayedDialogFromConstructor(pluginRepository)
 
 
 class TableauRepository:
@@ -189,8 +192,7 @@ class TableauWindow:
 		self.fileHelpMenuBar = settings.FileHelpMenuBar(self.root)
 		self.exportMenu = settings.Tkinter.Menu(self.fileHelpMenuBar.fileMenu, tearoff = 0)
 		self.fileHelpMenuBar.fileMenu.add_cascade(label = 'Export', menu = self.exportMenu, underline = 0)
-		exportCanvasPluginsFolderPath = archive.getAbsoluteFolderPath(os.path.dirname(__file__), 'export_canvas_plugins')
-		exportCanvasPluginFileNames = archive.getPluginFileNamesFromDirectoryPath(exportCanvasPluginsFolderPath)
+		exportCanvasPluginFileNames = archive.getPluginFileNamesFromDirectoryPath(getPluginsDirectoryPath())
 		for exportCanvasPluginFileName in exportCanvasPluginFileNames:
 			ExportCanvasDialog().addPluginToMenu(self.canvas, skein.fileName, self.exportMenu, exportCanvasPluginFileName, suffix)
 		self.fileHelpMenuBar.fileMenu.add_separator()
@@ -245,7 +247,7 @@ class TableauWindow:
 		self.gridPosition.master = self.root
 		for name in self.repository.frameList.value:
 			entity = self.getEntityFromName( name )
-			if entity != None:
+			if entity is not None:
 				self.gridPosition.incrementGivenNumberOfColumns(3)
 				entity.addToDialog( getGridHorizontalFrame( self.gridPosition ) )
 		for menuRadio in self.repository.mouseMode.menuRadios:
@@ -332,7 +334,7 @@ class TableauWindow:
 
 	def cancelTimer(self, event=None):
 		'Cancel the timer and set it to none.'
-		if self.timerID != None:
+		if self.timerID is not None:
 			self.canvas.after_cancel(self.timerID)
 			self.timerID = None
 
@@ -437,7 +439,7 @@ class TableauWindow:
 		untilDotFileName = self.addPhotoImage( fileName, gridPosition )
 		photoImage = self.photoImages[ untilDotFileName ]
 		photoButton = settings.Tkinter.Button( gridPosition.master, activebackground = 'black', activeforeground = 'white', command = commandFunction, text = untilDotFileName )
-		if photoImage != None:
+		if photoImage is not None:
 			photoButton['image'] = photoImage
 		photoButton.grid( row = gridPosition.row, column = gridPosition.column, sticky = settings.Tkinter.W )
 		return photoButton
@@ -533,17 +535,6 @@ class TableauWindow:
 			self.arrowType = 'last'
 		self.canvas.delete( settings.Tkinter.ALL )
 
-	def lineEntryReturnPressed(self, event=None):
-		'The line index entry return was pressed.'
-		self.repository.line.value = int( self.lineEntry.get() )
-		if self.isLineBelowZeroSetLayer():
-			return
-		if self.isLineBeyondListSetLayer():
-			return
-		self.cancelTimerResetButtons()
-		self.updateMouseToolIfSelection()
-		self.setLineButtonsState()
-
 	def lineDive(self):
 		'Line dive, go down periodically.'
 		oldLineDiveButtonText = self.lineDiveButton['text']
@@ -569,6 +560,17 @@ class TableauWindow:
 		self.setButtonImageText( self.lineDiveButton, 'stop')
 		coloredLine = self.getColoredLines()[ self.repository.line.value ]
 		self.timerID = self.canvas.after( self.getAnimationLineDelay( coloredLine ), self.lineDiveCycle )
+
+	def lineEntryReturnPressed(self, event=None):
+		'The line index entry return was pressed.'
+		self.repository.line.value = int( self.lineEntry.get() )
+		if self.isLineBelowZeroSetLayer():
+			return
+		if self.isLineBeyondListSetLayer():
+			return
+		self.cancelTimerResetButtons()
+		self.updateMouseToolIfSelection()
+		self.setLineButtonsState()
 
 	def lineSoar(self):
 		'Line soar, go up periodically.'
@@ -605,6 +607,12 @@ class TableauWindow:
 		'Update the skein, and deiconify a new window and destroy the old.'
 		self.updateNewDestroyOld( self.getScrollPaneCenter() )
 
+	def redisplayWindowUpdate(self, event=None):
+		'Deiconify a new window and destroy the old.'
+		self.repository.setToDisplaySave()
+		self.getCopy().updateDeiconify( self.getScrollPaneCenter() )
+		self.root.after( 1, self.root.destroy ) # to get around 'Font Helvetica -12 still in cache.' segmentation bug, instead of simply calling self.root.destroy()
+
 	def relayXview( self, *args ):
 		'Relay xview changes.'
 		self.canvas.xview( *args )
@@ -619,12 +627,6 @@ class TableauWindow:
 		self.setButtonImageText( self.soarButton, 'soar')
 		self.setButtonImageText( self.lineDiveButton, 'dive')
 		self.setButtonImageText( self.lineSoarButton, 'soar')
-
-	def redisplayWindowUpdate(self, event=None):
-		'Deiconify a new window and destroy the old.'
-		self.repository.setToDisplaySave()
-		self.getCopy().updateDeiconify( self.getScrollPaneCenter() )
-		self.root.after( 1, self.root.destroy ) # to get around 'Font Helvetica -12 still in cache.' segmentation bug, instead of simply calling self.root.destroy()
 
 	def save(self):
 		'Set the setting values to the display, save the new values.'
@@ -641,7 +643,7 @@ class TableauWindow:
 	def setButtonImageText( self, button, text ):
 		'Set the text of the e periodic buttons.'
 		photoImage = self.photoImages[ text ]
-		if photoImage != None:
+		if photoImage is not None:
 			button['image'] = photoImage
 		button['text'] = text
 
@@ -762,7 +764,7 @@ class TableauWindow:
 
 	def updateMouseToolIfSelection(self):
 		'Update the mouse tool if it is a selection tool.'
-		if self.mouseTool == None:
+		if self.mouseTool is None:
 			return
 		if self.mouseTool.isSelectionTool():
 			self.mouseTool.update()

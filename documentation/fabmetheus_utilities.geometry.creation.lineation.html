@@ -45,9 +45,7 @@
 <td colspan=2><tt>Class&nbsp;to&nbsp;hold&nbsp;lineation&nbsp;variables.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="LineationDerivation-__init__"><strong>__init__</strong></a>(self, xmlElement)</dt><dd><tt>Set&nbsp;defaults.</tt></dd></dl>
-
-<dl><dt><a name="LineationDerivation-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;<a href="#LineationDerivation">LineationDerivation</a>.</tt></dd></dl>
+<dl><dt><a name="LineationDerivation-__init__"><strong>__init__</strong></a>(self, elementNode)</dt><dd><tt>Set&nbsp;defaults.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -61,9 +59,9 @@
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="SideLoop-__init__"><strong>__init__</strong></a>(self, loop, sideAngle<font color="#909090">=None</font>, sideLength<font color="#909090">=None</font>)</dt><dd><tt>Initialize.</tt></dd></dl>
 
-<dl><dt><a name="SideLoop-getManipulationPluginLoops"><strong>getManipulationPluginLoops</strong></a>(self, xmlElement)</dt><dd><tt>Get&nbsp;loop&nbsp;manipulated&nbsp;by&nbsp;the&nbsp;plugins&nbsp;in&nbsp;the&nbsp;manipulation&nbsp;paths&nbsp;folder.</tt></dd></dl>
+<dl><dt><a name="SideLoop-getManipulationPluginLoops"><strong>getManipulationPluginLoops</strong></a>(self, elementNode)</dt><dd><tt>Get&nbsp;loop&nbsp;manipulated&nbsp;by&nbsp;the&nbsp;plugins&nbsp;in&nbsp;the&nbsp;manipulation&nbsp;paths&nbsp;folder.</tt></dd></dl>
 
-<dl><dt><a name="SideLoop-rotate"><strong>rotate</strong></a>(self, xmlElement)</dt><dd><tt>Rotate.</tt></dd></dl>
+<dl><dt><a name="SideLoop-rotate"><strong>rotate</strong></a>(self, elementNode)</dt><dd><tt>Rotate.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -91,31 +89,31 @@
 <td width="100%"><dl><dt><a name="-getComplexByDictionary"><strong>getComplexByDictionary</strong></a>(dictionary, valueComplex)</dt><dd><tt>Get&nbsp;complex&nbsp;by&nbsp;dictionary.</tt></dd></dl>
  <dl><dt><a name="-getComplexByDictionaryListValue"><strong>getComplexByDictionaryListValue</strong></a>(value, valueComplex)</dt><dd><tt>Get&nbsp;complex&nbsp;by&nbsp;dictionary,&nbsp;list&nbsp;or&nbsp;value.</tt></dd></dl>
  <dl><dt><a name="-getComplexByFloatList"><strong>getComplexByFloatList</strong></a>(floatList, valueComplex)</dt><dd><tt>Get&nbsp;complex&nbsp;by&nbsp;float&nbsp;list.</tt></dd></dl>
- <dl><dt><a name="-getComplexByMultiplierPrefix"><strong>getComplexByMultiplierPrefix</strong></a>(multiplier, prefix, valueComplex, xmlElement)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;multiplier,&nbsp;prefix&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
- <dl><dt><a name="-getComplexByMultiplierPrefixes"><strong>getComplexByMultiplierPrefixes</strong></a>(multiplier, prefixes, valueComplex, xmlElement)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;multiplier,&nbsp;prefixes&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
- <dl><dt><a name="-getComplexByPrefix"><strong>getComplexByPrefix</strong></a>(prefix, valueComplex, xmlElement)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;prefix&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
- <dl><dt><a name="-getComplexByPrefixBeginEnd"><strong>getComplexByPrefixBeginEnd</strong></a>(prefixBegin, prefixEnd, valueComplex, xmlElement)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;prefixBegin,&nbsp;prefixEnd&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
- <dl><dt><a name="-getComplexByPrefixes"><strong>getComplexByPrefixes</strong></a>(prefixes, valueComplex, xmlElement)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;prefixes&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
+ <dl><dt><a name="-getComplexByMultiplierPrefix"><strong>getComplexByMultiplierPrefix</strong></a>(elementNode, multiplier, prefix, valueComplex)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;multiplier,&nbsp;prefix&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
+ <dl><dt><a name="-getComplexByMultiplierPrefixes"><strong>getComplexByMultiplierPrefixes</strong></a>(elementNode, multiplier, prefixes, valueComplex)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;multiplier,&nbsp;prefixes&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
+ <dl><dt><a name="-getComplexByPrefix"><strong>getComplexByPrefix</strong></a>(elementNode, prefix, valueComplex)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;prefix&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
+ <dl><dt><a name="-getComplexByPrefixBeginEnd"><strong>getComplexByPrefixBeginEnd</strong></a>(elementNode, prefixBegin, prefixEnd, valueComplex)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;element&nbsp;node,&nbsp;prefixBegin&nbsp;and&nbsp;prefixEnd.</tt></dd></dl>
+ <dl><dt><a name="-getComplexByPrefixes"><strong>getComplexByPrefixes</strong></a>(elementNode, prefixes, valueComplex)</dt><dd><tt>Get&nbsp;complex&nbsp;from&nbsp;prefixes&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
  <dl><dt><a name="-getComplexIfNone"><strong>getComplexIfNone</strong></a>(valueComplex)</dt><dd><tt>Get&nbsp;new&nbsp;complex&nbsp;if&nbsp;the&nbsp;original&nbsp;complex&nbsp;is&nbsp;none.</tt></dd></dl>
- <dl><dt><a name="-getFloatByPrefixBeginEnd"><strong>getFloatByPrefixBeginEnd</strong></a>(prefixBegin, prefixEnd, valueFloat, xmlElement)</dt><dd><tt>Get&nbsp;float&nbsp;from&nbsp;prefixBegin,&nbsp;prefixEnd&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
- <dl><dt><a name="-getFloatByPrefixSide"><strong>getFloatByPrefixSide</strong></a>(prefix, side, xmlElement)</dt><dd><tt>Get&nbsp;float&nbsp;by&nbsp;prefix&nbsp;and&nbsp;side.</tt></dd></dl>
- <dl><dt><a name="-getGeometryOutput"><strong>getGeometryOutput</strong></a>(derivation, xmlElement)</dt><dd><tt>Get&nbsp;geometry&nbsp;output&nbsp;from&nbsp;paths.</tt></dd></dl>
- <dl><dt><a name="-getGeometryOutputByArguments"><strong>getGeometryOutputByArguments</strong></a>(arguments, xmlElement)</dt><dd><tt>Get&nbsp;vector3&nbsp;vertexes&nbsp;from&nbsp;attribute&nbsp;dictionary&nbsp;by&nbsp;arguments.</tt></dd></dl>
- <dl><dt><a name="-getGeometryOutputByLoop"><strong>getGeometryOutputByLoop</strong></a>(sideLoop, xmlElement)</dt><dd><tt>Get&nbsp;geometry&nbsp;output&nbsp;by&nbsp;side&nbsp;loop.</tt></dd></dl>
- <dl><dt><a name="-getGeometryOutputByManipulation"><strong>getGeometryOutputByManipulation</strong></a>(sideLoop, xmlElement)</dt><dd><tt>Get&nbsp;geometry&nbsp;output&nbsp;by&nbsp;manipulation.</tt></dd></dl>
+ <dl><dt><a name="-getFloatByPrefixBeginEnd"><strong>getFloatByPrefixBeginEnd</strong></a>(elementNode, prefixBegin, prefixEnd, valueFloat)</dt><dd><tt>Get&nbsp;float&nbsp;from&nbsp;prefixBegin,&nbsp;prefixEnd&nbsp;and&nbsp;xml&nbsp;element.</tt></dd></dl>
+ <dl><dt><a name="-getFloatByPrefixSide"><strong>getFloatByPrefixSide</strong></a>(defaultValue, elementNode, prefix, side)</dt><dd><tt>Get&nbsp;float&nbsp;by&nbsp;prefix&nbsp;and&nbsp;side.</tt></dd></dl>
+ <dl><dt><a name="-getGeometryOutput"><strong>getGeometryOutput</strong></a>(derivation, elementNode)</dt><dd><tt>Get&nbsp;geometry&nbsp;output&nbsp;from&nbsp;paths.</tt></dd></dl>
+ <dl><dt><a name="-getGeometryOutputByArguments"><strong>getGeometryOutputByArguments</strong></a>(arguments, elementNode)</dt><dd><tt>Get&nbsp;vector3&nbsp;vertexes&nbsp;from&nbsp;attribute&nbsp;dictionary&nbsp;by&nbsp;arguments.</tt></dd></dl>
+ <dl><dt><a name="-getGeometryOutputByLoop"><strong>getGeometryOutputByLoop</strong></a>(elementNode, sideLoop)</dt><dd><tt>Get&nbsp;geometry&nbsp;output&nbsp;by&nbsp;side&nbsp;loop.</tt></dd></dl>
+ <dl><dt><a name="-getGeometryOutputByManipulation"><strong>getGeometryOutputByManipulation</strong></a>(elementNode, sideLoop)</dt><dd><tt>Get&nbsp;geometry&nbsp;output&nbsp;by&nbsp;manipulation.</tt></dd></dl>
+ <dl><dt><a name="-getInradius"><strong>getInradius</strong></a>(defaultInradius, elementNode)</dt><dd><tt>Get&nbsp;inradius.</tt></dd></dl>
  <dl><dt><a name="-getMinimumRadius"><strong>getMinimumRadius</strong></a>(beginComplexSegmentLength, endComplexSegmentLength, radius)</dt><dd><tt>Get&nbsp;minimum&nbsp;radius.</tt></dd></dl>
- <dl><dt><a name="-getNewDerivation"><strong>getNewDerivation</strong></a>(xmlElement)</dt><dd><tt>Get&nbsp;new&nbsp;derivation.</tt></dd></dl>
- <dl><dt><a name="-getNumberOfBezierPoints"><strong>getNumberOfBezierPoints</strong></a>(begin, end, xmlElement)</dt><dd><tt>Get&nbsp;the&nbsp;numberOfBezierPoints.</tt></dd></dl>
- <dl><dt><a name="-getPackedGeometryOutputByLoop"><strong>getPackedGeometryOutputByLoop</strong></a>(sideLoop, xmlElement)</dt><dd><tt>Get&nbsp;packed&nbsp;geometry&nbsp;output&nbsp;by&nbsp;side&nbsp;loop.</tt></dd></dl>
+ <dl><dt><a name="-getNewDerivation"><strong>getNewDerivation</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;new&nbsp;derivation.</tt></dd></dl>
+ <dl><dt><a name="-getNumberOfBezierPoints"><strong>getNumberOfBezierPoints</strong></a>(begin, elementNode, end)</dt><dd><tt>Get&nbsp;the&nbsp;numberOfBezierPoints.</tt></dd></dl>
+ <dl><dt><a name="-getPackedGeometryOutputByLoop"><strong>getPackedGeometryOutputByLoop</strong></a>(elementNode, sideLoop)</dt><dd><tt>Get&nbsp;packed&nbsp;geometry&nbsp;output&nbsp;by&nbsp;side&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-getRadiusAverage"><strong>getRadiusAverage</strong></a>(radiusComplex)</dt><dd><tt>Get&nbsp;average&nbsp;radius&nbsp;from&nbsp;radiusComplex.</tt></dd></dl>
- <dl><dt><a name="-getRadiusByPrefix"><strong>getRadiusByPrefix</strong></a>(prefix, sideLength, xmlElement)</dt><dd><tt>Get&nbsp;radius&nbsp;by&nbsp;prefix.</tt></dd></dl>
- <dl><dt><a name="-getRadiusComplex"><strong>getRadiusComplex</strong></a>(radius, xmlElement)</dt><dd><tt>Get&nbsp;radius&nbsp;complex&nbsp;for&nbsp;xmlElement.</tt></dd></dl>
- <dl><dt><a name="-getStrokeRadiusByPrefix"><strong>getStrokeRadiusByPrefix</strong></a>(prefix, xmlElement)</dt><dd><tt>Get&nbsp;strokeRadius&nbsp;by&nbsp;prefix.</tt></dd></dl>
+ <dl><dt><a name="-getRadiusComplex"><strong>getRadiusComplex</strong></a>(elementNode, radius)</dt><dd><tt>Get&nbsp;radius&nbsp;complex&nbsp;for&nbsp;elementNode.</tt></dd></dl>
+ <dl><dt><a name="-getStrokeRadiusByPrefix"><strong>getStrokeRadiusByPrefix</strong></a>(elementNode, prefix)</dt><dd><tt>Get&nbsp;strokeRadius&nbsp;by&nbsp;prefix.</tt></dd></dl>
+ <dl><dt><a name="-processElementNode"><strong>processElementNode</strong></a>(elementNode)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
+ <dl><dt><a name="-processElementNodeByFunction"><strong>processElementNodeByFunction</strong></a>(elementNode, manipulationFunction)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element&nbsp;by&nbsp;the&nbsp;manipulationFunction.</tt></dd></dl>
  <dl><dt><a name="-processTargetByFunction"><strong>processTargetByFunction</strong></a>(manipulationFunction, target)</dt><dd><tt>Process&nbsp;the&nbsp;target&nbsp;by&nbsp;the&nbsp;manipulationFunction.</tt></dd></dl>
- <dl><dt><a name="-processXMLElement"><strong>processXMLElement</strong></a>(xmlElement)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
- <dl><dt><a name="-processXMLElementByFunction"><strong>processXMLElementByFunction</strong></a>(manipulationFunction, xmlElement)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element&nbsp;by&nbsp;the&nbsp;manipulationFunction.</tt></dd></dl>
- <dl><dt><a name="-removeChildNodesFromElementObject"><strong>removeChildNodesFromElementObject</strong></a>(xmlElement)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element&nbsp;by&nbsp;manipulationFunction.</tt></dd></dl>
- <dl><dt><a name="-setClosedAttribute"><strong>setClosedAttribute</strong></a>(revolutions, xmlElement)</dt><dd><tt>Set&nbsp;the&nbsp;closed&nbsp;attribute&nbsp;of&nbsp;the&nbsp;xmlElement.</tt></dd></dl>
+ <dl><dt><a name="-removeChildNodesFromElementObject"><strong>removeChildNodesFromElementObject</strong></a>(elementNode)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element&nbsp;by&nbsp;manipulationFunction.</tt></dd></dl>
+ <dl><dt><a name="-setClosedAttribute"><strong>setClosedAttribute</strong></a>(elementNode, revolutions)</dt><dd><tt>Set&nbsp;the&nbsp;closed&nbsp;attribute&nbsp;of&nbsp;the&nbsp;elementNode.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

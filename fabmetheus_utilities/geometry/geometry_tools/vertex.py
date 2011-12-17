@@ -17,29 +17,29 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def addGeometryList( vertexes, xmlElement ):
+def addGeometryList(elementNode, vertexes):
 	"Add vertex elements to an xml element."
 	for vertex in vertexes:
 		vertexElement = getUnboundVertexElement(vertex)
-		vertexElement.parentNode = xmlElement
-		xmlElement.childNodes.append( vertexElement )
+		vertexElement.parentNode = elementNode
+		elementNode.childNodes.append( vertexElement )
 
-def addVertexToAttributeDictionary(attributeDictionary, vertex):
+def addVertexToAttributes(attributes, vertex):
 	"Add to the attribute dictionary."
 	if vertex.x != 0.0:
-		attributeDictionary['x'] = str(vertex.x)
+		attributes['x'] = str(vertex.x)
 	if vertex.y != 0.0:
-		attributeDictionary['y'] = str(vertex.y)
+		attributes['y'] = str(vertex.y)
 	if vertex.z != 0.0:
-		attributeDictionary['z'] = str(vertex.z)
+		attributes['z'] = str(vertex.z)
 
 def getUnboundVertexElement(vertex):
 	"Add vertex element to an xml element."
-	vertexElement = xml_simple_reader.XMLElement()
-	addVertexToAttributeDictionary(vertexElement.attributeDictionary, vertex)
+	vertexElement = xml_simple_reader.ElementNode()
+	addVertexToAttributes(vertexElement.attributes, vertex)
 	vertexElement.localName = 'vertex'
 	return vertexElement
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	xmlElement.parentNode.xmlObject.vertexes.append(evaluate.getVector3FromXMLElement(xmlElement))
+	elementNode.parentNode.xmlObject.vertexes.append(evaluate.getVector3FromElementNode(elementNode))

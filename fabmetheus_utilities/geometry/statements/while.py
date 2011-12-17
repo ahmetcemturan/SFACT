@@ -16,19 +16,19 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	if xmlElement.xmlObject == None:
-		if 'condition' in xmlElement.attributeDictionary:
-			value = xmlElement.attributeDictionary['condition']
-			xmlElement.xmlObject = evaluate.getEvaluatorSplitWords(value)
+	if elementNode.xmlObject is None:
+		if 'condition' in elementNode.attributes:
+			value = elementNode.attributes['condition']
+			elementNode.xmlObject = evaluate.getEvaluatorSplitWords(value)
 		else:
-			xmlElement.xmlObject = []
-	if len( xmlElement.xmlObject ) < 1:
+			elementNode.xmlObject = []
+	if len( elementNode.xmlObject ) < 1:
 		return
-	xmlProcessor = xmlElement.getXMLProcessor()
+	xmlProcessor = elementNode.getXMLProcessor()
 	if len( xmlProcessor.functions ) < 1:
 		return
 	function = xmlProcessor.functions[-1]
-	while evaluate.getEvaluatedExpressionValueBySplitLine( xmlElement.xmlObject, xmlElement ) > 0:
-		function.processChildNodes(xmlElement)
+	while evaluate.getEvaluatedExpressionValueBySplitLine(elementNode, elementNode.xmlObject) > 0:
+		function.processChildNodes(elementNode)

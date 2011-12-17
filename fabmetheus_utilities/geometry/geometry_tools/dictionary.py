@@ -45,9 +45,9 @@ def getAllVertexes(vertexes, xmlObject):
 		vertexes += archivableObject.getVertexes()
 	return vertexes
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	evaluate.processArchivable( Dictionary, xmlElement)
+	evaluate.processArchivable( Dictionary, elementNode)
 
 
 class Dictionary:
@@ -55,19 +55,19 @@ class Dictionary:
 	def __init__(self):
 		'Add empty lists.'
 		self.archivableObjects = []
-		self.xmlElement = None
+		self.elementNode = None
 
 	def __repr__(self):
 		'Get the string representation of this object info.'
-		output = xml_simple_writer.getBeginGeometryXMLOutput(self.xmlElement)
+		output = xml_simple_writer.getBeginGeometryXMLOutput(self.elementNode)
 		self.addXML( 1, output )
 		return xml_simple_writer.getEndGeometryXMLString(output)
 
 	def addXML(self, depth, output):
 		'Add xml for this object.'
 		attributeCopy = {}
-		if self.xmlElement != None:
-			attributeCopy = evaluate.getEvaluatedDictionaryByCopyKeys(['paths', 'target', 'vertexes'], self.xmlElement)
+		if self.elementNode is not None:
+			attributeCopy = evaluate.getEvaluatedDictionaryByCopyKeys(['paths', 'target', 'vertexes'], self.elementNode)
 		euclidean.removeElementsFromDictionary(attributeCopy, matrix.getKeysM())
 		euclidean.removeTrueFromDictionary(attributeCopy, 'visible')
 		innerOutput = cStringIO.StringIO()
@@ -87,11 +87,11 @@ class Dictionary:
 		'Create the shape.'
 		pass
 
-	def getAttributeDictionary(self):
+	def getAttributes(self):
 		'Get attribute table.'
-		if self.xmlElement == None:
+		if self.elementNode is None:
 			return {}
-		return self.xmlElement.attributeDictionary
+		return self.elementNode.attributes
 
 	def getComplexTransformedPathLists(self):
 		'Get complex transformed path lists.'
@@ -110,12 +110,12 @@ class Dictionary:
 
 	def getGeometryOutput(self):
 		'Get geometry output dictionary.'
-		visibleObjects = evaluate.getVisibleObjects(self.archivableObjects)
 		shapeOutput = []
-		for visibleObject in visibleObjects:
-			visibleObjectOutput = visibleObject.getGeometryOutput()
-			if visibleObjectOutput != None:
-				shapeOutput.append(visibleObjectOutput)
+		for visibleObject in evaluate.getVisibleObjects(self.archivableObjects):
+			geometryOutput = visibleObject.getGeometryOutput()
+			if geometryOutput != None:
+				visibleObject.transformGeometryOutput(geometryOutput)
+				shapeOutput.append(geometryOutput)
 		if len(shapeOutput) < 1:
 			return None
 		return {self.getXMLLocalName() : {'shapes' : shapeOutput}}
@@ -126,7 +126,7 @@ class Dictionary:
 
 	def getMatrixChainTetragrid(self):
 		'Get the matrix chain tetragrid.'
-		return self.xmlElement.parentNode.xmlObject.getMatrixChainTetragrid()
+		return self.elementNode.parentNode.xmlObject.getMatrixChainTetragrid()
 
 	def getMinimumZ(self):
 		'Get the minimum z.'
@@ -167,7 +167,12 @@ class Dictionary:
 		'Get xml local name.'
 		return self.__class__.__name__.lower()
 
-	def setToXMLElement(self, xmlElement):
+	def setToElementNode(self, elementNode):
 		'Set the shape of this carvable object info.'
-		self.xmlElement = xmlElement
-		xmlElement.parentNode.xmlObject.archivableObjects.append(self)
+		self.elementNode = elementNode
+		elementNode.parentNode.xmlObject.archivableObjects.append(self)
+
+	def transformGeometryOutput(self, geometryOutput):
+		'Transform the geometry output by the local matrix4x4.'
+		if self.getMatrix4X4() != None:
+			matrix.transformVector3sByMatrix(self.getMatrix4X4().tetragrid, matrix.getVertexes(geometryOutput))

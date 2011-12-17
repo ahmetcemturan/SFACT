@@ -1,33 +1,44 @@
 """
 This page is in the table of contents.
-Skirt is a script to give the extruder some extra time to begin extruding properly before beginning the object, and to put a baffle around the model in order to keep the extrusion warm.
+Skirt is a plugin to give the extruder some extra time to begin extruding properly before beginning the object, and to put a baffle around the model in order to keep the extrusion warm.
+
+The skirt manual page is at:
+http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skirt
 
 It is loosely based on Lenbook's outline plugin:
+
 http://www.thingiverse.com/thing:4918
 
 it is also loosely based on the outline that Nophead sometimes uses:
+
 http://hydraraptor.blogspot.com/2010/01/hot-metal-and-serendipity.html
 
 and also loosely based on the baffles that Nophead made to keep corners warm:
+
 http://hydraraptor.blogspot.com/2010/09/some-corners-like-it-hot.html
 
 If you want only an outline, set 'Layers To' to one.  This gives the extruder some extra time to begin extruding properly before beginning your object, and gives you an early verification of where your object will be extruded.
 
-If you also want an insulating skirt around the entire object, set 'Layers To' to a huge number, like 9876554321.  This will additionally make an insulating baffle around the object; to prevent moving air from cooling the object, which increases warping, especially in corners.
+If you also want an insulating skirt around the entire object, set 'Layers To' to a huge number, like 912345678.  This will additionally make an insulating baffle around the object; to prevent moving air from cooling the object, which increases warping, especially in corners.
 
 ==Operation==
-The default 'Activate Skirt' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Skirt' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
+===Convex===
+Default is on.
+
+When selected, the skirt will be convex, going around the model with only convex angles.  If convex is not selected, the skirt will hug the model, going into every nook and cranny.
+
 ===Gap over Perimeter Width===
 Default is three.
 
 Defines the ratio of the gap between the object and the skirt over the perimeter width.  If the ratio is too low, the skirt will connect to the object, if the ratio is too high, the skirt willl not provide much insulation for the object.
 
-====Layers To====
+===Layers To===
 Default is a one.
 
-Defines the number of layers of the skirt.  If you want only an outline, set 'Layers To' to one.  If you want an insulating skirt around the entire object, set 'Layers To' to a huge number, like 9876554321.
+Defines the number of layers of the skirt.  If you want only an outline, set 'Layers To' to one.  If you want an insulating skirt around the entire object, set 'Layers To' to a huge number, like 912345678.
 
 ==Examples==
 The following examples skirt the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and skirt.py.
@@ -64,7 +75,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -77,7 +88,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Skirt the fill text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'skirt'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(SkirtRepository())
 	if not repository.activateSkirt.value:
 		return gcodeText
@@ -109,7 +120,7 @@ class LoopCrossDictionary:
 
 	def __repr__(self):
 		'Get the string representation of this LoopCrossDictionary.'
-		return str(self.__dict__)
+		return str(self.loop)
 
 
 class SkirtRepository:
@@ -119,11 +130,13 @@ class SkirtRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.skirt.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName(
 			fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Skirt', self, '')
-		self.activateSkirt = settings.BooleanSetting().getFromValue('Activate Skirt:', self, True)
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skirt')
+		self.activateSkirt = settings.BooleanSetting().getFromValue('Activate Skirt', self, True)
 		self.convex = settings.BooleanSetting().getFromValue('Convex:', self, True)
 		self.gapOverPerimeterWidth = settings.FloatSpin().getFromValue(
 			1.0, 'Gap over Perimeter Width (ratio):', self, 10.0, 5.0)
 		self.layersTo = settings.IntSpin().getSingleIncrementFromValue(0, 'Layers To (index):', self, 912345678, 1)
+		self.boundaryCheck = settings.BooleanSetting().getFromValue('Check for Limits:', self, True)
 		self.executeTitle = 'Skirt'
 
 	def execute(self):
@@ -146,7 +159,7 @@ class SkirtSkein:
 		self.layerIndex = -1
 		self.lineIndex = 0
 		self.lines = None
-		self.oldFlowRateInput = None
+		self.oldFlowRate = None
 		self.oldLocation = None
 		self.oldTemperatureInput = None
 		self.skirtFlowRate = None
@@ -154,31 +167,28 @@ class SkirtSkein:
 		self.travelFeedRateMinute = 957.0
 		self.unifiedLoop = LoopCrossDictionary()
 
-	def addFlowRateLineIfDifferent(self, flowRate):
+	def addFlowRate(self, flowRate):
 		'Add a line of temperature if different.'
-		if flowRate == None or flowRate == self.oldFlowRateInput:
-			return
-		self.distanceFeedRate.addLine('M108 S' + euclidean.getFourSignificantFigures(flowRate))
-		self.oldFlowRateInput = flowRate
+		if flowRate is not None:
+			self.distanceFeedRate.addLine('M108 S' + euclidean.getFourSignificantFigures(flowRate))
 
 	def addSkirt(self, z):
 		'At skirt at z to gcode output.'
 		self.setSkirtFeedFlowTemperature()
 		self.distanceFeedRate.addLine('(<skirt>)')
-		oldFlowRate = self.oldFlowRateInput
 		oldTemperature = self.oldTemperatureInput
 		self.addTemperatureLineIfDifferent(self.skirtTemperature)
-		self.addFlowRateLineIfDifferent(self.skirtFlowRate)
+		self.addFlowRate(self.skirtFlowRate)
 		for outsetLoop in self.outsetLoops:
 			closedLoop = outsetLoop + [outsetLoop[0]]
 			self.distanceFeedRate.addGcodeFromFeedRateThreadZ(self.feedRateMinute, closedLoop, self.travelFeedRateMinute, z)
-		self.addFlowRateLineIfDifferent(oldFlowRate)
+		self.addFlowRate(self.oldFlowRate)
 		self.addTemperatureLineIfDifferent(oldTemperature)
 		self.distanceFeedRate.addLine('(</skirt>)')
 
 	def addTemperatureLineIfDifferent(self, temperature):
 		'Add a line of temperature if different.'
-		if temperature == None or temperature == self.oldTemperatureInput:
+		if temperature is None or temperature == self.oldTemperatureInput:
 			return
 		self.distanceFeedRate.addLine('M104 S' + euclidean.getRoundedToThreePlaces(temperature))
 		self.oldTemperatureInput = temperature
@@ -195,7 +205,7 @@ class SkirtSkein:
 		points += euclidean.getPointsByVerticalDictionary(self.perimeterWidth, self.unifiedLoop.verticalDictionary)
 		loops = triangle_mesh.getDescendingAreaOrientedLoops(points, points, 2.5 * self.perimeterWidth)
 		outerLoops = getOuterLoops(loops)
-		outsetLoops = intercircle.getInsetSeparateLoopsFromLoops(-self.skirtOutset, outerLoops)
+		outsetLoops = intercircle.getInsetSeparateLoopsFromLoops(outerLoops, -self.skirtOutset)
 		self.outsetLoops = getOuterLoops(outsetLoops)
 		if self.repository.convex.value:
 			self.outsetLoops = [euclidean.getLoopConvex(euclidean.getConcatenatedList(self.outsetLoops))]
@@ -210,7 +220,7 @@ class SkirtSkein:
 		for self.lineIndex in xrange(self.lineIndex, len(self.lines)):
 			line = self.lines[self.lineIndex]
 			self.parseLine(line)
-		return self.distanceFeedRate.output.getvalue()
+		return gcodec.getGcodeWithoutDuplication('M108', self.distanceFeedRate.output.getvalue())
 
 	def getHorizontalXIntersectionsTable(self, loop):
 		'Get the horizontal x intersections table from the loop.'
@@ -234,14 +244,14 @@ class SkirtSkein:
 				loopCrossDictionary = None
 			elif firstWord == '(<boundaryPoint>' or firstWord == '(<raftPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if loopCrossDictionary == None:
+				if not loopCrossDictionary :
 					loopCrossDictionary = LoopCrossDictionary()
 				loopCrossDictionary.loop.append(location.dropAxis())
 			elif firstWord == '(<layer>':
 				layerIndex += 1
 				if layerIndex > self.repository.layersTo.value:
 					return
-				self.layerCount.printProgressIncrement('skirt')
+				settings.printProgress(layerIndex, 'skirt')
 
 	def parseInitialization(self):
 		'Parse gcode initialization and store the parameters.'
@@ -251,21 +261,21 @@ class SkirtSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addTagBracketedLine('procedureName', 'skirt')
+				self.distanceFeedRate.addTagBracketedProcedure('skirt')
 				return
 			elif firstWord == '(<objectNextLayersTemperature>':
 				self.oldTemperatureInput = float(splitLine[1])
 				self.skirtTemperature = self.oldTemperatureInput
-			elif firstWord == '(<operatingFeedRatePerSecond>':
+			elif firstWord == '(<perimeterFeedRatePerSecond>':#todo make it firstlayer
 				self.feedRateMinute = 60.0 * float(splitLine[1])
 			elif firstWord == '(<operatingFlowRate>':
-				self.oldFlowRateInput = float(splitLine[1])
-				self.skirtFlowRate = self.oldFlowRateInput
+				self.oldFlowRate = float(splitLine[1])
+				self.skirtFlowRate = self.oldFlowRate
 			elif firstWord == '(<perimeterWidth>':
 				self.perimeterWidth = float(splitLine[1])
 				self.skirtOutset = (self.repository.gapOverPerimeterWidth.value + 0.5) * self.perimeterWidth
 				self.distanceFeedRate.addTagRoundedLine('skirtOutset', self.skirtOutset)
-			elif firstWord == '(<travelFeedRatePerSecond>':
+			elif firstWord == '(<travelFeedRatePerSecond>':#todo make it firstlayer
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
@@ -292,8 +302,8 @@ class SkirtSkein:
 			self.oldTemperatureInput = gcodec.getDoubleAfterFirstLetter(splitLine[1])
 			self.skirtTemperature = self.oldTemperatureInput
 		elif firstWord == 'M108':
-			self.oldFlowRateInput = gcodec.getDoubleAfterFirstLetter(splitLine[1])
-			self.skirtFlowRate = self.oldFlowRateInput
+			self.oldFlowRate = gcodec.getDoubleAfterFirstLetter(splitLine[1])
+			self.skirtFlowRate = self.oldFlowRate
 		elif firstWord == '(<supportLayer>)':
 			self.isSupportLayer = True
 		elif firstWord == '(</supportLayer>)':

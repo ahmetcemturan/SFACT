@@ -3,7 +3,9 @@
 	<import file='../statements/function.xml' id='overwriteTest'/>
 	<dictionary tripleOne='=function.triple(euclid.Vector3(1,2,3))'/>
 	<!--
-	<import file='../geometry_utilities/evaluate.xml' id='overwriteTest' overwriteRoot='true'>
+	<import file='../creation/circle.xml'/>
+
+	<import file='../geometry_utilities/evaluate.xml' id='overwriteTest' appendOwnerDocument='true'>
 	<import file='combined_interpret.xml' id='Import Test combined'>
 		<matrix m14='0.6' m24='-1.3'/>
 	</import>

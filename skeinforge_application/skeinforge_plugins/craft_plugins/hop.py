@@ -2,11 +2,19 @@
 This page is in the table of contents.
 Hop is a script to raise the extruder when it is not extruding.
 
+Note: 
+
+Note: In some cases where you have thin overhang this plugin can help solve the problem object being knocked off by the head
+
 The hop manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Hop
 
 ==Operation==
-The default 'Activate Hop' checkbox is off.  It is off because Vik and Nophead found better results without hopping.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Hop' checkbox is off.
+
+It is off because Vik and Nophead found better results without hopping.  Numerous users reported better output without this plugin hence it is off by default.  
+
+When activated the extruder will hop when traveling.  When it is off, nothing will be done.
 
 ==Settings==
 ===Hop Over Layer Thickness===
@@ -50,7 +58,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -63,7 +71,7 @@ def getCraftedTextFromText( gcodeText, hopRepository = None ):
 	"Hop a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'hop'):
 		return gcodeText
-	if hopRepository == None:
+	if hopRepository is None:
 		hopRepository = settings.getReadRepository( HopRepository() )
 	if not hopRepository.activateHop.value:
 		return gcodeText
@@ -101,13 +109,13 @@ class HopSkein:
 	"A class to hop a skein of extrusions."
 	def __init__(self):
 		'Initialize'
-		self.isAlteration = False
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.extruderActive = False
 		self.feedRateMinute = 961.0
 		self.hopHeight = 0.4
 		self.hopDistance = self.hopHeight
 		self.justDeactivated = False
+		self.layerCount = settings.LayerCount()
 		self.lineIndex = 0
 		self.lines = None
 		self.oldLocation = None
@@ -126,11 +134,11 @@ class HopSkein:
 		"Get hopped gcode line."
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
-		if self.extruderActive or self.isAlteration:
+		if self.extruderActive:
 			return line
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		highestZ = location.z
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			highestZ = max( highestZ, self.oldLocation.z )
 		highestZHop = highestZ + self.hopHeight
 		locationComplex = location.dropAxis()
@@ -138,7 +146,7 @@ class HopSkein:
 			oldLocationComplex = self.oldLocation.dropAxis()
 			distance = abs( locationComplex - oldLocationComplex )
 			if distance < self.minimumDistance:
-				if self.isNextTravel():
+				if self.isNextTravel() or distance == 0.0:
 					return self.distanceFeedRate.getLineWithZ( line, splitLine, highestZHop )
 			alongRatio = min( 0.41666666, self.hopDistance / distance )
 			oneMinusAlong = 1.0 - alongRatio
@@ -158,9 +166,7 @@ class HopSkein:
 		for afterIndex in xrange( self.lineIndex + 1, len(self.lines) ):
 			line = self.lines[ afterIndex ]
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
-			firstWord = "";
-			if len(splitLine) > 0:
-				firstWord = splitLine[0]
+			firstWord = gcodec.getFirstWord(splitLine)
 			if firstWord == 'G1':
 				return True
 			if firstWord == 'M101':
@@ -180,7 +186,7 @@ class HopSkein:
 				self.hopDistance = self.hopHeight / self.minimumSlope
 				self.minimumDistance = 0.5 * layerThickness
 			elif firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> hop </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('hop')
 				return
 			self.distanceFeedRate.addLine(line)
 
@@ -190,20 +196,20 @@ class HopSkein:
 		if len(splitLine) < 1:
 			return
 		firstWord = splitLine[0]
+		if self.distanceFeedRate.getIsAlteration(line):
+			return
 		if firstWord == 'G1':
 			line = self.getHopLine(line)
 			self.oldLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			self.justDeactivated = False
+		elif firstWord == '(<layer>':
+			self.layerCount.printProgressIncrement('hop')
 		elif firstWord == 'M101':
 			self.extruderActive = True
 		elif firstWord == 'M103':
 			self.extruderActive = False
 			self.justDeactivated = True
-		elif firstWord == '(<alteration>)':
-			self.isAlteration = True
-		elif firstWord == '(</alteration>)':
-			self.isAlteration = False
-		self.distanceFeedRate.addLine(line)
+		self.distanceFeedRate.addLineCheckAlteration(line)
 
 
 def main():

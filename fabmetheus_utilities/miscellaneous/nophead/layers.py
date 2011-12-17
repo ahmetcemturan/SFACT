@@ -59,7 +59,7 @@ def make_images(layers):
         draw = ImageDraw.Draw(image)
         segment = 0
         for thread in layer:
-            if last_pos != None:
+            if last_pos is not None:
                 draw.line(((( last_pos.x - x0) * scale, height - ( last_pos.y - y0) * scale),
                            ((thread[0].x - x0) * scale, height - (thread[0].y - y0) * scale)), fill = 128)
             last_pos = thread[0].copy()

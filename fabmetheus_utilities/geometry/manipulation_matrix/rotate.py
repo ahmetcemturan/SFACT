@@ -23,35 +23,45 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 360
 
 
-def getManipulatedGeometryOutput(geometryOutput, prefix, xmlElement):
+def getManipulatedGeometryOutput(elementNode, geometryOutput, prefix):
 	'Get equated geometryOutput.'
-	rotatePoints(matrix.getVertexes(geometryOutput), prefix, xmlElement)
+	rotatePoints(elementNode, matrix.getVertexes(geometryOutput), prefix)
 	return geometryOutput
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	'Get equated paths.'
-	rotatePoints(loop, prefix, xmlElement)
+	rotatePoints(elementNode, loop, prefix)
 	return [loop]
 
-def manipulateXMLElement(target, xmlElement):
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return RotateDerivation(elementNode, prefix)
+
+def manipulateElementNode(elementNode, target):
 	'Manipulate the xml element.'
-	rotateTetragrid = matrix.getRotateTetragrid('', xmlElement)
-	if rotateTetragrid == None:
+	derivation = RotateDerivation(elementNode, '')
+	if derivation.rotateTetragrid == None:
 		print('Warning, rotateTetragrid was None in rotate so nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	matrix.setAttributeDictionaryToMultipliedTetragrid(rotateTetragrid, target)
+	matrix.setAttributesToMultipliedTetragrid(target, derivation.rotateTetragrid)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	solid.processXMLElementByFunction(manipulateXMLElement, xmlElement)
+	solid.processElementNodeByFunction(elementNode, manipulateElementNode)
 
-def rotatePoints(points, prefix, xmlElement):
+def rotatePoints(elementNode, points, prefix):
 	'Rotate the points.'
-	rotateTetragrid = matrix.getRotateTetragrid(prefix, xmlElement)
-	if rotateTetragrid == None:
+	derivation = RotateDerivation(elementNode, prefix)
+	if derivation.rotateTetragrid == None:
 		print('Warning, rotateTetragrid was None in rotate so nothing will be done for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	for point in points:
-		matrix.transformVector3ByMatrix(rotateTetragrid, point)
+	matrix.transformVector3sByMatrix(derivation.rotateTetragrid, points)
+
+
+class RotateDerivation:
+	"Class to hold rotate variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.rotateTetragrid = matrix.getRotateTetragrid(elementNode, prefix)

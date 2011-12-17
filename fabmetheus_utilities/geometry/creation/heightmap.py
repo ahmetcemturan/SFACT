@@ -87,38 +87,38 @@ def getAddIndexedSegmentedPerimeter(heightGrid, maximumXY, minimumXY, step, vert
 		indexedSegmentedPerimeter.append(vector3index)
 	return indexedSegmentedPerimeter
 
-def getGeometryOutput(xmlElement):
+def getGeometryOutput(elementNode):
 	'Get vector3 vertexes from attribute dictionary.'
-	derivation = HeightmapDerivation(xmlElement)
+	derivation = HeightmapDerivation(elementNode)
 	heightGrid = derivation.heightGrid
 	if derivation.fileName != '':
-		heightGrid = getHeightGrid(archive.getAbsoluteFolderPath(xmlElement.getParser().fileName, derivation.fileName))
-	return getGeometryOutputByHeightGrid(derivation, heightGrid, xmlElement)
+		heightGrid = getHeightGrid(archive.getAbsoluteFolderPath(elementNode.getOwnerDocument().fileName, derivation.fileName))
+	return getGeometryOutputByHeightGrid(derivation, elementNode, heightGrid)
 
-def getGeometryOutputByArguments(arguments, xmlElement):
+def getGeometryOutputByArguments(arguments, elementNode):
 	'Get vector3 vertexes from attribute dictionary by arguments.'
-	evaluate.setAttributeDictionaryByArguments(['file', 'start'], arguments, xmlElement)
-	return getGeometryOutput(xmlElement)
+	evaluate.setAttributesByArguments(['file', 'start'], arguments, elementNode)
+	return getGeometryOutput(elementNode)
 
-def getGeometryOutputByHeightGrid(derivation, heightGrid, xmlElement):
+def getGeometryOutputByHeightGrid(derivation, elementNode, heightGrid):
 	'Get vector3 vertexes from attribute dictionary.'
 	numberOfColumns = len(heightGrid)
 	if numberOfColumns < 2:
 		print('Warning, in getGeometryOutputByHeightGrid in heightmap there are fewer than two rows for:')
 		print(heightGrid)
-		print(xmlElement)
+		print(elementNode)
 		return None
 	numberOfRows = len(heightGrid[0])
 	if numberOfRows < 2:
 		print('Warning, in getGeometryOutputByHeightGrid in heightmap there are fewer than two columns for:')
 		print(heightGrid)
-		print(xmlElement)
+		print(elementNode)
 		return None
 	for row in heightGrid:
 		if len(row) != numberOfRows:
 			print('Warning, in getGeometryOutputByHeightGrid in heightmap the heightgrid is not rectangular for:')
 			print(heightGrid)
-			print(xmlElement)
+			print(elementNode)
 			return None
 	inradiusComplex = derivation.inradius.dropAxis()
 	minimumXY = -inradiusComplex
@@ -140,8 +140,6 @@ def getHeightGrid(fileName):
 	'Get heightGrid by fileName.'
 	if 'models/' not in fileName:
 		print('Warning, models/ was not in the absolute file path, so for security nothing will be done for:')
-		print(xmlElement)
-		print('For which the absolute file path is:')
 		print(fileName)
 		print('The heightmap tool can only read a file which has models/ in the file path.')
 		print('To import the file, move the file into a folder called model/ or a subfolder which is inside the model folder tree.')
@@ -174,9 +172,9 @@ def getHeightGrid(fileName):
 			heightIndex += 1
 	return heightGrid
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return HeightmapDerivation(xmlElement)
+	return HeightmapDerivation(elementNode)
 
 def getRaisedHeightGrid(heightGrid, start):
 	'Get heightGrid raised above start.'
@@ -190,20 +188,20 @@ def getRaisedHeightGrid(heightGrid, start):
 			raisedRow.append(raisedElement)
 	return raisedHeightGrid
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	solid.processXMLElementByGeometry(getGeometryOutput(xmlElement), xmlElement)
+	solid.processElementNodeByGeometry(elementNode, getGeometryOutput(elementNode))
 
 
 class HeightmapDerivation:
 	'Class to hold heightmap variables.'
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.fileName = evaluate.getEvaluatedString('', 'file', xmlElement)
-		self.heightGrid = evaluate.getEvaluatedValue([], 'heightGrid', xmlElement)
-		self.inradius = evaluate.getVector3ByPrefixes(['demisize', 'inradius'], Vector3(10.0, 10.0, 5.0), xmlElement)
-		self.inradius = evaluate.getVector3ByMultiplierPrefix(2.0, 'size', self.inradius, xmlElement)
-		self.start = evaluate.getEvaluatedFloat(0.0, 'start', xmlElement)
+		self.fileName = evaluate.getEvaluatedString('', elementNode, 'file')
+		self.heightGrid = evaluate.getEvaluatedValue([], elementNode, 'heightGrid')
+		self.inradius = evaluate.getVector3ByPrefixes(elementNode, ['demisize', 'inradius'], Vector3(10.0, 10.0, 5.0))
+		self.inradius = evaluate.getVector3ByMultiplierPrefix(elementNode, 2.0, 'size', self.inradius)
+		self.start = evaluate.getEvaluatedFloat(0.0, elementNode, 'start')
 
 	def __repr__(self):
 		'Get the string representation of this HeightmapDerivation.'

@@ -1,24 +1,21 @@
 #! /usr/bin/env python
 """
 This page is in the table of contents.
+This plugin limits the feed rate of the tool head, so that the stepper motors are not driven too fast and skip steps.
 
-Limit limts the feed rate of the tool head, so that the stepper motors are not driven too fast and skip steps.
+The limit manual page is at:
+http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Limit
+
+The maximum z feed rate is defined in speed.
 
 ==Operation==
-The default 'Activate Limit' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Limit' checkbox is on.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Maximum Initial Feed Rate===
 Default is one millimeter per second.
 
-Defines the maximum speed of the inital tool head will move.
-
-===Maximum Z Feed Rate===
-Default is one millimeter per second.
-
-If your firmware limits the z feed rate, you do not need to set this setting.
-
-Defines the maximum speed that the tool head will move in the z direction.
+Defines the maximum speed of the inital tool head move.
 
 ==Examples==
 The following examples limit the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and limit.py.
@@ -54,7 +51,7 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/28/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -67,7 +64,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Limit a gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'limit'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(LimitRepository())
 	if not repository.activateLimit.value:
 		return gcodeText
@@ -88,9 +85,9 @@ class LimitRepository:
 		'Set the default settings, execute title & settings fileName.'
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.limit.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Limit', self, '')
-		self.activateLimit = settings.BooleanSetting().getFromValue('Activate Limit if your Firmware is unable to Limiting your Z-Speed.', self, False)
-		self.maximumInitialFeedRate = settings.FloatSpin().getFromValue(0.5, 'Maximum Initial Feed Rate (mm/s):', self, 10.0, 5.0)
-		self.maximumZFeedRatePerSecond = settings.FloatSpin().getFromValue(0.5, 'Maximum Z Feed Rate (mm/s):', self, 10.0, 5.0)
+		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Limit')
+		self.activateLimit = settings.BooleanSetting().getFromValue('Activate Limit', self, False)
+		self.maximumInitialFeedRate = settings.FloatSpin().getFromValue(0.5, 'Maximum Initial Feed Rate (mm/s):', self, 10.0, 1.0)
 		self.executeTitle = 'Limit'
 
 	def execute(self):
@@ -106,23 +103,23 @@ class LimitSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.feedRateMinute = None
 		self.lineIndex = 0
+		self.maximumZDrillFeedRatePerSecond = 987654321.0
 		self.oldLocation = None
 
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the limit gcode.'
-		self.maximumZDrillFeedRatePerSecond = repository.maximumZFeedRatePerSecond.value
-		self.maximumZTravelFeedRatePerSecond = repository.maximumZFeedRatePerSecond.value
-		self.maximumZFeedRatePerSecond = self.maximumZTravelFeedRatePerSecond
 		self.repository = repository
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
+		self.maximumZDrillFeedRatePerSecond = min(self.maximumZDrillFeedRatePerSecond, self.maximumZTravelFeedRatePerSecond)
+		self.maximumZFeedRatePerSecond = self.maximumZTravelFeedRatePerSecond
 		for lineIndex in xrange(self.lineIndex, len(self.lines)):
 			self.parseLine( lineIndex )
 		return self.distanceFeedRate.output.getvalue()
 
 	def getLimitedInitialMovement(self, line, splitLine):
 		'Get a limited linear movement.'
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			line = self.distanceFeedRate.getLineWithFeedRate(60.0 * self.repository.maximumInitialFeedRate.value, line, splitLine)
 		return line
 
@@ -137,7 +134,7 @@ class LimitSkein:
 	def getZLimitedLineArc(self, line, splitLine):
 		'Get a replaced z limited gcode arc movement line.'
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
-		if self.feedRateMinute == None or self.oldLocation == None:
+		if self.feedRateMinute is None or self.oldLocation is None:
 			return line
 		relativeLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.oldLocation += relativeLocation
@@ -150,7 +147,7 @@ class LimitSkein:
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 		if location == self.oldLocation:
 			return ''
-		if self.feedRateMinute == None or self.oldLocation == None:
+		if self.feedRateMinute is None or self.oldLocation is None:
 			return line
 		deltaZ = abs(location.z - self.oldLocation.z)
 		distance = abs(location - self.oldLocation)
@@ -164,12 +161,12 @@ class LimitSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> limit </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('limit')
 				return
 			elif firstWord == '(<maximumZDrillFeedRatePerSecond>':
 				self.maximumZDrillFeedRatePerSecond = float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
-				self.distanceFeedRate.addTagBracketedLine('maximumZTravelFeedRatePerSecond', self.maximumZTravelFeedRatePerSecond )
+			elif firstWord == '(<maximumZTravelFeedRatePerSecond>':
+				self.maximumZTravelFeedRatePerSecond = float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine( self, lineIndex ):

@@ -19,15 +19,14 @@
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="__init__.html">__init__</a><br>
 <a href="cStringIO.html">cStringIO</a><br>
-<a href="cmath.html">cmath</a><br>
-</td><td width="25%" valign=top><a href="fabmetheus_utilities.euclidean.html">fabmetheus_utilities.euclidean</a><br>
-<a href="fabmetheus_utilities.geometry.geometry_utilities.evaluate.html">fabmetheus_utilities.geometry.geometry_utilities.evaluate</a><br>
+<a href="fabmetheus_utilities.euclidean.html">fabmetheus_utilities.euclidean</a><br>
+</td><td width="25%" valign=top><a href="fabmetheus_utilities.geometry.geometry_utilities.evaluate.html">fabmetheus_utilities.geometry.geometry_utilities.evaluate</a><br>
 <a href="fabmetheus_utilities.gcodec.html">fabmetheus_utilities.gcodec</a><br>
-</td><td width="25%" valign=top><a href="fabmetheus_utilities.intercircle.html">fabmetheus_utilities.intercircle</a><br>
-<a href="math.html">math</a><br>
+<a href="fabmetheus_utilities.intercircle.html">fabmetheus_utilities.intercircle</a><br>
+</td><td width="25%" valign=top><a href="math.html">math</a><br>
 <a href="fabmetheus_utilities.geometry.geometry_utilities.matrix.html">fabmetheus_utilities.geometry.geometry_utilities.matrix</a><br>
-</td><td width="25%" valign=top><a href="fabmetheus_utilities.xml_simple_reader.html">fabmetheus_utilities.xml_simple_reader</a><br>
-<a href="fabmetheus_utilities.xml_simple_writer.html">fabmetheus_utilities.xml_simple_writer</a><br>
+<a href="fabmetheus_utilities.xml_simple_reader.html">fabmetheus_utilities.xml_simple_reader</a><br>
+</td><td width="25%" valign=top><a href="fabmetheus_utilities.xml_simple_writer.html">fabmetheus_utilities.xml_simple_writer</a><br>
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
@@ -71,7 +70,7 @@
 
 <dl><dt><a name="Face-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;object&nbsp;info.</tt></dd></dl>
 
-<dl><dt><a name="Face-addToAttributeDictionary"><strong>addToAttributeDictionary</strong></a>(self, attributeDictionary)</dt><dd><tt>Add&nbsp;to&nbsp;the&nbsp;attribute&nbsp;dictionary.</tt></dd></dl>
+<dl><dt><a name="Face-addToAttributes"><strong>addToAttributes</strong></a>(self, attributes)</dt><dd><tt>Add&nbsp;to&nbsp;the&nbsp;attribute&nbsp;dictionary.</tt></dd></dl>
 
 <dl><dt><a name="Face-addXML"><strong>addXML</strong></a>(self, depth, output)</dt><dd><tt>Add&nbsp;the&nbsp;xml&nbsp;for&nbsp;this&nbsp;object.</tt></dd></dl>
 
@@ -89,10 +88,10 @@
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-addFaces"><strong>addFaces</strong></a>(geometryOutput, faces)</dt><dd><tt>Add&nbsp;the&nbsp;faces.</tt></dd></dl>
- <dl><dt><a name="-addGeometryList"><strong>addGeometryList</strong></a>(faces, xmlElement)</dt><dd><tt>Add&nbsp;vertex&nbsp;elements&nbsp;to&nbsp;an&nbsp;xml&nbsp;element.</tt></dd></dl>
+ <dl><dt><a name="-addGeometryList"><strong>addGeometryList</strong></a>(elementNode, faces)</dt><dd><tt>Add&nbsp;vertex&nbsp;elements&nbsp;to&nbsp;an&nbsp;xml&nbsp;element.</tt></dd></dl>
  <dl><dt><a name="-getCommonVertexIndex"><strong>getCommonVertexIndex</strong></a>(edgeFirst, edgeSecond)</dt><dd><tt>Get&nbsp;the&nbsp;vertex&nbsp;index&nbsp;that&nbsp;both&nbsp;edges&nbsp;have&nbsp;in&nbsp;common.</tt></dd></dl>
  <dl><dt><a name="-getFaces"><strong>getFaces</strong></a>(geometryOutput)</dt><dd><tt>Get&nbsp;the&nbsp;faces.</tt></dd></dl>
- <dl><dt><a name="-processXMLElement"><strong>processXMLElement</strong></a>(xmlElement)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
+ <dl><dt><a name="-processElementNode"><strong>processElementNode</strong></a>(elementNode)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

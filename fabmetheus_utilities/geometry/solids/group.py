@@ -19,19 +19,23 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def convertXMLElement(geometryOutput, xmlElement):
+def convertContainerElementNode(elementNode, geometryOutput, xmlObject):
 	"Convert the xml element to a group xml element."
-	convertContainerXMLElement(geometryOutput, xmlElement, Group())
+	elementNode.linkObject(xmlObject)
+	matrix.getBranchMatrixSetElementNode(elementNode)
+	elementNode.getXMLProcessor().createChildNodes(geometryOutput['shapes'], elementNode)
 
-def convertContainerXMLElement(geometryOutput, xmlElement, xmlObject):
+def convertElementNode(elementNode, geometryOutput):
 	"Convert the xml element to a group xml element."
-	xmlElement.linkObject(xmlObject)
-	matrix.getBranchMatrixSetXMLElement(xmlElement)
-	xmlElement.getXMLProcessor().createChildNodes(geometryOutput['shapes'], xmlElement)
+	convertContainerElementNode(elementNode, geometryOutput, Group())
 
-def processXMLElement(xmlElement):
+def getNewDerivation(elementNode):
+	'Get new derivation.'
+	return evaluate.EmptyObject(elementNode)
+
+def processElementNode(elementNode):
 	"Process the xml element."
-	evaluate.processArchivable(Group, xmlElement)
+	evaluate.processArchivable(Group, elementNode)
 
 
 class Group(dictionary.Dictionary):
@@ -65,14 +69,14 @@ class Group(dictionary.Dictionary):
 
 	def getMatrixChainTetragrid(self):
 		"Get the matrix chain tetragrid."
-		return matrix.getTetragridTimesOther(self.xmlElement.parentNode.xmlObject.getMatrixChainTetragrid(), self.matrix4X4.tetragrid)
+		return matrix.getTetragridTimesOther(self.elementNode.parentNode.xmlObject.getMatrixChainTetragrid(), self.matrix4X4.tetragrid)
 
 	def getVisible(self):
 		"Get visible."
-		return euclidean.getBooleanFromDictionary(True, self.getAttributeDictionary(), 'visible')
+		return euclidean.getBooleanFromDictionary(True, self.getAttributes(), 'visible')
 
-	def setToXMLElement(self, xmlElement):
-		'Set to xmlElement.'
-		self.xmlElement = xmlElement
-		xmlElement.parentNode.xmlObject.archivableObjects.append(self)
-		matrix.getBranchMatrixSetXMLElement(xmlElement)
+	def setToElementNode(self, elementNode):
+		'Set to elementNode.'
+		self.elementNode = elementNode
+		elementNode.parentNode.xmlObject.archivableObjects.append(self)
+		matrix.getBranchMatrixSetElementNode(elementNode)

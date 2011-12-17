@@ -22,37 +22,37 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getCubicPath(xmlElement):
+def getCubicPath(elementNode):
 	"Get the cubic path."
-	end = evaluate.getVector3FromXMLElement(xmlElement)
-	previousXMLElement = xmlElement.getPreviousXMLElement()
-	if previousXMLElement == None:
-		print('Warning, can not get previousXMLElement in getCubicPath in cubic for:')
-		print(xmlElement)
+	end = evaluate.getVector3FromElementNode(elementNode)
+	previousElementNode = elementNode.getPreviousElementNode()
+	if previousElementNode is None:
+		print('Warning, can not get previousElementNode in getCubicPath in cubic for:')
+		print(elementNode)
 		return [end]
-	begin = xmlElement.getPreviousVertex(Vector3())
-	evaluatedControlPoints = evaluate.getTransformedPathByKey([], 'controlPoints', xmlElement)
+	begin = elementNode.getPreviousVertex(Vector3())
+	evaluatedControlPoints = evaluate.getTransformedPathByKey([], elementNode, 'controlPoints')
 	if len(evaluatedControlPoints) > 1:
-		return getCubicPathByBeginEnd(begin, evaluatedControlPoints, end, xmlElement)
-	controlPoint0 = evaluate.getVector3ByPrefix(None, 'controlPoint0', xmlElement)
-	controlPoint1 = evaluate.getVector3ByPrefix(None, 'controlPoint1', xmlElement)
+		return getCubicPathByBeginEnd(begin, evaluatedControlPoints, elementNode, end)
+	controlPoint0 = evaluate.getVector3ByPrefix(None, elementNode, 'controlPoint0')
+	controlPoint1 = evaluate.getVector3ByPrefix(None, elementNode, 'controlPoint1')
 	if len(evaluatedControlPoints) == 1:
 		controlPoint1 = evaluatedControlPoints[0]
-	if controlPoint0 == None:
-		oldControlPoint = evaluate.getVector3ByPrefixes(['controlPoint','controlPoint1'], None, previousXMLElement)
-		if oldControlPoint == None:
-			oldControlPoints = evaluate.getTransformedPathByKey([], 'controlPoints', previousXMLElement)
+	if controlPoint0 is None:
+		oldControlPoint = evaluate.getVector3ByPrefixes(previousElementNode, ['controlPoint','controlPoint1'], None)
+		if oldControlPoint is None:
+			oldControlPoints = evaluate.getTransformedPathByKey([], previousElementNode, 'controlPoints')
 			if len(oldControlPoints) > 0:
 				oldControlPoint = oldControlPoints[-1]
-		if oldControlPoint == None:
+		if oldControlPoint is None:
 			oldControlPoint = end
 		controlPoint0 = begin + begin - oldControlPoint
-	return getCubicPathByBeginEnd(begin, [controlPoint0, controlPoint1], end, xmlElement)
+	return getCubicPathByBeginEnd(begin, [controlPoint0, controlPoint1], elementNode, end)
 
-def getCubicPathByBeginEnd(begin, controlPoints, end, xmlElement):
+def getCubicPathByBeginEnd(begin, controlPoints, elementNode, end):
 	"Get the cubic path by begin and end."
-	return svg_reader.getCubicPoints(begin, controlPoints, end, lineation.getNumberOfBezierPoints(begin, end, xmlElement))
+	return svg_reader.getCubicPoints(begin, controlPoints, end, lineation.getNumberOfBezierPoints(begin, elementNode, end))
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	xmlElement.parentNode.xmlObject.vertexes += getCubicPath(xmlElement)
+	elementNode.parentNode.xmlObject.vertexes += getCubicPath(elementNode)

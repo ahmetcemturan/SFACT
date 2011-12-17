@@ -19,13 +19,17 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def convertXMLElement(geometryOutput, xmlElement):
+def convertElementNode(elementNode, geometryOutput):
 	"Convert the xml element to an intersection xml element."
-	group.convertContainerXMLElement(geometryOutput, xmlElement, Intersection())
+	group.convertContainerElementNode(elementNode, geometryOutput, Intersection())
 
-def processXMLElement(xmlElement):
+def getNewDerivation(elementNode):
+	'Get new derivation.'
+	return evaluate.EmptyObject(elementNode)
+
+def processElementNode(elementNode):
 	"Process the xml element."
-	evaluate.processArchivable(Intersection, xmlElement)
+	evaluate.processArchivable(Intersection, elementNode)
 
 
 class Intersection(difference.Difference):

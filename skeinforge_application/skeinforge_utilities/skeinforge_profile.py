@@ -22,7 +22,7 @@ import os
 import shutil
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -114,15 +114,6 @@ def updateProfileSaveListeners():
 
 class AddProfile:
 	"A class to add a profile."
-	def addToDialog( self, gridPosition ):
-		"Add this to the dialog."
-		gridPosition.increment()
-		self.entry = settings.Tkinter.Entry( gridPosition.master )
-		self.entry.bind('<Return>', self.addSelectionWithEvent )
-		self.entry.grid( row = gridPosition.row, column = 1, columnspan = 3, sticky = settings.Tkinter.W )
-		self.addButton = settings.Tkinter.Button( gridPosition.master, activebackground = 'black', activeforeground = 'white', text = 'Add Profile', command = self.addSelection )
-		self.addButton.grid( row = gridPosition.row, column = 0 )
-
 	def addSelection(self):
 		"Add the selection of a listbox setting."
 		entryText = self.entry.get()
@@ -144,6 +135,15 @@ class AddProfile:
 	def addSelectionWithEvent(self, event):
 		"Add the selection of a listbox setting, given an event."
 		self.addSelection()
+
+	def addToDialog( self, gridPosition ):
+		"Add this to the dialog."
+		gridPosition.increment()
+		self.entry = settings.Tkinter.Entry( gridPosition.master )
+		self.entry.bind('<Return>', self.addSelectionWithEvent )
+		self.entry.grid( row = gridPosition.row, column = 1, columnspan = 3, sticky = settings.Tkinter.W )
+		self.addButton = settings.Tkinter.Button( gridPosition.master, activebackground = 'black', activeforeground = 'white', text = 'Add Profile', command = self.addSelection )
+		self.addButton.grid( row = gridPosition.row, column = 0 )
 
 	def getFromProfileListboxSettingRepository( self, profileListboxSetting, repository ):
 		"Initialize."
@@ -273,7 +273,7 @@ class ProfileListboxSetting( settings.StringSetting ):
 	def getSelectedFolder(self):
 		"Get the selected folder."
 		settingProfileSubfolder = settings.getSubfolderWithBasename( self.value, archive.getProfilesPath( self.listSetting.craftTypeName ) )
-		if settingProfileSubfolder != None:
+		if settingProfileSubfolder is not None:
 			return settingProfileSubfolder
 		toolProfileSubfolder = settings.getSubfolderWithBasename( self.value, settings.getProfilesDirectoryInAboveDirectory( self.listSetting.craftTypeName ) )
 		return toolProfileSubfolder
@@ -300,9 +300,9 @@ class ProfileListboxSetting( settings.StringSetting ):
 	def setValueToString( self, valueString ):
 		"Set the value to the value string."
 		self.value = valueString
-		if self.getSelectedFolder() == None:
+		if self.getSelectedFolder() is None:
 			self.value = self.defaultValue
-		if self.getSelectedFolder() == None:
+		if self.getSelectedFolder() is None:
 			if len( self.listSetting.value ) > 0:
 				self.value = self.listSetting.value[0]
 

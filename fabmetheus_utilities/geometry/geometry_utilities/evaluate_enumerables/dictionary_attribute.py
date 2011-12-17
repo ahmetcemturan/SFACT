@@ -96,7 +96,7 @@ class DictionaryAttribute:
 		return self.dictionaryObject
 
 
-globalAccessibleAttributes = 'count delete getIsIn getIsNotIn getLength getMax getMin index length set'.split()
-globalGetAccessibleAttributeSet = set(globalAccessibleAttributes)
+globalAccessibleAttributeDictionary = 'count delete getIsIn getIsNotIn getLength getMax getMin index length set'.split()
+globalGetAccessibleAttributeSet = set(globalAccessibleAttributeDictionary)
 globalNativeFunctions = 'clear copy fromkeys get items keys pop popitem remove setdefault update values'.split()
 globalNativeFunctionSet = set(globalNativeFunctions)

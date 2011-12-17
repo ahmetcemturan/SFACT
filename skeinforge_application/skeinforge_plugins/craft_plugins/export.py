@@ -1,6 +1,6 @@
 """
 This page is in the table of contents.
-Export is a script to pick an export plugin and optionally print the output to a file.
+Export is a craft tool to pick an export plugin, add information to the file name, and delete comments.
 
 The export manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Export
@@ -47,17 +47,22 @@ Default is empty.
 
 Defines the output name for sending to a file or pipe.  A common choice is stdout to print the output in the shell screen.  Another common choice is stderr.  With the empty default, nothing will be done.  If the value is anything else, the output will be written to that file name.
 
+===Analyze Gcode===
+Default is on.
+
+When selected, the penultimate gcode will be sent to the analyze plugins to be analyzed and viewed.
+
 ===Comment Choice===
 Default is 'Delete All Comments'.
 
 ====Do Not Delete Comments====
-When selected, export will not delete comments.  Crafting comments slow down the processing in many firmware types, which leads to segment pauses.
-
+When selected, export will not delete comments.  Crafting comments slow down the processing in many firmware types, which leads to pauses and therefore a lower quality print.
+ 
 ====Delete Crafting Comments====
-When selected, export will delete the time consuming crafting comments, but leave the initialization comments.  Since the crafting comments are deleted, there are no additional segment pauses.  The remaining initialization comments provide some useful information for the analyze tools.
+When selected, export will delete the time consuming crafting comments, but leave the initialization comments.  Since the crafting comments are deleted, there are no pauses during extrusion.  The remaining initialization comments provide some useful information for the analyze tools.
 
 ====Delete All Comments====
-When selected, export will delete all comments.  The comments are not necessary to run a fabricator.
+When selected, export will delete all comments.  The comments are not necessary to run a fabricator.  Some printers do not support comments at all so the safest way is choose this option.
 
 ===Export Operations===
 Export presents the user with a choice of the export plugins in the export_plugins folder.  The chosen plugin will then modify the gcode or translate it into another format.  There is also the "Do Not Change Output" choice, which will not change the output.  An export plugin is a script in the export_plugins folder which has the getOutput function, the globalIsReplaceable variable and if it's output is not replaceable, the writeOutput function.
@@ -65,8 +70,8 @@ Export presents the user with a choice of the export plugins in the export_plugi
 ===File Extension===
 Default is gcode.
 
-Defines the file extension added to the name of the output file.
-
+Defines the file extension added to the name of the output file.  The output file will be named as originalname_export.extension so if you are processing XYZ.stl the output will by default be XYZ_export.gcode
+ 
 ===Name of Replace File===
 Default is replace.csv.
 
@@ -114,7 +119,7 @@ import sys
 import time
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __credits__ = 'Gary Hodgson <http://garyhodgson.com/reprap/2011/06/hacking-skeinforge-export-module/>'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
@@ -124,7 +129,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Export a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'export'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(ExportRepository())
 	if not repository.activateExport.value:
 		return gcodeText
@@ -134,17 +139,17 @@ def getDescriptionCarve(lines):
 	'Get the description for carve.'
 	descriptionCarve = ''
 	layerThicknessString = getSettingString(lines, 'carve', 'Layer Thickness')
-	if layerThicknessString != None:
+	if layerThicknessString is not None:
 		descriptionCarve += layerThicknessString.replace('.', '') + 'h'
 	perimeterWidthString = getSettingString(lines, 'carve', 'Perimeter Width over Thickness')
-	if perimeterWidthString != None:
+	if perimeterWidthString is not None:
 		descriptionCarve += 'x%sw' % str(float(perimeterWidthString) * float(layerThicknessString)).replace('.', '')
 	return descriptionCarve
 
 def getDescriptionFill(lines):
 	'Get the description for fill.'
 	activateFillString = getSettingString(lines, 'fill', 'Activate Fill')
-	if activateFillString == None or activateFillString == 'False':
+	if activateFillString is None or activateFillString == 'False':
 		return ''
 	infillSolidityString = getSettingString(lines, 'fill', 'Infill Solidity')
 	return '_' + infillSolidityString.replace('.', '') + 'fill'
@@ -152,7 +157,7 @@ def getDescriptionFill(lines):
 def getDescriptionMultiply(lines):
 	'Get the description for multiply.'
 	activateMultiplyString = getSettingString(lines, 'multiply', 'Activate Multiply')
-	if activateMultiplyString == None or activateMultiplyString == 'False':
+	if activateMultiplyString is None or activateMultiplyString == 'False':
 		return ''
 	columnsString = getSettingString(lines, 'multiply', 'Number of Columns')
 	rowsString = getSettingString(lines, 'multiply', 'Number of Rows')
@@ -163,7 +168,7 @@ def getDescriptionMultiply(lines):
 def getDescriptionSpeed(lines):
 	'Get the description for speed.'
 	activateSpeedString = getSettingString(lines, 'speed', 'Activate Speed')
-	if activateSpeedString == None or activateSpeedString == 'False':
+	if activateSpeedString is None or activateSpeedString == 'False':
 		return ''
 	feedRateString = getSettingString(lines, 'speed', 'Feed Rate')
 	flowRateString = getSettingString(lines, 'speed', 'Flow Rate')
@@ -187,7 +192,7 @@ def getDistanceGcode(exportText):
 			firstWord = splitLine[0]
 		if firstWord == 'G1':
 			location = gcodec.getLocationFromSplitLine(oldLocation, splitLine)
-			if oldLocation != None:
+			if oldLocation is not None:
 				distance = location.distance(oldLocation)
 				print( distance )
 			oldLocation = location
@@ -207,7 +212,7 @@ def getNewRepository():
 
 def getReplaceableExportGcode(nameOfReplaceFile, replaceableExportGcode):
 	'Get text with strings replaced according to replace.csv file.'
-	replaceLines = settings.getLinesInAlterationsOrGivenDirectory(nameOfReplaceFile)
+	replaceLines = settings.getAlterationLines(nameOfReplaceFile)
 	if len(replaceLines) < 1:
 		return replaceableExportGcode
 	for replaceLine in replaceLines:
@@ -267,6 +272,10 @@ def writeOutput(fileName, shouldAnalyze=True):
 	if repository.addExportSuffix.value:
 		fileNameSuffix += '_export'
 	gcodeText = gcodec.getGcodeFileText(fileName, '')
+	procedures = skeinforge_craft.getProcedures('export', gcodeText)
+	gcodeText = skeinforge_craft.getChainTextFromProcedures(fileName, procedures[: -1], gcodeText)
+	if gcodeText == '':
+		return None
 	if repository.addProfileExtension.value:
 		fileNameSuffix += '.' + getFirstValue(gcodeText, '(<profileName>')
 	if repository.addDescriptiveExtension.value:
@@ -274,10 +283,6 @@ def writeOutput(fileName, shouldAnalyze=True):
 	if repository.addTimestampExtension.value:
 		fileNameSuffix += '.' + getFirstValue(gcodeText, '(<timeStampPreface>')
 	fileNameSuffix += '.' + repository.fileExtension.value
-	procedures = skeinforge_craft.getProcedures('export', gcodeText)
-	gcodeText = skeinforge_craft.getChainTextFromProcedures(fileName, procedures[: -1], gcodeText)
-	if gcodeText == '':
-		return None
 	fileNamePenultimate = fileName[: fileName.rfind('.')] + '_penultimate.gcode'
 	filePenultimateWritten = False
 	if repository.savePenultimateGcode.value:
@@ -286,28 +291,28 @@ def writeOutput(fileName, shouldAnalyze=True):
 		print('The penultimate file is saved as ' + archive.getSummarizedFileName(fileNamePenultimate))
 	exportGcode = getCraftedTextFromText(gcodeText, repository)
 	window = None
-	if shouldAnalyze:
-		window = skeinforge_analyze.writeOutput(fileName, fileNamePenultimate, fileNameSuffix,
-			filePenultimateWritten, gcodeText)
+	if shouldAnalyze and repository.analyzeGcode.value:
+		window = skeinforge_analyze.writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWritten, gcodeText)
 	replaceableExportGcode = None
 	selectedPluginModule = getSelectedPluginModule(repository.exportPlugins)
-	if selectedPluginModule == None:
+	if selectedPluginModule is None:
 		replaceableExportGcode = exportGcode
 	else:
 		if selectedPluginModule.globalIsReplaceable:
 			replaceableExportGcode = selectedPluginModule.getOutput(exportGcode)
 		else:
 			selectedPluginModule.writeOutput(fileNameSuffix, exportGcode)
-	if replaceableExportGcode != None:
+	if replaceableExportGcode is not None:
 		replaceableExportGcode = getReplaceableExportGcode(repository.nameOfReplaceFile.value, replaceableExportGcode)
 		archive.writeFileText( fileNameSuffix, replaceableExportGcode )
 		print('The exported file is saved as ' + archive.getSummarizedFileName(fileNameSuffix))
 	if repository.alsoSendOutputTo.value != '':
-		if replaceableExportGcode == None:
+		if replaceableExportGcode is None:
 			replaceableExportGcode = selectedPluginModule.getOutput(exportGcode)
 		sendOutputTo(repository.alsoSendOutputTo.value, replaceableExportGcode)
 	print('It took %s to export the file.' % euclidean.getDurationString(time.time() - startTime))
 	return window
+
 
 class ExportRepository:
 	'A class to handle the export settings.'
@@ -319,11 +324,12 @@ class ExportRepository:
 		self.activateExport = settings.BooleanSetting().getFromValue('Activate Export', self, True)
 		self.addExportSuffix = settings.BooleanSetting().getFromValue('Add _export to filename (filename_export)', self, True)
 		self.alsoSendOutputTo = settings.StringSetting().getFromValue('Also Send Output To:', self, '')
+		self.analyzeGcode = settings.BooleanSetting().getFromValue('Analyze Gcode', self, True)
 		self.commentChoice = settings.MenuButtonDisplay().getFromName('Handling of Comments in G-Code:', self)
 		self.doNotDeleteComments = settings.MenuRadio().getFromMenuButtonDisplay(self.commentChoice, 'Do Not Delete Comments', self, False)
 		self.deleteCraftingComments = settings.MenuRadio().getFromMenuButtonDisplay(self.commentChoice, 'Delete Crafting Comments', self, False)
 		self.deleteAllComments = settings.MenuRadio().getFromMenuButtonDisplay(self.commentChoice, 'Delete All Comments', self, True)
-		exportPluginsFolderPath = archive.getAbsoluteFrozenFolderPath(__file__, 'export_plugins')
+		exportPluginsFolderPath = archive.getAbsoluteFrozenFolderPath(archive.getCraftPluginsDirectoryPath('export.py'), 'export_plugins')
 		exportStaticDirectoryPath = os.path.join(exportPluginsFolderPath, 'static_plugins')
 		exportPluginFileNames = archive.getPluginFileNamesFromDirectoryPath(exportPluginsFolderPath)
 		exportStaticPluginFileNames = archive.getPluginFileNamesFromDirectoryPath(exportStaticDirectoryPath)
@@ -347,10 +353,6 @@ class ExportRepository:
 		self.fileExtension = settings.StringSetting().getFromValue('File Extension (gcode):', self, 'gcode')
 		self.nameOfReplaceFile = settings.StringSetting().getFromValue('Name of Replace File:', self, 'replace.csv')
 		self.savePenultimateGcode = settings.BooleanSetting().getFromValue('Save Penultimate Gcode', self, True)
-#		settings.LabelDisplay().getFromName(' ', self)
-#		settings.LabelDisplay().getFromName('--Profile Sharing and Archiving--', self)
-#		self.archiveProfile = settings.BooleanSetting().getFromValue('Archive Used Profile As Zip', self, False)
-#		self.exportProfileAsCsv = settings.BooleanSetting().getFromValue('Export Profile Values As CSV File', self, False)
 		settings.LabelDisplay().getFromName(' ', self)
 		settings.LabelDisplay().getFromName('--File Name Alterations--', self)
 		settings.LabelDisplay().getFromName('"WARNING" IF ANY OF BELOW CHECKBOXES ARE CHECKED', self)
@@ -390,7 +392,7 @@ class ExportSkein:
 	def getLineWithTruncatedNumber(self, character, line, splitLine):
 		'Get a line with the number after the character truncated.'
 		numberString = gcodec.getStringFromCharacterSplitLine(character, splitLine)
-		if numberString == None:
+		if numberString is None:
 			return line
 		roundedNumberString = euclidean.getRoundedToPlacesString(self.decimalPlacesExported, float(numberString))
 		return gcodec.getLineWithValueString(character, line, splitLine, roundedNumberString)
@@ -413,7 +415,7 @@ class ExportSkein:
 		if firstWord == '(<crafting>)':
 			self.crafting = True
 		if firstWord == '(</extruderInitialization>)':
-			self.addLine('(<procedureName> export </procedureName>)')
+			self.addLine(gcodec.getTagBracketedProcedure('export'))
 		if firstWord != 'G1' and firstWord != 'G2' and firstWord != 'G3' :
 			self.addLine(line)
 			return
@@ -424,6 +426,7 @@ class ExportSkein:
 		line = self.getLineWithTruncatedNumber('J', line, splitLine)
 		line = self.getLineWithTruncatedNumber('R', line, splitLine)
 		self.addLine(line)
+
 
 def main():
 	'Display the export dialog.'

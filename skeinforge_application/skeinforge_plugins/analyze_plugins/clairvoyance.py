@@ -40,7 +40,7 @@ import sys
 import traceback
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -52,7 +52,7 @@ def getNewRepository():
 def getWindowAnalyzeFile(fileName, repository=None):
 	'Open penultimate file with outside program.'
 	print('')
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(ClairvoyanceRepository())
 	gcodeProgram = repository.gcodeProgram.value
 	if gcodeProgram == '':

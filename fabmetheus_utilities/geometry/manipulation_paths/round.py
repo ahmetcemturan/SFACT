@@ -23,21 +23,25 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 40
 
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get round loop."
 	if len(loop) < 3:
 		return [loop]
-	radius = lineation.getRadiusByPrefix(prefix, sideLength, xmlElement)
-	if radius == 0.0:
+	derivation = RoundDerivation(elementNode, prefix, sideLength)
+	if derivation.radius == 0.0:
 		return loop
 	roundLoop = []
-	sidesPerRadian = 0.5 / math.pi * evaluate.getSidesMinimumThreeBasedOnPrecision(sideLength, xmlElement)
+	sidesPerRadian = 0.5 / math.pi * evaluate.getSidesMinimumThreeBasedOnPrecision(elementNode, sideLength)
 	for pointIndex in xrange(len(loop)):
 		begin = loop[(pointIndex + len(loop) - 1) % len(loop)]
 		center = loop[pointIndex]
 		end = loop[(pointIndex + 1) % len(loop)]
-		roundLoop += getRoundPath(begin, center, close, end, radius, sidesPerRadian)
+		roundLoop += getRoundPath(begin, center, close, end, derivation.radius, sidesPerRadian)
 	return [euclidean.getLoopWithoutCloseSequentialPoints(close, roundLoop)]
+
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return RoundDerivation(elementNode, prefix, sideLength)
 
 def getRoundPath( begin, center, close, end, radius, sidesPerRadian ):
 	"Get round path."
@@ -78,6 +82,13 @@ def getRoundPath( begin, center, close, end, radius, sidesPerRadian ):
 		roundPath.append( arcPoint )
 	return roundPath + [ endBevel ]
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)
+
+
+class RoundDerivation:
+	"Class to hold round variables."
+	def __init__(self, elementNode, prefix, sideLength):
+		'Set defaults.'
+		self.radius = lineation.getFloatByPrefixSide(0.0, elementNode, prefix + 'radius', sideLength)

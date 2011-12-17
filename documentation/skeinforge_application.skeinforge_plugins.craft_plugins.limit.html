@@ -13,20 +13,23 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.lift.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.mill.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
+This plugin limits the feed rate of the tool head, so that the stepper motors are not driven too fast and skip steps.<br>
  <br>
-Limit limts the feed rate of the tool head, so that the stepper motors are not driven too fast and skip steps.<br>
+The limit manual page is at:<br>
+<a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Limit">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Limit</a><br>
+ <br>
+The maximum z feed rate is defined in speed.<br>
  <br>
 <br />
 <a href="#Operation">Operation</a><br />
 <a href="#Settings">Settings</a><br />
 &nbsp;&nbsp;<a href="#Maximum Initial Feed Rate">Maximum Initial Feed Rate</a><br />
-&nbsp;&nbsp;<a href="#Maximum Z Feed Rate">Maximum Z Feed Rate</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
 
-The default 'Activate Limit' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.<br>
+The default 'Activate Limit' checkbox is on.  When it is on, the functions described below will work, when it is off, nothing will be done.<br>
  <br>
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
@@ -35,15 +38,7 @@ The default 'Activate Limit' checkbox is on.  When it is on, the functions descr
 
 Default is one millimeter per second.<br>
  <br>
-Defines the maximum speed of the inital tool head will move.<br>
- <br>
-<a name="Maximum Z Feed Rate" id="Maximum Z Feed Rate"></a><h3>Maximum Z Feed Rate</h3>
-
-Default is one millimeter per second.<br>
- <br>
-If your firmware limits the z feed rate, you do not need to set this setting.<br>
- <br>
-Defines the maximum speed that the tool head will move in the z direction.<br>
+Defines the maximum speed of the inital tool head move.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>

@@ -72,7 +72,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -85,7 +85,7 @@ def getCraftedTextFromText( gcodeText, splodgeRepository = None ):
 	"Splodge a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'splodge'):
 		return gcodeText
-	if splodgeRepository == None:
+	if splodgeRepository is None:
 		splodgeRepository = settings.getReadRepository( SplodgeRepository() )
 	if not splodgeRepository.activateSplodge.value:
 		return gcodeText
@@ -222,12 +222,12 @@ class SplodgeSkein:
 		locationComplex = location.dropAxis()
 		relativeStartComplex = None
 		nextLocationComplex = self.getNextActiveLocationComplex()
-		if nextLocationComplex != None:
+		if nextLocationComplex is not None:
 			if nextLocationComplex != locationComplex:
 				relativeStartComplex = locationComplex - nextLocationComplex
-		if relativeStartComplex == None:
+		if relativeStartComplex is None:
 			relativeStartComplex = complex( 19.9, 9.9 )
-			if self.oldLocation != None:
+			if self.oldLocation is not None:
 				oldLocationComplex = self.oldLocation.dropAxis()
 				if oldLocationComplex != locationComplex:
 					relativeStartComplex = oldLocationComplex - locationComplex
@@ -277,7 +277,7 @@ class SplodgeSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.addLineUnlessIdenticalReactivate('(<procedureName> splodge </procedureName>)')
+				self.addLineUnlessIdenticalReactivate(gcodec.getTagBracketedProcedure('splodge'))
 				return
 			elif firstWord == '(<layerThickness>':
 				self.layerThickness = float(splitLine[1])

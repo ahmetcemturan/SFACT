@@ -21,37 +21,40 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = 60
 
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get segment loop."
 	if len(loop) < 3:
 		return [loop]
-	path = evaluate.getPathByPrefix(getSegmentPathDefault(), prefix, xmlElement)
-	if path == getSegmentPathDefault():
+	derivation = SegmentDerivation(elementNode, prefix)
+	if derivation.path == getSegmentPathDefault():
 		return [loop]
-	path = getXNormalizedVector3Path(path)
-	segmentCenter = evaluate.getVector3ByPrefix(None, prefix + 'center', xmlElement)
+	path = getXNormalizedVector3Path(derivation.path)
 	if euclidean.getIsWiddershinsByVector3(loop):
 		path = path[: : -1]
 		for point in path:
 			point.x = 1.0 - point.x
-			if segmentCenter == None:
+			if derivation.center == None:
 				point.y = - point.y
 	segmentLoop = []
-	startEnd = StartEnd(len(loop), prefix, xmlElement)
+	startEnd = StartEnd(elementNode, len(loop), prefix)
 	for pointIndex in xrange(len(loop)):
 		if pointIndex >= startEnd.start and pointIndex < startEnd.end:
-			segmentLoop += getSegmentPath(loop, path, pointIndex, segmentCenter)
+			segmentLoop += getSegmentPath(derivation.center, loop, path, pointIndex)
 		else:
 			segmentLoop.append(loop[pointIndex])
 	return [euclidean.getLoopWithoutCloseSequentialPoints( close, segmentLoop)]
 
-def getRadialPath( begin, end, path, segmentCenter ):
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return SegmentDerivation(elementNode, prefix)
+
+def getRadialPath(begin, center, end, path):
 	"Get radial path."
 	beginComplex = begin.dropAxis()
 	endComplex = end.dropAxis()
-	segmentCenterComplex = segmentCenter.dropAxis()
-	beginMinusCenterComplex = beginComplex - segmentCenterComplex
-	endMinusCenterComplex = endComplex - segmentCenterComplex
+	centerComplex = center.dropAxis()
+	beginMinusCenterComplex = beginComplex - centerComplex
+	endMinusCenterComplex = endComplex - centerComplex
 	beginMinusCenterComplexRadius = abs( beginMinusCenterComplex )
 	endMinusCenterComplexRadius = abs( endMinusCenterComplex )
 	if beginMinusCenterComplexRadius == 0.0 or endMinusCenterComplexRadius == 0.0:
@@ -65,19 +68,19 @@ def getRadialPath( begin, end, path, segmentCenter ):
 		weightBegin = 1.0 - weightEnd
 		weightedRadius = beginMinusCenterComplexRadius * weightBegin + endMinusCenterComplexRadius * weightEnd * ( 1.0 + point.y )
 		radialComplex = weightedRadius * euclidean.getWiddershinsUnitPolar( angleDifference * point.x ) * beginMinusCenterComplex
-		polygonPoint = segmentCenter + Vector3( radialComplex.real, radialComplex.imag, point.z )
+		polygonPoint = center + Vector3( radialComplex.real, radialComplex.imag, point.z )
 		radialPath.append( polygonPoint )
 	return radialPath
 
-def getSegmentPath( loop, path, pointIndex, segmentCenter ):
+def getSegmentPath(center, loop, path, pointIndex):
 	"Get segment path."
 	centerBegin = loop[pointIndex]
 	centerEnd = loop[(pointIndex + 1) % len(loop)]
 	centerEndMinusBegin = centerEnd - centerBegin
 	if abs( centerEndMinusBegin ) <= 0.0:
 		return [ centerBegin ]
-	if segmentCenter != None:
-		return getRadialPath( centerBegin, centerEnd, path, segmentCenter )
+	if center != None:
+		return getRadialPath(centerBegin, center, centerEnd, path)
 	begin = loop[(pointIndex + len(loop) - 1) % len(loop)]
 	end = loop[ ( pointIndex + 2 ) % len(loop) ]
 	return getWedgePath( begin, centerBegin, centerEnd, centerEndMinusBegin, end, path )
@@ -85,22 +88,6 @@ def getSegmentPath( loop, path, pointIndex, segmentCenter ):
 def getSegmentPathDefault():
 	"Get segment path default."
 	return [ Vector3(), Vector3( 0.0, 1.0 ) ]
-
-def getXNormalizedVector3Path(path):
-	"Get path where the x ranges from 0 to 1."
-	if len(path) < 1:
-		return path
-	minimumX = path[0].x
-	for point in path[1 :]:
-		minimumX = min( minimumX, point.x )
-	for point in path:
-		point.x -= minimumX
-	maximumX = path[0].x
-	for point in path[1 :]:
-		maximumX = max( maximumX, point.x )
-	for point in path:
-		point.x /= maximumX
-	return path
 
 def getWedgePath( begin, centerBegin, centerEnd, centerEndMinusBegin, end, path ):
 	"Get segment path."
@@ -134,19 +121,43 @@ def getWiddershinsAverageByVector3( centerMinusBeginComplex, endMinusCenterCompl
 	endMinusCenterWiddershins = Vector3( - endMinusCenterComplex.imag, endMinusCenterComplex.real )
 	return ( centerMinusBeginWiddershins + endMinusCenterWiddershins ).getNormalized()
 
-def processXMLElement(xmlElement):
+def getXNormalizedVector3Path(path):
+	"Get path where the x ranges from 0 to 1."
+	if len(path) < 1:
+		return path
+	minimumX = path[0].x
+	for point in path[1 :]:
+		minimumX = min( minimumX, point.x )
+	for point in path:
+		point.x -= minimumX
+	maximumX = path[0].x
+	for point in path[1 :]:
+		maximumX = max( maximumX, point.x )
+	for point in path:
+		point.x /= maximumX
+	return path
+
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)
+
+
+class SegmentDerivation:
+	"Class to hold segment variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.center = evaluate.getVector3ByPrefix(None, elementNode, prefix + 'center')
+		self.path = evaluate.getPathByPrefix(elementNode, getSegmentPathDefault(), prefix)
 
 
 class StartEnd:
 	'Class to get a start through end range.'
-	def __init__(self, modulo, prefix, xmlElement):
+	def __init__(self, elementNode, modulo, prefix):
 		"Initialize."
-		self.start = evaluate.getEvaluatedInt(0, prefix + 'start', xmlElement)
-		self.extent = evaluate.getEvaluatedInt(modulo - self.start, prefix + 'extent', xmlElement)
-		self.end = evaluate.getEvaluatedInt(self.start + self.extent, prefix + 'end', xmlElement)
-		self.revolutions = evaluate.getEvaluatedInt(1, prefix + 'revolutions', xmlElement)
+		self.start = evaluate.getEvaluatedInt(0, elementNode, prefix + 'start')
+		self.extent = evaluate.getEvaluatedInt(modulo - self.start, elementNode, prefix + 'extent')
+		self.end = evaluate.getEvaluatedInt(self.start + self.extent, elementNode, prefix + 'end')
+		self.revolutions = evaluate.getEvaluatedInt(1, elementNode, prefix + 'revolutions')
 		if self.revolutions > 1:
 			self.end += modulo * (self.revolutions - 1)
 

@@ -21,12 +21,23 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 globalExecutionOrder = -200
 
 
-def getManipulatedPaths(close, loop, prefix, sideLength, xmlElement):
+def getManipulatedPaths(close, elementNode, loop, prefix, sideLength):
 	"Get wedge loop."
-	wedgeCenter = evaluate.getVector3ByPrefix(Vector3(), prefix + 'center', xmlElement)
-	loop.append(wedgeCenter)
+	derivation = WedgeDerivation(elementNode, prefix)
+	loop.append(derivation.center)
 	return [loop]
 
-def processXMLElement(xmlElement):
+def getNewDerivation(elementNode, prefix, sideLength):
+	'Get new derivation.'
+	return WedgeDerivation(elementNode, prefix)
+
+def processElementNode(elementNode):
 	"Process the xml element."
-	lineation.processXMLElementByFunction(getManipulatedPaths, xmlElement)
+	lineation.processElementNodeByFunction(elementNode, getManipulatedPaths)
+
+
+class WedgeDerivation:
+	"Class to hold wedge variables."
+	def __init__(self, elementNode, prefix):
+		'Set defaults.'
+		self.center = evaluate.getVector3ByPrefix(Vector3(), elementNode, prefix + 'center')

@@ -1,6 +1,6 @@
 """
 This page is in the table of contents.
-Skeinlayer is a script to display each layer of a gcode file.
+Skeinlayer is an analyze viewer to display each layer of a gcode file.
 
 The skeinlayer manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skeinlayer
@@ -57,7 +57,7 @@ Default is 'Display Line'.
 The mouse tool can be changed from the 'Mouse Mode' menu button or picture button.  The mouse tools listen to the arrow keys when the canvas has the focus.  Clicking in the canvas gives the canvas the focus, and when the canvas has the focus a thick black border is drawn around the canvas.
 
 ====Display Line====
-The 'Display Line' tool will display the highlight the selected line, and display the file line count, counting from one, and the gcode line itself.  When the 'Display Line' tool is active, clicking the canvas will select the nearest line to the mouse click.
+The 'Display Line' tool will display the highlight the selected line, and display the file line count, counting from one, and the gcode line itself.  When the 'Display Line' tool is active, clicking the canvas will select the closest line to the mouse click.
 
 ====Viewpoint Move====
 The 'Viewpoint Move' tool will move the viewpoint in the xy plane when the mouse is clicked and dragged on the canvas.
@@ -145,7 +145,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import os
 import sys
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -167,7 +167,7 @@ def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
 	"Display a gcode file in a skeinlayer window given the text."
 	if gcodeText == '':
 		return None
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( SkeinlayerRepository() )
 	skeinWindow = getWindowGivenTextRepository( fileName, gcodeText, repository )
 	skeinWindow.updateDeiconify()
@@ -243,7 +243,7 @@ class SkeinlayerSkein:
 
 	def addToPath( self, line, location ):
 		"Add a point to travel and maybe extrusion."
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return
 		colorName = 'gray'
 		locationComplex = location.dropAxis()
@@ -283,7 +283,7 @@ class SkeinlayerSkein:
 
 	def linearMove( self, line, location ):
 		"Get statistics for a linear move."
-		if self.skeinPane != None:
+		if self.skeinPane is not None:
 			self.addToPath(line, location)
 
 	def parseCorner(self, line):

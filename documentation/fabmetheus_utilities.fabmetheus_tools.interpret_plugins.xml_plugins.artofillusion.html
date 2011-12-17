@@ -139,7 +139,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.group.html#
 
 <dl><dt><a name="BooleanSolid-getVisible"><strong>getVisible</strong></a>(self)</dt><dd><tt>Get&nbsp;visible.</tt></dd></dl>
 
-<dl><dt><a name="BooleanSolid-setToXMLElement"><strong>setToXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Set&nbsp;to&nbsp;xmlElement.</tt></dd></dl>
+<dl><dt><a name="BooleanSolid-setToElementNode"><strong>setToElementNode</strong></a>(self, elementNode)</dt><dd><tt>Set&nbsp;to&nbsp;elementNode.</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dictionary.html#Dictionary">fabmetheus_utilities.geometry.geometry_tools.dictionary.Dictionary</a>:<br>
@@ -151,7 +151,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 
 <dl><dt><a name="BooleanSolid-createShape"><strong>createShape</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;shape.</tt></dd></dl>
 
-<dl><dt><a name="BooleanSolid-getAttributeDictionary"><strong>getAttributeDictionary</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
+<dl><dt><a name="BooleanSolid-getAttributes"><strong>getAttributes</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
 
 <dl><dt><a name="BooleanSolid-getComplexTransformedPathLists"><strong>getComplexTransformedPathLists</strong></a>(self)</dt><dd><tt>Get&nbsp;complex&nbsp;transformed&nbsp;path&nbsp;lists.</tt></dd></dl>
 
@@ -172,6 +172,8 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 <dl><dt><a name="BooleanSolid-getType"><strong>getType</strong></a>(self)</dt><dd><tt>Get&nbsp;type.</tt></dd></dl>
 
 <dl><dt><a name="BooleanSolid-getVertexes"><strong>getVertexes</strong></a>(self)</dt><dd><tt>Get&nbsp;all&nbsp;vertexes.</tt></dd></dl>
+
+<dl><dt><a name="BooleanSolid-transformGeometryOutput"><strong>transformGeometryOutput</strong></a>(self, geometryOutput)</dt><dd><tt>Transform&nbsp;the&nbsp;geometry&nbsp;output&nbsp;by&nbsp;the&nbsp;local&nbsp;matrix4x4.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -199,19 +201,19 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.cube.html#C
 
 <dl><dt><a name="Cube-createShape"><strong>createShape</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;shape.</tt></dd></dl>
 
-<dl><dt><a name="Cube-setToXMLElement"><strong>setToXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Set&nbsp;to&nbsp;xmlElement.</tt></dd></dl>
+<dl><dt><a name="Cube-setToElementNode"><strong>setToElementNode</strong></a>(self, elementNode)</dt><dd><tt>Set&nbsp;to&nbsp;elementNode.</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="fabmetheus_utilities.geometry.solids.triangle_mesh.html#TriangleMesh">fabmetheus_utilities.geometry.solids.triangle_mesh.TriangleMesh</a>:<br>
 <dl><dt><a name="Cube-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Add&nbsp;empty&nbsp;lists.</tt></dd></dl>
+
+<dl><dt><a name="Cube-getCarveBoundaryLayers"><strong>getCarveBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;boundary&nbsp;layers.</tt></dd></dl>
 
 <dl><dt><a name="Cube-getCarveCornerMaximum"><strong>getCarveCornerMaximum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;maximum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="Cube-getCarveCornerMinimum"><strong>getCarveCornerMinimum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;minimum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="Cube-getCarveLayerThickness"><strong>getCarveLayerThickness</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;layer&nbsp;thickness.</tt></dd></dl>
-
-<dl><dt><a name="Cube-getCarveRotatedBoundaryLayers"><strong>getCarveRotatedBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;rotated&nbsp;boundary&nbsp;layers.</tt></dd></dl>
 
 <dl><dt><a name="Cube-getFabmetheusXML"><strong>getFabmetheusXML</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;fabmetheus&nbsp;XML.</tt></dd></dl>
 
@@ -231,13 +233,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.triangle_me
 
 <dl><dt><a name="Cube-getVertexes"><strong>getVertexes</strong></a>(self)</dt><dd><tt>Get&nbsp;all&nbsp;vertexes.</tt></dd></dl>
 
-<dl><dt><a name="Cube-getZAddExtruderPaths"><strong>getZAddExtruderPaths</strong></a>(self, z)</dt><dd><tt>Get&nbsp;next&nbsp;z&nbsp;and&nbsp;add&nbsp;extruder&nbsp;loops.</tt></dd></dl>
-
-<dl><dt><a name="Cube-liftByMinimumZ"><strong>liftByMinimumZ</strong></a>(self, minimumZ)</dt><dd><tt>Lift&nbsp;the&nbsp;triangle&nbsp;mesh&nbsp;to&nbsp;the&nbsp;altitude.</tt></dd></dl>
-
 <dl><dt><a name="Cube-setCarveImportRadius"><strong>setCarveImportRadius</strong></a>(self, importRadius)</dt><dd><tt>Set&nbsp;the&nbsp;import&nbsp;radius.</tt></dd></dl>
-
-<dl><dt><a name="Cube-setCarveInfillInDirectionOfBridge"><strong>setCarveInfillInDirectionOfBridge</strong></a>(self, infillInDirectionOfBridge)</dt><dd><tt>Set&nbsp;the&nbsp;infill&nbsp;in&nbsp;direction&nbsp;of&nbsp;bridge.</tt></dd></dl>
 
 <dl><dt><a name="Cube-setCarveIsCorrectMesh"><strong>setCarveIsCorrectMesh</strong></a>(self, isCorrectMesh)</dt><dd><tt>Set&nbsp;the&nbsp;is&nbsp;correct&nbsp;mesh&nbsp;flag.</tt></dd></dl>
 
@@ -263,7 +259,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 
 <dl><dt><a name="Cube-addXMLArchivableObjects"><strong>addXMLArchivableObjects</strong></a>(self, depth, output)</dt><dd><tt>Add&nbsp;xml&nbsp;for&nbsp;this&nbsp;object.</tt></dd></dl>
 
-<dl><dt><a name="Cube-getAttributeDictionary"><strong>getAttributeDictionary</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
+<dl><dt><a name="Cube-getAttributes"><strong>getAttributes</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
 
 <dl><dt><a name="Cube-getComplexTransformedPathLists"><strong>getComplexTransformedPathLists</strong></a>(self)</dt><dd><tt>Get&nbsp;complex&nbsp;transformed&nbsp;path&nbsp;lists.</tt></dd></dl>
 
@@ -278,6 +274,8 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 <dl><dt><a name="Cube-getType"><strong>getType</strong></a>(self)</dt><dd><tt>Get&nbsp;type.</tt></dd></dl>
 
 <dl><dt><a name="Cube-getXMLLocalName"><strong>getXMLLocalName</strong></a>(self)</dt><dd><tt>Get&nbsp;xml&nbsp;local&nbsp;name.</tt></dd></dl>
+
+<dl><dt><a name="Cube-transformGeometryOutput"><strong>transformGeometryOutput</strong></a>(self, geometryOutput)</dt><dd><tt>Transform&nbsp;the&nbsp;geometry&nbsp;output&nbsp;by&nbsp;the&nbsp;local&nbsp;matrix4x4.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -306,7 +304,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.cylinder.ht
 
 <dl><dt><a name="Cylinder-createShape"><strong>createShape</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;shape.</tt></dd></dl>
 
-<dl><dt><a name="Cylinder-setToXMLElement"><strong>setToXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Set&nbsp;to&nbsp;xmlElement.</tt></dd></dl>
+<dl><dt><a name="Cylinder-setToElementNode"><strong>setToElementNode</strong></a>(self, elementNode)</dt><dd><tt>Set&nbsp;to&nbsp;elementNode.</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="fabmetheus_utilities.geometry.solids.cube.html#Cube">fabmetheus_utilities.geometry.solids.cube.Cube</a>:<br>
@@ -314,13 +312,13 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.cube.html#C
 
 <hr>
 Methods inherited from <a href="fabmetheus_utilities.geometry.solids.triangle_mesh.html#TriangleMesh">fabmetheus_utilities.geometry.solids.triangle_mesh.TriangleMesh</a>:<br>
+<dl><dt><a name="Cylinder-getCarveBoundaryLayers"><strong>getCarveBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;boundary&nbsp;layers.</tt></dd></dl>
+
 <dl><dt><a name="Cylinder-getCarveCornerMaximum"><strong>getCarveCornerMaximum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;maximum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="Cylinder-getCarveCornerMinimum"><strong>getCarveCornerMinimum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;minimum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="Cylinder-getCarveLayerThickness"><strong>getCarveLayerThickness</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;layer&nbsp;thickness.</tt></dd></dl>
-
-<dl><dt><a name="Cylinder-getCarveRotatedBoundaryLayers"><strong>getCarveRotatedBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;rotated&nbsp;boundary&nbsp;layers.</tt></dd></dl>
 
 <dl><dt><a name="Cylinder-getFabmetheusXML"><strong>getFabmetheusXML</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;fabmetheus&nbsp;XML.</tt></dd></dl>
 
@@ -340,13 +338,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.triangle_me
 
 <dl><dt><a name="Cylinder-getVertexes"><strong>getVertexes</strong></a>(self)</dt><dd><tt>Get&nbsp;all&nbsp;vertexes.</tt></dd></dl>
 
-<dl><dt><a name="Cylinder-getZAddExtruderPaths"><strong>getZAddExtruderPaths</strong></a>(self, z)</dt><dd><tt>Get&nbsp;next&nbsp;z&nbsp;and&nbsp;add&nbsp;extruder&nbsp;loops.</tt></dd></dl>
-
-<dl><dt><a name="Cylinder-liftByMinimumZ"><strong>liftByMinimumZ</strong></a>(self, minimumZ)</dt><dd><tt>Lift&nbsp;the&nbsp;triangle&nbsp;mesh&nbsp;to&nbsp;the&nbsp;altitude.</tt></dd></dl>
-
 <dl><dt><a name="Cylinder-setCarveImportRadius"><strong>setCarveImportRadius</strong></a>(self, importRadius)</dt><dd><tt>Set&nbsp;the&nbsp;import&nbsp;radius.</tt></dd></dl>
-
-<dl><dt><a name="Cylinder-setCarveInfillInDirectionOfBridge"><strong>setCarveInfillInDirectionOfBridge</strong></a>(self, infillInDirectionOfBridge)</dt><dd><tt>Set&nbsp;the&nbsp;infill&nbsp;in&nbsp;direction&nbsp;of&nbsp;bridge.</tt></dd></dl>
 
 <dl><dt><a name="Cylinder-setCarveIsCorrectMesh"><strong>setCarveIsCorrectMesh</strong></a>(self, isCorrectMesh)</dt><dd><tt>Set&nbsp;the&nbsp;is&nbsp;correct&nbsp;mesh&nbsp;flag.</tt></dd></dl>
 
@@ -372,7 +364,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 
 <dl><dt><a name="Cylinder-addXMLArchivableObjects"><strong>addXMLArchivableObjects</strong></a>(self, depth, output)</dt><dd><tt>Add&nbsp;xml&nbsp;for&nbsp;this&nbsp;object.</tt></dd></dl>
 
-<dl><dt><a name="Cylinder-getAttributeDictionary"><strong>getAttributeDictionary</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
+<dl><dt><a name="Cylinder-getAttributes"><strong>getAttributes</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
 
 <dl><dt><a name="Cylinder-getComplexTransformedPathLists"><strong>getComplexTransformedPathLists</strong></a>(self)</dt><dd><tt>Get&nbsp;complex&nbsp;transformed&nbsp;path&nbsp;lists.</tt></dd></dl>
 
@@ -387,6 +379,8 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 <dl><dt><a name="Cylinder-getType"><strong>getType</strong></a>(self)</dt><dd><tt>Get&nbsp;type.</tt></dd></dl>
 
 <dl><dt><a name="Cylinder-getXMLLocalName"><strong>getXMLLocalName</strong></a>(self)</dt><dd><tt>Get&nbsp;xml&nbsp;local&nbsp;name.</tt></dd></dl>
+
+<dl><dt><a name="Cylinder-transformGeometryOutput"><strong>transformGeometryOutput</strong></a>(self, geometryOutput)</dt><dd><tt>Transform&nbsp;the&nbsp;geometry&nbsp;output&nbsp;by&nbsp;the&nbsp;local&nbsp;matrix4x4.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -422,7 +416,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.group.html#
 
 <dl><dt><a name="Group-getVisible"><strong>getVisible</strong></a>(self)</dt><dd><tt>Get&nbsp;visible.</tt></dd></dl>
 
-<dl><dt><a name="Group-setToXMLElement"><strong>setToXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Set&nbsp;to&nbsp;xmlElement.</tt></dd></dl>
+<dl><dt><a name="Group-setToElementNode"><strong>setToElementNode</strong></a>(self, elementNode)</dt><dd><tt>Set&nbsp;to&nbsp;elementNode.</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dictionary.html#Dictionary">fabmetheus_utilities.geometry.geometry_tools.dictionary.Dictionary</a>:<br>
@@ -434,7 +428,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 
 <dl><dt><a name="Group-createShape"><strong>createShape</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;shape.</tt></dd></dl>
 
-<dl><dt><a name="Group-getAttributeDictionary"><strong>getAttributeDictionary</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
+<dl><dt><a name="Group-getAttributes"><strong>getAttributes</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
 
 <dl><dt><a name="Group-getComplexTransformedPathLists"><strong>getComplexTransformedPathLists</strong></a>(self)</dt><dd><tt>Get&nbsp;complex&nbsp;transformed&nbsp;path&nbsp;lists.</tt></dd></dl>
 
@@ -459,6 +453,8 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 <dl><dt><a name="Group-getVertexes"><strong>getVertexes</strong></a>(self)</dt><dd><tt>Get&nbsp;all&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="Group-getXMLLocalName"><strong>getXMLLocalName</strong></a>(self)</dt><dd><tt>Get&nbsp;xml&nbsp;local&nbsp;name.</tt></dd></dl>
+
+<dl><dt><a name="Group-transformGeometryOutput"><strong>transformGeometryOutput</strong></a>(self, geometryOutput)</dt><dd><tt>Transform&nbsp;the&nbsp;geometry&nbsp;output&nbsp;by&nbsp;the&nbsp;local&nbsp;matrix4x4.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -485,7 +481,7 @@ Methods defined here:<br>
 Methods inherited from <a href="fabmetheus_utilities.geometry.solids.sphere.html#Sphere">fabmetheus_utilities.geometry.solids.sphere.Sphere</a>:<br>
 <dl><dt><a name="Sphere-createShape"><strong>createShape</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;shape.</tt></dd></dl>
 
-<dl><dt><a name="Sphere-setToXMLElement"><strong>setToXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Set&nbsp;to&nbsp;xmlElement.</tt></dd></dl>
+<dl><dt><a name="Sphere-setToElementNode"><strong>setToElementNode</strong></a>(self, elementNode)</dt><dd><tt>Set&nbsp;to&nbsp;elementNode.</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="fabmetheus_utilities.geometry.solids.cube.html#Cube">fabmetheus_utilities.geometry.solids.cube.Cube</a>:<br>
@@ -495,13 +491,13 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.cube.html#C
 Methods inherited from <a href="fabmetheus_utilities.geometry.solids.triangle_mesh.html#TriangleMesh">fabmetheus_utilities.geometry.solids.triangle_mesh.TriangleMesh</a>:<br>
 <dl><dt><a name="Sphere-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Add&nbsp;empty&nbsp;lists.</tt></dd></dl>
 
+<dl><dt><a name="Sphere-getCarveBoundaryLayers"><strong>getCarveBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;boundary&nbsp;layers.</tt></dd></dl>
+
 <dl><dt><a name="Sphere-getCarveCornerMaximum"><strong>getCarveCornerMaximum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;maximum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="Sphere-getCarveCornerMinimum"><strong>getCarveCornerMinimum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;minimum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="Sphere-getCarveLayerThickness"><strong>getCarveLayerThickness</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;layer&nbsp;thickness.</tt></dd></dl>
-
-<dl><dt><a name="Sphere-getCarveRotatedBoundaryLayers"><strong>getCarveRotatedBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;rotated&nbsp;boundary&nbsp;layers.</tt></dd></dl>
 
 <dl><dt><a name="Sphere-getFabmetheusXML"><strong>getFabmetheusXML</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;fabmetheus&nbsp;XML.</tt></dd></dl>
 
@@ -521,13 +517,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.triangle_me
 
 <dl><dt><a name="Sphere-getVertexes"><strong>getVertexes</strong></a>(self)</dt><dd><tt>Get&nbsp;all&nbsp;vertexes.</tt></dd></dl>
 
-<dl><dt><a name="Sphere-getZAddExtruderPaths"><strong>getZAddExtruderPaths</strong></a>(self, z)</dt><dd><tt>Get&nbsp;next&nbsp;z&nbsp;and&nbsp;add&nbsp;extruder&nbsp;loops.</tt></dd></dl>
-
-<dl><dt><a name="Sphere-liftByMinimumZ"><strong>liftByMinimumZ</strong></a>(self, minimumZ)</dt><dd><tt>Lift&nbsp;the&nbsp;triangle&nbsp;mesh&nbsp;to&nbsp;the&nbsp;altitude.</tt></dd></dl>
-
 <dl><dt><a name="Sphere-setCarveImportRadius"><strong>setCarveImportRadius</strong></a>(self, importRadius)</dt><dd><tt>Set&nbsp;the&nbsp;import&nbsp;radius.</tt></dd></dl>
-
-<dl><dt><a name="Sphere-setCarveInfillInDirectionOfBridge"><strong>setCarveInfillInDirectionOfBridge</strong></a>(self, infillInDirectionOfBridge)</dt><dd><tt>Set&nbsp;the&nbsp;infill&nbsp;in&nbsp;direction&nbsp;of&nbsp;bridge.</tt></dd></dl>
 
 <dl><dt><a name="Sphere-setCarveIsCorrectMesh"><strong>setCarveIsCorrectMesh</strong></a>(self, isCorrectMesh)</dt><dd><tt>Set&nbsp;the&nbsp;is&nbsp;correct&nbsp;mesh&nbsp;flag.</tt></dd></dl>
 
@@ -553,7 +543,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 
 <dl><dt><a name="Sphere-addXMLArchivableObjects"><strong>addXMLArchivableObjects</strong></a>(self, depth, output)</dt><dd><tt>Add&nbsp;xml&nbsp;for&nbsp;this&nbsp;object.</tt></dd></dl>
 
-<dl><dt><a name="Sphere-getAttributeDictionary"><strong>getAttributeDictionary</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
+<dl><dt><a name="Sphere-getAttributes"><strong>getAttributes</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
 
 <dl><dt><a name="Sphere-getComplexTransformedPathLists"><strong>getComplexTransformedPathLists</strong></a>(self)</dt><dd><tt>Get&nbsp;complex&nbsp;transformed&nbsp;path&nbsp;lists.</tt></dd></dl>
 
@@ -568,6 +558,8 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 <dl><dt><a name="Sphere-getType"><strong>getType</strong></a>(self)</dt><dd><tt>Get&nbsp;type.</tt></dd></dl>
 
 <dl><dt><a name="Sphere-getXMLLocalName"><strong>getXMLLocalName</strong></a>(self)</dt><dd><tt>Get&nbsp;xml&nbsp;local&nbsp;name.</tt></dd></dl>
+
+<dl><dt><a name="Sphere-transformGeometryOutput"><strong>transformGeometryOutput</strong></a>(self, geometryOutput)</dt><dd><tt>Transform&nbsp;the&nbsp;geometry&nbsp;output&nbsp;by&nbsp;the&nbsp;local&nbsp;matrix4x4.</tt></dd></dl>
 
 </td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -594,13 +586,13 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.triangle_me
 
 <dl><dt><a name="TriangleMesh-addXMLSection"><strong>addXMLSection</strong></a>(self, depth, output)</dt><dd><tt>Add&nbsp;the&nbsp;xml&nbsp;section&nbsp;for&nbsp;this&nbsp;object.</tt></dd></dl>
 
+<dl><dt><a name="TriangleMesh-getCarveBoundaryLayers"><strong>getCarveBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;boundary&nbsp;layers.</tt></dd></dl>
+
 <dl><dt><a name="TriangleMesh-getCarveCornerMaximum"><strong>getCarveCornerMaximum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;maximum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="TriangleMesh-getCarveCornerMinimum"><strong>getCarveCornerMinimum</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;corner&nbsp;minimum&nbsp;of&nbsp;the&nbsp;vertexes.</tt></dd></dl>
 
 <dl><dt><a name="TriangleMesh-getCarveLayerThickness"><strong>getCarveLayerThickness</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;layer&nbsp;thickness.</tt></dd></dl>
-
-<dl><dt><a name="TriangleMesh-getCarveRotatedBoundaryLayers"><strong>getCarveRotatedBoundaryLayers</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;rotated&nbsp;boundary&nbsp;layers.</tt></dd></dl>
 
 <dl><dt><a name="TriangleMesh-getFabmetheusXML"><strong>getFabmetheusXML</strong></a>(self)</dt><dd><tt>Return&nbsp;the&nbsp;fabmetheus&nbsp;XML.</tt></dd></dl>
 
@@ -620,13 +612,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.triangle_me
 
 <dl><dt><a name="TriangleMesh-getVertexes"><strong>getVertexes</strong></a>(self)</dt><dd><tt>Get&nbsp;all&nbsp;vertexes.</tt></dd></dl>
 
-<dl><dt><a name="TriangleMesh-getZAddExtruderPaths"><strong>getZAddExtruderPaths</strong></a>(self, z)</dt><dd><tt>Get&nbsp;next&nbsp;z&nbsp;and&nbsp;add&nbsp;extruder&nbsp;loops.</tt></dd></dl>
-
-<dl><dt><a name="TriangleMesh-liftByMinimumZ"><strong>liftByMinimumZ</strong></a>(self, minimumZ)</dt><dd><tt>Lift&nbsp;the&nbsp;triangle&nbsp;mesh&nbsp;to&nbsp;the&nbsp;altitude.</tt></dd></dl>
-
 <dl><dt><a name="TriangleMesh-setCarveImportRadius"><strong>setCarveImportRadius</strong></a>(self, importRadius)</dt><dd><tt>Set&nbsp;the&nbsp;import&nbsp;radius.</tt></dd></dl>
-
-<dl><dt><a name="TriangleMesh-setCarveInfillInDirectionOfBridge"><strong>setCarveInfillInDirectionOfBridge</strong></a>(self, infillInDirectionOfBridge)</dt><dd><tt>Set&nbsp;the&nbsp;infill&nbsp;in&nbsp;direction&nbsp;of&nbsp;bridge.</tt></dd></dl>
 
 <dl><dt><a name="TriangleMesh-setCarveIsCorrectMesh"><strong>setCarveIsCorrectMesh</strong></a>(self, isCorrectMesh)</dt><dd><tt>Set&nbsp;the&nbsp;is&nbsp;correct&nbsp;mesh&nbsp;flag.</tt></dd></dl>
 
@@ -644,7 +630,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.solids.group.html#
 
 <dl><dt><a name="TriangleMesh-getVisible"><strong>getVisible</strong></a>(self)</dt><dd><tt>Get&nbsp;visible.</tt></dd></dl>
 
-<dl><dt><a name="TriangleMesh-setToXMLElement"><strong>setToXMLElement</strong></a>(self, xmlElement)</dt><dd><tt>Set&nbsp;to&nbsp;xmlElement.</tt></dd></dl>
+<dl><dt><a name="TriangleMesh-setToElementNode"><strong>setToElementNode</strong></a>(self, elementNode)</dt><dd><tt>Set&nbsp;to&nbsp;elementNode.</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dictionary.html#Dictionary">fabmetheus_utilities.geometry.geometry_tools.dictionary.Dictionary</a>:<br>
@@ -656,7 +642,7 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 
 <dl><dt><a name="TriangleMesh-createShape"><strong>createShape</strong></a>(self)</dt><dd><tt>Create&nbsp;the&nbsp;shape.</tt></dd></dl>
 
-<dl><dt><a name="TriangleMesh-getAttributeDictionary"><strong>getAttributeDictionary</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
+<dl><dt><a name="TriangleMesh-getAttributes"><strong>getAttributes</strong></a>(self)</dt><dd><tt>Get&nbsp;attribute&nbsp;table.</tt></dd></dl>
 
 <dl><dt><a name="TriangleMesh-getComplexTransformedPathLists"><strong>getComplexTransformedPathLists</strong></a>(self)</dt><dd><tt>Get&nbsp;complex&nbsp;transformed&nbsp;path&nbsp;lists.</tt></dd></dl>
 
@@ -672,6 +658,8 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 
 <dl><dt><a name="TriangleMesh-getXMLLocalName"><strong>getXMLLocalName</strong></a>(self)</dt><dd><tt>Get&nbsp;xml&nbsp;local&nbsp;name.</tt></dd></dl>
 
+<dl><dt><a name="TriangleMesh-transformGeometryOutput"><strong>transformGeometryOutput</strong></a>(self, geometryOutput)</dt><dd><tt>Transform&nbsp;the&nbsp;geometry&nbsp;output&nbsp;by&nbsp;the&nbsp;local&nbsp;matrix4x4.</tt></dd></dl>
+
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#eeaa77">
@@ -679,10 +667,11 @@ Methods inherited from <a href="fabmetheus_utilities.geometry.geometry_tools.dic
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-getCarvableObject"><strong>getCarvableObject</strong></a>(globalObject, object, xmlElement)</dt><dd><tt>Get&nbsp;new&nbsp;carvable&nbsp;object&nbsp;info.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-getCarvableObject"><strong>getCarvableObject</strong></a>(elementNode, globalObject, object)</dt><dd><tt>Get&nbsp;new&nbsp;carvable&nbsp;object&nbsp;info.</tt></dd></dl>
  <dl><dt><a name="-getCarvingFromParser"><strong>getCarvingFromParser</strong></a>(xmlParser)</dt><dd><tt>Get&nbsp;the&nbsp;carving&nbsp;for&nbsp;the&nbsp;parser.</tt></dd></dl>
- <dl><dt><a name="-getTransformXMLElement"><strong>getTransformXMLElement</strong></a>(coords, transformName)</dt><dd><tt>Get&nbsp;the&nbsp;transform&nbsp;attributes.</tt></dd></dl>
- <dl><dt><a name="-processXMLElement"><strong>processXMLElement</strong></a>(archivableObjects, parentNode, xmlElement)</dt><dd><tt>Add&nbsp;the&nbsp;object&nbsp;info&nbsp;if&nbsp;it&nbsp;is&nbsp;carvable.</tt></dd></dl>
+ <dl><dt><a name="-getTransformElementNode"><strong>getTransformElementNode</strong></a>(coords, transformName)</dt><dd><tt>Get&nbsp;the&nbsp;transform&nbsp;attributes.</tt></dd></dl>
+ <dl><dt><a name="-processAppendElementNode"><strong>processAppendElementNode</strong></a>(archivableObjects, elementNode, parentNode)</dt><dd><tt>Add&nbsp;the&nbsp;object&nbsp;info&nbsp;if&nbsp;it&nbsp;is&nbsp;carvable.</tt></dd></dl>
+ <dl><dt><a name="-processElementNode"><strong>processElementNode</strong></a>(elementNode)</dt><dd><tt>Process&nbsp;the&nbsp;xml&nbsp;element.</tt></dd></dl>
  <dl><dt><a name="-removeListArtOfIllusionFromDictionary"><strong>removeListArtOfIllusionFromDictionary</strong></a>(dictionary, scrubKeys)</dt><dd><tt>Remove&nbsp;the&nbsp;list&nbsp;and&nbsp;art&nbsp;of&nbsp;illusion&nbsp;keys&nbsp;from&nbsp;the&nbsp;dictionary.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

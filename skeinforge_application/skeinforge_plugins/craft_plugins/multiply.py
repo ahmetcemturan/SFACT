@@ -1,6 +1,8 @@
 """
 This page is in the table of contents.
-Multiply is a script to multiply the shape into an array of copies arranged in a table.
+The multiply plugin will take a single object and create an array of objects.  It is used when you want to print single object multiple times in a single pass.
+
+You can also position any object using this plugin by setting the center X and center Y to the desired coordinates (0,0 for the center of the print_bed) and setting the number of rows and columns to 1 (effectively setting a 1x1 matrix - printing only a single object).
 
 The multiply manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Multiply
@@ -8,7 +10,7 @@ http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Multiply
 Besides using the multiply tool, another way of printing many copies of the model is to duplicate the model in Art of Illusion, however many times you want, with the appropriate offsets.  Then you can either use the Join Objects script in the scripts submenu to create a combined shape or you can export the whole scene as an xml file, which skeinforge can then slice.
 
 ==Operation==
-The default 'Activate Multiply' checkbox is on.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Multiply' checkbox is on.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Center===
@@ -30,10 +32,15 @@ Default is one.
 
 Defines the number of rows in the table.
 
+===Reverse Sequence every Odd Layer===
+Default is off.
+
+When selected the build sequence will be reversed on every odd layer so that the tool will travel less.  The problem is that the builds would be made with different amount of time to cool, so some would be too hot and some too cold, which is why the default is off.
+
 ===Separation over Perimeter Width===
 Default is fifteen.
 
-Defines the ratio of separation between the shape copies over the extrusion width.
+Defines the ratio of separation between the shape copies over the perimeter width.
 
 ==Examples==
 The following examples multiply the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and multiply.py.
@@ -69,7 +76,7 @@ import math
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -82,7 +89,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Multiply the fill text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'multiply'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(MultiplyRepository())
 	if not repository.activateMultiply.value:
 		return gcodeText
@@ -133,7 +140,6 @@ class MultiplySkein:
 	def __init__(self):
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.isExtrusionActive = False
-		self.layerCount = settings.LayerCount()
 		self.layerIndex = 0
 		self.layerLines = []
 		self.lineIndex = 0
@@ -147,17 +153,19 @@ class MultiplySkein:
 		for line in self.layerLines:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
-			if firstWord == 'G1':
-				movedLocation = self.getMovedLocationSetOldLocation(offset, splitLine)
-				line = self.distanceFeedRate.getLinearGcodeMovement(movedLocation.dropAxis(), movedLocation.z)
-			elif firstWord == '(<boundaryPoint>':
+			if firstWord == '(<boundaryPoint>':
 				movedLocation = self.getMovedLocationSetOldLocation(offset, splitLine)
 				line = self.distanceFeedRate.getBoundaryLine(movedLocation)
+			elif firstWord == 'G1':
+				movedLocation = self.getMovedLocationSetOldLocation(offset, splitLine)
+				line = self.distanceFeedRate.getLinearGcodeMovement(movedLocation.dropAxis(), movedLocation.z)
+			elif firstWord == '(<infillPoint>':
+				movedLocation = self.getMovedLocationSetOldLocation(offset, splitLine)
+				line = self.distanceFeedRate.getInfillBoundaryLine(movedLocation)
 			self.distanceFeedRate.addLine(line)
 
 	def addLayer(self):
 		'Add multiplied layer to the output.'
-		self.layerCount.printProgressIncrement('multiply')
 		self.addRemoveThroughLayer()
 		offset = self.centerOffset - self.arrayCenter - self.shapeCenter
 		for rowIndex in xrange(self.repository.numberOfRows.value):
@@ -171,6 +179,7 @@ class MultiplySkein:
 				elementOffset = complex(offset.real + xColumnOffset, offset.imag + yRowOffset)
 				self.addElement(elementOffset)
 			self.rowIndex += 1
+		settings.printProgress(self.layerIndex, 'multiply')
 		if len(self.layerLines) > 1:
 			self.layerIndex += 1
 		self.layerLines = []
@@ -213,7 +222,7 @@ class MultiplySkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> multiply </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('multiply')
 				self.distanceFeedRate.addLine(line)
 				self.lineIndex += 1
 				return

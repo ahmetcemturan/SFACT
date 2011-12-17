@@ -17,7 +17,7 @@ import sys
 import traceback
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -32,7 +32,7 @@ def getPluginFileNames():
 
 def getPluginsDirectoryPath():
 	"Get the plugins directory path."
-	return archive.getSkeinforgePluginsPath('analyze_plugins')
+	return archive.getAnalyzePluginsDirectoryPath()
 
 def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWritten, gcodeText=''):
 	"Analyze a gcode file."
@@ -42,11 +42,11 @@ def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWr
 	for pluginFileName in pluginFileNames:
 		analyzePluginsDirectoryPath = getPluginsDirectoryPath()
 		pluginModule = archive.getModuleWithDirectoryPath( analyzePluginsDirectoryPath, pluginFileName )
-		if pluginModule != None:
+		if pluginModule is not None:
 			try:
 				newWindow = pluginModule.writeOutput(fileName, fileNamePenultimate, fileNameSuffix,
 					filePenultimateWritten, gcodeText )
-				if newWindow != None:
+				if newWindow is not None:
 					window = newWindow
 			except:
 				print('Warning, the tool %s could not analyze the output.' % pluginFileName )

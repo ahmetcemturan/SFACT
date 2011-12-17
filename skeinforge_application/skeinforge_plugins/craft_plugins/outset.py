@@ -42,7 +42,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -55,7 +55,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Outset the preface gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'outset'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( OutsetRepository() )
 	if not repository.activateOutset.value:
 		return gcodeText
@@ -93,22 +93,22 @@ class OutsetSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.layerCount = settings.LayerCount()
 		self.lineIndex = 0
-		self.rotatedLoopLayer = None
+		self.loopLayer = None
 
 	def addGcodeFromRemainingLoop( self, loop, radius, z ):
 		'Add the remainder of the loop.'
 		boundary = intercircle.getLargestInsetLoopFromLoopRegardless( loop, radius )
-		euclidean.addSurroundingLoopBeginning( self.distanceFeedRate, boundary, z )
+		euclidean.addNestedRingBeginning( self.distanceFeedRate, boundary, z )
 		self.distanceFeedRate.addPerimeterBlock(loop, z)
 		self.distanceFeedRate.addLine('(</boundaryPerimeter>)')
 		self.distanceFeedRate.addLine('(</nestedRing>)')
 
-	def addOutset(self, rotatedLoopLayer):
+	def addOutset(self, loopLayer):
 		'Add outset to the layer.'
-		extrudateLoops = intercircle.getInsetLoopsFromLoops(-self.absoluteHalfPerimeterWidth, rotatedLoopLayer.loops)
+		extrudateLoops = intercircle.getInsetLoopsFromLoops(loopLayer.loops, -self.absoluteHalfPerimeterWidth)
 		triangle_mesh.sortLoopsInOrderOfArea(False, extrudateLoops)
 		for extrudateLoop in extrudateLoops:
-			self.addGcodeFromRemainingLoop(extrudateLoop, self.absoluteHalfPerimeterWidth, rotatedLoopLayer.z)
+			self.addGcodeFromRemainingLoop(extrudateLoop, self.absoluteHalfPerimeterWidth, loopLayer.z)
 
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the bevel gcode.'
@@ -127,7 +127,7 @@ class OutsetSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addTagBracketedLine('procedureName', 'outset')
+				self.distanceFeedRate.addTagBracketedProcedure('outset')
 				return
 			elif firstWord == '(<perimeterWidth>':
 				self.absoluteHalfPerimeterWidth = 0.5 * abs(float(splitLine[1]))
@@ -145,15 +145,15 @@ class OutsetSkein:
 			self.boundary.append(location.dropAxis())
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('outset')
-			self.rotatedLoopLayer = euclidean.RotatedLoopLayer(float(splitLine[1]))
+			self.loopLayer = euclidean.LoopLayer(float(splitLine[1]))
 			self.distanceFeedRate.addLine(line)
 		elif firstWord == '(</layer>)':
-			self.addOutset( self.rotatedLoopLayer )
-			self.rotatedLoopLayer = None
+			self.addOutset( self.loopLayer )
+			self.loopLayer = None
 		elif firstWord == '(<nestedRing>)':
 			self.boundary = []
-			self.rotatedLoopLayer.loops.append( self.boundary )
-		if self.rotatedLoopLayer == None:
+			self.loopLayer.loops.append( self.boundary )
+		if self.loopLayer is None:
 			self.distanceFeedRate.addLine(line)
 
 

@@ -25,95 +25,90 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def getLinkedXMLElement(idSuffix, parentNode, target):
-	'Get xmlElement with identifiers, importName and parentNode.'
-	linkedXMLElement = xml_simple_reader.XMLElement()
-	linkedXMLElement.importName = parentNode.importName
-	euclidean.overwriteDictionary(target.attributeDictionary, ['id', 'name', 'quantity'], linkedXMLElement.attributeDictionary)
-	linkedXMLElement.addSuffixToID(idSuffix)
+def getLinkedElementNode(idSuffix, parentNode, target):
+	'Get elementNode with identifiers and parentNode.'
+	linkedElementNode = xml_simple_reader.ElementNode()
+	euclidean.overwriteDictionary(target.attributes, ['id', 'name', 'quantity'], linkedElementNode.attributes)
+	linkedElementNode.addSuffixToID(idSuffix)
 	tagKeys = target.getTagKeys()
 	tagKeys.append('disjoin')
 	tagKeys.sort()
 	tags = ', '.join(tagKeys)
-	linkedXMLElement.attributeDictionary['tags'] = tags
-	linkedXMLElement.setParentAddToChildNodes(parentNode)
-	linkedXMLElement.addToIdentifierDictionaryIFIdentifierExists()
-	return linkedXMLElement
+	linkedElementNode.attributes['tags'] = tags
+	linkedElementNode.setParentAddToChildNodes(parentNode)
+	linkedElementNode.addToIdentifierDictionaries()
+	return linkedElementNode
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return DisjoinDerivation(xmlElement)
+	return DisjoinDerivation(elementNode)
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	'Process the xml element.'
-	processXMLElementByDerivation(None, xmlElement)
+	processElementNodeByDerivation(None, elementNode)
 
-def processXMLElementByDerivation(derivation, xmlElement):
+def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation == None:
-		derivation = DisjoinDerivation(xmlElement)
-	targetXMLElement = derivation.targetXMLElement
-	if targetXMLElement == None:
+	if derivation is None:
+		derivation = DisjoinDerivation(elementNode)
+	targetElementNode = derivation.targetElementNode
+	if targetElementNode is None:
 		print('Warning, disjoin could not get target for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	xmlObject = targetXMLElement.xmlObject
-	if xmlObject == None:
-		print('Warning, processXMLElementByDerivation in disjoin could not get xmlObject for:')
-		print(targetXMLElement)
-		print(derivation.xmlElement)
+	xmlObject = targetElementNode.xmlObject
+	if xmlObject is None:
+		print('Warning, processElementNodeByDerivation in disjoin could not get xmlObject for:')
+		print(targetElementNode)
+		print(derivation.elementNode)
 		return
+	matrix.getBranchMatrixSetElementNode(targetElementNode)
 	transformedVertexes = xmlObject.getTransformedVertexes()
 	if len(transformedVertexes) < 1:
-		print('Warning, transformedVertexes is zero in processXMLElementByDerivation in disjoin for:')
+		print('Warning, transformedVertexes is zero in processElementNodeByDerivation in disjoin for:')
 		print(xmlObject)
-		print(targetXMLElement)
-		print(derivation.xmlElement)
+		print(targetElementNode)
+		print(derivation.elementNode)
 		return
-	xmlElement.localName = 'group'
-	xmlElement.getXMLProcessor().processXMLElement(xmlElement)
-	matrix.getBranchMatrixSetXMLElement(targetXMLElement)
+	elementNode.localName = 'group'
+	elementNode.getXMLProcessor().processElementNode(elementNode)
 	targetChainMatrix = matrix.Matrix(xmlObject.getMatrixChainTetragrid())
 	minimumZ = boolean_geometry.getMinimumZ(xmlObject)
 	z = minimumZ + 0.5 * derivation.sheetThickness
 	zoneArrangement = triangle_mesh.ZoneArrangement(derivation.layerThickness, transformedVertexes)
-	oldVisibleString = targetXMLElement.attributeDictionary['visible']
-	targetXMLElement.attributeDictionary['visible'] = True
+	oldVisibleString = targetElementNode.attributes['visible']
+	targetElementNode.attributes['visible'] = True
 	loops = boolean_geometry.getEmptyZLoops([xmlObject], derivation.importRadius, False, z, zoneArrangement)
-	targetXMLElement.attributeDictionary['visible'] = oldVisibleString
+	targetElementNode.attributes['visible'] = oldVisibleString
 	vector3Loops = euclidean.getVector3Paths(loops, z)
-	pathElement = getLinkedXMLElement('_sheet', xmlElement, targetXMLElement)
-	path.convertXMLElement(vector3Loops, pathElement)
+	pathElement = getLinkedElementNode('_sheet', elementNode, targetElementNode)
+	path.convertElementNode(pathElement, vector3Loops)
 	targetOutput = xmlObject.getGeometryOutput()
-	differenceElement = getLinkedXMLElement('_solid', xmlElement, targetXMLElement)
-	targetElementCopy = targetXMLElement.getCopy('_positive', differenceElement)
-	targetElementCopy.attributeDictionary['visible'] = True
-	targetElementCopy.attributeDictionary.update(targetChainMatrix.getAttributeDictionary('matrix.'))
+	differenceElement = getLinkedElementNode('_solid', elementNode, targetElementNode)
+	targetElementCopy = targetElementNode.getCopy('_positive', differenceElement)
+	targetElementCopy.attributes['visible'] = True
+	targetElementCopy.attributes.update(targetChainMatrix.getAttributes('matrix.'))
 	complexMaximum = euclidean.getMaximumByVector3Path(transformedVertexes).dropAxis()
 	complexMinimum = euclidean.getMinimumByVector3Path(transformedVertexes).dropAxis()
 	centerComplex = 0.5 * (complexMaximum + complexMinimum)
 	centerVector3 = Vector3(centerComplex.real, centerComplex.imag, minimumZ)
 	slightlyMoreThanHalfExtent = 0.501 * (complexMaximum - complexMinimum)
 	inradius = Vector3(slightlyMoreThanHalfExtent.real, slightlyMoreThanHalfExtent.imag, derivation.sheetThickness)
-	cubeElement = xml_simple_reader.XMLElement()
-	cubeElement.attributeDictionary['inradius'] = str(inradius)
+	cubeElement = xml_simple_reader.ElementNode()
+	cubeElement.attributes['inradius'] = str(inradius)
 	if not centerVector3.getIsDefault():
-		cubeElement.attributeDictionary['translate.'] = str(centerVector3)
+		cubeElement.attributes['translate.'] = str(centerVector3)
 	cubeElement.localName = 'cube'
-	cubeElement.importName = differenceElement.importName
 	cubeElement.setParentAddToChildNodes(differenceElement)
-	difference.processXMLElement(differenceElement)
+	difference.processElementNode(differenceElement)
 
 
 class DisjoinDerivation:
 	"Class to hold disjoin variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.importRadius = setting.getImportRadius(xmlElement)
-		self.layerThickness = setting.getLayerThickness(xmlElement)
-		self.sheetThickness = setting.getSheetThickness(xmlElement)
-		self.targetXMLElement = evaluate.getXMLElementByKey('target', xmlElement)
-
-	def __repr__(self):
-		"Get the string representation of this DisjoinDerivation."
-		return str(self.__dict__)
+		self.elementNode = elementNode
+		self.importRadius = setting.getImportRadius(elementNode)
+		self.layerThickness = setting.getLayerThickness(elementNode)
+		self.sheetThickness = setting.getSheetThickness(elementNode)
+		self.targetElementNode = evaluate.getElementNodeByKey(elementNode, 'target')

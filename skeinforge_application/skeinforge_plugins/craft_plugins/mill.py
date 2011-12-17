@@ -73,7 +73,7 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -86,7 +86,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Mill a gcode linear move gcodeText.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'mill'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( MillRepository() )
 	if not repository.activateMill.value:
 		return gcodeText
@@ -175,7 +175,6 @@ class MillSkein:
 		self.boundaryLayers = []
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.isExtruderActive = False
-		self.layerCount = settings.LayerCount()
 		self.layerIndex = 0
 		self.lineIndex = 0
 		self.lines = None
@@ -184,7 +183,7 @@ class MillSkein:
 
 	def addGcodeFromLoops(self, loops, z):
 		'Add gcode from loops.'
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			self.oldLocation = Vector3()
 		self.oldLocation.z = z
 		for loop in loops:
@@ -293,7 +292,7 @@ class MillSkein:
 				boundaryLoop = None
 			elif firstWord == '(<boundaryPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if boundaryLoop == None:
+				if boundaryLoop is None:
 					boundaryLoop = []
 					boundaryLayer.loops.append(boundaryLoop)
 				boundaryLoop.append(location.dropAxis())
@@ -303,8 +302,8 @@ class MillSkein:
 		if len(self.boundaryLayers) < 2:
 			return
 		for boundaryLayer in self.boundaryLayers:
-			boundaryLayer.innerOutsetLoops = intercircle.getInsetSeparateLoopsFromLoops( - self.loopInnerOutset, boundaryLayer.loops )
-			boundaryLayer.outerOutsetLoops = intercircle.getInsetSeparateLoopsFromLoops( - self.loopOuterOutset, boundaryLayer.loops )
+			boundaryLayer.innerOutsetLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, -self.loopInnerOutset)
+			boundaryLayer.outerOutsetLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, -self.loopOuterOutset)
 			boundaryLayer.innerHorizontalTable = self.getHorizontalXIntersectionsTable( boundaryLayer.innerOutsetLoops )
 			boundaryLayer.outerHorizontalTable = self.getHorizontalXIntersectionsTable( boundaryLayer.outerOutsetLoops )
 			boundaryLayer.innerVerticalTable = self.getHorizontalXIntersectionsTable( euclidean.getDiagonalFlippedLoops( boundaryLayer.innerOutsetLoops ) )
@@ -330,7 +329,7 @@ class MillSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> mill </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('mill')
 				return
 			elif firstWord == '(<perimeterWidth>':
 				self.perimeterWidth = float(splitLine[1])
@@ -351,7 +350,7 @@ class MillSkein:
 			location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			if self.isExtruderActive:
 				self.average.addValue(location.z)
-				if self.oldLocation != None:
+				if self.oldLocation is not None:
 					euclidean.addValueSegmentToPixelTable( self.oldLocation.dropAxis(), location.dropAxis(), self.aroundPixelTable, None, self.aroundWidth )
 			self.oldLocation = location
 		elif firstWord == 'M101':
@@ -359,7 +358,7 @@ class MillSkein:
 		elif firstWord == 'M103':
 			self.isExtruderActive = False
 		elif firstWord == '(<layer>':
-			self.layerCount.printProgressIncrement('mill')
+			settings.printProgress(self.layerIndex, 'mill')
 			self.aroundPixelTable = {}
 			self.average.reset()
 		elif firstWord == '(</layer>)':

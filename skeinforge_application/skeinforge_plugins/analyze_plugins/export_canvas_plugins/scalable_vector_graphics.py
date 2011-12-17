@@ -24,7 +24,7 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -91,9 +91,10 @@ class ScalableVectorGraphicsRepository:
 			settings.openWebPage( svgFileName )
 			return
 		svgFilePath = '"' + os.path.normpath( svgFileName ) + '"' # " to send in file name with spaces
-		shellCommand = svgViewer + ' ' + svgFilePath
+		shellCommand = svgViewer
 		print('')
 		if fileExtension == '':
+			shellCommand += ' ' + svgFilePath
 			print('Sending the shell command:')
 			print(shellCommand)
 			commandResult = os.system(shellCommand)
@@ -102,8 +103,7 @@ class ScalableVectorGraphicsRepository:
 				print('If so, try installing the %s program or look for another svg viewer, like Netscape which can be found at:' % svgViewer )
 				print('http://www.netscape.org/')
 			return
-		convertedFileName = archive.getFilePathWithUnderscoredBasename( svgFilePath, '.' + fileExtension + '"')
-		shellCommand += ' ' + convertedFileName
+		shellCommand += ' ' + archive.getFilePathWithUnderscoredBasename( svgFilePath, '.' + fileExtension + '"')
 		print('Sending the shell command:')
 		print(shellCommand)
 		commandResult = os.system(shellCommand)

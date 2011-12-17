@@ -45,7 +45,7 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -58,7 +58,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Coil a gcode linear move gcodeText."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'coil'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( CoilRepository() )
 	if not repository.activateCoil.value:
 		return gcodeText
@@ -142,7 +142,7 @@ class CoilSkein:
 		"Add a coil to the thread."
 		if len(loop) < 1:
 			return
-		loop = euclidean.getLoopStartingNearest(self.halfPerimeterWidth, self.oldLocationComplex, loop)
+		loop = euclidean.getLoopStartingClosest(self.halfPerimeterWidth, self.oldLocationComplex, loop)
 		length = euclidean.getLoopLength(loop)
 		if length <= 0.0:
 			return
@@ -197,7 +197,7 @@ class CoilSkein:
 				boundaryLoop = None
 			elif firstWord == '(<boundaryPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if boundaryLoop == None:
+				if boundaryLoop is None:
 					boundaryLoop = []
 					boundaryLayer.loops.append(boundaryLoop)
 				boundaryLoop.append(location.dropAxis())
@@ -220,7 +220,7 @@ class CoilSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> coil </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('coil')
 				return
 			elif firstWord == '(<layerThickness>':
 				self.layerThickness = float(splitLine[1])

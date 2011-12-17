@@ -46,7 +46,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -58,7 +58,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Drill a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'drill'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository( DrillRepository() )
 	if not repository.activateDrill.value:
 		return gcodeText
@@ -152,7 +152,7 @@ class DrillSkein:
 
 	def addThreadLayerIfNone(self):
 		"Add a thread layer if it is none."
-		if self.threadLayer != None:
+		if self.threadLayer is not None:
 			return
 		self.threadLayer = ThreadLayer( self.layerZ )
 		self.threadLayers.append( self.threadLayer )
@@ -163,7 +163,7 @@ class DrillSkein:
 		self.repository = repository
 		self.parseInitialization()
 		for line in self.lines[self.lineIndex :]:
-			self.parseSurroundingLoop(line)
+			self.parseNestedRing(line)
 		for line in self.lines[self.lineIndex :]:
 			self.parseLine(line)
 		return self.distanceFeedRate.output.getvalue()
@@ -200,7 +200,7 @@ class DrillSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> drill </procedureName>)')
+				self.distanceFeedRate.addTagBracketedProcedure('drill')
 				return
 			elif firstWord == '(<layerThickness>':
 				self.halfLayerThickness = 0.5 * float(splitLine[1])
@@ -219,8 +219,8 @@ class DrillSkein:
 			if not self.isDrilled:
 				self.addDrillHoles()
 
-	def parseSurroundingLoop(self, line):
-		"Parse a surrounding loop."
+	def parseNestedRing(self, line):
+		"Parse a nested ring."
 		splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 		if len(splitLine) < 1:
 			return
@@ -233,7 +233,7 @@ class DrillSkein:
 			self.extruderActive = False
 		elif firstWord == '(<boundaryPoint>':
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
-			if self.boundary == None:
+			if self.boundary is None:
 				self.boundary = []
 			self.boundary.append(location.dropAxis())
 		elif firstWord == '(<layer>':
@@ -242,7 +242,7 @@ class DrillSkein:
 		elif firstWord == '(<boundaryPerimeter>)':
 			self.addThreadLayerIfNone()
 		elif firstWord == '(</boundaryPerimeter>)':
-			if self.boundary != None:
+			if self.boundary is not None:
 				self.threadLayer.points.append( getPolygonCenter( self.boundary ) )
 				self.boundary = None
 

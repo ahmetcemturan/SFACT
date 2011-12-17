@@ -51,7 +51,7 @@ def addLineLoopsIntersections( loopLoopsIntersections, loops, pointBegin, pointE
 def addLineXSegmentIntersection( lineLoopsIntersections, segmentFirstX, segmentSecondX, vector3First, vector3Second, y ):
 	'Add intersections of the line with the x segment.'
 	xIntersection = euclidean.getXIntersectionIfExists( vector3First, vector3Second, y )
-	if xIntersection == None:
+	if xIntersection is None:
 		return
 	if xIntersection < min( segmentFirstX, segmentSecondX ):
 		return
@@ -72,7 +72,7 @@ def addLoopsXSegmentIntersections( lineLoopsIntersections, loops, segmentFirstX,
 
 def addLoopXSegmentIntersections( lineLoopsIntersections, loop, segmentFirstX, segmentSecondX, segmentYMirror, y ):
 	'Add intersections of the loop with the x segment.'
-	rotatedLoop = euclidean.getPointsRoundZAxis( segmentYMirror, loop )
+	rotatedLoop = euclidean.getRotatedComplexes( segmentYMirror, loop )
 	for pointIndex in xrange( len( rotatedLoop ) ):
 		pointFirst = rotatedLoop[pointIndex]
 		pointSecond = rotatedLoop[ (pointIndex + 1) % len( rotatedLoop ) ]
@@ -177,14 +177,13 @@ def getLoopsUnified(importRadius, loopLists):
 	'Get joined loops sliced through shape.'
 	allPoints = []
 	corners = getLoopsListsIntersections(loopLists)
-	radiusSide = 0.01 * importRadius
-	radiusSideNegative = -radiusSide
+	radiusSideNegative = -0.01 * importRadius
 	intercircle.directLoopLists(True, loopLists)
 	for loopListIndex in xrange(len(loopLists)):
 		insetLoops = loopLists[ loopListIndex ]
 		inBetweenInsetLoops = getInBetweenLoopsFromLoops(insetLoops, importRadius)
 		otherLoops = euclidean.getConcatenatedList(loopLists[: loopListIndex] + loopLists[loopListIndex + 1 :])
-		corners += getInsetPointsByInsetLoops(insetLoops, False, otherLoops, radiusSide)
+		corners += getInsetPointsByInsetLoops(insetLoops, False, otherLoops, radiusSideNegative)
 		allPoints += getInsetPointsByInsetLoops(inBetweenInsetLoops, False, otherLoops, radiusSideNegative)
 	allPoints += corners[:]
 	return triangle_mesh.getDescendingAreaOrientedLoops(allPoints, corners, importRadius)
@@ -223,7 +222,7 @@ class BooleanSolid( group.Group ):
 
 	def getTransformedPaths(self):
 		'Get all transformed paths.'
-		importRadius = setting.getImportRadius(self.xmlElement)
+		importRadius = setting.getImportRadius(self.elementNode)
 		loopsFromObjectLoopsList = self.getLoopsFromObjectLoopsList(importRadius, self.getComplexTransformedPathLists())
 		return euclidean.getVector3Paths(loopsFromObjectLoopsList)
 

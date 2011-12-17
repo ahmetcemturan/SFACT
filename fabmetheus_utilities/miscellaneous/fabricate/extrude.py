@@ -259,7 +259,7 @@ class displaySkein:
 
 	def helicalMove( self, isCounterclockwise, splitLine ):
 		"Parse a helical move gcode line and send the commands to the extruder."
-		if self.oldLocation == None:
+		if self.oldLocation is None:
 			return
 		location = Vector3( self.oldLocation )
 		self.setFeedrate(splitLine)
@@ -308,7 +308,7 @@ class displaySkein:
 	def linearMove( self, splitLine ):
 		"Parse a linear move gcode line and send the commands to the extruder."
 		location = Vector3()
-		if self.oldLocation != None:
+		if self.oldLocation is not None:
 			location = self.oldLocation
 		self.setFeedrate(splitLine)
 		setPointToSplitLine( location, splitLine )

@@ -20,7 +20,7 @@ import os
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -37,7 +37,7 @@ def addSubmenus( menu, pluginFileName, pluginFolderPath, pluginPath ):
 
 def addToCraftMenu( menu ):
 	"Add a craft plugin menu."
-	settings.ToolDialog().addPluginToMenu( menu, archive.getUntilDot( os.path.abspath(__file__) ) )
+	settings.ToolDialog().addPluginToMenu(menu, archive.getUntilDot(archive.getSkeinforgePluginsPath('craft.py')))
 	menu.add_separator()
 	directoryPath = skeinforge_craft.getPluginsDirectoryPath()
 	directoryFolders = settings.getFolders(directoryPath)

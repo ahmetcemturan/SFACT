@@ -23,8 +23,8 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 def addPathToGroup(derivation, groupDictionaryCopy, path, targetMatrix, totalIndex):
 	'Add path to the array group.'
 	for pointIndex, point in enumerate(path):
-		arrayElement = derivation.target.getCopy(derivation.xmlElement.getIDSuffix(totalIndex), derivation.xmlElement)
-		arrayDictionary = arrayElement.attributeDictionary
+		arrayElement = derivation.target.getCopy(derivation.elementNode.getIDSuffix(totalIndex), derivation.elementNode)
+		arrayDictionary = arrayElement.attributes
 		arrayDictionary['visible'] = str(derivation.visible).lower()
 		arrayDictionary.update(groupDictionaryCopy)
 		euclidean.removeTrueFromDictionary(arrayDictionary, 'visible')
@@ -32,14 +32,14 @@ def addPathToGroup(derivation, groupDictionaryCopy, path, targetMatrix, totalInd
 		zAngle = totalIndex * 50.0
 		rotationMatrix = getRotationMatrix(arrayDictionary, derivation, path, point, pointIndex)
 		arrayElementMatrix = vertexMatrix.getSelfTimesOther(rotationMatrix.getSelfTimesOther(targetMatrix.tetragrid).tetragrid)
-		arrayDictionary.update(arrayElementMatrix.getAttributeDictionary('matrix.'))
+		arrayDictionary.update(arrayElementMatrix.getAttributes('matrix.'))
 		arrayDictionary['_arrayIndex'] = totalIndex
 		arrayDictionary['_arrayPoint'] = point
 		totalIndex += 1
 
-def getNewDerivation(xmlElement):
+def getNewDerivation(elementNode):
 	'Get new derivation.'
-	return ArrayDerivation(xmlElement)
+	return ArrayDerivation(elementNode)
 
 def getRotationMatrix(arrayDictionary, derivation, path, point, pointIndex):
 	'Get rotationMatrix.'
@@ -61,14 +61,14 @@ def getRotationMatrix(arrayDictionary, derivation, path, point, pointIndex):
 		print('Warning, point equals previous point in getRotationMatrix in array for:')
 		print(path)
 		print(pointIndex)
-		print(xmlElement)
+		print(derivation.elementNode)
 		return matrix.Matrix()
 	pointMinusBegin /= pointMinusBeginLength
 	if endMinusPointLength <= 0.0:
 		print('Warning, point equals next point in getRotationMatrix in array for:')
 		print(path)
 		print(pointIndex)
-		print(xmlElement)
+		print(derivation.elementNode)
 		return matrix.Matrix()
 	endMinusPoint /= endMinusPointLength
 	averagePolar = pointMinusBegin + endMinusPoint
@@ -77,7 +77,7 @@ def getRotationMatrix(arrayDictionary, derivation, path, point, pointIndex):
 		print('Warning, averagePolarLength is zero in getRotationMatrix in array for:')
 		print(path)
 		print(pointIndex)
-		print(xmlElement)
+		print(derivation.elementNode)
 		return matrix.Matrix()
 	return getRotationMatrixByPolar(arrayDictionary, averagePolar, averagePolarLength)
 
@@ -87,48 +87,43 @@ def getRotationMatrixByPolar(arrayDictionary, polar, polarLength):
 	arrayDictionary['_arrayRotation'] = math.degrees(math.atan2(polar.imag, polar.real))
 	return matrix.Matrix(matrix.getDiagonalSwitchedTetragridByPolar([0, 1], polar))
 
-def processXMLElement(xmlElement):
+def processElementNode(elementNode):
 	"Process the xml element."
-	processXMLElementByDerivation(None, xmlElement)
+	processElementNodeByDerivation(None, elementNode)
 
-def processXMLElementByDerivation(derivation, xmlElement):
+def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation == None:
-		derivation = ArrayDerivation(xmlElement)
-	if derivation.target == None:
+	if derivation is None:
+		derivation = ArrayDerivation(elementNode)
+	if derivation.target is None:
 		print('Warning, array could not get target for:')
-		print(xmlElement)
+		print(elementNode)
 		return
 	if len(derivation.paths) < 1:
 		print('Warning, array could not get paths for:')
-		print(xmlElement)
+		print(elementNode)
 		return
-	groupDictionaryCopy = xmlElement.attributeDictionary.copy()
+	groupDictionaryCopy = elementNode.attributes.copy()
 	euclidean.removeElementsFromDictionary(groupDictionaryCopy, ['closed', 'paths', 'target', 'track', 'vertexes'])
 	evaluate.removeIdentifiersFromDictionary(groupDictionaryCopy)
-	targetMatrix = matrix.getBranchMatrixSetXMLElement(derivation.target)
-	xmlElement.localName = 'group'
+	targetMatrix = matrix.getBranchMatrixSetElementNode(derivation.target)
+	elementNode.localName = 'group'
 	totalIndex = 0
 	for path in derivation.paths:
 		addPathToGroup(derivation, groupDictionaryCopy, path, targetMatrix, totalIndex)
-	xmlElement.getXMLProcessor().processXMLElement(xmlElement)
-	return
+	elementNode.getXMLProcessor().processElementNode(elementNode)
 
 
 class ArrayDerivation:
 	"Class to hold array variables."
-	def __init__(self, xmlElement):
+	def __init__(self, elementNode):
 		'Set defaults.'
-		self.closed = evaluate.getEvaluatedBoolean(True, 'closed', xmlElement)
-		self.paths = evaluate.getTransformedPathsByKey([], 'paths', xmlElement)
-		vertexTargets = evaluate.getXMLElementsByKey('vertexes', xmlElement)
+		self.closed = evaluate.getEvaluatedBoolean(True, elementNode, 'closed')
+		self.elementNode = elementNode
+		self.paths = evaluate.getTransformedPathsByKey([], elementNode, 'paths')
+		vertexTargets = evaluate.getElementNodesByKey(elementNode, 'vertexes')
 		for vertexTarget in vertexTargets:
 			self.paths.append(vertexTarget.getVertexes())
-		self.target = evaluate.getXMLElementByKey('target', xmlElement)
-		self.track = evaluate.getEvaluatedBoolean(True, 'track', xmlElement)
-		self.visible = evaluate.getEvaluatedBoolean(True, 'visible', xmlElement)
-		self.xmlElement = xmlElement
-
-	def __repr__(self):
-		"Get the string representation of this ArrayDerivation."
-		return str(self.__dict__)
+		self.target = evaluate.getElementNodeByKey(elementNode, 'target')
+		self.track = evaluate.getEvaluatedBoolean(True, elementNode, 'track')
+		self.visible = evaluate.getEvaluatedBoolean(True, elementNode, 'visible')

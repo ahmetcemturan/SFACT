@@ -45,7 +45,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
 
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -58,7 +58,7 @@ def getCraftedTextFromText( gcodeText, liftRepository = None ):
 	"Lift the preface gcode text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'lift'):
 		return gcodeText
-	if liftRepository == None:
+	if liftRepository is None:
 		liftRepository = settings.getReadRepository( LiftRepository() )
 	if not liftRepository.activateLift.value:
 		return gcodeText
@@ -106,7 +106,7 @@ class LiftSkein:
 
 	def addPreviousInactiveMovementLineIfNecessary(self):
 		"Add the previous inactive movement line if necessary."
-		if self.previousInactiveMovementLine != None:
+		if self.previousInactiveMovementLine is not None:
 			self.distanceFeedRate.addLine( self.previousInactiveMovementLine )
 			self.previousInactiveMovementLine = None
 
@@ -116,7 +116,7 @@ class LiftSkein:
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		self.oldLocation = None
-		if self.layerStep == None:
+		if self.layerStep is None:
 			self.layerStep = self.layerThickness
 		self.cuttingLift = self.layerStep * liftRepository.cuttingLiftOverLayerStep.value
 		self.setMaximumZ()
@@ -130,7 +130,7 @@ class LiftSkein:
 		if self.extruderActive:
 			z = location.z + self.cuttingLift
 			return self.distanceFeedRate.getLineWithZ( line, splitLine, z )
-		if self.previousActiveMovementLine != None:
+		if self.previousActiveMovementLine is not None:
 			previousActiveMovementLineSplit = self.previousActiveMovementLine.split()
 			self.distanceFeedRate.addLine( self.distanceFeedRate.getLineWithZ( self.previousActiveMovementLine, previousActiveMovementLineSplit, self.travelZ ) )
 			self.previousActiveMovementLine = None
@@ -146,7 +146,7 @@ class LiftSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addTagBracketedLine('procedureName', 'lift')
+				self.distanceFeedRate.addTagBracketedProcedure('lift')
 				return
 			elif firstWord == '(<layerThickness>':
 				self.layerThickness = float(splitLine[1])

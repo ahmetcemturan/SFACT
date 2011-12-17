@@ -91,7 +91,7 @@ from __future__ import absolute_import
 #Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 import __init__
 
-from fabmetheus_utilities.xml_simple_reader import XMLSimpleReader
+from fabmetheus_utilities.xml_simple_reader import DocumentNode
 from fabmetheus_utilities import archive
 from fabmetheus_utilities import gcodec
 import os
@@ -108,16 +108,16 @@ def getCarving(fileName=''):
 	xmlText = archive.getFileText(fileName)
 	if xmlText == '':
 		return None
-	xmlParser = XMLSimpleReader( fileName, None, xmlText )
-	lowerLocalName = xmlParser.getRoot().localName.lower()
+	xmlParser = DocumentNode(fileName, xmlText)
+	lowerLocalName = xmlParser.getDocumentElement().getNodeName().lower()
 	pluginModule = archive.getModuleWithDirectoryPath( getPluginsDirectoryPath(), lowerLocalName )
-	if pluginModule == None:
+	if pluginModule is None:
 		return None
 	return pluginModule.getCarvingFromParser( xmlParser )
 
 def getPluginsDirectoryPath():
 	"Get the plugins directory path."
-	return archive.getAbsoluteFrozenFolderPath( __file__, 'xml_plugins')
+	return archive.getInterpretPluginsPath('xml_plugins')
 
 def main():
 	"Display the inset dialog."

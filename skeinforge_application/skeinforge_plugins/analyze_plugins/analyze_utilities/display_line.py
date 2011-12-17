@@ -16,7 +16,7 @@ from skeinforge_application.skeinforge_plugins.analyze_plugins.analyze_utilities
 from fabmetheus_utilities import gcodec
 from fabmetheus_utilities import settings
 
-__author__ = 'Enrique Perez (perez_enrique@yahoo.com) modifed as SFACT by Ahmet Cem Turan (ahmetcemturan@gmail.com)'
+__author__ = 'Enrique Perez (perez_enrique@yahoo.com)'
 __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
@@ -55,7 +55,7 @@ class DisplayLine( MouseToolBase ):
 	def drawSelectedColoredLineText(self):
 		"Draw the selected line and text."
 		selectedColoredLine = self.getSelectedColoredLine()
-		if len( self.canvas.find_withtag('selection_line') ) < 1 or selectedColoredLine == None:
+		if len( self.canvas.find_withtag('selection_line') ) < 1 or selectedColoredLine is None:
 			return
 		tags = selectedColoredLine.displayString
 		lineCoordinates = self.canvas.coords( self.canvas.find_withtag('selection_line')[-1] )

@@ -1,33 +1,48 @@
 """
 This page is in the table of contents.
-Skin is a script to smooth the surface skin of an object by replacing the perimeter surface with a surface printed at half the carve
-height. This gives the impression that the object was carved at a much thinner height giving a high-quality finish, but still prints 
-in a relatively short time. The process is described at:
+Skin is a plugin to smooth the surface skin of an object by replacing the perimeter surface with a surface printed at a fraction of the carve
+height.  This gives the impression that the object was carved at a much thinner height giving a high-quality finish, but still prints 
+in a relatively short time.  The latest process has some similarities with a description at:
+
 http://adventuresin3-dprinting.blogspot.com/2011/05/skinning.html
 
 The skin manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skin
 
-
 ==Operation==
-The default 'Activate Skin' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.
+The default 'Activate Skin' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
-====Clip Over Perimeter Width====
-Default is 0.1.
+===Division===
+====Horizontal Infill Divisions====
+Default: 2
 
-Defines the ratio of the amount each end of the loop is clipped over the perimeter width.  The total gap will therefore be twice the clip.  If the ratio is too high loops will have a gap, if the ratio is too low there will be a bulge at the loop ends.
+Defines the number of times the skinned infill is divided horizontally.
 
-====Layer From====
-Default is one.
+====Horizontal Perimeter Divisions====
+Default: 1
+
+Defines the number of times the skinned perimeters are divided horizontally.
+
+====Vertical Divisions====
+Default: 2
+
+Defines the number of times the skinned infill and perimeters are divided vertically.
+
+===Hop When Extruding Infill===
+Default is off.
+
+When selected, the extruder will hop before and after extruding the lower infill in order to avoid the regular thickness threads.
+
+===Layers From===
+Default: 1
 
 Defines which layer of the print the skinning process starts from. It is not wise to set this to zero, skinning the bottom layer is likely to cause the bottom perimeter not to adhere well to the print surface.
 
-====Tips====
+==Tips==
 Due to the very small Z-axis moves skinning can generate as it prints the perimeter, it can cause the Z-axis speed to be limited by the Limit plug-in, if you have it enabled. This can cause some printers to pause excessively during each layer change. To overcome this, ensure that the Z-axis max speed in the Limit tool is set to an appropriate value for your printer, e.g. 10mm/s
 
-Since Skin prints two half-height perimeter layers for each layer, printing the perimeter last causes the print head to travel down from the current print height. Depending on the shape of your extruder nozzle, you may get higher quality prints if you print the perimeters first, so the print head always travels up.  This is set via the Thread Sequence Choice setting in the Fill tool.
-
+Since Skin prints a number of fractional-height perimeter layers for each layer, printing the perimeter last causes the print head to travel down from the current print height. Depending on the shape of your extruder nozzle, you may get higher quality prints if you print the perimeters first, so the print head always travels up.  This is set via the Thread Sequence Choice setting in the Fill tool.
 
 ==Examples==
 The following examples skin the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and skin.py.
@@ -49,6 +64,7 @@ from __future__ import absolute_import
 import __init__
 
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
+from fabmetheus_utilities.geometry.solids import triangle_mesh
 from fabmetheus_utilities.vector3 import Vector3
 from fabmetheus_utilities import archive
 from fabmetheus_utilities import euclidean
@@ -59,7 +75,7 @@ from skeinforge_application.skeinforge_utilities import skeinforge_craft
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import sys
-import math
+
 
 __author__ = 'Enrique Perez (perez_enrique aht yahoo.com) & James Blackwell (jim_blag ahht hotmail.com)'
 __date__ = '$Date: 2008/21/04 $'
@@ -74,11 +90,18 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Skin a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'skin'):
 		return gcodeText
-	if repository == None:
+	if repository is None:
 		repository = settings.getReadRepository(SkinRepository())
 	if not repository.activateSkin.value:
 		return gcodeText
 	return SkinSkein().getCraftedGcode(gcodeText, repository)
+
+def getIsMinimumSides(loops, sides=3):
+	'Determine if all the loops have at least the given number of sides.'
+	for loop in loops:
+		if len(loop) < sides:
+			return False
+	return True
 
 def getNewRepository():
 	'Get new repository.'
@@ -96,15 +119,14 @@ class SkinRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.skin.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Skin', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skin')
-		self.activateSkin = settings.BooleanSetting().getFromValue('Activate Skin', self, False )
-		self.clipOverPerimeterWidth = settings.FloatSpin().getFromValue(0.5, 'Clip Over Perimeter Width (ratio):', self, 1.5, 1.0)
+		self.activateSkin = settings.BooleanSetting().getFromValue('Activate Skin', self, False)
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- Infill -', self )
-		self.infillBottomFeedRate = settings.FloatSpin().getFromValue(0.2, 'Infill Bottom Feed Rate Multiplier (ratio):', self, 2.0, 1.0)
-		self.infillBottomFlowRate = settings.FloatSpin().getFromValue(0.2, 'Infill Bottom Flow Rate Multiplier (ratio):', self, 2.0, 1.0)
-		self.infillTopFeedRate = settings.FloatSpin().getFromValue(0.2, 'Infill Top Feed Rate Multiplier (ratio):', self, 2.0, 1.0)
-		self.infillTopFlowRate = settings.FloatSpin().getFromValue(0.2, 'Infill Top Flow Rate Multiplier (ratio):', self, 2.0, 1.0)
+		settings.LabelDisplay().getFromName('- Division -', self)
+		self.horizontalInfillDivisions = settings.IntSpin().getSingleIncrementFromValue(1, 'Horizontal Infill Divisions (integer):', self, 3, 2)
+		self.horizontalPerimeterDivisions = settings.IntSpin().getSingleIncrementFromValue(1, 'Horizontal Perimeter Divisions (integer):', self, 3, 1)
+		self.verticalDivisions = settings.IntSpin().getSingleIncrementFromValue(1, 'Vertical Divisions (integer):', self, 3, 2)
 		settings.LabelSeparator().getFromRepository(self)
+		self.hopWhenExtrudingInfill = settings.BooleanSetting().getFromValue('Hop When Extruding Infill', self, False)
 		self.layersFrom = settings.IntSpin().getSingleIncrementFromValue(0, 'Layers From (index):', self, 912345678, 1)
 		self.executeTitle = 'Skin'
 
@@ -119,13 +141,16 @@ class SkinSkein:
 	'A class to skin a skein of extrusions.'
 	def __init__(self):
 		'Initialize.'
-		self.distanceFeedRate = gcodec.DistanceFeedRate()
+		self.clipOverPerimeterWidth = 0.0
+ 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.feedRateMinute = 959.0
 		self.infill = None
-		self.layerCount = settings.LayerCount()
+		self.infillBoundaries = None
+		self.infillBoundary = None
 		self.layerIndex = -1
 		self.lineIndex = 0
 		self.lines = None
+		self.maximumZFeedRateMinute = 60.0
 		self.oldFlowRate = None
 		self.oldLocation = None
 		self.perimeter = None
@@ -135,49 +160,88 @@ class SkinSkein:
 		'Add a flow rate line.'
 		self.distanceFeedRate.addLine('M108 S' + euclidean.getFourSignificantFigures(flowRate))
 
-	def addInfillOutlines(self, feedRate, infillOutlines, z):
-		'Add the infill outlines to the gcode.'
-		for infillOutline in infillOutlines:
-			infillPath = infillOutline + [infillOutline[0]]
-			self.distanceFeedRate.addGcodeFromFeedRateThreadZ(feedRate, infillPath, self.travelFeedRateMinute, z)
-
 	def addPerimeterLoop(self, thread, z):
 		'Add the perimeter loop to the gcode.'
 		self.distanceFeedRate.addGcodeFromFeedRateThreadZ(self.feedRateMinute, thread, self.travelFeedRateMinute, z)
 
 	def addSkinnedInfill(self):
 		'Add skinned infill.'
-		if self.infill == None:
+		if self.infillBoundaries is None:
 			return
-		if len(self.infill) < 2:
-			return
-		infillOutlines = intercircle.getAroundsFromPath(self.infill, self.quarterInfillWidth)
-		lowerZ = self.oldLocation.z - self.halfLayerThickness
-		self.addFlowRateLine(0.25 * self.repository.infillBottomFlowRate.value * self.oldFlowRate* (self.repository.infillBottomFeedRate.value))
-		self.addInfillOutlines(self.repository.infillBottomFeedRate.value * self.feedRateMinute, infillOutlines, lowerZ)
-		self.addFlowRateLine(0.25 * self.repository.infillTopFlowRate.value * self.oldFlowRate * self.repository.infillTopFeedRate.value)
-		self.addInfillOutlines(self.repository.infillTopFeedRate.value * self.feedRateMinute, infillOutlines, self.oldLocation.z)
+		bottomZ = self.oldLocation.z + self.layerThickness / self.verticalDivisionsFloat - self.layerThickness
+		offsetY = 0.5 * self.skinInfillWidth
+		self.addFlowRateLine(self.oldFlowRate / self.verticalDivisionsFloat / self.horizontalInfillDivisionsFloat)
+		for verticalDivisionIndex in xrange(self.verticalDivisions):
+			z = bottomZ + self.layerThickness / self.verticalDivisionsFloat * float(verticalDivisionIndex)
+			self.addSkinnedInfillBoundary(self.infillBoundaries, offsetY * (verticalDivisionIndex % 2 == 0), self.oldLocation.z, z)
 		self.addFlowRateLine(self.oldFlowRate)
+		self.infillBoundaries = None
+
+	def addSkinnedInfillBoundary(self, infillBoundaries, offsetY, upperZ, z):
+		'Add skinned infill boundary.'
+		aroundInset = 0.24321 * self.skinInfillInset
+		arounds = []
+		aroundWidth = 0.24321 * self.skinInfillInset
+		endpoints = []
+		pixelTable = {}
+		rotatedLoops = []
+		for infillBoundary in infillBoundaries:
+			infillBoundaryRotated = euclidean.getRotatedComplexes(self.reverseRotation, infillBoundary)
+			if offsetY != 0.0:
+				for infillPointRotatedIndex, infillPointRotated in enumerate(infillBoundaryRotated):
+					infillBoundaryRotated[infillPointRotatedIndex] = complex(infillPointRotated.real, infillPointRotated.imag - offsetY)
+			rotatedLoops.append(infillBoundaryRotated)
+		infillDictionary = triangle_mesh.getInfillDictionary(
+			aroundInset, arounds, aroundWidth, self.skinInfillInset, self.skinInfillWidth, pixelTable, rotatedLoops)
+		for infillDictionaryKey in infillDictionary.keys():
+			xIntersections = infillDictionary[infillDictionaryKey]
+			xIntersections.sort()
+			for segment in euclidean.getSegmentsFromXIntersections(xIntersections, infillDictionaryKey * self.skinInfillWidth):
+				for endpoint in segment:
+					endpoint.point = complex(endpoint.point.real, endpoint.point.imag + offsetY)
+					endpoints.append(endpoint)
+		infillPaths = euclidean.getPathsFromEndpoints(endpoints, 5.0 * self.skinInfillWidth, pixelTable, aroundWidth)
+		for infillPath in infillPaths:
+			infillRotated = euclidean.getRotatedComplexes(self.rotation, infillPath)
+			if upperZ > z and self.repository.hopWhenExtrudingInfill.value:
+				self.distanceFeedRate.addGcodeMovementZWithFeedRate(self.maximumZFeedRateMinute, infillRotated[0], upperZ)
+			self.distanceFeedRate.addGcodeFromFeedRateThreadZ(self.feedRateMinute, infillRotated, self.travelFeedRateMinute, z)
+			lastPointRotated = infillRotated[-1]
+			self.oldLocation = Vector3(lastPointRotated.real, lastPointRotated.imag, upperZ)
+			if upperZ > z and self.repository.hopWhenExtrudingInfill.value:
+				self.distanceFeedRate.addGcodeMovementZWithFeedRate(self.maximumZFeedRateMinute, lastPointRotated, upperZ)
 
 	def addSkinnedPerimeter(self):
 		'Add skinned perimeter.'
-		if self.perimeter == None:
+		if self.perimeter is None:
 			return
-		self.perimeter = self.perimeter[: -1]
-		innerPerimeter = intercircle.getLargestInsetLoopFromLoop(self.perimeter, self.quarterPerimeterWidth)
-		innerPerimeter = self.getClippedSimplifiedLoopPathByLoop(innerPerimeter)
-		outerPerimeter = intercircle.getLargestInsetLoopFromLoop(self.perimeter, -self.quarterPerimeterWidth*0.7853)#		outerPerimeter = intercircle.getLargestInsetLoopFromLoop(self.perimeter, -self.quarterPerimeterWidth)
-		outerPerimeter = self.getClippedSimplifiedLoopPathByLoop(outerPerimeter)
-		lowerZ = self.oldLocation.z - self.halfLayerThickness
-		self.addFlowRateLine(0.25 * self.oldFlowRate)
-		self.addPerimeterLoop(innerPerimeter, lowerZ)
-		self.addPerimeterLoop(outerPerimeter, lowerZ)
-		self.addPerimeterLoop(innerPerimeter, self.oldLocation.z)
-		self.addPerimeterLoop(outerPerimeter, self.oldLocation.z)
+		bottomZ = self.oldLocation.z + self.layerThickness / self.verticalDivisionsFloat - self.layerThickness
+		perimeterThread = self.perimeter[: -1]
+		perimeters = []
+		radiusAddition = self.perimeterWidth / self.horizontalPerimeterDivisionsFloat
+		radius = 0.5 * radiusAddition - self.halfPerimeterWidth
+		for division in xrange(self.repository.horizontalPerimeterDivisions.value):
+			perimeters.append(self.getClippedSimplifiedLoopPathByLoop(intercircle.getLargestInsetLoopFromLoop(perimeterThread, radius)))
+			radius += radiusAddition
+		skinnedPerimeterFlowRate = self.oldFlowRate / self.verticalDivisionsFloat
+		if getIsMinimumSides(perimeters):
+			self.addFlowRateLine(skinnedPerimeterFlowRate / self.horizontalPerimeterDivisionsFloat)
+			for verticalDivisionIndex in xrange(self.verticalDivisions):
+				z = bottomZ + self.layerThickness / self.verticalDivisionsFloat * float(verticalDivisionIndex)
+				for perimeter in perimeters:
+					self.addPerimeterLoop(perimeter, z)
+		else:
+			self.addFlowRateLine(skinnedPerimeterFlowRate)
+			for verticalDivisionIndex in xrange(self.verticalDivisions):
+				z = bottomZ + self.layerThickness / self.verticalDivisionsFloat * float(verticalDivisionIndex)
+				self.addPerimeterLoop(self.perimeter, z)
 		self.addFlowRateLine(self.oldFlowRate)
+		self.perimeter = None
 
 	def getClippedSimplifiedLoopPathByLoop(self, loop):
 		'Get clipped and simplified loop path from a loop.'
+		if len(loop) == 0:
+			return []
 		loopPath = loop + [loop[0]]
 		return euclidean.getClippedSimplifiedLoopPath(self.clipLength, loopPath, self.halfPerimeterWidth)
 
@@ -185,13 +249,19 @@ class SkinSkein:
 		'Parse gcode text and store the skin gcode.'
 		self.lines = archive.getTextLines(gcodeText)
 		self.repository = repository
-		self.layersFromBottom = self.repository.layersFrom.value
+		self.layersFromBottom = repository.layersFrom.value
+		self.horizontalInfillDivisionsFloat = float(repository.horizontalInfillDivisions.value)
+		self.horizontalPerimeterDivisionsFloat = float(repository.horizontalPerimeterDivisions.value)
+		self.verticalDivisions = max(repository.verticalDivisions.value, 1)
+		self.verticalDivisionsFloat = float(self.verticalDivisions)
 		self.parseInitialization()
+		self.clipLength = 0.5 * self.clipOverPerimeterWidth * self.perimeterWidth
+		self.skinInfillInset = 0.5 * (self.infillWidth + self.skinInfillWidth) * (1.0 - self.infillPerimeterOverlap)
 		self.parseBoundaries()
 		for self.lineIndex in xrange(self.lineIndex, len(self.lines)):
 			line = self.lines[self.lineIndex]
 			self.parseLine(line)
-		return self.distanceFeedRate.output.getvalue()
+		return gcodec.getGcodeWithoutDuplication('M108', self.distanceFeedRate.output.getvalue())
 
 	def parseBoundaries(self):
 		'Parse the boundaries and add them to the boundary layers.'
@@ -206,7 +276,7 @@ class SkinSkein:
 				boundaryLoop = None
 			elif firstWord == '(<boundaryPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if boundaryLoop == None:
+				if boundaryLoop is None:
 					boundaryLoop = []
 					boundaryLayer.loops.append(boundaryLoop)
 				boundaryLoop.append(location.dropAxis())
@@ -226,22 +296,25 @@ class SkinSkein:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
-			if firstWord == '(</extruderInitialization>)':
-				self.distanceFeedRate.addLine('(<procedureName> skin </procedureName>)')
+			if firstWord == '(<clipOverPerimeterWidth>':
+				self.clipOverPerimeterWidth = float(splitLine[1])
+			elif firstWord == '(</extruderInitialization>)':
+				self.distanceFeedRate.addTagBracketedProcedure('skin')
 				return
+			elif firstWord == '(<infillPerimeterOverlap>':
+				self.infillPerimeterOverlap = float(splitLine[1])
 			elif firstWord == '(<infillWidth>':
-				self.quarterInfillWidth = 0.25 * float(splitLine[1])
+				self.infillWidth = float(splitLine[1])
+				self.skinInfillWidth = self.infillWidth / self.horizontalInfillDivisionsFloat
 			elif firstWord == '(<layerThickness>':
-				self.LayerThickness = float(splitLine[1])
-				self.halfLayerThickness = 0.5 * float(splitLine[1])
+				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<maximumZFeedRatePerSecond>':
+				self.maximumZFeedRateMinute = 60.0 * float(splitLine[1])
 			elif firstWord == '(<operatingFlowRate>':
 				self.oldFlowRate = float(splitLine[1])
 			elif firstWord == '(<perimeterWidth>':
-				perimeterWidth = float(splitLine[1])
-				self.PerimeterWidth = perimeterWidth
-				self.halfPerimeterWidth = 0.5 * perimeterWidth
-				self.quarterPerimeterWidth = 0.25 * perimeterWidth
-				self.clipLength = (self.repository.clipOverPerimeterWidth.value * self.halfPerimeterWidth * (0.7853))/2
+				self.perimeterWidth = float(splitLine[1])
+				self.halfPerimeterWidth = 0.5 * self.perimeterWidth
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
@@ -256,46 +329,41 @@ class SkinSkein:
 			self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 			location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			self.oldLocation = location
-			if self.infill != None:
-				self.infill.append(location.dropAxis())
+			if self.infillBoundaries is not None:
 				return
-			if self.perimeter != None:
+			if self.perimeter is not None:
 				self.perimeter.append(location.dropAxis())
 				return
+		elif firstWord == '(<infill>)':
+			if self.layerIndex >= self.layersFromBottom and self.layerIndex == self.layerIndexTop:
+				self.infillBoundaries = []
+		elif firstWord == '(</infill>)':
+			self.addSkinnedInfill()
+		elif firstWord == '(<infillBoundary>)':
+			if self.infillBoundaries is not None:
+				self.infillBoundary = []
+				self.infillBoundaries.append(self.infillBoundary)
+		elif firstWord == '(<infillPoint>':
+			if self.infillBoundaries is not None:
+				location = gcodec.getLocationFromSplitLine(None, splitLine)
+				self.infillBoundary.append(location.dropAxis())
 		elif firstWord == '(<layer>':
-			self.layerCount.printProgressIncrement('skin')
 			self.layerIndex += 1
-			self.setInfill()
-		elif firstWord == '(<loop>':
-			self.infill = None
-		elif firstWord == '(</loop>)':
-			self.setInfill()
+			settings.printProgress(self.layerIndex, 'skin')
+		elif firstWord == 'M101' or firstWord == 'M103':
+			if self.infillBoundaries is not None or self.perimeter is not None:
+				return
 		elif firstWord == 'M108':
 			self.oldFlowRate = gcodec.getDoubleAfterFirstLetter(splitLine[1])
 		elif firstWord == '(<perimeter>':
-			self.infill = None
 			if self.layerIndex >= self.layersFromBottom:
 				self.perimeter = []
+		elif firstWord == '(<rotation>':
+			self.rotation = gcodec.getRotationBySplitLine(splitLine)
+			self.reverseRotation = complex(self.rotation.real, -self.rotation.imag)
 		elif firstWord == '(</perimeter>)':
 			self.addSkinnedPerimeter()
-			self.setInfill()
-			self.perimeter = None
-		if firstWord == 'M103':
-			if self.infill != None:
-				self.addSkinnedInfill()
-				self.setInfill()
-				return
-		if firstWord == 'M101' or firstWord == 'M103':
-			if self.infill != None:
-				return
-			if self.perimeter != None:
-				return
 		self.distanceFeedRate.addLine(line)
-
-	def setInfill(self):
-		'Set the infill to an empty list if the layerIndex is above layersFromBottom and there is nothing above.'
-		if self.layerIndex >= self.layersFromBottom and self.layerIndex == self.layerIndexTop:
-			self.infill = []
 
 
 def main():
