@@ -17,6 +17,7 @@ import shutil
 import sys
 import traceback
 import webbrowser
+import platform
 try:
 	import Tkinter
 except:
@@ -418,22 +419,25 @@ def openWebPage( webPagePath ):
 		webPagePath = archive.getDocumentationPath('redirect.html')
 		archive.writeFileText( webPagePath, redirectionText )
 	webPagePath = '"%s"' % webPagePath # " to get around space in url bug
-	try: # " to get around using gnome-open or internet explorer for webbrowser default
-		webbrowserController = webbrowser.get('firefox')
-	except:
-		webbrowserController = webbrowser.get()
-	webbrowserName = webbrowserController.name
-	if webbrowserName == '':
-		try:
-			os.startfile( webPagePath )#this is available on some python environments, but not all
-			return
-		except:
-			pass
-		print('Skeinforge was not able to open the file in a web browser.  To see the documentation, open the following file in a web browser:')
-		print( webPagePath )
-		return
+	if platform.system() == 'Darwin':
+		os.system('open ' + webPagePath) #workaround for Mac OS, webrowserController.name doesn't work
 	else:
-		os.system(webbrowserName + ' ' + webPagePath)#used this instead of webbrowser.open() to workaround webbrowser open() bug
+		try: # " to get around using gnome-open or internet explorer for webbrowser default
+			webbrowserController = webbrowser.get('firefox')
+		except:
+			webbrowserController = webbrowser.get()
+		webbrowserName = webbrowserController.name
+		if webbrowserName == '':
+			try:
+				os.startfile( webPagePath )#this is available on some python environments, but not all
+				return
+			except:
+				pass
+			print('Skeinforge was not able to open the file in a web browser.  To see the documentation, open the following file in a web browser:')
+			print( webPagePath )
+			return
+		else:
+			os.system(webbrowserName + ' ' + webPagePath)#used this instead of webbrowser.open() to workaround webbrowser open() bug
 
 def printProgress(layerIndex, procedureName):
 	"Print layerIndex followed by a carriage return."
