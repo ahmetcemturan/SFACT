@@ -1,7 +1,7 @@
 I have modified Skeinforge to be more practical and easier to tune.  features include:
 
 
-A more up to date version could be found at http://dl.dropbox.com/u/38819298/SFACT%20Readme.txt
+A more up to date version could be found at http://titanpad.com/XTUJXiNHmd
 
 Also trying to get the SFACT wiki up and running: https://github.com/ahmetcemturan/SFACT/wiki
 
@@ -86,7 +86,7 @@ A:
 
 ?Go Back in Sfact to DIMENSION and click the "Calibrating" radio dial and enter the measurement into "Measured Width of Extrusion".  Reskein the _40x10.STL file.
 
-?At the end of the skeining process you will see (on the command window) a new packing density ratio, it should be somewhere between 1.2 and .8 .  Enter it into the filament packing density ratio box(called "E-steps Corrector" in later versions of SFACT). (If it's more off than that you very likely have a badly calibrated Estep on 1 of your axis’s.  This is not too much of a problem when you want to get to printing rightaway but be aware that bad precision does not add up but multiplies...  So go back later and fix it by re-calibrating E-steps)
+?At the end of the skeining process you will see (on the command window) a new packing density ratio, it should be somewhere between 1.2 and .8 .  Enter it into the filament packing density ratio box(called "E-steps Corrector" in later versions of SFACT). (If it's more off than that you very likely have a badly calibrated Estep on 1 of your axisï¿½s.  This is not too much of a problem when you want to get to printing rightaway but be aware that bad precision does not add up but multiplies...  So go back later and fix it by re-calibrating E-steps)
 
 ?Do not print the G-code that is output with the "Are You Calibrating" checkbox on.   Untick the checkbox and skein again.
 
@@ -94,9 +94,9 @@ A:
 
 ?Remeasure.  
 
-¦If the measured wall width is now equal to your extrusion width set in the "Carve" tab, you're done.
+ï¿½If the measured wall width is now equal to your extrusion width set in the "Carve" tab, you're done.
 
-¦If not, just enter the newly measured value into the measured width in DIMENSION.  repeat until you are happy with the result. (remember to tick the checkbox "Are You Calibrating" to calculate new values based on the new "Measured With Of Extrusion" value)
+ï¿½If not, just enter the newly measured value into the measured width in DIMENSION.  repeat until you are happy with the result. (remember to tick the checkbox "Are You Calibrating" to calculate new values based on the new "Measured With Of Extrusion" value)
 
 ?Note:  You can interrupt and measure the print as soon as you feel the extrusion has stabilised.
 
@@ -120,7 +120,7 @@ A:
 
 ?The nozzle diameter dictates also your setings in CARVE: it would be very wrong to expect an orifice of 0.5mm diameter to put out extrusion of 0.5x1mm.  That would be more than twice the amount it is capable to extrude. 
 
-¦A good rule of thumb is to set layer height slightly lower than the nozzle diameter and extrusion width a bit above the nozzle diameter. ( LayerHeight + ExtrusionWidth = slight bit more than 2xNozzleDiameter)
+ï¿½A good rule of thumb is to set layer height slightly lower than the nozzle diameter and extrusion width a bit above the nozzle diameter. ( LayerHeight + ExtrusionWidth = slight bit more than 2xNozzleDiameter)
 
 ?Limitations on speed are only set by the capability of your extruders heater, slippage of the filament, mechanical friction/binding etc., and weight of moving parts (acceleration needs to be set slower resulting in lower topspeeds..)
 
@@ -155,11 +155,11 @@ A:
 
 ?Possible problems:
 
-¦ If your layer height and extrusion width is already low, trying to extrude 1/4th of the previous cross-section will probably result in very inconsistent flow.
+ï¿½ If your layer height and extrusion width is already low, trying to extrude 1/4th of the previous cross-section will probably result in very inconsistent flow.
 
-¦Another problem is the decimals.  You might find that the output code does not increase as the increment is so little that it gets lost during rounding.
+ï¿½Another problem is the decimals.  You might find that the output code does not increase as the increment is so little that it gets lost during rounding.
 
-¦The situation is even worse with relative E-steps.
+ï¿½The situation is even worse with relative E-steps.
 
 
 Q:    Why are the width setting in SFACT absolute and not a ratio as in SF?
@@ -175,11 +175,11 @@ A:
 
 ?Regarding the calculation and the generated G-code the answer is yes. BUT the real world has limitations:
 
-¦Your hot-end has a limit.  It is imposed by the nozzle diameter, shape and internal details, as well as the capacity of your heater/heating system and how good it can transfer the heat to the filament.  An upper as well as a lower limit.  
+ï¿½Your hot-end has a limit.  It is imposed by the nozzle diameter, shape and internal details, as well as the capacity of your heater/heating system and how good it can transfer the heat to the filament.  An upper as well as a lower limit.  
 
-•If you go below the lower limit, you will have inconsistent extrusion. (Just imagine a water hose that fows only little water. The flow will wander and be inconsistent.)  This effect becomes worse when your filament has soaked up humidity as it will create steam pockets that will cause small jets of filament during print.
+ï¿½If you go below the lower limit, you will have inconsistent extrusion. (Just imagine a water hose that fows only little water. The flow will wander and be inconsistent.)  This effect becomes worse when your filament has soaked up humidity as it will create steam pockets that will cause small jets of filament during print.
 
-•If you go higher than the limit you will have lots of pressure in the nozzle.
+ï¿½If you go higher than the limit you will have lots of pressure in the nozzle.
 
 ?This can cause excessive stringing as plastic will still flow when the extruder motor stops, as it will try to get the pressure down.  Retraction helps here a bit but it will never release the pressure instantly.  This is the best case...
 
@@ -187,11 +187,11 @@ A:
 
 ?Worst case You could have leaks in your hotend.  In such a case try to d isassemble the hot-end before letting it cool,  otherwise it might become impossible to seperate the parts.
 
-¦UTMOST CARE IS NEEDED AS YOU WILL BURN YOURSELF. (Not otherwise but be prepared to have burns..) I am using Latex covered textile working gloves when working with the hot parts of my printer.
+ï¿½UTMOST CARE IS NEEDED AS YOU WILL BURN YOURSELF. (Not otherwise but be prepared to have burns..) I am using Latex covered textile working gloves when working with the hot parts of my printer.
 
-¦Plastic parts might have become soft,  try to reinstate their original shape/state before they cool down.
+ï¿½Plastic parts might have become soft,  try to reinstate their original shape/state before they cool down.
 
-¦Filament gets to a rubbery state at some temperature (PLA about 120-130c)  Thats the best time to clean it off.  (with some experience you can take off the whole contents of the nozzle in one piece)
+ï¿½Filament gets to a rubbery state at some temperature (PLA about 120-130c)  Thats the best time to clean it off.  (with some experience you can take off the whole contents of the nozzle in one piece)
 
 ?I found that it is a good value to have the layer height the same or slightly less than the nozzle diameter.
 
@@ -217,9 +217,9 @@ A:
 
 ?Bridge layers are layers that have areas that have no material underneath.
 
-¦Bridges that span between two filled areas.
+ï¿½Bridges that span between two filled areas.
 
-¦These can be extreme overhangs.
+ï¿½These can be extreme overhangs.
 
 ?SFACT will try to print these areas wit a 100%fill and in the direction of the shortest distance of the bridge.
 
@@ -267,13 +267,13 @@ A:
 
 ?It is the G-code file that SFACT uses to carry data from plugin to plugin.  It has lots of extra information inside.
 
-¦At the start of the file there are most of your settings.
+ï¿½At the start of the file there are most of your settings.
 
-¦Each section is marked whether it is fill, loop, perimeter etc.
+ï¿½Each section is marked whether it is fill, loop, perimeter etc.
 
-¦You can reopen a penultimate file with skeinforge to have a preview in SKEINLAYER or SKEINISO
+ï¿½You can reopen a penultimate file with skeinforge to have a preview in SKEINLAYER or SKEINISO
 
-¦It is a great source of information if you need help.
+ï¿½It is a great source of information if you need help.
 
 
 Q:    Why are there now two dimension plugins (DIMENSION and OLDDIMENSION)?
