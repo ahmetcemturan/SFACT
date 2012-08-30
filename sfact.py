@@ -573,13 +573,19 @@ class SkeinforgeRepository:
 		settings.LabelDisplay().getFromName('', self)
 		importantFileNames = ['craft', 'profile']
 		getRadioPluginsAddPluginGroupFrame(archive.getSkeinforgePluginsPath(), importantFileNames, getPluginFileNames(), self)
+		self.usePyPyforSlicing = settings.BooleanSetting().getFromValue('Slice with PyPy ', self, True )
 		self.executeTitle = 'Skeinforge'
 
 	def execute(self):
 		'Skeinforge button has been clicked.'
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
-		for fileName in fileNames:
-			skeinforge_craft.writeOutput(fileName)
+		if self.usePyPyforSlicing.value :
+			for fileName in fileNames:
+				CommandOutput=os.popen('C:/pypy-1.9/pypy.exe C:/Users/Ahmet/SFACT/skeinforge_application/skeinforge_utilities/skeinforge_craft.py %s' % (fileName)).read() #for pypy slicing
+				print CommandOutput #for pypy slicing
+		else:
+			for fileName in fileNames:
+				skeinforge_craft.writeOutput(fileName) #use this line instead of the below two for regular python slicing
 
 	def save(self):
 		'Profile has been saved and profile menu should be updated.'
