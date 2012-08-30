@@ -581,8 +581,10 @@ class SkeinforgeRepository:
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
 		if self.usePyPyforSlicing.value :
 			for fileName in fileNames:
-				CommandOutput=os.popen('C:/pypy-1.9/pypy.exe C:/Users/Ahmet/SFACT/skeinforge_application/skeinforge_utilities/skeinforge_craft.py %s' % (fileName)).read() #for pypy slicing
+				os.getcwd()
+				CommandOutput=os.popen('C:\pypy-1.9\pypy.exe %s%s %s'  % (os.getcwd(),'\skeinforge_application\skeinforge_utilities\skeinforge_craft.py', fileName)).read() #for pypy slicing
 				print CommandOutput #for pypy slicing
+				print os.getcwd()
 		else:
 			for fileName in fileNames:
 				skeinforge_craft.writeOutput(fileName) #use this line instead of the below two for regular python slicing
