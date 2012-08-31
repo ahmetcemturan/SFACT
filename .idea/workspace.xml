@@ -2,203 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="776eaf14-a295-457b-b16b-2e308ade59f0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.euclidean.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.euclidean.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.fabmetheus_tools.interpret_plugins.slc.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.fabmetheus_tools.interpret_plugins.slc.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.fabmetheus_tools.interpret_plugins.svg.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.fabmetheus_tools.interpret_plugins.svg.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.fabmetheus_tools.interpret_plugins.xml_plugins.artofillusion.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.fabmetheus_tools.interpret_plugins.xml_plugins.artofillusion.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.gcodec.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.gcodec.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.creation.grid.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.creation.grid.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.creation.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.creation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.creation.lineation.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.creation.lineation.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.creation.solid.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.creation.solid.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.geometry_tools.path.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.geometry_tools.path.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.geometry_utilities.boolean_geometry.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.geometry_utilities.boolean_geometry.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.geometry_utilities.boolean_solid.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.geometry_utilities.boolean_solid.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.geometry_utilities.evaluate_elements.setting.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.geometry_utilities.evaluate_elements.setting.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.manipulation_paths.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.manipulation_paths.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.manipulation_shapes._inset.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.manipulation_shapes._inset.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.manipulation_shapes.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.manipulation_shapes.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.solids.cube.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.solids.cube.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.solids.cylinder.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.solids.cylinder.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.solids.sphere.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.solids.sphere.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.solids.triangle_mesh.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.geometry.solids.triangle_mesh.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.settings.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.settings.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.svg_writer.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.svg_writer.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/fabmetheus_utilities.xml_simple_reader.html" afterPath="$PROJECT_DIR$/documentation/fabmetheus_utilities.xml_simple_reader.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.analyze_plugins.skeiniso.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.analyze_plugins.skeiniso.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.analyze_plugins.statistic.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.analyze_plugins.statistic.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.analyze_plugins.synopsis.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.analyze_plugins.synopsis.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.analyze_plugins.vectorwrite.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.analyze_plugins.vectorwrite.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.alteration.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.alteration.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.bottom.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.bottom.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.carve.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.carve.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.chamber.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.chamber.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.chop.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.chop.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.cleave.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.cleave.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.clip.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.clip.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.comb.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.comb.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.dimension.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.dimension.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.drill.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.drill.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.export.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.export.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.fill.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.fill.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.hop.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.hop.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.inset.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.inset.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.jitter.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.jitter.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.lift.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.lift.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.mill.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.mill.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.multiply.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.multiply.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.outset.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.outset.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.raft.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.raft.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.scale.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.scale.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.skin.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.skin.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.skirt.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.skirt.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.smooth.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.smooth.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.speed.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.speed.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.splodge.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.splodge.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.stretch.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.stretch.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.temperature.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.temperature.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.whittle.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.whittle.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.widen.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.widen.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.wipe.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_plugins.craft_plugins.wipe.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_utilities.skeinforge_craft.html" afterPath="$PROJECT_DIR$/documentation/skeinforge_application.skeinforge_utilities.skeinforge_craft.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/archive.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/archive.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/euclidean.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/euclidean.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/alphabetize.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/alphabetize.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/fabmetheus_interpret.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/fabmetheus_interpret.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/csv.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/csv.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/slc.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/slc.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/svg.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/svg.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/xml.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/xml.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/xml_plugins/artofillusion.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/xml_plugins/artofillusion.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/xml_plugins/fabmetheus.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/fabmetheus_tools/interpret_plugins/xml_plugins/fabmetheus.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/gcodec.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/gcodec.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/_drill.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/_drill.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/_svg.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/_svg.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/circle.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/circle.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/concatenate.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/concatenate.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/extrude.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/extrude.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/gear.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/gear.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/grid.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/grid.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/lathe.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/lathe.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/line.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/line.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/lineation.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/lineation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/mechaslab.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/mechaslab.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/peg.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/peg.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/polygon.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/polygon.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/shaft.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/shaft.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/solid.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/solid.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/sponge_slice.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/sponge_slice.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/square.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/square.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/teardrop.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/teardrop.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/text.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/creation/text.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/dictionary.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/dictionary.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/face.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/face.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/path.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/path.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/path_elements/cubic.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/path_elements/cubic.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/path_elements/quadratic.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_tools/path_elements/quadratic.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/boolean_geometry.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/boolean_geometry.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/boolean_solid.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/boolean_solid.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/evaluate.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/evaluate.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/evaluate_elements/creation.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/evaluate_elements/creation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/evaluate_elements/document.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/evaluate_elements/document.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/evaluate_elements/setting.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/evaluate_elements/setting.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/matrix.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/geometry_utilities/matrix.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/_array.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/_array.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/_carve.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/_carve.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/_copy.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/_copy.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/disjoin.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/disjoin.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/import.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/import.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/write.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_meta/write.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_paths/outline.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_paths/outline.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_paths/overhang.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_paths/overhang.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_paths/segment.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_paths/segment.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_shapes/_bottom.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_shapes/_bottom.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_shapes/_inset.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_shapes/_inset.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_shapes/equation.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/manipulation_shapes/equation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/solids/triangle_mesh.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/solids/triangle_mesh.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/_print.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/_print.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/for.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/for.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/return.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/return.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/statement.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/statement.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/while.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/geometry/statements/while.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/intercircle.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/intercircle.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/fabricate/extrude.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/fabricate/extrude.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/nophead/gRead.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/nophead/gRead.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/nophead/hexgrid.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/nophead/hexgrid.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/nophead/layers.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/nophead/layers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/nophead/vector3.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/miscellaneous/nophead/vector3.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/settings.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/svg_reader.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/svg_reader.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/svg_writer.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/svg_writer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/templates/layer_template.svg" afterPath="$PROJECT_DIR$/fabmetheus_utilities/templates/layer_template.svg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/vector3.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/vector3.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/vector3index.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/vector3index.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/version.txt" afterPath="$PROJECT_DIR$/fabmetheus_utilities/version.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/xml_simple_reader.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/xml_simple_reader.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/xml_simple_writer.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/xml_simple_writer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/creation/text.xml" afterPath="$PROJECT_DIR$/models/xml_models/creation/text.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/geometry_utilities/evaluate_elements/setting.xml" afterPath="$PROJECT_DIR$/models/xml_models/geometry_utilities/evaluate_elements/setting.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/manipulation_meta/pathTest.svg" afterPath="$PROJECT_DIR$/models/xml_models/manipulation_meta/pathTest.svg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/flip/flip_element.svg" afterPath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/flip/flip_element.svg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/flip/flip_path.svg" afterPath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/flip/flip_path.svg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/flip/flip_solid.svg" afterPath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/flip/flip_solid.svg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/inset/inset_element.xml" afterPath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/inset/inset_element.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/inset/inset_solid.xml" afterPath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/inset/inset_solid.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/mirror/mirror_path.svg" afterPath="$PROJECT_DIR$/models/xml_models/manipulation_shapes/mirror/mirror_path.svg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/xml_models/solids/cube.xml" afterPath="$PROJECT_DIR$/models/xml_models/solids/cube.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sfact.py" afterPath="$PROJECT_DIR$/sfact.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/analyze_utilities/tableau.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/analyze_utilities/tableau.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/skeiniso.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/skeiniso.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/skeinlayer.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/skeinlayer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/statistic.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/statistic.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/synopsis.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/synopsis.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/vectorwrite.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/vectorwrite.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/alteration.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/alteration.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/bottom.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/bottom.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/carve.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/carve.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/chamber.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/chamber.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/chop.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/chop.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/cleave.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/cleave.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/clip.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/clip.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/coil.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/coil.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/comb.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/comb.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/cool.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/cool.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/drill.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/drill.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/export.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/export.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/feed.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/feed.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/fill.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/fill.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/fillet.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/fillet.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/home.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/home.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/hop.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/hop.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/inset.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/inset.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/jitter.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/jitter.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/lash.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/lash.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/lift.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/lift.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/limit.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/limit.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/mill.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/mill.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/multiply.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/multiply.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/oozebane.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/oozebane.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/outset.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/outset.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/preface.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/preface.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/scale.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/scale.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skin.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skin.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skirt.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skirt.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/smooth.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/smooth.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/speed.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/speed.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/splodge.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/splodge.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/stretch.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/stretch.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/temperature.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/temperature.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/tower.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/tower.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/whittle.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/whittle.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/widen.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/widen.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/wipe.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/wipe.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/profile_plugins/extrusion.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/profile_plugins/extrusion.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_utilities/skeinforge_craft.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_utilities/skeinforge_craft.py" />
     </list>
     <ignored path="SFACT.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -224,16 +28,70 @@
       <file leaf-file-name="skeinlayer.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/skeinlayer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="543" column="0" selection-start="28389" selection-end="28389" vertical-scroll-proportion="-17.653847">
+            <state line="7" column="99" selection-start="316" selection-end="316" vertical-scroll-proportion="248.46153">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sfact.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="raft.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="440" column="34" selection-start="23098" selection-end="23098" vertical-scroll-proportion="-7.3846154">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="extrusion.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/profile_plugins/extrusion.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="28" column="20" selection-start="1334" selection-end="1347" vertical-scroll-proportion="-7.8461537">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="end.gmc" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/alterations/end.gmc">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="start.gmc" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/alterations/start.gmc">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="end.gmc" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/skeinforge_application/alterations/end.gmc">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="replace.csv" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/alterations/replace.csv">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sfact.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sfact.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="598" column="71" selection-start="30157" selection-end="30157" vertical-scroll-proportion="1.8167808">
+            <state line="598" column="71" selection-start="30157" selection-end="30157" vertical-scroll-proportion="-40.807693">
               <folding />
             </state>
           </provider>
@@ -257,7 +115,6 @@
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/skeiniso.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/vectorwrite.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/clip.py" />
-        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skin.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/stretch.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/tower.py" />
@@ -269,6 +126,7 @@
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/speed.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/skeinlayer.py" />
         <option value="$PROJECT_DIR$/sfact.py" />
+        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py" />
       </list>
     </option>
   </component>
@@ -293,7 +151,7 @@
       <showLibraryContents />
       <hideEmptyPackages />
       <abbreviatePackageNames />
-      <autoscrollToSource />
+      <autoscrollToSource ProjectPane="true" />
       <autoscrollFromSource />
       <sortByType />
     </navigator>
@@ -346,7 +204,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="skeinforge_plugins" />
+              <option name="myItemId" value="alterations" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -360,15 +218,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="skeinforge_application" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="skeinforge_plugins" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="analyze_plugins" />
+              <option name="myItemId" value="alterations" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -459,7 +309,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32897604" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -467,9 +317,9 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6002179" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.08950276" sideWeight="0.6350762" order="1" side_tool="true" content_ui="tabs" x="583" y="196" width="274" height="468" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14881267" sideWeight="0.71023965" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14881267" sideWeight="0.72421527" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.28976035" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27578476" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32897604" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -529,48 +379,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/stretch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="408" column="29" selection-start="21098" selection-end="21098" vertical-scroll-proportion="0.5035047">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="363" column="29" selection-start="17097" selection-end="17097" vertical-scroll-proportion="0.61187214">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SFACT Readme.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="109" column="123" selection-start="8149" selection-end="8149" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fabmetheus_utilities/euclidean.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2261" column="47" selection-start="86829" selection-end="86829" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/preface.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="165" column="38" selection-start="7573" selection-end="7573" vertical-scroll-proportion="0.12328767">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/statistic.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="235" column="8" selection-start="9352" selection-end="9352" vertical-scroll-proportion="0.12328767">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/xml_models/creation/gear/bevel.svg">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="107" selection-start="600" selection-end="600" vertical-scroll-proportion="0.07762557">
@@ -627,16 +435,58 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/skeinlayer.py">
+    <entry file="file://$PROJECT_DIR$/sfact.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="543" column="0" selection-start="28389" selection-end="28389" vertical-scroll-proportion="-17.653847">
+        <state line="598" column="71" selection-start="30157" selection-end="30157" vertical-scroll-proportion="-40.807693">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sfact.py">
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/analyze_plugins/skeinlayer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="598" column="71" selection-start="30157" selection-end="30157" vertical-scroll-proportion="1.8167808">
+        <state line="7" column="99" selection-start="316" selection-end="316" vertical-scroll-proportion="248.46153">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="440" column="34" selection-start="23098" selection-end="23098" vertical-scroll-proportion="-7.3846154">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/profile_plugins/extrusion.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="20" selection-start="1334" selection-end="1347" vertical-scroll-proportion="-7.8461537">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/alterations/replace.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/alterations/end.gmc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/alterations/start.gmc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/alterations/end.gmc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
