@@ -23,7 +23,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation is None:
+	if derivation == None:
 		derivation = LineDerivation(elementNode)
 	endMinusStart = derivation.end - derivation.start
 	endMinusStartLength = abs(endMinusStart)
@@ -35,14 +35,14 @@ def getGeometryOutput(derivation, elementNode):
 		return None
 	typeStringTwoCharacters = derivation.typeString.lower()[: 2]
 	elementNode.attributes['closed'] = str(derivation.closed)
-	if derivation.step is None and derivation.steps is None:
+	if derivation.step == None and derivation.steps == None:
 		return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop([derivation.start, derivation.end]))
 	loop = [derivation.start]
-	if derivation.step is not None and derivation.steps is not None:
+	if derivation.step != None and derivation.steps != None:
 		stepVector = derivation.step / endMinusStartLength * endMinusStart
 		derivation.end = derivation.start + stepVector * derivation.steps
 		return getGeometryOutputByStep(elementNode, derivation.end, loop, derivation.steps, stepVector)
-	if derivation.step is None:
+	if derivation.step == None:
 		stepVector = endMinusStart / derivation.steps
 		return getGeometryOutputByStep(elementNode, derivation.end, loop, derivation.steps, stepVector)
 	endMinusStartLengthOverStep = endMinusStartLength / derivation.step

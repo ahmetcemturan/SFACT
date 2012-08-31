@@ -9,7 +9,7 @@ The default 'Activate Lift' checkbox is on.  When it is on, the functions descri
 ===Cutting Lift over Layer Step===
 Default is minus 0.5, because the end mill is the more common tool.
 
-Defines the ratio of the amount the cutting tool will be lifted over the layer step.  If whittle is off the layer step will be the layer thickness, if it is on, it will be the layer step from the whittle gcode.  If the cutting tool is like an end mill, where the cutting happens until the end of the tool, then the 'Cutting Lift over Layer Step' should be minus 0.5, so that the end mill cuts to the bottom of the slab.  If the cutting tool is like a laser, where the cutting happens around the focal point. the 'Cutting Lift over Layer Step' should be zero, so that the cutting action will be focused in the middle of the slab.
+Defines the ratio of the amount the cutting tool will be lifted over the layer step.  If whittle is off the layer step will be the layer height, if it is on, it will be the layer step from the whittle gcode.  If the cutting tool is like an end mill, where the cutting happens until the end of the tool, then the 'Cutting Lift over Layer Step' should be minus 0.5, so that the end mill cuts to the bottom of the slab.  If the cutting tool is like a laser, where the cutting happens around the focal point. the 'Cutting Lift over Layer Step' should be zero, so that the cutting action will be focused in the middle of the slab.
 
 ===Clearance above Top===
 Default is 5 millimeters.
@@ -58,7 +58,7 @@ def getCraftedTextFromText( gcodeText, liftRepository = None ):
 	"Lift the preface gcode text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'lift'):
 		return gcodeText
-	if liftRepository is None:
+	if liftRepository == None:
 		liftRepository = settings.getReadRepository( LiftRepository() )
 	if not liftRepository.activateLift.value:
 		return gcodeText
@@ -97,7 +97,7 @@ class LiftSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.extruderActive = False
 		self.layerStep = None
-		self.layerThickness = 0.3333333333
+		self.layerHeight = 0.3333333333
 		self.lineIndex = 0
 		self.maximumZ = - 912345678.0
 		self.oldLocation = None
@@ -106,7 +106,7 @@ class LiftSkein:
 
 	def addPreviousInactiveMovementLineIfNecessary(self):
 		"Add the previous inactive movement line if necessary."
-		if self.previousInactiveMovementLine is not None:
+		if self.previousInactiveMovementLine != None:
 			self.distanceFeedRate.addLine( self.previousInactiveMovementLine )
 			self.previousInactiveMovementLine = None
 
@@ -116,8 +116,8 @@ class LiftSkein:
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		self.oldLocation = None
-		if self.layerStep is None:
-			self.layerStep = self.layerThickness
+		if self.layerStep == None:
+			self.layerStep = self.layerHeight
 		self.cuttingLift = self.layerStep * liftRepository.cuttingLiftOverLayerStep.value
 		self.setMaximumZ()
 		self.travelZ = self.maximumZ + 0.5 * self.layerStep + liftRepository.clearanceAboveTop.value
@@ -130,7 +130,7 @@ class LiftSkein:
 		if self.extruderActive:
 			z = location.z + self.cuttingLift
 			return self.distanceFeedRate.getLineWithZ( line, splitLine, z )
-		if self.previousActiveMovementLine is not None:
+		if self.previousActiveMovementLine != None:
 			previousActiveMovementLineSplit = self.previousActiveMovementLine.split()
 			self.distanceFeedRate.addLine( self.distanceFeedRate.getLineWithZ( self.previousActiveMovementLine, previousActiveMovementLineSplit, self.travelZ ) )
 			self.previousActiveMovementLine = None
@@ -148,8 +148,8 @@ class LiftSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('lift')
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<layerHeight>':
+				self.layerHeight = float(splitLine[1])
 			elif firstWord == '(<layerStep>':
 				self.layerStep = float(splitLine[1])
 			self.distanceFeedRate.addLine(line)

@@ -1,9 +1,10 @@
 <?xml version='1.0' ?>
 <fabmetheus importRadius='1.2345'>
+	<dictionary importCoarseness='=setting.getImportCoarseness()'/>
 	<dictionary importRadius='=setting.getImportRadius()'/>
 	<dictionary interiorOverhangAngle='=setting.getInteriorOverhangAngle()'/>
 	<dictionary interiorOverhangRadians='=setting.getInteriorOverhangRadians()'/>
-	<dictionary layerThickness='=setting.getLayerThickness()'/>
+	<dictionary layerHeight='=setting.getLayerHeight()'/>
 	<dictionary overhangAngle='=setting.getOverhangAngle()'/>
 	<dictionary overhangRadians='=setting.getOverhangRadians()'/>
 	<dictionary overhangSpan='=setting.getOverhangSpan()' overhangSpan='=2 + 3'/>

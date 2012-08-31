@@ -16,7 +16,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> file.close()
 >>> from xml_simple_reader import DocumentNode
 >>> xmlParser = DocumentNode(fileName, xmlText)
->>> print( xmlParser )
+>>> print(xmlParser)
   ?xml, {'version': '1.0'}
   ArtOfIllusion, {'xmlns:bf': '//babelfiche/codec', 'version': '2.0', 'fileversion': '3'}
   Scene, {'bf:id': 'theScene'}
@@ -182,13 +182,13 @@ class CDATASectionNode:
 
 	def removeFromIDNameParent(self):
 		'Remove this from the id and name dictionaries and the childNodes of the parentNode.'
-		if self.parentNode is not None:
+		if self.parentNode != None:
 			self.parentNode.childNodes.remove(self)
 
 	def setParentAddToChildNodes(self, parentNode):
 		'Set the parentNode and add this to its childNodes.'
 		self.parentNode = parentNode
-		if self.parentNode is not None:
+		if self.parentNode != None:
 			self.parentNode.childNodes.append(self)
 
 	attributes = property(getAttributes)
@@ -421,10 +421,10 @@ class ElementNode:
 		ownerDocument = self.getOwnerDocument()
 		importNameChain = self.getImportNameChain()
 		idKey = self.getStrippedAttributesValue('id')
-		if idKey is not None:
+		if idKey != None:
 			ownerDocument.idDictionary[importNameChain + idKey] = self
 		nameKey = self.getStrippedAttributesValue('name')
-		if nameKey is not None:
+		if nameKey != None:
 			euclidean.addElementToListDictionaryIfNotThere(self, importNameChain + nameKey, ownerDocument.nameDictionary)
 		for tagKey in self.getTagKeys():
 			euclidean.addElementToListDictionaryIfNotThere(self, tagKey, ownerDocument.tagDictionary)
@@ -455,7 +455,7 @@ class ElementNode:
 		'Get the cascade boolean.'
 		if key in self.attributes:
 			value = evaluate.getEvaluatedBoolean(None, self, key)
-			if value is not None:
+			if value != None:
 				return value
 		return self.parentNode.getCascadeBoolean(defaultBoolean, key)
 
@@ -463,7 +463,7 @@ class ElementNode:
 		'Get the cascade float.'
 		if key in self.attributes:
 			value = evaluate.getEvaluatedFloat(None, self, key)
-			if value is not None:
+			if value != None:
 				return value
 		return self.parentNode.getCascadeFloat(defaultFloat, key)
 
@@ -485,7 +485,7 @@ class ElementNode:
 
 	def getCopyShallow(self, attributes=None):
 		'Copy the xml element and set its dictionary and parentNode.'
-		if attributes is None: # to evade default initialization bug where a dictionary is initialized to the last dictionary
+		if attributes == None: # to evade default initialization bug where a dictionary is initialized to the last dictionary
 			attributes = {}
 		copyShallow = ElementNode(self.parentNode)
 		copyShallow.attributes = attributes
@@ -535,14 +535,14 @@ class ElementNode:
 		suffix = self.localName
 		if 'id' in self.attributes:
 			suffix = self.attributes['id']
-		if elementIndex is None:
+		if elementIndex == None:
 			return '_%s' % suffix
 		return '_%s_%s' % (suffix, elementIndex)
 
 	def getImportNameChain(self, suffix=''):
 		'Get the import name chain with the suffix at the end.'
 		importName = self.getStrippedAttributesValue('_importName')
-		if importName is not None:
+		if importName != None:
 			suffix = '%s.%s' % (importName, suffix)
 		return self.parentNode.getImportNameChain(suffix)
 
@@ -564,13 +564,13 @@ class ElementNode:
 
 	def getPaths(self):
 		'Get all paths.'
-		if self.xmlObject is None:
+		if self.xmlObject == None:
 			return []
 		return self.xmlObject.getPaths()
 
 	def getPreviousElementNode(self):
 		'Get previous ElementNode if it exists.'
-		if self.parentNode is None:
+		if self.parentNode == None:
 			return None
 		previousElementNodeIndex = self.parentNode.childNodes.index(self) - 1
 		if previousElementNodeIndex < 0:
@@ -579,9 +579,9 @@ class ElementNode:
 
 	def getPreviousVertex(self, defaultVector3=None):
 		'Get previous vertex if it exists.'
-		if self.parentNode is None:
+		if self.parentNode == None:
 			return defaultVector3
-		if self.parentNode.xmlObject is None:
+		if self.parentNode.xmlObject == None:
 			return defaultVector3
 		if len(self.parentNode.xmlObject.vertexes) < 1:
 			return defaultVector3
@@ -602,7 +602,7 @@ class ElementNode:
 				if childNode.attributes['bf:id'] == idReference:
 					return childNode
 			subChildWithID = childNode.getSubChildWithID( idReference )
-			if subChildWithID is not None:
+			if subChildWithID != None:
 				return subChildWithID
 		return None
 
@@ -643,7 +643,7 @@ class ElementNode:
 
 	def getVertexes(self):
 		'Get the vertexes.'
-		if self.xmlObject is None:
+		if self.xmlObject == None:
 			return []
 		return self.xmlObject.getVertexes()
 
@@ -677,7 +677,7 @@ class ElementNode:
 		'Print all variables and the document element variables.'
 		self.printAllVariables()
 		documentElement = self.getDocumentElement()
-		if documentElement is not None:
+		if documentElement != None:
 			print('')
 			print('Root variables:')
 			documentElement.printAllVariables()
@@ -692,23 +692,23 @@ class ElementNode:
 		'Remove this from the id and name dictionaries and the childNodes of the parentNode.'
 		self.removeChildNodesFromIDNameParent()
 		idKey = self.getStrippedAttributesValue('id')
-		if idKey is not None:
+		if idKey != None:
 			idDictionary = self.getOwnerDocument().idDictionary
 			idKey = self.getImportNameChain() + idKey
 			if idKey in idDictionary:
 				del idDictionary[idKey]
 		nameKey = self.getStrippedAttributesValue('name')
-		if nameKey is not None:
+		if nameKey != None:
 			euclidean.removeElementFromListTable(self, self.getImportNameChain() + nameKey, self.getOwnerDocument().nameDictionary)
 		for tagKey in self.getTagKeys():
 			euclidean.removeElementFromListTable(self, tagKey, self.getOwnerDocument().tagDictionary)
-		if self.parentNode is not None:
+		if self.parentNode != None:
 			self.parentNode.childNodes.remove(self)
 
 	def setParentAddToChildNodes(self, parentNode):
 		'Set the parentNode and add this to its childNodes.'
 		self.parentNode = parentNode
-		if self.parentNode is not None:
+		if self.parentNode != None:
 			self.parentNode.childNodes.append(self)
 
 	def setTextContent(self, textContent=''):
@@ -837,7 +837,7 @@ class ValueMonad:
 
 	def getNextMonad(self, character):
 		'Get the next monad.'
-		if self.quoteCharacter is None:
+		if self.quoteCharacter == None:
 			if character == '"' or character == "'":
 				self.quoteCharacter = character
 			return self

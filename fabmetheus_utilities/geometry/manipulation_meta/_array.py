@@ -93,9 +93,9 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation is None:
+	if derivation == None:
 		derivation = ArrayDerivation(elementNode)
-	if derivation.target is None:
+	if derivation.target == None:
 		print('Warning, array could not get target for:')
 		print(elementNode)
 		return

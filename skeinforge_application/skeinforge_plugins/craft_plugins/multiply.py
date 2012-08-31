@@ -40,7 +40,7 @@ When selected the build sequence will be reversed on every odd layer so that the
 ===Separation over Perimeter Width===
 Default is fifteen.
 
-Defines the ratio of separation between the shape copies over the perimeter width.
+Defines the ratio of separation between the shape copies over the edge width.
 
 ==Examples==
 The following examples multiply the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and multiply.py.
@@ -89,7 +89,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Multiply the fill text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'multiply'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(MultiplyRepository())
 	if not repository.activateMultiply.value:
 		return gcodeText
@@ -114,17 +114,16 @@ class MultiplyRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Multiply')
 		self.activateMultiply = settings.BooleanSetting().getFromValue('Activate Multiply: ', self, True )
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- Center - (Set half your total x and y travel distance \nfor centering your prints!', self )
-		self.centerX = settings.FloatSpin().getFromValue(-240.0, 'Center X (mm):', self, 240.0, 100.0)
-		self.centerY = settings.FloatSpin().getFromValue(-240.0, 'Center Y (mm):', self, 240.0, 100.0)
+		settings.LabelDisplay().getFromName('- Center -', self )
+		self.centerX = settings.FloatSpin().getFromValue(-100.0, 'Center X (mm):', self, 100.0, 0.0)
+		self.centerY = settings.FloatSpin().getFromValue(-100.0, 'Center Y (mm):', self, 100.0, 0.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Number of Cells -', self)
 		self.numberOfColumns = settings.IntSpin().getFromValue(1, 'Number of Columns (integer):', self, 10, 1)
 		self.numberOfRows = settings.IntSpin().getFromValue(1, 'Number of Rows (integer):', self, 10, 1)
 		settings.LabelSeparator().getFromRepository(self)
 		self.reverseSequenceEveryOddLayer = settings.BooleanSetting().getFromValue('Reverse Sequence every Odd Layer', self, False)
-		self.separationOverPerimeterWidth = settings.FloatSpin().getFromValue(
-			5.0, 'Separation over Perimeter Width (ratio):', self, 25.0, 15.0)
+		self.separationOverEdgeWidth = settings.FloatSpin().getFromValue(5.0, 'Separation over Perimeter Width (ratio):', self, 25.0, 15.0)
 		self.executeTitle = 'Multiply'
 
 	def execute(self):
@@ -226,8 +225,8 @@ class MultiplySkein:
 				self.distanceFeedRate.addLine(line)
 				self.lineIndex += 1
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.absolutePerimeterWidth = abs(float(splitLine[1]))
+			elif firstWord == '(<edgeWidth>':
+				self.absoluteEdgeWidth = abs(float(splitLine[1]))
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
@@ -267,7 +266,7 @@ class MultiplySkein:
 				self.isExtrusionActive = False
 		self.extent = cornerMaximumComplex - cornerMinimumComplex
 		self.shapeCenter = 0.5 * (cornerMaximumComplex + cornerMinimumComplex)
-		self.separation = self.repository.separationOverPerimeterWidth.value * self.absolutePerimeterWidth
+		self.separation = self.repository.separationOverEdgeWidth.value * self.absoluteEdgeWidth
 		self.extentPlusSeparation = self.extent + complex(self.separation, self.separation)
 		columnsMinusOne = self.numberOfColumns - 1
 		rowsMinusOne = self.numberOfRows - 1

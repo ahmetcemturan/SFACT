@@ -12,6 +12,18 @@ http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Vectorwrite
 The default 'Activate Vectorwrite' checkbox is off.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Vectorwrite' checkbox is on, when vectorwrite is run directly.
 
 ==Settings==
+===Add Boundaries===
+Default is on.
+
+If 'Add Boundaries' is selected, the boundaries will be added in blue to the the scalable vector graphics output.
+
+===Add Layer Template to SVG===
+Default is on.
+
+When selected, the layer template will be added to the svg output, which adds javascript control boxes.  So 'Add Layer Template to SVG' should be selected when the svg will be viewed in a browser.
+
+When off, no controls will be added, the svg output will only include the fabrication paths.  So 'Add Layer Template to SVG' should be deselected when the svg will be used by other software, like Inkscape.
+
 ===Add Loops===
 Default is on.
 
@@ -25,7 +37,7 @@ If 'Add Paths' is selected, the paths will be added in pink to the the scalable 
 ===Add Perimeters===
 Default is on.
 
-If 'Add Perimeters' is selected, the perimeters will be added to the the scalable vector graphics output.  The outer perimeters will be red and the inner perimeters will be orange.
+If 'Add Perimeters' is selected, the edges will be added to the the scalable vector graphics output.  The outer edges will be red and the inner edges will be orange.
 
 ===Layers===
 ====Layers From====
@@ -91,7 +103,7 @@ def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
 	'Write scalable vector graphics for a gcode file given the settings.'
 	if gcodeText == '':
 		return None
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( VectorwriteRepository() )
 	startTime = time.time()
 	vectorwriteGcode = VectorwriteSkein().getCarvedSVG( fileName, gcodeText, repository )
@@ -115,33 +127,38 @@ def writeOutput(fileName, fileNamePenultimate, fileNameSuffix, filePenultimateWr
 	getWindowAnalyzeFileGivenText( fileNameSuffix, gcodeText, repository )
 
 
-class SVGWriterVectorwrite( svg_writer.SVGWriter ):
+class SVGWriterVectorwrite(svg_writer.SVGWriter):
 	'A class to vectorwrite a carving.'
-	def addPaths( self, colorName, paths, transformString ):
+	def addPaths(self, colorName, paths, transformString):
 		'Add paths to the output.'
 		pathString = ''
 		for path in paths:
-			pathString += self.getSVGStringForPath(path) + ' '
-		if len( pathString ) < 1:
+			if len(path) > 0:
+				pathString += self.getSVGStringForPath(path) + ' '
+		if len(pathString) < 1:
 			return
-		pathElementNodeCopy = self.pathElementNode.getCopy('', self.pathElementNode.parentNode )
+		pathElementNodeCopy = self.pathElementNode.getCopy('', self.pathElementNode.parentNode)
 		pathCopyDictionary = pathElementNodeCopy.attributes
-		pathCopyDictionary['d'] = pathString[ : - 1 ]
+		pathCopyDictionary['d'] = pathString[: -1]
 		pathCopyDictionary['fill'] = 'none'
 		pathCopyDictionary['stroke'] = colorName
-		pathCopyDictionary['transform'] = transformString
+		if self.addLayerTemplateToSVG:
+			pathCopyDictionary['transform'] = transformString
 
-	def addLoopLayerToOutput( self, layerIndex, threadLayer ):
+	def addLoopLayerToOutput(self, layerIndex, threadLayer):
 		'Add rotated boundary layer to the output.'
-		settings.printProgress(self.layerIndex, 'vectorwrite')
-		self.addLayerBegin( layerIndex, threadLayer )
+		settings.printProgress(layerIndex, 'vectorwrite')
+		self.addLayerBegin(layerIndex, threadLayer)
 		transformString = self.getTransformString()
-		self.pathDictionary['d'] = self.getSVGStringForLoops( threadLayer.boundaryLoops )
-		self.pathDictionary['transform'] = transformString
-		self.addPaths('#fa0', threadLayer.innerPerimeters, transformString ) #orange
-		self.addPaths('#ff0', threadLayer.loops, transformString ) #yellow
-		self.addPaths('#f00', threadLayer.outerPerimeters, transformString ) #red
-		self.addPaths('#f5c', threadLayer.paths, transformString ) #light violetred
+		self.pathDictionary['d'] = self.getSVGStringForLoops(threadLayer.boundaryLoops)
+		if self.addLayerTemplateToSVG:
+			self.pathDictionary['transform'] = transformString
+		else:
+			del self.pathDictionary['transform']
+		self.addPaths('#fa0', threadLayer.innerPerimeters, transformString) #orange
+		self.addPaths('#ff0', threadLayer.loops, transformString) #yellow
+		self.addPaths('#f00', threadLayer.outerPerimeters, transformString) #red
+		self.addPaths('#f5c', threadLayer.paths, transformString) #light violetred
 
 
 class ThreadLayer:
@@ -159,11 +176,11 @@ class ThreadLayer:
 		return str(self.__dict__)
 
 	def getTotalNumberOfThreads(self):
-		'Get the total number of loops, paths and perimeters.'
+		'Get the total number of loops, paths and edges.'
 		return len(self.boundaryLoops) + len(self.innerPerimeters) + len(self.loops) + len(self.outerPerimeters) + len(self.paths)
 
 	def maximize(self, vector3):
-		'Maximize the vector3 over the loops, paths and perimeters.'
+		'Maximize the vector3 over the loops, paths and edges.'
 		pointComplex = vector3.dropAxis()
 		pointComplex = euclidean.getMaximum(euclidean.getMaximumByComplexPaths(self.boundaryLoops), pointComplex)
 		pointComplex = euclidean.getMaximum(euclidean.getMaximumByComplexPaths(self.innerPerimeters), pointComplex)
@@ -173,7 +190,7 @@ class ThreadLayer:
 		vector3.setToXYZ(pointComplex.real, pointComplex.imag, max(self.z, vector3.z))
 
 	def minimize(self, vector3):
-		'Minimize the vector3 over the loops, paths and perimeters.'
+		'Minimize the vector3 over the loops, paths and edges.'
 		pointComplex = vector3.dropAxis()
 		pointComplex = euclidean.getMinimum(euclidean.getMinimumByComplexPaths(self.boundaryLoops), pointComplex)
 		pointComplex = euclidean.getMinimum(euclidean.getMinimumByComplexPaths(self.innerPerimeters), pointComplex)
@@ -191,6 +208,8 @@ class VectorwriteRepository:
 		self.activateVectorwrite = settings.BooleanSetting().getFromValue('Activate Vectorwrite', self, False )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( [ ('Gcode text files', '*.gcode') ], 'Open File to Write Vector Graphics for', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Vectorwrite')
+		self.addBoundaries = settings.BooleanSetting().getFromValue('Add Boundaries', self, True)
+		self.addLayerTemplateToSVG = settings.BooleanSetting().getFromValue('Add Layer Template to SVG', self, True)
 		self.addLoops = settings.BooleanSetting().getFromValue('Add Loops', self, True)
 		self.addPaths = settings.BooleanSetting().getFromValue('Add Paths', self, True)
 		self.addPerimeters = settings.BooleanSetting().getFromValue('Add Perimeters', self, True)
@@ -232,8 +251,8 @@ class VectorwriteSkein:
 		self.thread = []
 
 	def addToPerimeters(self):
-		'Add the thread to the perimeters.'
-		self.isPerimeter = False
+		'Add the thread to the edges.'
+		self.isEdge = False
 		if len(self.thread) < 1:
 			return
 		if self.repository.addPerimeters.value:
@@ -249,9 +268,9 @@ class VectorwriteSkein:
 		cornerMinimum = Vector3(987654321.0, 987654321.0, 987654321.0)
 		self.boundaryLoop = None
 		self.extruderActive = False
+		self.isEdge = False
 		self.isLoop = False
 		self.isOuter = False
-		self.isPerimeter = False
 		self.lines = archive.getTextLines(gcodeText)
 		self.oldLocation = None
 		self.thread = []
@@ -264,16 +283,16 @@ class VectorwriteSkein:
 		for threadLayer in self.threadLayers:
 			threadLayer.maximize(cornerMaximum)
 			threadLayer.minimize(cornerMinimum)
-		halfLayerThickness = 0.5 * self.layerThickness
+		halfLayerThickness = 0.5 * self.layerHeight
 		cornerMaximum.z += halfLayerThickness
 		cornerMinimum.z -= halfLayerThickness
 		svgWriter = SVGWriterVectorwrite(
-			True, cornerMaximum, cornerMinimum, self.decimalPlacesCarried, self.layerThickness, self.perimeterWidth)
-		return svgWriter.getReplacedSVGTemplate(fileName, 'vectorwrite', self.threadLayers)
+			repository.addLayerTemplateToSVG.value, cornerMaximum, cornerMinimum, self.decimalPlacesCarried, self.layerHeight, self.edgeWidth)
+		return svgWriter.getReplacedSVGTemplate(fileName, self.threadLayers, 'vectorwrite')
 
-	def getCarveLayerThickness(self):
-		'Get the layer thickness.'
-		return self.layerThickness
+	def getCarveLayerHeight(self):
+		'Get the layer height.'
+		return self.layerHeight
 
 	def linearMove( self, splitLine ):
 		'Get statistics for a linear move.'
@@ -292,12 +311,12 @@ class VectorwriteSkein:
 			firstWord = gcodec.getFirstWord(splitLine)
 			if firstWord == '(<decimalPlacesCarried>':
 				self.decimalPlacesCarried = int(splitLine[1])
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<layerHeight>':
+				self.layerHeight = float(splitLine[1])
 			elif firstWord == '(<crafting>)':
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
+			elif firstWord == '(<edgeWidth>':
+				self.edgeWidth = float(splitLine[1])
 
 	def parseLine(self, line):
 		'Parse a gcode line and add it to the outset skein.'
@@ -314,7 +333,7 @@ class VectorwriteSkein:
 			if self.isLoop:
 				self.addToLoops()
 				return
-			if self.isPerimeter:
+			if self.isEdge:
 				self.addToPerimeters()
 				return
 			if self.repository.addPaths.value:
@@ -322,9 +341,9 @@ class VectorwriteSkein:
 			self.thread = []
 		elif firstWord == '(</boundaryPerimeter>)':
 			self.boundaryLoop = None
-		elif firstWord == '(<boundaryPoint>':
+		elif firstWord == '(<boundaryPoint>' and self.repository.addBoundaries.value:
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
-			if self.boundaryLoop is None:
+			if self.boundaryLoop == None:
 				self.boundaryLoop = []
 				self.threadLayer.boundaryLoops.append( self.boundaryLoop )
 			self.boundaryLoop.append(location.dropAxis())
@@ -334,10 +353,10 @@ class VectorwriteSkein:
 			self.addToLoops()
 		elif firstWord == '(<loop>':
 			self.isLoop = True
-		elif firstWord == '(<perimeter>':
-			self.isPerimeter = True
+		elif firstWord == '(<edge>':
+			self.isEdge = True
 			self.isOuter = ( splitLine[1] == 'outer')
-		elif firstWord == '(</perimeter>)':
+		elif firstWord == '(</edge>)':
 			self.addToPerimeters()
 
 	def removeEmptyLayers(self):

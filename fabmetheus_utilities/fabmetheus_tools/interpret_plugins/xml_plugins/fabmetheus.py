@@ -81,7 +81,7 @@ class XMLBooleanGeometryProcessor():
 		if lowerLocalName not in self.namePathDictionary:
 			return None
 		pluginModule = archive.getModuleWithPath( self.namePathDictionary[ lowerLocalName ] )
-		if pluginModule is None:
+		if pluginModule == None:
 			return None
 		elementNode.localName = lowerLocalName
 		return pluginModule.convertElementNode(elementNode, geometryOutput[ firstKey ])
@@ -104,7 +104,7 @@ class XMLBooleanGeometryProcessor():
 		if lowerLocalName not in self.namePathDictionary:
 			return None
 		pluginModule = archive.getModuleWithPath(self.namePathDictionary[lowerLocalName])
-		if pluginModule is None:
+		if pluginModule == None:
 			return None
 		try:
 			return pluginModule.processElementNode(elementNode)

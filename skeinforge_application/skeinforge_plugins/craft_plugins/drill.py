@@ -202,9 +202,9 @@ class DrillSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('drill')
 				return
-			elif firstWord == '(<layerThickness>':
+			elif firstWord == '(<layerHeight>':
 				self.halfLayerThickness = 0.5 * float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
+			elif firstWord == '(<edgeWidth>':
 				self.maximumDistance = 0.1 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 

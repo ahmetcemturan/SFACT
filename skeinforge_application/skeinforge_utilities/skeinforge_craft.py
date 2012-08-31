@@ -40,7 +40,7 @@ def getChainTextFromProcedures(fileName, procedures, text):
 	lastProcedureTime = time.time()
 	for procedure in procedures:
 		craftModule = getCraftModule(procedure)
-		if craftModule is not None:
+		if craftModule != None:
 			text = craftModule.getCraftedText(fileName, text)
 			if text == '':
 				print('Warning, the text was not recognized in getChainTextFromProcedures in skeinforge_craft for')
@@ -87,32 +87,22 @@ def getPluginsDirectoryPath():
 	"Get the plugins directory path."
 	return archive.getCraftPluginsDirectoryPath()
 
-def getProcedures( procedure, text ):
-	"Get the procedures up to and including the given procedure."
+def getProcedures(procedure, text):
+	'Get the procedures up to and including the given procedure.'
 	craftSequence = getReadCraftSequence()
-	sequenceIndexPlusOneFromText = getSequenceIndexPlusOneFromText(text)
-	sequenceIndexFromProcedure = getSequenceIndexFromProcedure(procedure)
-	return craftSequence[ sequenceIndexPlusOneFromText : sequenceIndexFromProcedure + 1 ]
+	sequenceIndexFromProcedure = 0
+	if procedure in craftSequence:
+		sequenceIndexFromProcedure = craftSequence.index(procedure)
+	craftSequence = craftSequence[: sequenceIndexFromProcedure + 1]
+	for craftSequenceIndex in xrange(len(craftSequence) - 1, -1, -1):
+		procedure = craftSequence[craftSequenceIndex]
+		if gcodec.isProcedureDone(text, procedure):
+			return craftSequence[craftSequenceIndex + 1 :]
+	return craftSequence
 
 def getReadCraftSequence():
 	"Get profile sequence."
 	return skeinforge_profile.getCraftTypePluginModule().getCraftSequence()
-
-def getSequenceIndexFromProcedure(procedure):
-	"Get the profile sequence index of the procedure.  Return None if the procedure is not in the sequence"
-	craftSequence = getReadCraftSequence()
-	if procedure not in craftSequence:
-		return 0
-	return craftSequence.index(procedure)
-
-def getSequenceIndexPlusOneFromText(fileText):
-	"Get the profile sequence index of the file plus one.  Return zero if the procedure is not in the file"
-	craftSequence = getReadCraftSequence()
-	for craftSequenceIndex in xrange( len( craftSequence ) - 1, - 1, - 1 ):
-		procedure = craftSequence[ craftSequenceIndex ]
-		if gcodec.isProcedureDone( fileText, procedure ):
-			return craftSequenceIndex + 1
-	return 0
 
 def writeChainTextWithNounMessage(fileName, procedure, shouldAnalyze=True):
 	'Get and write a crafted shape file.'
@@ -141,7 +131,7 @@ def writeChainTextWithNounMessage(fileName, procedure, shouldAnalyze=True):
 def writeOutput(fileName, shouldAnalyze=True):
 	"Craft a gcode file with the last module."
 	pluginModule = getLastModule()
-	if pluginModule is not None:
+	if pluginModule != None:
 		return pluginModule.writeOutput(fileName, shouldAnalyze)
 
 def writeSVGTextWithNounMessage(fileName, repository, shouldAnalyze=True):

@@ -95,7 +95,7 @@ class EquationResult:
 
 	def getReturnValue(self, point, revolutions):
 		"Get return value."
-		if self.function is None:
+		if self.function == None:
 			return point
 		self.function.localDictionary['azimuth'] = math.degrees(math.atan2(point.y, point.x))
 		if len(self.points) > 0:

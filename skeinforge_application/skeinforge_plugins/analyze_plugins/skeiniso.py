@@ -8,7 +8,7 @@ http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Skeiniso
 ==Operation==
 The default 'Activate Skeiniso' checkbox is off.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Skeiniso' checkbox is on, when skeiniso is run directly.
 
-Skeiniso requires skeinforge comments in the gcode file to distinguish the loops and perimeters.  If the comments are deleted, all threads will be displayed as generic threads.  To get the penultimate file of the tool chain, just before export deletes the comments, select 'Save Penultimate Gcode' in export, and open the gcode file with the suffix '_penultimate.gcode' with skeiniso.
+Skeiniso requires skeinforge comments in the gcode file to distinguish the loops and edges.  If the comments are deleted, all threads will be displayed as generic threads.  To get the penultimate file of the tool chain, just before export deletes the comments, select 'Save Penultimate Gcode' in export, and open the gcode file with the suffix '_penultimate.gcode' with skeiniso.
 
 The viewer is simple, the viewpoint can only be moved in a sphere around the center of the model by changing the viewpoint latitude and longitude.  Different regions of the model can be hidden by setting the width of the thread to zero.  The alternating bands act as contour bands and their brightness and width can be changed.
 
@@ -170,17 +170,17 @@ The "Width of Fill Top Thread" sets the width of the blue extrusion threads at t
 ====Width of Loop Thread====
 Default is three.
 
-The "Width of Loop Thread" sets the width of the yellow loop threads, which are not perimeters.
+The "Width of Loop Thread" sets the width of the yellow loop threads, which are not edges.
 
 ====Width of Perimeter Inside Thread====
 Default is eight.
 
-The "Width of Perimeter Inside Thread" sets the width of the orange inside perimeter threads.
+The "Width of Perimeter Inside Thread" sets the width of the orange inside edge threads.
 
 ====Width of Perimeter Outside Thread====
 Default is eight.
 
-The "Width of Perimeter Outside Thread" sets the width of the red outside perimeter threads.
+The "Width of Perimeter Outside Thread" sets the width of the red outside edge threads.
 
 ====Width of Raft Thread====
 Default is one.
@@ -269,7 +269,7 @@ def getWindowAnalyzeFileGivenText( fileName, gcodeText, repository=None):
 	"Display a skeiniso gcode file for a gcode file."
 	if gcodeText == '':
 		return None
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( SkeinisoRepository() )
 	skeinWindow = getWindowGivenTextRepository( fileName, gcodeText, repository )
 	skeinWindow.updateDeiconify()
@@ -364,8 +364,8 @@ class SkeinisoSkein:
 		self.coloredThread = []
 		self.feedRateMinute = 960.1
 		self.hasANestedRingBeenReached = False
+		self.isEdge = False
 		self.isLoop = False
-		self.isPerimeter = False
 		self.isOuter = False
 		self.isThereALayerStartWord = False
 		self.layerCount = settings.LayerCount()
@@ -379,7 +379,7 @@ class SkeinisoSkein:
 
 	def addToPath( self, line, location ):
 		'Add a point to travel and maybe extrusion.'
-		if self.oldLocation is None:
+		if self.oldLocation == None:
 			return
 		begin = self.scale * self.oldLocation - self.scaleCenterBottom
 		end = self.scale * location - self.scaleCenterBottom
@@ -426,7 +426,7 @@ class SkeinisoSkein:
 
 	def linearMove( self, line, location ):
 		"Get statistics for a linear move."
-		if self.skeinPane is None:
+		if self.skeinPane == None:
 			return
 		self.addToPath(line, location)
 
@@ -439,11 +439,11 @@ class SkeinisoSkein:
 			self.setColoredThread( ( 190.0, 190.0, 190.0 ), self.skeinPane.travelLines ) #grey
 			return
 		self.skeinPane.layerZoneIndex = layerZoneIndex
-		if self.isPerimeter:
+		if self.isEdge:
 			if self.isOuter:
-				self.setColoredThread( ( 255.0, 0.0, 0.0 ), self.skeinPane.perimeterOutsideLines ) #red
+				self.setColoredThread( ( 255.0, 0.0, 0.0 ), self.skeinPane.edgeOutsideLines ) #red
 			else:
-				self.setColoredThread( ( 255.0, 165.0, 0.0 ), self.skeinPane.perimeterInsideLines ) #orange
+				self.setColoredThread( ( 255.0, 165.0, 0.0 ), self.skeinPane.edgeInsideLines ) #orange
 			return
 		if self.isLoop:
 			self.setColoredThread( ( 255.0, 255.0, 0.0 ), self.skeinPane.loopLines ) #yellow
@@ -477,7 +477,7 @@ class SkeinisoSkein:
 			self.extruderActive = True
 		elif firstWord == 'M103':
 			self.extruderActive = False
-		elif firstWord == '(<layerThickness>':
+		elif firstWord == '(<layerHeight>':
 			self.thirdLayerThickness = 0.33333333333 * float(splitLine[1])
 		if firstWord == '(<nestedRing>)':
 			if self.layerTopZ > self.getLayerTop():
@@ -564,8 +564,8 @@ class SkeinisoSkein:
 		elif firstWord == 'M103':
 			self.moveColoredThreadToSkeinPane()
 			self.extruderActive = False
+			self.isEdge = False
 			self.isLoop = False
-			self.isPerimeter = False
 		elif firstWord == '(<loop>':
 			self.isLoop = True
 		elif firstWord == '(</loop>)':
@@ -573,12 +573,12 @@ class SkeinisoSkein:
 			self.isLoop = False
 		elif firstWord == '(<nestedRing>)':
 			self.hasANestedRingBeenReached = True
-		elif firstWord == '(<perimeter>':
-			self.isPerimeter = True
+		elif firstWord == '(<edge>':
+			self.isEdge = True
 			self.isOuter = ( splitLine[1] == 'outer')
-		elif firstWord == '(</perimeter>)':
+		elif firstWord == '(</edge>)':
 			self.moveColoredThreadToSkeinPane()
-			self.isPerimeter = False
+			self.isEdge = False
 		if firstWord == 'G2' or firstWord == 'G3':
 			relativeLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			relativeLocation.z = 0.0
@@ -616,14 +616,14 @@ class SkeinPane:
 	def __init__( self, sequenceIndex ):
 		"Create empty line lists."
 		self.coloredLines = []
+		self.edgeInsideLines = []
+		self.edgeOutsideLines = []
 		self.fillBottomLines = []
 		self.fillTopLines = []
 		self.index = 0
 		self.infillLines = []
 		self.layerZoneIndex = 0
 		self.loopLines = []
-		self.perimeterInsideLines = []
-		self.perimeterOutsideLines = []
 		self.raftLines = []
 		self.sequenceIndex = sequenceIndex
 		self.travelLines = []
@@ -727,8 +727,8 @@ class SkeinWindow( tableau.TableauWindow ):
 		self.getDrawnColoredLines( skeinPane.fillTopLines, projectiveSpace, self.repository.widthOfFillTopThread.value )
 		self.getDrawnColoredLines( skeinPane.infillLines, projectiveSpace, self.repository.widthOfInfillThread.value )
 		self.getDrawnColoredLines( skeinPane.loopLines, projectiveSpace, self.repository.widthOfLoopThread.value )
-		self.getDrawnColoredLines( skeinPane.perimeterInsideLines, projectiveSpace, self.repository.widthOfPerimeterInsideThread.value )
-		self.getDrawnColoredLines( skeinPane.perimeterOutsideLines, projectiveSpace, self.repository.widthOfPerimeterOutsideThread.value )
+		self.getDrawnColoredLines( skeinPane.edgeInsideLines, projectiveSpace, self.repository.widthOfPerimeterInsideThread.value )
+		self.getDrawnColoredLines( skeinPane.edgeOutsideLines, projectiveSpace, self.repository.widthOfPerimeterOutsideThread.value )
 
 	def drawXYAxisLines( self, projectiveSpace ):
 		"Draw the x and y axis lines."
@@ -763,6 +763,8 @@ class SkeinWindow( tableau.TableauWindow ):
 
 	def getColoredLines(self):
 		"Get the colored lines from the skein pane."
+		if len(self.skeinPanes) == 0:
+			return []
 		return self.skeinPanes[ self.repository.layer.value ].coloredLines
 
 	def getCopy(self):

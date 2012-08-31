@@ -25,7 +25,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 def getCarving(fileName):
 	"Get carving."
 	pluginModule = getInterpretPlugin(fileName)
-	if pluginModule is None:
+	if pluginModule == None:
 		return None
 	return pluginModule.getCarving(fileName)
 
@@ -52,7 +52,7 @@ def getInterpretPlugin(fileName):
 		if fileName[ - len(fileTypeDot) : ].lower() == fileTypeDot:
 			importPluginsDirectoryPath = getPluginsDirectoryPath()
 			pluginModule = archive.getModuleWithDirectoryPath( importPluginsDirectoryPath, importPluginFileName )
-			if pluginModule is not None:
+			if pluginModule != None:
 				return pluginModule
 	print('Could not find plugin to handle ' + fileName )
 	return None
@@ -80,14 +80,14 @@ def getWindowAnalyzeFile(fileName):
 	"Get file interpretion."
 	startTime = time.time()
 	carving = getCarving(fileName)
-	if carving is None:
+	if carving == None:
 		return None
 	interpretGcode = str( carving )
 	if interpretGcode == '':
 		return None
 	repository = settings.getReadRepository( InterpretRepository() )
 	if repository.printInterpretion.value:
-		print( interpretGcode )
+		print(interpretGcode)
 	suffixFileName = fileName[ : fileName.rfind('.') ] + '_interpret.' + carving.getInterpretationSuffix()
 	suffixDirectoryName = os.path.dirname(suffixFileName)
 	suffixReplacedBaseName = os.path.basename(suffixFileName).replace(' ', '_')

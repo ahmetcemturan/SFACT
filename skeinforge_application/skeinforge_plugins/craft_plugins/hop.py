@@ -20,7 +20,7 @@ When activated the extruder will hop when traveling.  When it is off, nothing wi
 ===Hop Over Layer Thickness===
 Default is one.
 
-Defines the ratio of the hop height over the layer thickness, this is the most important hop setting.
+Defines the ratio of the hop height over the layer height, this is the most important hop setting.
 
 ===Minimum Hop Angle===
 Default is 20 degrees.
@@ -71,7 +71,7 @@ def getCraftedTextFromText( gcodeText, hopRepository = None ):
 	"Hop a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'hop'):
 		return gcodeText
-	if hopRepository is None:
+	if hopRepository == None:
 		hopRepository = settings.getReadRepository( HopRepository() )
 	if not hopRepository.activateHop.value:
 		return gcodeText
@@ -138,7 +138,7 @@ class HopSkein:
 			return line
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		highestZ = location.z
-		if self.oldLocation is not None:
+		if self.oldLocation != None:
 			highestZ = max( highestZ, self.oldLocation.z )
 		highestZHop = highestZ + self.hopHeight
 		locationComplex = location.dropAxis()
@@ -180,11 +180,11 @@ class HopSkein:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
-			if firstWord == '(<layerThickness>':
-				layerThickness = float(splitLine[1])
-				self.hopHeight = hopRepository.hopOverLayerThickness.value * layerThickness
+			if firstWord == '(<layerHeight>':
+				layerHeight = float(splitLine[1])
+				self.hopHeight = hopRepository.hopOverLayerThickness.value * layerHeight
 				self.hopDistance = self.hopHeight / self.minimumSlope
-				self.minimumDistance = 0.5 * layerThickness
+				self.minimumDistance = 0.5 * layerHeight
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('hop')
 				return

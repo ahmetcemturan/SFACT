@@ -1702,7 +1702,7 @@ Methods inherited from <a href="fabmetheus_utilities.settings.html#StringSetting
  <dl><dt><a name="-getGlobalRepositoryDialogValues"><strong>getGlobalRepositoryDialogValues</strong></a>()</dt><dd><tt>Get&nbsp;the&nbsp;global&nbsp;repository&nbsp;dialog&nbsp;values.</tt></dd></dl>
  <dl><dt><a name="-getPathInFabmetheusFromFileNameHelp"><strong>getPathInFabmetheusFromFileNameHelp</strong></a>(fileNameHelp)</dt><dd><tt>Get&nbsp;the&nbsp;directory&nbsp;path&nbsp;from&nbsp;file&nbsp;name&nbsp;help.</tt></dd></dl>
  <dl><dt><a name="-getProfileBaseName"><strong>getProfileBaseName</strong></a>(repository)</dt><dd><tt>Get&nbsp;the&nbsp;profile&nbsp;base&nbsp;file&nbsp;name.</tt></dd></dl>
- <dl><dt><a name="-getProfileBaseNameSynonym"><strong>getProfileBaseNameSynonym</strong></a>(repository)</dt><dd><tt>Get&nbsp;the&nbsp;profile&nbsp;base&nbsp;file&nbsp;name&nbsp;synonym.</tt></dd></dl>
+ <dl><dt><a name="-getProfileName"><strong>getProfileName</strong></a>(name, repository)</dt><dd><tt>Get&nbsp;the&nbsp;name,&nbsp;joined&nbsp;with&nbsp;the&nbsp;profile&nbsp;directory&nbsp;if&nbsp;there&nbsp;is&nbsp;one.</tt></dd></dl>
  <dl><dt><a name="-getProfilesDirectoryInAboveDirectory"><strong>getProfilesDirectoryInAboveDirectory</strong></a>(subName<font color="#909090">=''</font>)</dt><dd><tt>Get&nbsp;the&nbsp;profiles&nbsp;directory&nbsp;path&nbsp;in&nbsp;the&nbsp;above&nbsp;directory.</tt></dd></dl>
  <dl><dt><a name="-getRadioPluginsAddPluginFrame"><strong>getRadioPluginsAddPluginFrame</strong></a>(directoryPath, importantFileNames, names, repository)</dt><dd><tt>Get&nbsp;the&nbsp;radio&nbsp;plugins&nbsp;and&nbsp;add&nbsp;the&nbsp;plugin&nbsp;frame.</tt></dd></dl>
  <dl><dt><a name="-getReadRepository"><strong>getReadRepository</strong></a>(repository)</dt><dd><tt>Read&nbsp;and&nbsp;return&nbsp;settings&nbsp;from&nbsp;a&nbsp;file.</tt></dd></dl>
@@ -1730,7 +1730,7 @@ Methods inherited from <a href="fabmetheus_utilities.settings.html#StringSetting
  <dl><dt><a name="-setButtonFontWeightString"><strong>setButtonFontWeightString</strong></a>(button, isBold)</dt><dd><tt>Set&nbsp;button&nbsp;font&nbsp;weight&nbsp;given&nbsp;isBold.</tt></dd></dl>
  <dl><dt><a name="-setEntryText"><strong>setEntryText</strong></a>(entry, value)</dt><dd><tt>Set&nbsp;the&nbsp;entry&nbsp;text.</tt></dd></dl>
  <dl><dt><a name="-setIntegerValueToString"><strong>setIntegerValueToString</strong></a>(integerSetting, valueString)</dt><dd><tt>Set&nbsp;the&nbsp;integer&nbsp;to&nbsp;the&nbsp;string.</tt></dd></dl>
- <dl><dt><a name="-setRepositoryToLine"><strong>setRepositoryToLine</strong></a>(lineIndex, lines, shortDictionary)</dt><dd><tt>Set&nbsp;setting&nbsp;dictionary&nbsp;to&nbsp;a&nbsp;setting&nbsp;line.</tt></dd></dl>
+ <dl><dt><a name="-setRepositoryToLine"><strong>setRepositoryToLine</strong></a>(lineIndex, lines, shortDictionary)</dt><dd><tt>Set&nbsp;setting&nbsp;dictionary&nbsp;to&nbsp;a&nbsp;setting&nbsp;line.globalSettingReplacements</tt></dd></dl>
  <dl><dt><a name="-setSpinColor"><strong>setSpinColor</strong></a>(setting)</dt><dd><tt>Set&nbsp;the&nbsp;spin&nbsp;box&nbsp;color&nbsp;to&nbsp;the&nbsp;value,&nbsp;yellow&nbsp;if&nbsp;it&nbsp;is&nbsp;lower&nbsp;than&nbsp;the&nbsp;default&nbsp;and&nbsp;blue&nbsp;if&nbsp;it&nbsp;is&nbsp;higher.</tt></dd></dl>
  <dl><dt><a name="-startMainLoopFromConstructor"><strong>startMainLoopFromConstructor</strong></a>(repository)</dt><dd><tt>Display&nbsp;the&nbsp;repository&nbsp;dialog&nbsp;and&nbsp;start&nbsp;the&nbsp;main&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-startMainLoopFromWindow"><strong>startMainLoopFromWindow</strong></a>(window)</dt><dd><tt>Display&nbsp;the&nbsp;tableau&nbsp;window&nbsp;and&nbsp;start&nbsp;the&nbsp;main&nbsp;loop.</tt></dd></dl>
@@ -1753,6 +1753,7 @@ Methods inherited from <a href="fabmetheus_utilities.settings.html#StringSetting
 <strong>globalCloseListTables</strong> = [{}, {}]<br>
 <strong>globalProfileSaveListenerListTable</strong> = {}<br>
 <strong>globalRepositoryDialogListTable</strong> = {}<br>
+<strong>globalSettingReplacements</strong> = {'Layer Thickness (mm):': 'Layer Height (mm):', 'Location Arrival X (mm):': 'Arrival X (mm):', 'Location Arrival Y (mm):': 'Arrival Y (mm):', 'Location Arrival Z (mm):': 'Arrival Z (mm):', 'Location Departure X (mm):': 'Departure X (mm):', 'Location Departure Y (mm):': 'Departure Y (mm):', 'Location Departure Z (mm):': 'Departure Z (mm):', 'Location Wipe X (mm):': 'Wipe X (mm):', 'Location Wipe Y (mm):': 'Wipe Y (mm):', 'Location Wipe Z (mm):': 'Wipe Z (mm):', ...}<br>
 <strong>globalSpreadsheetSeparator</strong> = '<font color="#c040c0">\t</font>'<br>
 <strong>globalTemporaryOverrides</strong> = {}</td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">

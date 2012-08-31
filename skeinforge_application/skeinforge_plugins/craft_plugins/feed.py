@@ -149,8 +149,8 @@ class FeedSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('feed')
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.absolutePerimeterWidth = abs(float(splitLine[1]))
+			elif firstWord == '(<edgeWidth>':
+				self.absoluteEdgeWidth = abs(float(splitLine[1]))
 				self.distanceFeedRate.addTagBracketedLine('maximumZDrillFeedRatePerSecond', self.repository.maximumZDrillFeedRatePerSecond.value)
 				self.distanceFeedRate.addTagBracketedLine('maximumZFeedRatePerSecond', self.repository.maximumZFeedRatePerSecond.value )
 				self.distanceFeedRate.addTagBracketedLine('operatingFeedRatePerSecond', self.feedRatePerSecond)

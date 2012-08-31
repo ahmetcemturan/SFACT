@@ -3,8 +3,8 @@
 	<polygon id='diamond' radius='20.0' sides='23'/>
 	<difference>
 		<extrude id='diamondPillar' pathEnd.z='4' target='=document.getElementByID(diamond)'/>
-		<copy id='insetPillar' inset.radius='5' target='=document.getElementByID(diamondPillar)'/>
-		<inset addExtraTopLayer='t' insetTop='f' radius='7' target='=document.getElementByID(insetPillar)'/>
+		<copy id='insetPillar' target='=document.getElementByID(diamondPillar)'/>
+		<inset addExtraTopLayer='t' insetTop='f' radius='1' target='=document.getElementByID(insetPillar)'/>
 	</difference>
 </fabmetheus>
 	

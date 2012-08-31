@@ -16,7 +16,7 @@ The default 'Activate Smooth' checkbox is off.  When it is on, the functions des
 ===Layers From===
 Default: 1
 
-Defines which layer of the print the smoothing process starts from.  If this is set this to zero, that might cause the smoothed parts of the bottom perimeter not to adhere well to the print surface.  However, this is just a potential problem in theory, no bottom adhesion problem has been reported. 
+Defines which layer of the print the smoothing process starts from.  If this is set this to zero, that might cause the smoothed parts of the bottom edge not to adhere well to the print surface.  However, this is just a potential problem in theory, no bottom adhesion problem has been reported. 
 
 ===Maximum Shortening over Width===
 Default: 1.2
@@ -66,7 +66,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Smooth a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'smooth'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(SmoothRepository())
 	if not repository.activateSmooth.value:
 		return gcodeText
@@ -203,7 +203,7 @@ class SmoothSkein:
 			self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 			location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			self.oldLocation = location
-			if self.infill is not None:
+			if self.infill != None:
 				self.infill.append(location.dropAxis())
 				return
 		elif firstWord == '(<infill>)':
@@ -216,12 +216,12 @@ class SmoothSkein:
 			if self.boundaryLayerIndex >= 0:
 				self.boundaryLayerIndex += 1
 		elif firstWord == 'M101':
-			if self.infill is not None:
+			if self.infill != None:
 				if len(self.infill) > 1:
 					self.infill = [self.infill[0]]
 				return
 		elif firstWord == 'M103':
-			if self.infill is not None:
+			if self.infill != None:
 				self.addSmoothedInfill()
 				self.infill = []
 				return

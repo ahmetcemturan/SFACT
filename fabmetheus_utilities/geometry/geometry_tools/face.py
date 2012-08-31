@@ -56,9 +56,9 @@ def getCommonVertexIndex( edgeFirst, edgeSecond ):
 	for edgeFirstVertexIndex in edgeFirst.vertexIndexes:
 		if edgeFirstVertexIndex == edgeSecond.vertexIndexes[0] or edgeFirstVertexIndex == edgeSecond.vertexIndexes[1]:
 			return edgeFirstVertexIndex
-	print( "Inconsistent GNU Triangulated Surface" )
-	print( edgeFirst )
-	print( edgeSecond )
+	print("Inconsistent GNU Triangulated Surface")
+	print(edgeFirst)
+	print(edgeSecond)
 	return 0
 
 def getFaces(geometryOutput):

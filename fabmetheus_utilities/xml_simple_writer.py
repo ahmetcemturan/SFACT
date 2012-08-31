@@ -106,7 +106,7 @@ def getBeginGeometryXMLOutput(elementNode=None):
 	'Get the beginning of the string representation of this boolean geometry object info.'
 	output = getBeginXMLOutput()
 	attributes = {}
-	if elementNode is not None:
+	if elementNode != None:
 		documentElement = elementNode.getDocumentElement()
 		attributes = documentElement.attributes
 	addBeginXMLTag(attributes, 0, 'fabmetheus', output)

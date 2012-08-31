@@ -42,7 +42,7 @@ Defines the infill temperature of the first layer of the object.
 ====Object First Layer Perimeter Temperature====
 Default for ABS is two hundred and twenty degrees Celcius.
 
-Defines the perimeter temperature of the first layer of the object.
+Defines the edge temperature of the first layer of the object.
 
 ====Object Next Layers Temperature====
 Default for ABS is two hundred and thirty degrees Celcius.
@@ -104,7 +104,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Temperature a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'temperature'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( TemperatureRepository() )
 	if not repository.activateTemperature.value:
 		return gcodeText
@@ -180,7 +180,7 @@ class TemperatureSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('temperature')
 				return
-			elif firstWord == '(<perimeterWidth>':
+			elif firstWord == '(<edgeWidth>':
 				self.distanceFeedRate.addTagBracketedLine('coolingRate', self.repository.coolingRate.value )
 				self.distanceFeedRate.addTagBracketedLine('heatingRate', self.repository.heatingRate.value )
 				self.distanceFeedRate.addTagBracketedLine('baseTemperature', self.repository.baseTemperature.value )

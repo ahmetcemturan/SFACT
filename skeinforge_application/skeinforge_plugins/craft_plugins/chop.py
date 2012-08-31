@@ -13,22 +13,22 @@ When off, no controls will be added, the svg output will only include the fabric
 ===Add Extra Top Layer if Necessary===
 Default is on.
 
-When selected, chop will add an extra layer at the very top of the object if the top of the object is more than half the layer thickness above the first slice.  This is so the cutting tool doesn't cut too deeply through the top of the object on its first pass.
+When selected, chop will add an extra layer at the very top of the object if the top of the object is more than half the layer height above the first slice.  This is so the cutting tool doesn't cut too deeply through the top of the object on its first pass.
 
 ===Extra Decimal Places===
 Default is two.
 
-Defines the number of extra decimal places export will output compared to the number of decimal places in the layer thickness.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.
+Defines the number of extra decimal places export will output compared to the number of decimal places in the layer height.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.
 
 ===Import Coarseness===
 Default is one.
 
-When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.
+When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the edge width.
 
-===Layer Thickness===
+===Layer Height===
 Default is 0.4 mm.
 
-Defines the thickness of the layer, this is the most important chop setting.
+Defines the height of the layer, this is the most important chop setting.
 
 ===Layers===
 Chop slices from top to bottom.  To get only the bottom layer, set the "Layers From" to minus one.  The 'Layers From' until 'Layers To' range is a python slice.
@@ -55,7 +55,7 @@ When selected, chop will use the gap spanning algorithm from the start.  The pro
 ===Perimeter Width===
 Default is 2 mm.
 
-Defines the width of the perimeter.
+Defines the width of the edge.
 
 ===SVG Viewer===
 Default is webbrowser.
@@ -112,9 +112,9 @@ def getCraftedText( fileName, gcodeText = '', repository=None):
 		if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'chop'):
 			return gcodeText
 	carving = svg_writer.getCarving(fileName)
-	if carving is None:
+	if carving == None:
 		return ''
-	if repository is None:
+	if repository == None:
 		repository = ChopRepository()
 		settings.getReadRepository(repository)
 	return ChopSkein().getCarvedSVG( carving, fileName, repository )
@@ -151,16 +151,16 @@ class ChopRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getTranslatorFileTypeTuples(), 'Open File to be Chopped', self, '')
 		self.addExtraTopLayerIfNecessary = settings.BooleanSetting().getFromValue('Add Extra Top Layer if Necessary', self, True )
 		self.addLayerTemplateToSVG = settings.BooleanSetting().getFromValue('Add Layer Template to SVG', self, True)
+		self.edgeWidth = settings.FloatSpin().getFromValue( 0.4, 'Edge Width (mm):', self, 4.0, 2.0 )
 		self.extraDecimalPlaces = settings.FloatSpin().getFromValue(0.0, 'Extra Decimal Places (float):', self, 3.0, 2.0)
 		self.importCoarseness = settings.FloatSpin().getFromValue( 0.5, 'Import Coarseness (ratio):', self, 2.0, 1.0 )
-		self.layerThickness = settings.FloatSpin().getFromValue( 0.1, 'Layer Thickness (mm):', self, 1.0, 0.4 )
+		self.layerHeight = settings.FloatSpin().getFromValue( 0.1, 'Layer Height (mm):', self, 1.0, 0.4 )
 		self.layersFrom = settings.IntSpin().getFromValue( 0, 'Layers From (index):', self, 20, 0 )
 		self.layersTo = settings.IntSpin().getSingleIncrementFromValue( 0, 'Layers To (index):', self, 912345678, 912345678 )
 		self.meshTypeLabel = settings.LabelDisplay().getFromName('Mesh Type: ', self, )
 		importLatentStringVar = settings.LatentStringVar()
 		self.correctMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Correct Mesh', self, True )
 		self.unprovenMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Unproven Mesh', self, False )
-		self.perimeterWidth = settings.FloatSpin().getFromValue( 0.4, 'Perimeter Width (mm):', self, 4.0, 2.0 )
 		self.svgViewer = settings.StringSetting().getFromValue('SVG Viewer:', self, 'webbrowser')
 		settings.LabelSeparator().getFromRepository(self)
 		self.executeTitle = 'Chop'
@@ -174,39 +174,39 @@ class ChopRepository:
 
 class ChopSkein:
 	"A class to chop a carving."
-	def addExtraTopLayerIfNecessary( self, carving, layerThickness, loopLayers ):
+	def addExtraTopLayerIfNecessary( self, carving, layerHeight, loopLayers ):
 		"Add extra top layer if necessary."
 		topRotatedBoundaryLayer = loopLayers[-1]
-		cuttingSafeHeight = topRotatedBoundaryLayer.z + 0.5001 * layerThickness
+		cuttingSafeHeight = topRotatedBoundaryLayer.z + 0.5001 * layerHeight
 		if cuttingSafeHeight > carving.getCarveCornerMaximum().z:
 			return
-		extraTopRotatedBoundaryLayer = topRotatedBoundaryLayer.getCopyAtZ( topRotatedBoundaryLayer.z + layerThickness )
+		extraTopRotatedBoundaryLayer = topRotatedBoundaryLayer.getCopyAtZ( topRotatedBoundaryLayer.z + layerHeight )
 		loopLayers.append( extraTopRotatedBoundaryLayer )
 
 	def getCarvedSVG( self, carving, fileName, repository ):
 		"Parse gnu triangulated surface text and store the chopped gcode."
-		layerThickness = repository.layerThickness.value
-		perimeterWidth = repository.perimeterWidth.value
-		carving.setCarveLayerThickness( layerThickness )
-		importRadius = 0.5 * repository.importCoarseness.value * abs( perimeterWidth )
-		carving.setCarveImportRadius( max( importRadius, 0.01 * layerThickness ) )
+		layerHeight = repository.layerHeight.value
+		edgeWidth = repository.edgeWidth.value
+		carving.setCarveLayerHeight( layerHeight )
+		importRadius = 0.5 * repository.importCoarseness.value * abs(edgeWidth)
+		carving.setCarveImportRadius(max(importRadius, 0.001 * layerHeight))
 		carving.setCarveIsCorrectMesh( repository.correctMesh.value )
 		loopLayers = carving.getCarveBoundaryLayers()
 		if len( loopLayers ) < 1:
-			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Thickness.')
+			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Height.')
 			return ''
 		if repository.addExtraTopLayerIfNecessary.value:
-			self.addExtraTopLayerIfNecessary( carving, layerThickness, loopLayers )
+			self.addExtraTopLayerIfNecessary( carving, layerHeight, loopLayers )
 		loopLayers.reverse()
-		layerThickness = carving.getCarveLayerThickness()
-		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerThickness)
+		layerHeight = carving.getCarveLayerHeight()
+		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerHeight)
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),
 			carving.getCarveCornerMinimum(),
 			decimalPlacesCarried,
-			carving.getCarveLayerThickness(),
-			perimeterWidth)
+			carving.getCarveLayerHeight(),
+			edgeWidth)
 		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(loopLayers, repository)
 		return svgWriter.getReplacedSVGTemplate( fileName, truncatedRotatedBoundaryLayers, 'chop', carving.getFabmetheusXML())
 

@@ -87,7 +87,7 @@ def getCraftedTextFromText( text, repository = None ):
 	"Preface and convert an svg text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( text, 'preface'):
 		return text
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(PrefaceRepository())
 	return PrefaceSkein().getCraftedGcode(repository, text)
 
@@ -108,15 +108,14 @@ class PrefaceRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Preface', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Preface')
 		self.meta = settings.StringSetting().getFromValue('Meta:', self, '')
-		settings.LabelSeparator().getFromRepository(self)
 		self.setPositioningToAbsolute = settings.BooleanSetting().getFromValue('Set Positioning to Absolute', self, True )
 		self.setUnitsToMillimeters = settings.BooleanSetting().getFromValue('Set Units to Millimeters', self, True )
-		self.startAtHome = settings.BooleanSetting().getFromValue('Home before Print', self, False )
+		self.startAtHome = settings.BooleanSetting().getFromValue('Start at Home', self, False )
 		self.resetExtruder = settings.BooleanSetting().getFromValue('Reset Extruder before Print', self, True )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Turn Extruder Off -', self )
 		self.turnExtruderOffAtShutDown = settings.BooleanSetting().getFromValue('Turn Extruder Off at Shut Down', self, True )
-#		self.turnExtruderOffAtStartUp = settings.BooleanSetting().getFromValue('Turn Extruder Off at Start Up', self, True )
+		self.turnExtruderOffAtStartUp = settings.BooleanSetting().getFromValue('Turn Extruder Off at Start Up', self, False )
 		self.executeTitle = 'Preface'
 
 	def execute(self):
@@ -156,17 +155,19 @@ class PrefaceSkein:
 			self.distanceFeedRate.addLine('G28 ;start at home') # Start at home.
 		if self.repository.resetExtruder.value:
 			self.distanceFeedRate.addLine('G92 E0 ;reset extruder distance') # Start at home.
-#		if self.repository.turnExtruderOffAtStartUp.value:
-#			self.distanceFeedRate.addLine('M103') # Turn extruder off.
+		if self.repository.turnExtruderOffAtStartUp.value:
+			self.distanceFeedRate.addLine('M103') # Turn extruder off.
 		craftTypeName = skeinforge_profile.getCraftTypeName()
 		self.distanceFeedRate.addTagBracketedLine('craftTypeName', craftTypeName)
 		self.distanceFeedRate.addTagBracketedLine('decimalPlacesCarried', self.distanceFeedRate.decimalPlacesCarried)
-		layerThickness = float(self.svgReader.sliceDictionary['layerThickness'])
-		self.distanceFeedRate.addTagRoundedLine('layerThickness', layerThickness)
+		layerHeight = float(self.svgReader.sliceDictionary['layerHeight'])
+		self.distanceFeedRate.addTagRoundedLine('layerThickness', layerHeight)
+		self.distanceFeedRate.addTagRoundedLine('layerHeight', layerHeight)
 		if self.repository.meta.value:
 			self.distanceFeedRate.addTagBracketedLine('meta', self.repository.meta.value)
-		perimeterWidth = float(self.svgReader.sliceDictionary['perimeterWidth'])
-		self.distanceFeedRate.addTagRoundedLine('perimeterWidth', perimeterWidth)
+		edgeWidth = float(self.svgReader.sliceDictionary['edgeWidth'])
+		self.distanceFeedRate.addTagRoundedLine('edgeWidth', edgeWidth)
+		self.distanceFeedRate.addTagRoundedLine('perimeterWidth', edgeWidth)
 		self.distanceFeedRate.addTagBracketedLine('profileName', skeinforge_profile.getProfileName(craftTypeName))
 		self.distanceFeedRate.addLine('(<settings>)')
 		pluginFileNames = skeinforge_craft.getPluginFileNames()
@@ -197,8 +198,8 @@ class PrefaceSkein:
 	def addToolSettingLines(self, pluginName):
 		"Add tool setting lines."
 		preferences = skeinforge_craft.getCraftPreferences(pluginName)
-		if skeinforge_craft.getCraftValue('Activate %s' % pluginName.capitalize(), preferences) != True:
-			return
+#		if skeinforge_craft.getCraftValue('Activate %s' % pluginName.capitalize(), preferences) != True:
+#			return
 		for preference in preferences:
 			valueWithoutReturn = str(preference.value).replace('\n', ' ').replace('\r', ' ')
 			if preference.name != 'WindowPosition' and not preference.name.startswith('Open File'):
@@ -209,7 +210,7 @@ class PrefaceSkein:
 		"Parse gcode text and store the bevel gcode."
 		self.repository = repository
 		self.svgReader.parseSVG('', gcodeText)
-		if self.svgReader.sliceDictionary is None:
+		if self.svgReader.sliceDictionary == None:
 			print('Warning, nothing will be done because the sliceDictionary could not be found getCraftedGcode in preface.')
 			return ''
 		self.distanceFeedRate.decimalPlacesCarried = int(self.svgReader.sliceDictionary['decimalPlacesCarried'])

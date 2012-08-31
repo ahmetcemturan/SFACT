@@ -73,7 +73,7 @@ def addToPathsRecursively(paths, vector3Lists):
 def addValueToEvaluatedDictionary(elementNode, evaluatedDictionary, key):
 	'Get the evaluated dictionary.'
 	value = getEvaluatedValueObliviously(elementNode, key)
-	if value is None:
+	if value == None:
 		valueString = str(elementNode.attributes[key])
 		print('Warning, addValueToEvaluatedDictionary in evaluate can not get a value for:')
 		print(valueString)
@@ -100,12 +100,12 @@ def convertToPaths(dictionary):
 	if dictionary.__class__ == Vector3 or dictionary.__class__.__name__ == 'Vector3Index':
 		return
 	keys = getKeys(dictionary)
-	if keys is None:
+	if keys == None:
 		return
 	for key in keys:
 		value = dictionary[key]
 		if value.__class__.__name__ == 'ElementNode':
-			if value.xmlObject is not None:
+			if value.xmlObject != None:
 				dictionary[key] = getFloatListListsByPaths(value.xmlObject.getPaths())
 		else:
 			convertToPaths(dictionary[key])
@@ -115,12 +115,12 @@ def convertToTransformedPaths(dictionary):
 	if dictionary.__class__ == Vector3 or dictionary.__class__.__name__ == 'Vector3Index':
 		return
 	keys = getKeys(dictionary)
-	if keys is None:
+	if keys == None:
 		return
 	for key in keys:
 		value = dictionary[key]
 		if value.__class__.__name__ == 'ElementNode':
-			if value.xmlObject is not None:
+			if value.xmlObject != None:
 				dictionary[key] = value.xmlObject.getTransformedPaths()
 		else:
 			convertToTransformedPaths(dictionary[key])
@@ -133,7 +133,7 @@ def executeLeftOperations( evaluators, operationLevel ):
 
 def executeNextEvaluatorArguments(evaluator, evaluators, evaluatorIndex, nextEvaluator):
 	'Execute the nextEvaluator arguments.'
-	if evaluator.value is None:
+	if evaluator.value == None:
 		print('Warning, executeNextEvaluatorArguments in evaluate can not get a evaluator.value for:')
 		print(evaluatorIndex)
 		print(evaluators)
@@ -162,7 +162,7 @@ def getBracketsExist(evaluators):
 		if evaluatorWord in ['(', '[', '{']:
 			bracketBeginIndex = bracketEndIndex
 		elif evaluatorWord in [')', ']', '}']:
-			if bracketBeginIndex is None:
+			if bracketBeginIndex == None:
 				print('Warning, bracketBeginIndex in evaluateBrackets in evaluate is None.')
 				print('This may be because the brackets are not balanced.')
 				print(evaluators)
@@ -220,7 +220,7 @@ def getElementNodeObject(evaluatedLinkValue):
 		print(evaluatedLinkValue.__class__.__name__)
 		print(evaluatedLinkValue)
 		return None
-	if evaluatedLinkValue.xmlObject is None:
+	if evaluatedLinkValue.xmlObject == None:
 		print('Warning, evaluatedLinkValue.xmlObject is None in getElementNodeObject in evaluate for:')
 		print(evaluatedLinkValue)
 		return None
@@ -268,7 +268,7 @@ def getEndIndexConvertEquationValue( bracketEndIndex, evaluatorIndex, evaluators
 
 def getEvaluatedBoolean(defaultValue, elementNode, key):
 	'Get the evaluated boolean.'
-	if elementNode is None:
+	if elementNode == None:
 		return defaultValue
 	if key in elementNode.attributes:
 		return euclidean.getBooleanFromValue(getEvaluatedValueObliviously(elementNode, key))
@@ -311,7 +311,7 @@ def getEvaluatedExpressionValueBySplitLine(elementNode, words):
 		if nextWordIndex < len(words):
 			nextWord = words[nextWordIndex]
 		evaluator = getEvaluator(elementNode, evaluators, nextWord, word)
-		if evaluator is not None:
+		if evaluator != None:
 			evaluators.append(evaluator)
 	while getBracketsExist(evaluators):
 		pass
@@ -341,7 +341,7 @@ def getEvaluatedExpressionValueEvaluators(evaluators):
 
 def getEvaluatedFloat(defaultValue, elementNode, key):
 	'Get the evaluated float.'
-	if elementNode is None:
+	if elementNode == None:
 		return defaultValue
 	if key in elementNode.attributes:
 		return euclidean.getFloatFromValue(getEvaluatedValueObliviously(elementNode, key))
@@ -349,7 +349,7 @@ def getEvaluatedFloat(defaultValue, elementNode, key):
 
 def getEvaluatedInt(defaultValue, elementNode, key):
 	'Get the evaluated int.'
-	if elementNode is None:
+	if elementNode == None:
 		return None
 	if key in elementNode.attributes:
 		try:
@@ -376,7 +376,7 @@ def getEvaluatedLinkValue(elementNode, word):
 
 def getEvaluatedString(defaultValue, elementNode, key):
 	'Get the evaluated string.'
-	if elementNode is None:
+	if elementNode == None:
 		return defaultValue
 	if key in elementNode.attributes:
 		return str(getEvaluatedValueObliviously(elementNode, key))
@@ -384,7 +384,7 @@ def getEvaluatedString(defaultValue, elementNode, key):
 
 def getEvaluatedValue(defaultValue, elementNode, key):
 	'Get the evaluated value.'
-	if elementNode is None:
+	if elementNode == None:
 		return defaultValue
 	if key in elementNode.attributes:
 		return getEvaluatedValueObliviously(elementNode, key)
@@ -425,7 +425,7 @@ def getEvaluator(elementNode, evaluators, nextWord, word):
 			if word in functions[-1].localDictionary:
 				return EvaluatorLocal(elementNode, word)
 		wordElement = elementNode.getElementNodeByID(word)
-		if wordElement is not None:
+		if wordElement != None:
 			if wordElement.getNodeName() == 'class':
 				return EvaluatorClass(wordElement, word)
 			if wordElement.getNodeName() == 'function':
@@ -447,16 +447,16 @@ def getEvaluatorSplitWords(value):
 	for characterIndex in xrange(len(value)):
 		character = value[characterIndex]
 		if character == '"' or character == "'":
-			if quoteString is None:
+			if quoteString == None:
 				quoteString = ''
-			elif quoteString is not None:
+			elif quoteString != None:
 				if character == quoteString[: 1]:
 					uniqueQuoteIndex = getUniqueQuoteIndex(uniqueQuoteIndex, value)
 					uniqueToken = getTokenByNumber(uniqueQuoteIndex)
 					quoteDictionary[uniqueToken] = quoteString + character
 					character = uniqueToken
 					quoteString = None
-		if quoteString is None:
+		if quoteString == None:
 			word += character
 		else:
 			quoteString += character
@@ -488,7 +488,7 @@ def getFloatListFromBracketedString( bracketedString ):
 	floatList = []
 	for word in splitLine:
 		evaluatedFloat = euclidean.getFloatFromValue(word)
-		if evaluatedFloat is not None:
+		if evaluatedFloat != None:
 			floatList.append( evaluatedFloat )
 	return floatList
 
@@ -559,7 +559,7 @@ def getMatchingPlugins(elementNode, namePathDictionary):
 			if keyUntilDot in namePathDictionaryCopy:
 				pluginModule = archive.getModuleWithPath( namePathDictionaryCopy[ keyUntilDot ] )
 				del namePathDictionaryCopy[ keyUntilDot ]
-				if pluginModule is not None:
+				if pluginModule != None:
 					matchingPlugins.append( pluginModule )
 	return matchingPlugins
 
@@ -579,7 +579,7 @@ def getPathByKey(defaultPath, elementNode, key):
 	if evaluatedLinkValue.__class__ == list:
 		return getPathByList(evaluatedLinkValue)
 	elementNodeObject = getElementNodeObject(evaluatedLinkValue)
-	if elementNodeObject is None:
+	if elementNodeObject == None:
 		return defaultPath
 	return elementNodeObject.getPaths()[0]
 
@@ -620,7 +620,7 @@ def getPathsByKey(defaultPaths, elementNode, key):
 		convertToPaths(evaluatedLinkValue)
 		return getPathsByLists(evaluatedLinkValue)
 	elementNodeObject = getElementNodeObject(evaluatedLinkValue)
-	if elementNodeObject is None:
+	if elementNodeObject == None:
 		return defaultPaths
 	return elementNodeObject.getPaths()
 
@@ -687,7 +687,7 @@ def getTransformedPathByKey(defaultTransformedPath, elementNode, key):
 	if evaluatedLinkValue.__class__ == list:
 		return getPathByList(evaluatedLinkValue)
 	elementNodeObject = getElementNodeObject(evaluatedLinkValueClass)
-	if elementNodeObject is None:
+	if elementNodeObject == None:
 		return defaultTransformedPath
 	return elementNodeObject.getTransformedPaths()[0]
 
@@ -719,7 +719,7 @@ def getTransformedPathsByKey(defaultTransformedPaths, elementNode, key):
 		convertToTransformedPaths(evaluatedLinkValue)
 		return getPathsByLists(evaluatedLinkValue)
 	elementNodeObject = getElementNodeObject(evaluatedLinkValue)
-	if elementNodeObject is None:
+	if elementNodeObject == None:
 		return defaultTransformedPaths
 	return elementNodeObject.getTransformedPaths()
 
@@ -803,19 +803,19 @@ def getVector3ByMultiplierPrefixes( elementNode, multiplier, prefixes, vector3 )
 def getVector3ByPrefix(defaultVector3, elementNode, prefix):
 	'Get vector3 from prefix and xml element.'
 	value = getEvaluatedValue(None, elementNode, prefix)
-	if value is not None:
+	if value != None:
 		defaultVector3 = getVector3ByDictionaryListValue(value, defaultVector3)
 	prefix = archive.getUntilDot(prefix)
 	x = getEvaluatedFloat(None, elementNode, prefix + '.x')
-	if x is not None:
+	if x != None:
 		defaultVector3 = getVector3IfNone(defaultVector3)
 		defaultVector3.x = x
 	y = getEvaluatedFloat(None, elementNode, prefix + '.y')
-	if y is not None:
+	if y != None:
 		defaultVector3 = getVector3IfNone(defaultVector3)
 		defaultVector3.y = y
 	z = getEvaluatedFloat(None, elementNode, prefix + '.z')
-	if z is not None:
+	if z != None:
 		defaultVector3 = getVector3IfNone(defaultVector3)
 		defaultVector3.z = z
 	return defaultVector3
@@ -836,7 +836,7 @@ def getVector3FromElementNode(elementNode):
 
 def getVector3IfNone(vector3):
 	'Get new vector3 if the original vector3 is none.'
-	if vector3 is None:
+	if vector3 == None:
 		return Vector3()
 	return vector3
 
@@ -864,7 +864,7 @@ def getVisibleObjects(archivableObjects):
 
 def processArchivable(archivableClass, elementNode):
 	'Get any new elements and process the archivable.'
-	if elementNode is None:
+	if elementNode == None:
 		return
 	elementNode.xmlObject = archivableClass()
 	elementNode.xmlObject.setToElementNode(elementNode)
@@ -873,9 +873,9 @@ def processArchivable(archivableClass, elementNode):
 def processCondition(elementNode):
 	'Process the xml element condition.'
 	xmlProcessor = elementNode.getXMLProcessor()
-	if elementNode.xmlObject is None:
+	if elementNode.xmlObject == None:
 		elementNode.xmlObject = ModuleElementNode(elementNode)
-	if elementNode.xmlObject.conditionSplitWords is None:
+	if elementNode.xmlObject.conditionSplitWords == None:
 		return
 	if len(xmlProcessor.functions ) < 1:
 		print('Warning, the (in) element is not in a function in processCondition in evaluate for:')
@@ -917,24 +917,24 @@ def setFunctionLocalDictionary(arguments, function):
 			function.localDictionary[keyValue.key] = arguments[parameterWordIndex]
 		else:
 			strippedValue = keyValue.value
-			if strippedValue is None:
+			if strippedValue == None:
 				print('Warning there is no default parameter in getParameterValue for:')
 				print(strippedWord)
 				print(parameterWords)
 				print(arguments)
-				print( function.elementNode.attributes )
+				print(function.elementNode.attributes)
 			else:
 				strippedValue = strippedValue.strip()
 			function.localDictionary[keyValue.key.strip()] = strippedValue
 	if len(arguments) > len(parameterWords):
 		print('Warning there are too many initializeFunction parameters for:')
-		print( function.elementNode.attributes )
+		print(function.elementNode.attributes)
 		print(parameterWords)
 		print(arguments)
 
 def setLocalAttribute(elementNode):
 	'Set the local attribute if any.'
-	if elementNode.xmlObject is not None:
+	if elementNode.xmlObject != None:
 		return
 	for key in elementNode.attributes:
 		if key[: 1].isalpha():
@@ -1078,7 +1078,7 @@ class Evaluator:
 			self.executeDictionary(self.value, evaluators, keys, evaluatorIndex, nextEvaluator)
 			return
 		getAccessibleDictionaryFunction = getattr(self.value, '_getAccessibleDictionary', None)
-		if getAccessibleDictionaryFunction is not None:
+		if getAccessibleDictionaryFunction != None:
 			self.executeDictionary(getAccessibleDictionaryFunction(), evaluators, keys, evaluatorIndex, nextEvaluator)
 			return
 		if self.value.__class__.__name__ != 'ElementNode':
@@ -1162,7 +1162,7 @@ class Evaluator:
 
 	def getIsInRange(self, keyIndex):
 		'Determine if the keyIndex is in range.'
-		if keyIndex is None:
+		if keyIndex == None:
 			return False
 		return keyIndex >= -len(self.value) and keyIndex < len(self.value)
 
@@ -1212,11 +1212,11 @@ class EvaluatorAddition(Evaluator):
 		'Get operation value.'
 		leftKeys = getKeys(leftValue)
 		rightKeys = getKeys(rightValue)
-		if leftKeys is None and rightKeys is None:
+		if leftKeys == None and rightKeys == None:
 			return self.getValueFromValuePair(leftValue, rightValue)
-		if leftKeys is None:
+		if leftKeys == None:
 			return self.getEvaluatedValues(rightValue, rightKeys, leftValue)
-		if rightKeys is None:
+		if rightKeys == None:
 			return self.getEvaluatedValues(leftValue, leftKeys, rightValue)
 		leftKeys.sort(reverse=True)
 		rightKeys.sort(reverse=True)
@@ -1270,12 +1270,12 @@ class EvaluatorSubtraction(EvaluatorAddition):
 		leftValue = None
 		if leftIndex >= 0:
 			leftValue = evaluators[leftIndex].value
-		if leftValue is not None:
+		if leftValue != None:
 			return
 		rightValue = evaluators[rightIndex].value
-		if rightValue is None:
+		if rightValue == None:
 			print('Warning, can not minus.')
-			print( evaluators[rightIndex].word )
+			print(evaluators[rightIndex].word)
 		else:
 			evaluators[rightIndex].value = self.getNegativeValue(rightValue)
 		del evaluators[evaluatorIndex]
@@ -1288,7 +1288,7 @@ class EvaluatorSubtraction(EvaluatorAddition):
 	def getNegativeValue( self, value ):
 		'Get the negative value.'
 		keys = getKeys(value)
-		if keys is None:
+		if keys == None:
 			return self.getValueFromSingleValue(value)
 		for key in keys:
 			value[key] = self.getNegativeValue(value[key])
@@ -1344,7 +1344,7 @@ class EvaluatorAttribute(Evaluator):
 			self.value = previousEvaluator.value
 			for attributeKeyword in attributeKeywords:
 				self.value = getattr(self.value, '_getAccessibleAttribute', None)(attributeKeyword)
-		if self.value is None:
+		if self.value == None:
 			print('Warning, EvaluatorAttribute in evaluate can not get a getAccessibleAttributeFunction for:')
 			print(attributeName)
 			print(previousEvaluator.value)
@@ -1419,7 +1419,7 @@ class EvaluatorClass(Evaluator):
 
 	def executeFunction(self, evaluators, evaluatorIndex, nextEvaluator):
 		'Execute the function.'
-		if self.elementNode.xmlObject is None:
+		if self.elementNode.xmlObject == None:
 			self.elementNode.xmlObject = FunctionVariable(self.elementNode)
 		nextEvaluator.value = ClassObject(self.elementNode)
 		initializeFunction = None
@@ -1542,7 +1542,7 @@ class EvaluatorElement(Evaluator):
 		pluginModule = None
 		if moduleName in globalElementNameSet:
 			pluginModule = archive.getModuleWithPath(archive.getElementsPath(moduleName))
-		if pluginModule is None:
+		if pluginModule == None:
 			print('Warning, EvaluatorElement in evaluate can not get a pluginModule for:')
 			print(moduleName)
 			print(self)
@@ -1574,7 +1574,7 @@ class EvaluatorFunction(Evaluator):
 
 	def executeFunction(self, evaluators, evaluatorIndex, nextEvaluator):
 		'Execute the function.'
-		if self.elementNode.xmlObject is None:
+		if self.elementNode.xmlObject == None:
 			if 'return' in self.elementNode.attributes:
 				value = self.elementNode.attributes['return']
 				self.elementNode.xmlObject = getEvaluatorSplitWords(value)
@@ -1608,7 +1608,7 @@ class EvaluatorFundamental(Evaluator):
 			underscoredName = '_' + moduleName
 			if underscoredName in globalFundamentalNameSet:
 				pluginModule = archive.getModuleWithPath(archive.getFundamentalsPath(underscoredName))
-		if pluginModule is None:
+		if pluginModule == None:
 			print('Warning, EvaluatorFundamental in evaluate can not get a pluginModule for:')
 			print(moduleName)
 			print(self)
@@ -1740,6 +1740,7 @@ class EvaluatorPower(EvaluatorAddition):
 	def getValueFromValuePair(self, leftValue, rightValue):
 		'Power of two values.'
 		return leftValue ** rightValue
+
 
 class EvaluatorSelf(EvaluatorElement):
 	'Class to handle self.'
@@ -1896,13 +1897,13 @@ class ModuleElementNode:
 		if lowerLocalName not in xmlProcessor.namePathDictionary:
 			return
 		self.pluginModule = archive.getModuleWithPath( xmlProcessor.namePathDictionary[ lowerLocalName ] )
-		if self.pluginModule is None:
+		if self.pluginModule == None:
 			return
 		self.elseElement = nextElementNode
 
 	def processElse(self, elementNode):
 		'Process the else statement.'
-		if self.elseElement is not None:
+		if self.elseElement != None:
 			self.pluginModule.processElse( self.elseElement)
 
 

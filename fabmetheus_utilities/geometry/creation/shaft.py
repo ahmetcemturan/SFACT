@@ -22,7 +22,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation is None:
+	if derivation == None:
 		derivation = ShaftDerivation(elementNode)
 	shaftPath = getShaftPath(derivation.depthBottom, derivation.depthTop, derivation.radius, derivation.sides)
 	return lineation.getGeometryOutputByLoop(elementNode, lineation.SideLoop(shaftPath))

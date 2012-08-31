@@ -89,7 +89,7 @@ def getCraftedTextFromText( gcodeText, repository = None ):
 	"Fillet a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'fillet'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( FilletRepository() )
 	if not repository.activateFillet.value:
 		return gcodeText
@@ -133,7 +133,7 @@ class BevelSkein:
 		"Get the corner feed rate, which may be based on the intermediate feed rate."
 		feedRateMinute = self.feedRateMinute
 		if self.repository.useIntermediateFeedRateInCorners.value:
-			if self.oldFeedRateMinute is not None:
+			if self.oldFeedRateMinute != None:
 				feedRateMinute = 0.5 * ( self.oldFeedRateMinute + self.feedRateMinute )
 		return feedRateMinute * self.cornerFeedRateMultiplier
 
@@ -150,7 +150,7 @@ class BevelSkein:
 
 	def getExtruderOffReversalPoint( self, afterSegment, afterSegmentComplex, beforeSegment, beforeSegmentComplex, location ):
 		"If the extruder is off and the path is reversing, add intermediate slow points."
-		if self.repository.reversalSlowdownDistanceOverPerimeterWidth.value < 0.1:
+		if self.repository.reversalSlowdownDistanceOverEdgeWidth.value < 0.1:
 			return None
 		if self.extruderActive:
 			return None
@@ -188,9 +188,9 @@ class BevelSkein:
 		"Bevel a linear move."
 		location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.feedRateMinute = gcodec.getFeedRateMinute( self.feedRateMinute, splitLine )
-		if self.oldLocation is not None:
+		if self.oldLocation != None:
 			nextLocation = self.getNextLocation()
-			if nextLocation is not None:
+			if nextLocation != None:
 				location = self.splitPointGetAfter( location, nextLocation )
 		self.oldLocation = location
 		self.oldFeedRateMinute = self.feedRateMinute
@@ -205,12 +205,12 @@ class BevelSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('fillet')
 				return
-			elif firstWord == '(<perimeterWidth>':
-				perimeterWidth = abs(float(splitLine[1]))
-				self.curveSection = 0.7 * perimeterWidth
-				self.filletRadius = perimeterWidth * repository.filletRadiusOverPerimeterWidth.value
-				self.minimumRadius = 0.1 * perimeterWidth
-				self.reversalSlowdownDistance = perimeterWidth * repository.reversalSlowdownDistanceOverPerimeterWidth.value
+			elif firstWord == '(<edgeWidth>':
+				edgeWidth = abs(float(splitLine[1]))
+				self.curveSection = 0.7 * edgeWidth
+				self.filletRadius = edgeWidth * repository.filletRadiusOverEdgeWidth.value
+				self.minimumRadius = 0.1 * edgeWidth
+				self.reversalSlowdownDistance = edgeWidth * repository.reversalSlowdownDistanceOverEdgeWidth.value
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
@@ -246,7 +246,7 @@ class BevelSkein:
 		if thirdBeforeSegmentLength < self.minimumRadius:
 			return location
 		extruderOffReversalPoint = self.getExtruderOffReversalPoint( afterSegment, afterSegmentComplex, beforeSegment, beforeSegmentComplex, location )
-		if extruderOffReversalPoint is not None:
+		if extruderOffReversalPoint != None:
 			return extruderOffReversalPoint
 		bevelRadius = min( thirdAfterSegmentLength, self.filletRadius )
 		bevelRadius = min( thirdBeforeSegmentLength, bevelRadius )
@@ -287,7 +287,7 @@ class ArcSegmentSkein( BevelSkein ):
 		if thirdBeforeSegmentLength < self.minimumRadius:
 			return location
 		extruderOffReversalPoint = self.getExtruderOffReversalPoint( afterSegment, afterSegmentComplex, beforeSegment, beforeSegmentComplex, location )
-		if extruderOffReversalPoint is not None:
+		if extruderOffReversalPoint != None:
 			return extruderOffReversalPoint
 		bevelRadius = min( thirdAfterSegmentLength, self.filletRadius )
 		bevelRadius = min( thirdBeforeSegmentLength, bevelRadius )
@@ -338,7 +338,7 @@ class ArcPointSkein( ArcSegmentSkein ):
 			return
 		line = self.distanceFeedRate.getFirstWordMovement( firstWord, afterPointMinusBefore ) + self.getRelativeCenter( centerMinusBeforeComplex )
 		cornerFeedRate = self.getCornerFeedRate()
-		if cornerFeedRate is not None:
+		if cornerFeedRate != None:
 			line += ' F' + self.distanceFeedRate.getRounded(cornerFeedRate)
 		self.distanceFeedRate.addLine(line)
 
@@ -370,8 +370,8 @@ class FilletRepository:
 		self.arcSegment = settings.Radio().getFromRadio( filletLatentStringVar, 'Arc Segment', self, False )
 		self.bevel = settings.Radio().getFromRadio( filletLatentStringVar, 'Bevel', self, True )
 		self.cornerFeedRateMultiplier = settings.FloatSpin().getFromValue(0.8, 'Corner Feed Rate Multiplier (ratio):', self, 1.2, 1.0)
-		self.filletRadiusOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.25, 'Fillet Radius over Perimeter Width (ratio):', self, 0.65, 0.35 )
-		self.reversalSlowdownDistanceOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.3, 'Reversal Slowdown Distance over Perimeter Width (ratio):', self, 0.7, 0.5 )
+		self.filletRadiusOverEdgeWidth = settings.FloatSpin().getFromValue( 0.25, 'Fillet Radius over Perimeter Width (ratio):', self, 0.65, 0.35 )
+		self.reversalSlowdownDistanceOverEdgeWidth = settings.FloatSpin().getFromValue( 0.3, 'Reversal Slowdown Distance over Perimeter Width (ratio):', self, 0.7, 0.5 )
 		self.useIntermediateFeedRateInCorners = settings.BooleanSetting().getFromValue('Use Intermediate Feed Rate in Corners', self, True )
 		self.executeTitle = 'Fillet'
 

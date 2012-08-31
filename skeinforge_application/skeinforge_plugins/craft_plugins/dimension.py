@@ -77,7 +77,7 @@ Default is zero.
 
 Defines the restart extra distance when the thread restarts.  The restart distance will be the retraction distance plus the restart extra distance.
 
-If this is greater than zero when the extruder starts this distance is added to the retract value giving extra filament.  It can be a negative value in which case it is subtracted from the retraction distance.  On some Repstrap machines a negative value can stop the build up of plastic that can occur at the start of perimeters.
+If this is greater than zero when the extruder starts this distance is added to the retract value giving extra filament.  It can be a negative value in which case it is subtracted from the retraction distance.  On some Repstrap machines a negative value can stop the build up of plastic that can occur at the start of edges.
 
 ==Examples==
 The following examples dimension the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and dimension.py.
@@ -205,8 +205,8 @@ class DimensionSkein:
 		self.travelFeedRatePerSecond = None
 		self.zDistanceRatio = 1.0
 		self.oldFlowRateString = None
-		self.layerThickness = 0
-		self.perimeterWidth = 0
+		self.layerHeight = 0
+		self.edgeWidth = 0
 		self.filamentXsection = 0
 		self.nozzleXsection = 0
 		self.flowRate = 0
@@ -232,11 +232,11 @@ class DimensionSkein:
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
 		self.filamentXsection = filamentRadius ** 2 * math.pi
-		self.extrusionXsection=(((self.layerThickness+self.perimeterWidth)/4)*((self.layerThickness+self.perimeterWidth)/4)) * math.pi
+		self.extrusionXsection=(((self.layerHeight+self.edgeWidth)/4)*((self.layerHeight+self.edgeWidth)/4)) * math.pi
 		if not self.repository.retractWithinIsland.value:
 			self.parseBoundaries()
 		if repository.activateCalibration.value:
-			self.calibrationFactor = (4 * (self.repository.MeasuredXSection.value - self.perimeterWidth))/((math.pi-4)*self.layerThickness+ 4* self.perimeterWidth  )+1
+			self.calibrationFactor = (4 * (self.repository.MeasuredXSection.value - self.edgeWidth))/((math.pi-4)*self.layerHeight+ 4* self.edgeWidth  )+1
 			self.newfilamentPackingDensity = repository.filamentPackingDensity.value * self.calibrationFactor
 			print('***************E-Steps corrector Value (For Calibration)*********************:')
 			print('****E-Steps corrector Value (For Calibration) STEPPER EXTRUDERS ONLY :*******', self.newfilamentPackingDensity )
@@ -390,8 +390,8 @@ class DimensionSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('dimension')
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<layerHeight>':
+				self.layerHeight = float(splitLine[1])
 			elif firstWord == '(<maximumZDrillFeedRatePerSecond>':
 				self.maximumZTravelFeedRatePerSecond = float(splitLine[1])
 			elif firstWord == '(<maximumZTravelFeedRatePerSecond>':
@@ -401,8 +401,8 @@ class DimensionSkein:
 			elif firstWord == '(<operatingFlowRate>':
 				self.operatingFlowRate = float(splitLine[1])
 				self.flowRate = self.operatingFlowRate
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
+			elif firstWord == '(<edgeWidth>':
+				self.edgeWidth = float(splitLine[1])
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRatePerSecond = float(splitLine[1])
 				self.XtravelFeedRatePerSecond = self.travelFeedRatePerSecond

@@ -224,6 +224,7 @@ from fabmetheus_utilities import gcodec
 from fabmetheus_utilities import settings
 from optparse import OptionParser
 from skeinforge_application.skeinforge_utilities import skeinforge_craft
+from skeinforge_application.skeinforge_plugins.analyze_plugins import skeinlayer
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
 import os
@@ -371,7 +372,7 @@ import sys
 # help primary menu item refresh
 # add plugin help menu, add craft below menu
 # give option of saving when switching profiles
-# xml & svg more forgiving, svg make defaults for layerThickness
+# xml & svg more forgiving, svg make defaults for layerHeight
 # option of surrounding lines in display
 # maybe add connecting line in display line
 # maybe check inset loops to see if they are smaller, but this would be slow
@@ -579,12 +580,14 @@ class SkeinforgeRepository:
 	def execute(self):
 		'Skeinforge button has been clicked.'
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
+#		expotFileName = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
 		if self.usePyPyforSlicing.value :
 			for fileName in fileNames:
 				os.getcwd()
 				CommandOutput=os.popen('C:\pypy-1.9\pypy.exe %s%s %s'  % (os.getcwd(),'\skeinforge_application\skeinforge_utilities\skeinforge_craft.py', fileName)).read() #for pypy slicing
 				print CommandOutput #for pypy slicing
 				print os.getcwd()
+#				skeinlayer.writeOutput(fileName) #for Skeinlayer output
 		else:
 			for fileName in fileNames:
 				skeinforge_craft.writeOutput(fileName) #use this line instead of the below two for regular python slicing

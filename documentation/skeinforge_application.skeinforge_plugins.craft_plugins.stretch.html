@@ -23,7 +23,7 @@ Extruded holes are smaller than the model because while printing an arc the head
  <br>
 In general, stretch will widen holes and push corners out.  In practice the filament contraction will not be identical to the algorithm, so even once the optimal parameters are determined, the stretch script will not be able to eliminate the inaccuracies caused by contraction, but it should reduce them.<br>
  <br>
-All the defaults assume that the thread sequence choice setting in fill is the perimeter being extruded first, then the loops, then the infill.  If the thread sequence choice is different, the optimal thread parameters will also be different.  In general, if the infill is extruded first, the infill would have to be stretched more so that even after the filament shrinkage, it would still be long enough to connect to the loop or perimeter.<br>
+All the defaults assume that the thread sequence choice setting in fill is the edge being extruded first, then the loops, then the infill.  If the thread sequence choice is different, the optimal thread parameters will also be different.  In general, if the infill is extruded first, the infill would have to be stretched more so that even after the filament shrinkage, it would still be long enough to connect to the loop or edge.<br>
  <br>
 Holes should be made with the correct area for their radius.  In other words, for example if your modeling program approximates a hole of radius one (area = pi) by making a square with the points at [(1,0), (0,1), (-1,0), (0,-1)] (area = 2), the radius should be increased by sqrt(pi/2).  This can be done in fabmetheus xml by writing:<br>
 radiusAreal='True'<br>
@@ -53,13 +53,13 @@ The default 'Activate Stretch' checkbox is off.  When it is on, the functions de
 
 Default is 0.1.<br>
  <br>
-Defines the ratio of the maximum amount the loop aka inner shell threads will be stretched compared to the perimeter width, in general this value should be the same as the 'Perimeter Outside Stretch Over Perimeter Width' setting.<br>
+Defines the ratio of the maximum amount the loop aka inner shell threads will be stretched compared to the edge width, in general this value should be the same as the 'Perimeter Outside Stretch Over Perimeter Width' setting.<br>
  <br>
 <a name="Path Stretch Over Perimeter Width" id="Path Stretch Over Perimeter Width"></a><h3>Path Stretch Over Perimeter Width</h3>
 
 Default is zero.<br>
  <br>
-Defines the ratio of the maximum amount the threads which are not loops, like the infill threads, will be stretched compared to the perimeter width.<br>
+Defines the ratio of the maximum amount the threads which are not loops, like the infill threads, will be stretched compared to the edge width.<br>
  <br>
 <a name="Perimeter" id="Perimeter"></a><h3>Perimeter</h3>
 
@@ -67,19 +67,19 @@ Defines the ratio of the maximum amount the threads which are not loops, like th
 
 Default is 0.32.<br>
  <br>
-Defines the ratio of the maximum amount the inside perimeter thread will be stretched compared to the perimeter width, this is the most important setting in stretch.  The higher the value the more it will stretch the perimeter and the wider holes will be.  If the value is too small, the holes could be drilled out after fabrication, if the value is too high, the holes would be too wide and the part would have to junked.<br>
+Defines the ratio of the maximum amount the inside edge thread will be stretched compared to the edge width, this is the most important setting in stretch.  The higher the value the more it will stretch the edge and the wider holes will be.  If the value is too small, the holes could be drilled out after fabrication, if the value is too high, the holes would be too wide and the part would have to junked.<br>
  <br>
 <a name="Perimeter Outside Stretch Over Perimeter Width" id="Perimeter Outside Stretch Over Perimeter Width"></a><h4>Perimeter Outside Stretch Over Perimeter Width</h4>
 
 Default is 0.1.<br>
  <br>
-Defines the ratio of the maximum amount the outside perimeter thread will be stretched compared to the perimeter width, in general this value should be around a third of the 'Perimeter Inside Stretch Over Perimeter Width' setting.<br>
+Defines the ratio of the maximum amount the outside edge thread will be stretched compared to the edge width, in general this value should be around a third of the 'Perimeter Inside Stretch Over Perimeter Width' setting.<br>
  <br>
 <a name="Stretch from Distance over Perimeter Width" id="Stretch from Distance over Perimeter Width"></a><h3>Stretch from Distance over Perimeter Width</h3>
 
 Default is two.<br>
  <br>
-The stretch algorithm works by checking at each turning point on the extrusion path what the direction of the thread is at a distance of 'Stretch from Distance over Perimeter Width' times the perimeter width, on both sides, and moves the thread in the opposite direction.  So it takes the current turning-point, goes "Stretch from Distance over Perimeter Width" * "Perimeter Width" ahead, reads the direction at that point.  Then it goes the same distance in back in time, reads the direction at that other point.  It then moves the thread in the opposite direction, away from the center of the arc formed by these 2 points+directions.<br>
+The stretch algorithm works by checking at each turning point on the extrusion path what the direction of the thread is at a distance of 'Stretch from Distance over Perimeter Width' times the edge width, on both sides, and moves the thread in the opposite direction.  So it takes the current turning-point, goes "Stretch from Distance over Perimeter Width" * "Perimeter Width" ahead, reads the direction at that point.  Then it goes the same distance in back in time, reads the direction at that other point.  It then moves the thread in the opposite direction, away from the center of the arc formed by these 2 points+directions.<br>
  <br>
 The magnitude of the stretch increases with:<br>
 the amount that the direction of the two threads is similar and<br>

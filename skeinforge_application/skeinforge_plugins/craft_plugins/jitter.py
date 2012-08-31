@@ -12,7 +12,7 @@ The default 'Activate Jitter' checkbox is on.  When it is on, the functions desc
 ===Jitter Over Perimeter Width===
 Default: 2
 
-Defines the amount the loop ends will be jittered over the perimeter width.  A high value means the loops will start all over the place and a low value means loops will start at roughly the same place on each layer.
+Defines the amount the loop ends will be jittered over the edge width.  A high value means the loops will start all over the place and a low value means loops will start at roughly the same place on each layer.
 
 For example if you turn jitter off and print a cube every outside shell on the cube will start from exactly the same point so you will have a visible "mark/line/seam" on the side of the cube.  Using the jitter tool you move that start point around hence you avoid that visible seam. 
 
@@ -62,7 +62,7 @@ def getCraftedTextFromText( gcodeText, jitterRepository = None ):
 	'Jitter a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'jitter'):
 		return gcodeText
-	if jitterRepository is None:
+	if jitterRepository == None:
 		jitterRepository = settings.getReadRepository( JitterRepository() )
 	if not jitterRepository.activateJitter.value:
 		return gcodeText
@@ -116,8 +116,8 @@ class JitterRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.jitter.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Jitter', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Jitter')
-		self.activateJitter = settings.BooleanSetting().getFromValue('Activate Jitter to have your perimeter and loop endpoints scattered', self, False)
-		self.jitterOverPerimeterWidth = settings.FloatSpin().getFromValue(0.0, 'Jitter Over Perimeter Width (ratio):', self, 10.0, 2.0)
+		self.activateJitter = settings.BooleanSetting().getFromValue('Activate Jitter', self, True)
+		self.jitterOverEdgeWidth = settings.FloatSpin().getFromValue(1.0, 'Jitter Over Perimeter Width (ratio):', self, 3.0, 2.0)
 		self.executeTitle = 'Jitter'
 
 	def execute(self):
@@ -156,7 +156,7 @@ class JitterSkein:
 
 	def addGcodeMovementZ(self, feedRateMinute, point, z):
 		'Add a movement to the output.'
-		if feedRateMinute is None:
+		if feedRateMinute == None:
 			feedRateMinute = self.operatingFeedRatePerMinute
 		self.distanceFeedRate.addGcodeMovementZWithFeedRate(feedRateMinute, point, z)
 
@@ -168,13 +168,13 @@ class JitterSkein:
 	def addTailoredLoopPath(self):
 		'Add a clipped and jittered loop path.'
 		loop = getJitteredLoop(self.layerJitter, self.loopPath.path[: -1])
-		loop = euclidean.getAwayPoints(loop, 0.2 * self.perimeterWidth)
+		loop = euclidean.getAwayPoints(loop, 0.2 * self.edgeWidth)
 		self.addGcodeFromThreadZ(loop + [loop[0]], self.loopPath.z)
 		self.loopPath = None
 
 	def getCraftedGcode(self, jitterRepository, gcodeText):
 		'Parse gcode text and store the jitter gcode.'
-		if jitterRepository.jitterOverPerimeterWidth.value == 0.0:
+		if jitterRepository.jitterOverEdgeWidth.value == 0.0:
 			print('Warning, Jitter Over Perimeter Width is zero so thing will be done.')
 			return gcodeText
 		self.lines = archive.getTextLines(gcodeText)
@@ -195,9 +195,9 @@ class JitterSkein:
 				return
 			elif firstWord == '(<operatingFeedRatePerSecond>':
 				self.operatingFeedRatePerMinute = 60.0 * float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.jitter = jitterRepository.jitterOverPerimeterWidth.value * self.perimeterWidth
+			elif firstWord == '(<edgeWidth>':
+				self.edgeWidth = float(splitLine[1])
+				self.jitter = jitterRepository.jitterOverEdgeWidth.value * self.edgeWidth
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
@@ -210,21 +210,21 @@ class JitterSkein:
 		firstWord = splitLine[0]
 		if firstWord == 'G1':
 			self.setFeedRateLocationLoopPath(line, splitLine)
-			if self.loopPath is not None:
+			if self.loopPath != None:
 				self.loopPath.path.append(self.oldLocation.dropAxis())
 				return
 		elif firstWord == 'M101':
-			if self.loopPath is not None:
+			if self.loopPath != None:
 				return
 		elif firstWord == 'M103':
 			self.isLoopPerimeter = False
-			if self.loopPath is not None:
+			if self.loopPath != None:
 				self.addTailoredLoopPath()
 		elif firstWord == '(<layer>':
 			self.layerCount.printProgressIncrement('jitter')
 			self.layerGolden = math.fmod(self.layerGolden + 0.61803398874989479, 1.0)
 			self.layerJitter = self.jitter * self.layerGolden - 0.5
-		elif firstWord == '(<loop>' or firstWord == '(<perimeter>':
+		elif firstWord == '(<loop>' or firstWord == '(<edge>':
 			self.isLoopPerimeter = True
 		self.distanceFeedRate.addLine(line)
 
@@ -232,7 +232,7 @@ class JitterSkein:
 		'Set the feedRateMinute, oldLocation and loopPath.'
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 		self.oldLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
-		if not self.isLoopPerimeter or self.loopPath is not None:
+		if not self.isLoopPerimeter or self.loopPath != None:
 			return
 		for afterIndex in xrange(self.lineIndex + 1, len(self.lines)):
 			line = self.lines[afterIndex]

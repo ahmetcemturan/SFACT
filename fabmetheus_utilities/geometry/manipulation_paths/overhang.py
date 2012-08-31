@@ -168,13 +168,13 @@ class AlongAway:
 			if begin != point and end != point:
 				self.awayIndexes.append( pointIndex )
 				yIntersection = euclidean.getYIntersectionIfExists( begin.dropAxis(), end.dropAxis(), point.x )
-				if yIntersection is not None:
+				if yIntersection != None:
 					numberOfIntersectionsBelow += ( yIntersection < point.y )
 			if begin == point:
 				self.pointIndex = pointIndex
 		if numberOfIntersectionsBelow % 2 == 0:
 			return True
-		if self.pointIndex is None:
+		if self.pointIndex == None:
 			return True
 		if self.getIsPointSupportedBySegment( self.pointIndex - 1 + len( self.loop ) ):
 			return True
@@ -200,13 +200,13 @@ class AlongAway:
 			if begin != point and end != point:
 				self.awayIndexes.append( pointIndex )
 				yIntersection = euclidean.getYIntersectionIfExists( begin.dropAxis(), end.dropAxis(), point.x )
-				if yIntersection is not None:
+				if yIntersection != None:
 					numberOfIntersectionsBelow += ( yIntersection < point.y )
 			if begin == point:
 				self.pointIndex = pointIndex
 		if numberOfIntersectionsBelow % 2 == 1:
 			return True
-		if self.pointIndex is None:
+		if self.pointIndex == None:
 			return True
 		if self.getIsPointSupportedBySegment( self.pointIndex - 1 + len( self.loop ) ):
 			return True
@@ -294,13 +294,13 @@ class OverhangWiddershinsLeft:
 	def alterLoop(self):
 		"Alter alongAway loop."
 		insertedPoint = self.alongAway.point.copy()
-		if self.closestXIntersectionIndex is not None:
+		if self.closestXIntersectionIndex != None:
 			self.alongAway.loop = self.getIntersectLoop()
 			intersectionRelativeComplex = self.closestXDistance * self.intersectionPlaneAngle
 			intersectionPoint = insertedPoint + Vector3( intersectionRelativeComplex.real, intersectionRelativeComplex.imag )
 			self.alongAway.loop.append( intersectionPoint )
 			return
-		if self.closestBottomPoint is None:
+		if self.closestBottomPoint == None:
 			return
 		if self.closestBottomPoint not in self.alongAway.loop:
 			return
@@ -319,7 +319,7 @@ class OverhangWiddershinsLeft:
 		"Get distance between point and closest intersection or bottom point along line."
 		self.pointMinusBottomY = self.alongAway.point.y - self.alongAway.minimumY
 		self.diagonalDistance = self.pointMinusBottomY * self.diagonalRatio
-		if self.alongAway.pointIndex is None:
+		if self.alongAway.pointIndex == None:
 			return self.getDistanceToBottom()
 		rotatedLoop = euclidean.getRotatedComplexes( self.intersectionYMirror,  euclidean.getComplexPath( self.alongAway.loop ) )
 		rotatedPointComplex = rotatedLoop[ self.alongAway.pointIndex ]
@@ -330,7 +330,7 @@ class OverhangWiddershinsLeft:
 			beginComplex = rotatedLoop[pointIndex]
 			endComplex = rotatedLoop[ (pointIndex + 1) % len( rotatedLoop ) ]
 			xIntersection = euclidean.getXIntersectionIfExists( beginComplex, endComplex, rotatedPointComplex.imag )
-			if xIntersection is not None:
+			if xIntersection != None:
 				if xIntersection >= beginX and xIntersection < endX:
 					xIntersectionIndexList.append( euclidean.XIntersectionIndex( pointIndex, xIntersection ) )
 		self.closestXDistance = 987654321.0
@@ -340,7 +340,7 @@ class OverhangWiddershinsLeft:
 			if xDistance < self.closestXDistance:
 				self.closestXIntersectionIndex = xIntersectionIndex
 				self.closestXDistance = xDistance
-		if self.closestXIntersectionIndex is not None:
+		if self.closestXIntersectionIndex != None:
 			return self.closestXDistance
 		return self.getDistanceToBottom()
 

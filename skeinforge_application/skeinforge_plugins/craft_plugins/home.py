@@ -6,7 +6,7 @@ The home manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Home
 
 ==Operation==
-The default 'Activate Home' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.
+The default 'Activate Home' checkbox is on.  When it is on, the functions described below will work, when it is off, nothing will be done.
 
 ==Settings==
 ===Name of Home File===
@@ -60,7 +60,7 @@ def getCraftedTextFromText( gcodeText, repository = None ):
 	"Home a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'home'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( HomeRepository() )
 	if not repository.activateHome.value:
 		return gcodeText
@@ -110,7 +110,7 @@ class HomeSkein:
 	def addFloat( self, begin, end ):
 		"Add dive to the original height."
 		beginEndDistance = begin.distance(end)
-		alongWay = self.absolutePerimeterWidth / beginEndDistance
+		alongWay = self.absoluteEdgeWidth / beginEndDistance
 		closeToEnd = euclidean.getIntermediateLocation( alongWay, end, begin )
 		closeToEnd.z = self.highestZ
 		self.distanceFeedRate.addLine( self.distanceFeedRate.getLinearGcodeMovementWithFeedRate( self.travelFeedRateMinute, closeToEnd.dropAxis(), closeToEnd.z ) )
@@ -122,7 +122,7 @@ class HomeSkein:
 		if not self.shouldHome:
 			return
 		self.shouldHome = False
-		if self.oldLocation is None:
+		if self.oldLocation == None:
 			return
 		if self.extruderActive:
 			self.distanceFeedRate.addLine('M103')
@@ -161,8 +161,8 @@ class HomeSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('home')
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.absolutePerimeterWidth = abs(float(splitLine[1]))
+			elif firstWord == '(<edgeWidth>':
+				self.absoluteEdgeWidth = abs(float(splitLine[1]))
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)

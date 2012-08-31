@@ -13,17 +13,17 @@ When off, no controls will be added, the svg output will only include the fabric
 ===Extra Decimal Places===
 Default is two.
 
-Defines the number of extra decimal places export will output compared to the number of decimal places in the layer thickness.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.
+Defines the number of extra decimal places export will output compared to the number of decimal places in the layer height.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.
 
 ===Import Coarseness===
 Default is one.
 
-When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.
+When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the edge width.
 
-===Layer Thickness===
+===Layer Height===
 Default is 0.4 mm.
 
-Defines the thickness of the layer, this is the most important cleave setting.
+Defines the height of the layer, this is the most important cleave setting.
 
 ===Layers===
 Cleave slices from bottom to top.  To get a single layer, set the "Layers From" to zero and the "Layers To" to one.  The layer from until layer to range is a python slice.
@@ -50,7 +50,7 @@ When selected, cleave will use the gap spanning algorithm from the start.  The p
 ===Perimeter Width===
 Default is two millimeters.
 
-Defines the width of the perimeter.
+Defines the width of the edge.
 
 ===SVG Viewer===
 Default is webbrowser.
@@ -107,9 +107,9 @@ def getCraftedText( fileName, gcodeText = '', repository=None):
 		if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'cleave'):
 			return gcodeText
 	carving = svg_writer.getCarving(fileName)
-	if carving is None:
+	if carving == None:
 		return ''
-	if repository is None:
+	if repository == None:
 		repository = CleaveRepository()
 		settings.getReadRepository(repository)
 	return CleaveSkein().getCarvedSVG( carving, fileName, repository )
@@ -145,16 +145,16 @@ class CleaveRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.cleave.html', self )
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getTranslatorFileTypeTuples(), 'Open File to be Cleaved', self, '')
 		self.addLayerTemplateToSVG = settings.BooleanSetting().getFromValue('Add Layer Template to SVG', self, True)
+		self.edgeWidth = settings.FloatSpin().getFromValue( 0.4, 'Edge Width (mm):', self, 4.0, 2.0 )
 		self.extraDecimalPlaces = settings.FloatSpin().getFromValue(0.0, 'Extra Decimal Places (float):', self, 3.0, 2.0)
 		self.importCoarseness = settings.FloatSpin().getFromValue( 0.5, 'Import Coarseness (ratio):', self, 2.0, 1.0 )
-		self.layerThickness = settings.FloatSpin().getFromValue( 0.1, 'Layer Thickness (mm):', self, 1.0, 0.4 )
+		self.layerHeight = settings.FloatSpin().getFromValue( 0.1, 'Layer Height (mm):', self, 1.0, 0.4 )
 		self.layersFrom = settings.IntSpin().getFromValue( 0, 'Layers From (index):', self, 20, 0 )
 		self.layersTo = settings.IntSpin().getSingleIncrementFromValue( 0, 'Layers To (index):', self, 912345678, 912345678 )
 		self.meshTypeLabel = settings.LabelDisplay().getFromName('Mesh Type: ', self, )
 		importLatentStringVar = settings.LatentStringVar()
 		self.correctMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Correct Mesh', self, True )
 		self.unprovenMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Unproven Mesh', self, False )
-		self.perimeterWidth = settings.FloatSpin().getFromValue( 0.4, 'Perimeter Width (mm):', self, 4.0, 2.0 )
 		self.svgViewer = settings.StringSetting().getFromValue('SVG Viewer:', self, 'webbrowser')
 		settings.LabelSeparator().getFromRepository(self)
 		self.executeTitle = 'Cleave'
@@ -170,25 +170,25 @@ class CleaveSkein:
 	"A class to cleave a carving."
 	def getCarvedSVG( self, carving, fileName, repository ):
 		"Parse gnu triangulated surface text and store the cleaved gcode."
-		layerThickness = repository.layerThickness.value
-		perimeterWidth = repository.perimeterWidth.value
-		carving.setCarveLayerThickness( layerThickness )
-		importRadius = 0.5 * repository.importCoarseness.value * abs( perimeterWidth )
-		carving.setCarveImportRadius( max( importRadius, 0.01 * layerThickness ) )
+		edgeWidth = repository.edgeWidth.value
+		layerHeight = repository.layerHeight.value
+		carving.setCarveLayerHeight( layerHeight )
+		importRadius = 0.5 * repository.importCoarseness.value * abs(edgeWidth)
+		carving.setCarveImportRadius(max(importRadius, 0.001 * layerHeight))
 		carving.setCarveIsCorrectMesh( repository.correctMesh.value )
 		loopLayers = carving.getCarveBoundaryLayers()
 		if len( loopLayers ) < 1:
-			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Thickness.')
+			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Height.')
 			return ''
-		layerThickness = carving.getCarveLayerThickness()
-		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerThickness)
+		layerThickness = carving.getCarveLayerHeight()
+		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerHeight)
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),
 			carving.getCarveCornerMinimum(),
 			decimalPlacesCarried,
-			carving.getCarveLayerThickness(),
-			perimeterWidth)
+			carving.getCarveLayerHeight(),
+			edgeWidth)
 		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(loopLayers, repository)
 		return svgWriter.getReplacedSVGTemplate( fileName, truncatedRotatedBoundaryLayers, 'cleave', carving.getFabmetheusXML())
 

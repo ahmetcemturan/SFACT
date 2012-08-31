@@ -26,7 +26,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation is None:
+	if derivation == None:
 		derivation = SpongeSliceDerivation(elementNode)
 	awayPoints = []
 	vector3Path = euclidean.getVector3Path(euclidean.getSquareLoopWiddershins(-derivation.inradius, derivation.inradius))
@@ -137,18 +137,18 @@ class SpongeSliceDerivation:
 		self.searchAttempts = evaluate.getEvaluatedInt(0, elementNode, 'searchAttempts')
 		self.searchRadiusOverRadius = evaluate.getEvaluatedFloat(1.0, elementNode, 'searchRadiusOverRadius')
 		self.seed = evaluate.getEvaluatedInt(None, elementNode, 'seed')
-		self.wallThickness = evaluate.getEvaluatedFloat(2.0 * setting.getPerimeterWidth(elementNode), elementNode, 'wallThickness')
+		self.wallThickness = evaluate.getEvaluatedFloat(2.0 * setting.getEdgeWidth(elementNode), elementNode, 'wallThickness')
 		# Set derived variables.
 		self.halfWallThickness = 0.5 * self.wallThickness
 		self.inradiusMinusThickness = self.inradius - complex(self.wallThickness, self.wallThickness)
 		self.minimumRadius = evaluate.getEvaluatedFloat(self.minimumRadiusOverThickness * self.wallThickness, elementNode, 'minimumRadius')
 		self.inradiusMinusRadiusThickness = self.inradiusMinusThickness - complex(self.minimumRadius, self.minimumRadius)
 		self.potentialBubbleArea = 4.0 * self.inradiusMinusThickness.real * self.inradiusMinusThickness.imag
-		if self.path is None:
+		if self.path == None:
 			radiusPlusHalfThickness = self.minimumRadius + self.halfWallThickness
 			numberOfPoints = int(math.ceil(self.density * self.potentialBubbleArea / math.pi / radiusPlusHalfThickness / radiusPlusHalfThickness))
 			self.path = []
-			if self.seed is None:
+			if self.seed == None:
 				self.seed = time.time()
 				print('Sponge slice seed used was: %s' % self.seed)
 			random.seed(self.seed)

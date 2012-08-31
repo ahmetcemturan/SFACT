@@ -42,7 +42,7 @@ class SVGCarving:
 	'An svg carving.'
 	def __init__(self):
 		'Add empty lists.'
-		self.layerThickness = 1.0
+		self.layerHeight = 1.0
 		self.maximumZ = - 987654321.0
 		self.minimumZ = 987654321.0
 		self.svgReader = SVGReader()
@@ -71,9 +71,9 @@ class SVGCarving:
 		'Get the carved svg text.'
 		return svg_writer.getSVGByLoopLayers(True, self, self.svgReader.loopLayers)
 
-	def getCarveLayerThickness(self):
-		'Get the layer thickness.'
-		return self.layerThickness
+	def getCarveLayerHeight(self):
+		'Get the layer height.'
+		return self.layerHeight
 
 	def getFabmetheusXML(self):
 		'Return the fabmetheus XML.'
@@ -89,12 +89,12 @@ class SVGCarving:
 			return
 		self.fileName = fileName
 		self.svgReader.parseSVG(fileName, svgText)
-		self.layerThickness = euclidean.getFloatDefaultByDictionary(
-			self.layerThickness, self.svgReader.sliceDictionary, 'layerThickness')
+		self.layerHeight = euclidean.getFloatDefaultByDictionary(
+			self.layerHeight, self.svgReader.sliceDictionary, 'layerHeight')
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, self.maximumZ)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, self.minimumZ)
 		svg_writer.setSVGCarvingCorners(
-			self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.svgReader.loopLayers)
+			self.cornerMaximum, self.cornerMinimum, self.layerHeight, self.svgReader.loopLayers)
 
 	def setCarveImportRadius(self, importRadius):
 		'Set the import radius.'
@@ -104,6 +104,6 @@ class SVGCarving:
 		'Set the is correct mesh flag.'
 		pass
 
-	def setCarveLayerThickness(self, layerThickness):
-		'Set the layer thickness.'
-		self.layerThickness = layerThickness
+	def setCarveLayerHeight(self, layerHeight):
+		'Set the layer height.'
+		self.layerHeight = layerHeight

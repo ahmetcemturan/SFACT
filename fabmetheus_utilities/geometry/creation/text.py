@@ -22,7 +22,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attributes."
-	if derivation is None:
+	if derivation == None:
 		derivation = TextDerivation(elementNode)
 	if derivation.textString == '':
 		print('Warning, textString is empty in getGeometryOutput in text for:')

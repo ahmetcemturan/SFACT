@@ -50,4 +50,4 @@ class OutlineDerivation:
 	def __init__(self, elementNode, prefix, sideLength):
 		'Set defaults.'
 		self.isClosed = evaluate.getEvaluatedBoolean(False, elementNode, prefix + 'closed')
-		self.radius = evaluate.getEvaluatedFloat(setting.getPerimeterWidth(elementNode), elementNode, prefix + 'radius')
+		self.radius = evaluate.getEvaluatedFloat(setting.getEdgeWidth(elementNode), elementNode, prefix + 'radius')

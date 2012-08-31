@@ -49,7 +49,7 @@ Svg_writer uses the layer_template.svg file in the templates folder in the same 
 <td colspan=2><tt>A&nbsp;base&nbsp;class&nbsp;to&nbsp;get&nbsp;an&nbsp;svg&nbsp;skein&nbsp;from&nbsp;a&nbsp;carving.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="SVGWriter-__init__"><strong>__init__</strong></a>(self, addLayerTemplateToSVG, cornerMaximum, cornerMinimum, decimalPlacesCarried, layerThickness, perimeterWidth<font color="#909090">=None</font>)</dt><dd><tt>Initialize.</tt></dd></dl>
+<dl><dt><a name="SVGWriter-__init__"><strong>__init__</strong></a>(self, addLayerTemplateToSVG, cornerMaximum, cornerMinimum, decimalPlacesCarried, layerHeight, edgeWidth<font color="#909090">=None</font>)</dt><dd><tt>Initialize.</tt></dd></dl>
 
 <dl><dt><a name="SVGWriter-addLayerBegin"><strong>addLayerBegin</strong></a>(self, layerIndex, loopLayer)</dt><dd><tt>Add&nbsp;the&nbsp;start&nbsp;lines&nbsp;for&nbsp;the&nbsp;layer.</tt></dd></dl>
 
@@ -92,7 +92,7 @@ Svg_writer uses the layer_template.svg file in the templates folder in the same 
  <dl><dt><a name="-getSliceDictionary"><strong>getSliceDictionary</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;metadata&nbsp;slice&nbsp;attribute&nbsp;dictionary.</tt></dd></dl>
  <dl><dt><a name="-getSliceElementNodes"><strong>getSliceElementNodes</strong></a>(elementNode)</dt><dd><tt>Get&nbsp;the&nbsp;slice&nbsp;elements.</tt></dd></dl>
  <dl><dt><a name="-getTruncatedRotatedBoundaryLayers"><strong>getTruncatedRotatedBoundaryLayers</strong></a>(loopLayers, repository)</dt><dd><tt>Get&nbsp;the&nbsp;truncated&nbsp;rotated&nbsp;boundary&nbsp;layers.</tt></dd></dl>
- <dl><dt><a name="-setSVGCarvingCorners"><strong>setSVGCarvingCorners</strong></a>(cornerMaximum, cornerMinimum, layerThickness, loopLayers)</dt><dd><tt>Parse&nbsp;SVG&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;layers.</tt></dd></dl>
+ <dl><dt><a name="-setSVGCarvingCorners"><strong>setSVGCarvingCorners</strong></a>(cornerMaximum, cornerMinimum, layerHeight, loopLayers)</dt><dd><tt>Parse&nbsp;SVG&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;layers.</tt></dd></dl>
 </td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#55aa55">

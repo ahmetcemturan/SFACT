@@ -75,7 +75,7 @@ class Vector3:
 
 	def __eq__(self, other):
 		'Determine whether this vector is identical to other one.'
-		if other is None:
+		if other == None:
 			return False
 		if other.__class__ != self.__class__:
 			return False
@@ -237,15 +237,15 @@ class Vector3:
 
 	def maximize(self, other):
 		'Maximize the Vector3.'
-		self.x =max(other.x, self.x)
-		self.y =max(other.y, self.y)
-		self.z =max(other.z, self.z)
+		self.x = max(other.x, self.x)
+		self.y = max(other.y, self.y)
+		self.z = max(other.z, self.z)
 
 	def minimize(self, other):
 		'Minimize the Vector3.'
-		self.x =min(other.x, self.x)
-		self.y =min(other.y, self.y)
-		self.z =min(other.z, self.z)
+		self.x = min(other.x, self.x)
+		self.y = min(other.y, self.y)
+		self.z = min(other.z, self.z)
 
 	def normalize(self):
 		'Scale each component of this Vector3 so that it has a magnitude of 1. If this Vector3 has a magnitude of 0, this method has no effect.'

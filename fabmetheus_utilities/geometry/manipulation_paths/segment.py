@@ -82,12 +82,12 @@ def getSegmentPath(center, loop, path, pointIndex):
 	if center != None:
 		return getRadialPath(centerBegin, center, centerEnd, path)
 	begin = loop[(pointIndex + len(loop) - 1) % len(loop)]
-	end = loop[ ( pointIndex + 2 ) % len(loop) ]
-	return getWedgePath( begin, centerBegin, centerEnd, centerEndMinusBegin, end, path )
+	end = loop[(pointIndex + 2) % len(loop)]
+	return getWedgePath(begin, centerBegin, centerEnd, centerEndMinusBegin, end, path)
 
 def getSegmentPathDefault():
 	"Get segment path default."
-	return [ Vector3(), Vector3( 0.0, 1.0 ) ]
+	return [Vector3(), Vector3(0.0, 1.0)]
 
 def getWedgePath( begin, centerBegin, centerEnd, centerEndMinusBegin, end, path ):
 	"Get segment path."

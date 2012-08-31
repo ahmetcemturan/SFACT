@@ -19,7 +19,7 @@ The analyze tool calls plugins in the analyze_plugins folder, which will analyze
 
 The interpret tool accesses and displays the import plugins.
 
-The default settings are similar to those on Nophead's machine.  A setting which is often different is the 'Layer Thickness' in carve.
+The default settings are similar to those on Nophead's machine.  A setting which is often different is the 'Layer Height' in carve.
 
 ===Command Line Interface===
 To bring up the skeinforge dialog without a file name, type:
@@ -230,15 +230,28 @@ import os
 import sys
 
 
+# consolidate side loops for voronoi and sponge_slice, add boundary
+# check for last existing then remove unneeded fill code (getLastExistingFillLoops) from euclidean, add fill in penultimate loops, if there is no fill it should not use edge - skin should work
+# replace replace baseLayerThickness.. with baseLayerHeightMultiplier
+# change splodge to use volumeFraction
+# announce dwindle
+# announce fill sharpestAngle
+# announce inset volumeFraction
+# document announce skirt
+# announce splodge volumeFraction
+# announce statistic extrusion diameter gone
+# announce vectorwrite
+#
+#
+#
+# question, should 'Infill Odd Layer Extra Rotation' be dropped
+# consolidate Object First Layer Flow
+#
 # document raft, stretch, then carve, comb, fill, inset, oozebane, splodge, temperature, speed once they are updated
 # wiki document help, description, polyfile
 # subplugins like export static, maybe later mill cut and coil plugins, maybe later still export plugins & change file extension to output file extension  http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge
 #
-# some kind of gradual bed temperature Bed Temperature Begin Change Height, End Change Height, End
 # backup demozendium links
-# replace layer thickness with layer height, replace baseLayerThickness.. with baseLayerHeightMultiplier, consolidate Object First Layer Flow
-# announce
-# question, should 'Infill Odd Layer Extra Rotation' be dropped
 #
 # unimportant
 # minor outline problem when an end path goes through a path, like in the letter A
@@ -246,31 +259,24 @@ import sys
 # analyze doesn't save skeinlayer settings, remember xy in skeiniso
 #
 #
-#
-# comb -> maybe add back running jump look at outside loops only for jump, find closest points, find slightly away inside points, link
-# global simplify pathBetween
-# comb documentation
 # retraction step leave
+# rename fill extra shells to stuff like Extra Base Shells
 # melt _extrusion
-# resolve getGcodeWithoutDuplication, make better consolidate gcode command function, remove comments from addRaftedLine
 # think about http://code.google.com/p/skeinarchiver/ and/or undo
-# add volume fraction to fill
-# consider removing tower
-# use fileSettingName to change perimeter width to extrusion width, globalSubstitutionDictionary
+# getStrokeRadius default to edgeWidth
+# look at loop end removed bug in upper loop of layer 8 of Screw_Holder_alteration
+# fix tower edge line start problem
 # check globalExecutionOrder, ensure that bottom order is really high
 # set temperature in temperature
-# contract wipe titles
 # maybe rename geometry_plugins xml
-# dwindle or dawdle or taper
-# voronoi average location intersection looped inset intercircles
+# maybe add carve preview, opening it up in browser
 # skin layers without something over the infill
-# check for last existing then remove unneeded fill code (getLastExistingFillLoops) from euclidean, add fill in penultimate loops, if there is no fill it should not use perimeter - skin should work
 # delete commented addInfillPerimeter
 # unpause slow flow rate instead of speeding feed rate
 # maybe in svgReader if loop intersection with previous union else add
 # add links download manual svg_writer, add left right arrow keys to layer
-# delete location from wipe, in other words Arrival X instead of Location Arrival X, also convert Location Arrival to Arrival Location
 # command
+# thin support When using support, thin column and then gradually widen: http://img534.imageshack.us/img534/514/overhang.jpg 
 # manipulation derivations
 # cutting ahmet
 #
@@ -279,7 +285,6 @@ import sys
 # check inset loop for intersection with loopLayer.loops
 # maybe make vectorwrite prominent, not skeiniso, probably not because it doesn't work on Mac
 # close, getPillarByLoopLists, addConcave, polymorph original graph section, loop, add step object, add continuous object
-# chamber: heated bed off at a layer http://blog.makerbot.com/2011/03/17/if-you-cant-stand-the-heat/
 # profile copy / rename   /   delete, maybe move craft type to profile
 # think about rectangular getVector3RemoveByPre..
 # del previous, add begin & end if far  get actual path
@@ -334,6 +339,7 @@ import sys
 # dovetail
 # maybe not getNewObject, getNew, addToBoolean
 # work out close and radius
+# maybe restore clip if the problem can be defined, the email said there was a problem leading to a ridge but there was no follow up
 # maybe have add function as well as append for list and string
 # maybe move and give geometryOutput to cube, cylinder, sphere
 #
@@ -344,7 +350,7 @@ import sys
 # remove cool set at end of layer
 # add fan on when hot in chamber
 # maybe measuring rod
-# getLayerThickness from xml
+# getLayerHeight from xml
 # maybe center for xy plane
 # remove comments from clip, bend
 # winding into coiling, coil into wind & weave
@@ -360,7 +366,6 @@ import sys
 # get arounds in inset, the inside become extrude loops and the outside below loops _speed
 #
 #
-# add hook _extrusion
 # integral thin width _extrusion
 # layer color, for multilayer start http://reprap.org/pub/Main/MultipleMaterialsFiles/legend.xml _extrusion
 # maybe raft triple layer base, middle interface with hot loop or ties
@@ -371,7 +376,7 @@ import sys
 # basic basedit tool
 # arch, ceiling
 # meta setting, rename setting _setting
-# add polish, has perimeter, has cut first layer (False)
+# add polish, has edge, has cut first layer (False)
 # probably not set addedLocation in distanceFeedRate after arc move
 # maybe horizontal bridging and/or check to see if the ends are standing on anything
 # thin self? check when removing intersecting paths in inset
@@ -385,7 +390,7 @@ import sys
 # help primary menu item refresh
 # add plugin help menu, add craft below menu
 # give option of saving when switching profiles
-# xml & svg more forgiving, svg make defaults for layerThickness
+# xml & svg more forgiving, svg make defaults for layerHeight
 # option of surrounding lines in display
 # maybe add connecting line in display line
 # maybe check inset loops to see if they are smaller, but this would be slow
@@ -404,7 +409,6 @@ import sys
 # maybe split into source code and documentation sections
 # transform plugins, start with sarrus http://www.thingiverse.com/thing:1425
 # maybe make setting backups
-# move skeinforge_utilities to fabmetheus_utilities
 # maybe lathe cutting
 # maybe lathe extrusion
 # maybe lathe milling

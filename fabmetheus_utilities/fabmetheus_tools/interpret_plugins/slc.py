@@ -75,7 +75,7 @@ class SLCCarving:
 	"An slc carving."
 	def __init__(self):
 		"Add empty lists."
-		self.layerThickness = None
+		self.layerHeight = None
 		self.loopLayers = []
 		self.maximumZ = - 987654321.0
 		self.minimumZ = 987654321.0
@@ -104,13 +104,13 @@ class SLCCarving:
 		"Get the carved svg text."
 		if len(self.loopLayers) < 1:
 			return ''
-		decimalPlaces = max(0, 2 - int(math.floor(math.log10(self.layerThickness))))
-		self.svgWriter = svg_writer.SVGWriter(True, self.cornerMaximum, self.cornerMinimum, decimalPlaces, self.layerThickness)
+		decimalPlaces = max(0, 2 - int(math.floor(math.log10(self.layerHeight))))
+		self.svgWriter = svg_writer.SVGWriter(True, self.cornerMaximum, self.cornerMinimum, decimalPlaces, self.layerHeight)
 		return self.svgWriter.getReplacedSVGTemplate(self.fileName, self.loopLayers, 'basic')
 
-	def getCarveLayerThickness(self):
-		"Get the layer thickness."
-		return self.layerThickness
+	def getCarveLayerHeight(self):
+		"Get the layer height."
+		return self.layerHeight
 
 	def getFabmetheusXML(self):
 		"Return the fabmetheus XML."
@@ -152,7 +152,7 @@ class SLCCarving:
 					pointVector3 = Vector3(point.real, point.imag, loopLayer.z)
 					self.cornerMaximum.maximize(pointVector3)
 					self.cornerMinimum.minimize(pointVector3)
-		halfLayerThickness = 0.5 * self.layerThickness
+		halfLayerThickness = 0.5 * self.layerHeight
 		self.cornerMaximum.z += halfLayerThickness
 		self.cornerMinimum.z -= halfLayerThickness
 
@@ -160,11 +160,11 @@ class SLCCarving:
 		"Read in the sampling table section. It contains a table length (byte) and the table entries."
 		tableEntrySize = ord( file.read( 1 ) )
 		if tableEntrySize == 0:
-			print( "Sampling table size is zero!" )
+			print("Sampling table size is zero!")
 			exit()
 		for index in xrange( tableEntrySize ):
 			sampleTableEntry = SampleTableEntry( file )
-			self.layerThickness = sampleTableEntry.layer_thickness
+			self.layerHeight = sampleTableEntry.layerHeight
 
 	def setCarveImportRadius( self, importRadius ):
 		"Set the import radius."
@@ -174,8 +174,8 @@ class SLCCarving:
 		"Set the is correct mesh flag."
 		pass
 
-	def setCarveLayerThickness( self, layerThickness ):
-		"Set the layer thickness."
+	def setCarveLayerHeight( self, layerHeight ):
+		"Set the layer height."
 		pass
 
 

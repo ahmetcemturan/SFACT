@@ -32,13 +32,13 @@ def addCircleIntersectionLoop(circleIntersectionLoop, circleIntersections):
 	circleIntersectionAhead = firstCircleIntersection
 	for circleIntersectionIndex in xrange(len(circleIntersections) + 1):
 		circleIntersectionAhead = circleIntersectionAhead.getCircleIntersectionAhead()
-		if circleIntersectionAhead == firstCircleIntersection or circleIntersectionAhead is None:
+		if circleIntersectionAhead == firstCircleIntersection or circleIntersectionAhead == None:
 			firstCircleIntersection.steppedOn = True
 			return
 		circleIntersectionAhead.addToList(circleIntersectionLoop)
 	firstCircleIntersection.steppedOn = True
-	print( 'addCircleIntersectionLoop would have gone into an endless loop, this should never happen.' )
-	print( 'circleIntersectionLoop' )
+	print('Warning, addCircleIntersectionLoop would have gone into an endless loop.')
+	print('circleIntersectionLoop')
 	for circleIntersection in circleIntersectionLoop:
 		print(circleIntersection)
 		print(circleIntersection.circleNodeAhead)
@@ -76,13 +76,13 @@ def addHalfPath(path, points, radius, thresholdRatio=0.9):
 		begin = path[pointIndex]
 		center = path[pointIndex + 1]
 		centerBegin = getWiddershinsByLength(begin, center, radius)
-		if centerBegin is not None:
+		if centerBegin != None:
 			addPointsFromSegment(begin + centerBegin, center + centerBegin, points, lessThanRadius, thresholdRatio)
 		endIndex = pointIndex + 2
 		if endIndex < len(path):
 			end = path[endIndex]
 			centerEnd = getWiddershinsByLength(center, end, radius)
-			if centerBegin is not None and centerEnd is not None:
+			if centerBegin != None and centerEnd != None:
 				centerPerpendicular = 0.5 * (centerBegin + centerEnd)
 				points.append(center + centerPerpendicular)
 				if euclidean.getCrossProduct(centerBegin, centerEnd) < 0.0:
@@ -104,12 +104,12 @@ def addInsetPointFromClockwiseTriple(begin, center, end, loop, radius):
 	endMinusCenterClockwise = None
 	if endMinusCenterLength > 0.0:
 		endMinusCenterClockwise = complex(endMinusCenter.imag, -endMinusCenter.real) / endMinusCenterLength
-	if centerMinusBeginClockwise is None and endMinusCenterClockwise is None:
+	if centerMinusBeginClockwise == None and endMinusCenterClockwise == None:
 		return
-	if centerMinusBeginClockwise is None:
+	if centerMinusBeginClockwise == None:
 		loop.append(center + endMinusCenterClockwise * radius)
 		return
-	if endMinusCenterClockwise is None:
+	if endMinusCenterClockwise == None:
 		loop.append(center + centerMinusBeginClockwise * radius)
 		return
 	centerClockwise = 0.5 * (centerMinusBeginClockwise + endMinusCenterClockwise)
@@ -141,10 +141,10 @@ def addPointsFromSegment( pointBegin, pointEnd, points, radius, thresholdRatio=0
 	if extraCircles < 1:
 		return
 	if segmentLength == 0.0:
-		print('This should never happen, segmentLength = 0.0 in intercircle.')
+		print('Warning, segmentLength = 0.0 in intercircle.')
 		print('pointBegin')
-		print( pointBegin )
-		print( pointEnd )
+		print(pointBegin)
+		print(pointEnd)
 		return
 	if extraCircles < 2:
 		lengthIncrement = segmentLength / ( float(extraCircles) + 1.0 )
@@ -190,7 +190,7 @@ def getAroundsFromPath(path, radius, thresholdRatio=0.9):
 
 def getAroundsFromPathPoints(points, radius, thresholdRatio=0.9):
 	'Get the arounds from the path.'
-	centers = getCentersFromPoints(points, 0.7854 * radius)
+	centers = getCentersFromPoints(points, 0.8 * radius)
 	arounds = []
 	for center in centers:
 		if euclidean.isWiddershins(center):
@@ -399,7 +399,7 @@ def getLargestCenterOutsetLoopFromLoop(loop, radius, thresholdRatio=0.9):
 				if outsetArea > largestOutsetArea:
 					largestOutsetArea = outsetArea
 					largestCenterOutset = centerOutset
-	if largestCenterOutset is None:
+	if largestCenterOutset == None:
 		return None
 	largestCenterOutset.center = euclidean.getSimplifiedLoop(largestCenterOutset.center, radius)
 	return largestCenterOutset
@@ -410,7 +410,7 @@ def getLargestCenterOutsetLoopFromLoopRegardless(loop, radius):
 	for decreasingRadiusMultiplier in globalDecreasingRadiusMultipliers:
 		decreasingRadius = radius * decreasingRadiusMultiplier
 		largestCenterOutsetLoop = getLargestCenterOutsetLoopFromLoop(loop, decreasingRadius)
-		if largestCenterOutsetLoop is not None:
+		if largestCenterOutsetLoop != None:
 			return largestCenterOutsetLoop
 	return CenterOutset(loop, loop)
 
@@ -427,7 +427,7 @@ def getLargestInsetLoopFromLoopRegardless( loop, radius ):
 		largestInsetLoop = getLargestInsetLoopFromLoop( loop, decreasingRadius )
 		if len( largestInsetLoop ) > 0:
 			return largestInsetLoop
-	print('This should never happen, there should always be a largestInsetLoop in getLargestInsetLoopFromLoopRegardless in intercircle.')
+	print('Warning, there should always be a largestInsetLoop in getLargestInsetLoopFromLoopRegardless in intercircle.')
 	print(loop)
 	return loop
 
@@ -547,7 +547,7 @@ def removeIntersection( loop ):
 			aheadMidpointRotated = segmentYMirror * aheadMidpoint
 			y = behindRotated.imag
 			xIntersection = euclidean.getXIntersectionIfExists( aheadRotated, aheadMidpointRotated, y )
-			if xIntersection is not None:
+			if xIntersection != None:
 				if xIntersection > min( behindMidpointRotated.real, behindRotated.real ) and xIntersection < max( behindMidpointRotated.real, behindRotated.real ):
 					intersectionPoint = normalizedSegment * complex( xIntersection, y )
 					loop[ ( pointIndex + len( loop ) - 1 ) % len( loop ) ] = intersectionPoint
@@ -559,7 +559,7 @@ class BoundingLoop:
 	'A class to hold a bounding loop composed of a minimum complex, a maximum complex and an outset loop.'
 	def __eq__(self, other):
 		'Determine whether this bounding loop is identical to other one.'
-		if other is None:
+		if other == None:
 			return False
 		return self.minimum == other.minimum and self.maximum == other.maximum and self.loop == other.loop
 
@@ -645,9 +645,9 @@ class CircleIntersection:
 		rotatedClockwiseQuarter = complex( self.aheadMinusBehind.imag, - self.aheadMinusBehind.real )
 		rotatedClockwiseQuarterLength = abs( rotatedClockwiseQuarter )
 		if rotatedClockwiseQuarterLength == 0:
-			print('this should never happen, rotatedClockwiseQuarter in getDemichord in intercircle is 0')
-			print( circleNodeAhead.dividedPoint )
-			print( circleNodeBehind.dividedPoint )
+			print('Warning, rotatedClockwiseQuarter in getDemichord in intercircle is 0')
+			print(circleNodeAhead.dividedPoint)
+			print(circleNodeBehind.dividedPoint)
 			self.demichord = 0.0
 		else:
 			self.demichord = rotatedClockwiseQuarter * demichordWidth / rotatedClockwiseQuarterLength
@@ -678,7 +678,7 @@ class CircleIntersection:
 				if dot > largestDot:
 					largestDot = dot
 					circleIntersectionAhead = circleIntersection
-		if circleIntersectionAhead is None:
+		if circleIntersectionAhead == None:
 			print('Warning, circleIntersectionAhead in getCircleIntersectionAhead in intercircle is None for:')
 			print(self.circleNodeAhead.dividedPoint)
 			print('circleIntersectionsAhead')

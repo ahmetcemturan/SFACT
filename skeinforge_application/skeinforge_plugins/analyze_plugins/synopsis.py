@@ -53,11 +53,6 @@ __date__ = '$Date: 2008/21/04 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-def addAbridgedSettings(abridgedSettings, repositoryWriter):
-	'Add the abridged settings to a repository writer.'
-	for abridgedSetting in abridgedSettings:
-		repositoryWriter.write('%s\n' % abridgedSetting.__repr__())
-
 def exportProfileAsCSVFile(abridgedSettings, suffixFileNameWithoutExtension):
 	'Export the profile from the gcode text as a csv file.'
 	if len(abridgedSettings) < 1:
@@ -65,7 +60,8 @@ def exportProfileAsCSVFile(abridgedSettings, suffixFileNameWithoutExtension):
 		return
 	repositoryWriter = settings.getRepositoryWriter('profile')
 	suffixFileName = suffixFileNameWithoutExtension + 'csv'
-	addAbridgedSettings(abridgedSettings, repositoryWriter)
+	for abridgedSetting in abridgedSettings:
+		repositoryWriter.write('%s\n' % abridgedSetting.__repr__())
 	archive.writeFileText(suffixFileName, repositoryWriter.getvalue())
 	print('The synopsis csv file is saved as ' + archive.getSummarizedFileName(suffixFileName))
 
@@ -82,7 +78,8 @@ def exportProfileAsZipFile(abridgedSettings, suffixDirectoryPath, suffixFileName
 	for abridgedSettingsKey in abridgedSettingsDictionary:
 		abridgedSettings = abridgedSettingsDictionary[abridgedSettingsKey]
 		repositoryWriter = settings.getRepositoryWriter(abridgedSettingsKey)
-		addAbridgedSettings(abridgedSettings, repositoryWriter)
+		for abridgedSetting in abridgedSettings:
+			repositoryWriter.write('%s\t%s\n' % (abridgedSetting.name, abridgedSetting.value))
 		abridgedSettingFileNamePath = FileNamePath(suffixDirectoryPath, abridgedSettingsKey + '.csv')
 		abridgedSettingFileNamePaths.append(abridgedSettingFileNamePath)
 		archive.writeFileText(abridgedSettingFileNamePath.path, repositoryWriter.getvalue())
@@ -126,7 +123,7 @@ def getWindowAnalyzeFileGivenText(fileName, gcodeText, repository=None):
 	'Write scalable vector graphics for a gcode file given the settings.'
 	if gcodeText == '':
 		return None
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(SynopsisRepository())
 	startTime = time.time()
 	suffixFileNameWithoutExtension = fileName[: fileName.rfind('.')] + '_synopsis.'

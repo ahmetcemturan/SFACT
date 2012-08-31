@@ -2,12 +2,12 @@
 This page is in the table of contents.
 Carve is the most important plugin to define for your printer.
 
-It carves a shape into svg slice layers.  It also sets the layer thickness and perimeter width for the rest of the tool chain.
+It carves a shape into svg slice layers.  It also sets the layer height and edge width for the rest of the tool chain.
 
 The carve manual page is at:
 http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve
 
-On the Arcol Blog a method of deriving the layer thickness is posted.  That article "Machine Calibrating" is at:
+On the Arcol Blog a method of deriving the layer height is posted.  That article "Machine Calibrating" is at:
 http://blog.arcol.hu/?p=157
 
 ==Settings==
@@ -18,20 +18,29 @@ When selected, the layer template will be added to the svg output, which adds ja
 
 When off, no controls will be added, the svg output will only include the fabrication paths.  So 'Add Layer Template to SVG' should be deselected when the svg will be used by other software, like Inkscape.
 
+===Edge Width over Height===
+Default is 1.8.
+
+Defines the ratio of the extrusion edge width to the layer height.  This parameter tells skeinforge how wide the edge wall is expected to be in relation to the layer height.  Default value of 1.8 for the default layer height of 0.4 states that a single filament edge wall should be 0.4 mm * 1.8 = 0.72 mm wide.  The higher the value the more the edge will be inset.  A ratio of one means the extrusion is a circle, the default ratio of 1.8 means the extrusion is a wide oval.
+
+This is an important value because if you are calibrating your machine you need to ensure that the speed of the head and the extrusion rate in combination produce a wall that is 'Layer Height' * 'Edge Width over Height' wide. To start with 'Edge Width over Height' is probably best left at the default of 1.8 and the extrusion rate adjusted to give the correct calculated wall thickness.
+
+Adjustment is in the 'Speed' section with 'Feed Rate' controlling speed of the head in X & Y and 'Flow Rate' controlling the extrusion rate.  Initially it is probably easier to start adjusting the flow rate only a little at a time until you get a single filament of the correct width. If you change too many parameters at once you can get in a right mess.
+
 ===Extra Decimal Places===
 Default is two.
 
-Defines the number of extra decimal places export will output compared to the number of decimal places in the layer thickness.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.
+Defines the number of extra decimal places export will output compared to the number of decimal places in the layer height.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.
 
 ===Import Coarseness===
 Default is one.
 
-When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.
+When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the edge width.
 
-===Layer Thickness===
+===Layer Height===
 Default is 0.4 mm.
 
-Defines the the thickness of the layers skeinforge will cut your object into, in the z direction.  This is the most important carve setting, many values in the toolchain are derived from the layer thickness.
+Defines the the height of the layers skeinforge will cut your object into, in the z direction.  This is the most important carve setting, many values in the toolchain are derived from the layer height.
 
 For a 0.5 mm nozzle usable values are 0.3 mm to 0.5 mm.  Note; if you are using thinner layers make sure to adjust the extrusion speed as well.
 
@@ -60,15 +69,6 @@ When selected, the mesh will be accurately carved, and if a hole is found, carve
 
 ====Unproven Mesh====
 When selected, carve will use the gap spanning algorithm from the start.  The problem with the gap spanning algothm is that it will span gaps, even if there is not actually a gap in the model.
-
-===Perimeter Width over Thickness===
-Default is 1.8.
-
-Defines the ratio of the extrusion perimeter width to the layer thickness.  This parameter tells skeinforge how wide the perimeter wall is expected to be in relation to the layer thickness.  Default value of 1.8 for the default layer thickness of 0.4 states that a single filament perimeter wall should be 0.4 mm * 1.8 = 0.72 mm wide.  The higher the value the more the perimeter will be inset.  A ratio of one means the extrusion is a circle, the default ratio of 1.8 means the extrusion is a wide oval.
-
-This is an important value because if you are calibrating your machine you need to ensure that the speed of the head and the extrusion rate in combination produce a wall that is 'Layer Thickness' * 'Perimeter Width over Thickness' wide. To start with 'Perimeter Width over Thickness' is probably best left at the default of 1.8 and the extrusion rate adjusted to give the correct calculated wall thickness.
-
-Adjustment is in the 'Speed' section with 'Feed Rate' controlling speed of the head in X & Y and 'Flow Rate' controlling the extrusion rate.  Initially it is probably easier to start adjusting the flow rate only a little at a time until you get a single filament of the correct width. If you change too many parameters at once you can get in a right mess.
 
 ===SVG Viewer===
 Default is webbrowser.
@@ -125,9 +125,9 @@ def getCraftedText( fileName, gcodeText = '', repository=None):
 		if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'carve'):
 			return gcodeText
 	carving = svg_writer.getCarving(fileName)
-	if carving is None:
+	if carving == None:
 		return ''
-	if repository is None:
+	if repository == None:
 		repository = CarveRepository()
 		settings.getReadRepository(repository)
 	return CarveSkein().getCarvedSVG( carving, fileName, repository )
@@ -162,8 +162,11 @@ class CarveRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve')
 		settings.LabelDisplay().getFromName('- MAIN SETTINGS for Extrusion  -', self )
 		settings.LabelSeparator().getFromRepository(self)
-		self.layerThickness = settings.FloatSpin().getFromValue( 0.1, 'Layer Height = Extrusion Thickness (mm):', self, 1.0, 0.4 )
-		self.perimeterWidthOverThickness = settings.FloatSpin().getFromValue( 0.2, 'Extrusion Width (mm):', self, 1.0, 0.6 )
+		self.addLayerTemplateToSVG = settings.BooleanSetting().getFromValue('Add Layer Template to SVG', self, True)
+		self.edgeWidthOverHeight = settings.FloatSpin().getFromValue( 1.4, 'Edge Width over Height (ratio):', self, 2.2, 1.8 )
+		self.extraDecimalPlaces = settings.FloatSpin().getFromValue(0.0, 'Extra Decimal Places (float):', self, 3.0, 2.0)
+		self.importCoarseness = settings.FloatSpin().getFromValue( 0.5, 'Import Coarseness (ratio):', self, 2.0, 1.0 )
+		self.layerHeight = settings.FloatSpin().getFromValue( 0.1, 'Layer Height (mm):', self, 1.0, 0.4 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Layers to print -', self )
 		self.layersFrom = settings.IntSpin().getFromValue( 0, 'Print from Layer No::', self, 3333, 0 )
@@ -176,9 +179,6 @@ class CarveRepository:
 		self.correctMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Correct Mesh', self, True )
 		self.unprovenMesh = settings.Radio().getFromRadio( importLatentStringVar, 'Unproven Mesh', self, False )
 		self.svgViewer = settings.StringSetting().getFromValue('SVG Viewer:', self, 'webbrowser')
-		self.addLayerTemplateToSVG = settings.BooleanSetting().getFromValue('Add Layer Template to SVG', self, True)
-		self.extraDecimalPlaces = settings.FloatSpin().getFromValue(1.0, 'Extra Decimal Places (float):', self, 4.0, 3.0)
-		self.importCoarseness = settings.FloatSpin().getFromValue( 0.5, 'Import Coarseness (ratio):', self, 2.0, 1.0 )
 		settings.LabelSeparator().getFromRepository(self)
 		self.executeTitle = 'Carve'
 
@@ -193,26 +193,26 @@ class CarveSkein:
 	"A class to carve a carving."
 	def getCarvedSVG(self, carving, fileName, repository):
 		"Parse gnu triangulated surface text and store the carved gcode."
-		layerThickness = repository.layerThickness.value
-		perimeterWidth = repository.perimeterWidthOverThickness.value
-		carving.setCarveLayerThickness(layerThickness)
-		importRadius = 0.5 * repository.importCoarseness.value * abs(perimeterWidth)
-		carving.setCarveImportRadius(max(importRadius, 0.01 * layerThickness))
+		layerHeight = repository.layerHeight.value
+		edgeWidth = repository.edgeWidthOverHeight.value
+		carving.setCarveLayerHeight(layerHeight)
+		importRadius = 0.5 * repository.importCoarseness.value * abs(edgeWidth)
+		carving.setCarveImportRadius(max(importRadius, 0.001 * layerHeight))
 		carving.setCarveIsCorrectMesh(repository.correctMesh.value)
 		loopLayers = carving.getCarveBoundaryLayers()
 		if len(loopLayers) < 1:
-			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Thickness.')
+			print('Warning, there are no slices for the model, this could be because the model is too small for the Layer Height.')
 			return ''
-		layerThickness = carving.getCarveLayerThickness()
-		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerThickness)
-		perimeterWidth = repository.perimeterWidthOverThickness.value #todo why twice?
+		layerHeight = carving.getCarveLayerHeight()
+		decimalPlacesCarried = euclidean.getDecimalPlacesCarried(repository.extraDecimalPlaces.value, layerHeight)
+		edgeWidth = repository.edgeWidthOverHeight.value
 		svgWriter = svg_writer.SVGWriter(
 			repository.addLayerTemplateToSVG.value,
 			carving.getCarveCornerMaximum(),
 			carving.getCarveCornerMinimum(),
 			decimalPlacesCarried,
-			carving.getCarveLayerThickness(),
-			perimeterWidth)
+			carving.getCarveLayerHeight(),
+			edgeWidth)
 		truncatedRotatedBoundaryLayers = svg_writer.getTruncatedRotatedBoundaryLayers(loopLayers, repository)
 		return svgWriter.getReplacedSVGTemplate(fileName, truncatedRotatedBoundaryLayers, 'carve', carving.getFabmetheusXML())
 

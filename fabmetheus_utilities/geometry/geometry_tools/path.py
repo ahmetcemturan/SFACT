@@ -27,7 +27,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def convertElementNode(elementNode, geometryOutput):
 	'Convert the xml element by geometryOutput.'
-	if geometryOutput is None:
+	if geometryOutput == None:
 		return
 	if len(geometryOutput) < 1:
 		return
@@ -80,7 +80,7 @@ class Path(dictionary.Dictionary):
 
 	def addXMLInnerSection(self, depth, output):
 		'Add the xml section for this object.'
-		if self.matrix4X4 is not None:
+		if self.matrix4X4 != None:
 			self.matrix4X4.addXML(depth, output)
 		xml_simple_writer.addXMLFromVertexes(depth, output, self.vertexes)
 
@@ -91,7 +91,7 @@ class Path(dictionary.Dictionary):
 	def getFabricationText(self, addLayerTemplate):
 		'Get fabrication text.'
 		carving = SVGFabricationCarving(addLayerTemplate, self.elementNode)
-		carving.setCarveLayerThickness(setting.getSheetThickness(self.elementNode))
+		carving.setCarveLayerHeight(setting.getSheetThickness(self.elementNode))
 		carving.processSVGElement(self.elementNode.getOwnerDocument().fileName)
 		return str(carving)
 
@@ -112,13 +112,13 @@ class Path(dictionary.Dictionary):
 
 	def getTransformedPaths(self):
 		'Get all transformed paths.'
-		if self.elementNode is None:
+		if self.elementNode == None:
 			return dictionary.getAllPaths([self.vertexes], self)
 		chainTetragrid = self.getMatrixChainTetragrid()
 		if self.oldChainTetragrid != chainTetragrid:
 			self.oldChainTetragrid = chainTetragrid
 			self.transformedPath = None
-		if self.transformedPath is None:
+		if self.transformedPath == None:
 			self.transformedPath = matrix.getTransformedVector3s(chainTetragrid, self.vertexes)
 		if len(self.transformedPath) > 0:
 			return dictionary.getAllTransformedPaths([self.transformedPath], self)
@@ -131,7 +131,7 @@ class SVGFabricationCarving:
 		'Add empty lists.'
 		self.addLayerTemplate = addLayerTemplate
 		self.elementNode = elementNode
-		self.layerThickness = 1.0
+		self.layerHeight = 1.0
 		self.loopLayers = []
 
 	def __repr__(self):
@@ -158,9 +158,9 @@ class SVGFabricationCarving:
 		'Get the carved svg text.'
 		return svg_writer.getSVGByLoopLayers(self.addLayerTemplate, self, self.loopLayers)
 
-	def getCarveLayerThickness(self):
-		'Get the layer thickness.'
-		return self.layerThickness
+	def getCarveLayerHeight(self):
+		'Get the layer height.'
+		return self.layerHeight
 
 	def getFabmetheusXML(self):
 		'Return the fabmetheus XML.'
@@ -189,7 +189,7 @@ class SVGFabricationCarving:
 			return
 		self.cornerMaximum = Vector3(-987654321.0, -987654321.0, -987654321.0)
 		self.cornerMinimum = Vector3(987654321.0, 987654321.0, 987654321.0)
-		svg_writer.setSVGCarvingCorners(self.cornerMaximum, self.cornerMinimum, self.layerThickness, self.loopLayers)
+		svg_writer.setSVGCarvingCorners(self.cornerMaximum, self.cornerMinimum, self.layerHeight, self.loopLayers)
 
 	def setCarveImportRadius( self, importRadius ):
 		'Set the import radius.'
@@ -199,6 +199,6 @@ class SVGFabricationCarving:
 		'Set the is correct mesh flag.'
 		pass
 
-	def setCarveLayerThickness( self, layerThickness ):
-		'Set the layer thickness.'
-		self.layerThickness = layerThickness
+	def setCarveLayerHeight( self, layerHeight ):
+		'Set the layer height.'
+		self.layerHeight = layerHeight

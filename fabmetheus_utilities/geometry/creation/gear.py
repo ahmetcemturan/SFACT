@@ -434,7 +434,7 @@ def addBevelGear(derivation, extrudeDerivation, pitchRadius, positives, teeth, v
 	loopLists = extrude.getLoopListsByPath(extrudeDerivation, None, vector3GearProfile[0], portionDirections)
 	firstLoopList = loopLists[0]
 	gearOverPinion = float(totalTeeth - teeth) / float(teeth)
-	thirdLayerHeight = 0.33333333333 * setting.getLayerThickness(derivation.elementNode)
+	thirdLayerHeight = 0.33333333333 * setting.getLayerHeight(derivation.elementNode)
 	pitchRadian = math.atan(math.sin(derivation.operatingRadian) / (gearOverPinion + math.cos(derivation.operatingRadian)))
 	coneDistance = pitchRadius / math.sin(pitchRadian)
 	apex = Vector3(0.0, 0.0, math.sqrt(coneDistance * coneDistance - pitchRadius * pitchRadius))
@@ -624,7 +624,7 @@ def getGearProfileRack(derivation, toothProfile):
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation is None:
+	if derivation == None:
 		derivation = GearDerivation(elementNode)
 	creationFirst = derivation.creationType.lower()[: 1]
 	toothProfileComplement = getToothProfile(derivation, derivation.pitchRadiusComplement, derivation.teethComplement)
@@ -698,7 +698,7 @@ def getHelixComplexPath(derivation, elementNode):
 	if helixTypeFirstCharacter == 'p':
 		helixComplexPath = []
 		x = 0.0
-		xStep = setting.getLayerThickness(elementNode) / derivation.faceWidth
+		xStep = setting.getLayerHeight(elementNode) / derivation.faceWidth
 		justBelowOne = 1.0 - 0.5 * xStep
 		while x < justBelowOne:
 			distanceFromCenter = 0.5 - x
@@ -722,7 +722,7 @@ def getLiftedOutput(derivation, geometryOutput):
 
 def getLighteningHoles(derivation, gearHolePaths, pitchRadius):
 	'Get cutout circles.'
-	if gearHolePaths is not None:
+	if gearHolePaths != None:
 		if len(gearHolePaths) > 0:
 			return gearHolePaths
 	innerRadius = abs(pitchRadius) - derivation.dedendum

@@ -90,9 +90,9 @@ Below are examples of euclidean use.<br>
 
 <dl><dt><a name="Endpoint-getClosestEndpoint"><strong>getClosestEndpoint</strong></a>(self, endpoints)</dt><dd><tt>Get&nbsp;closest&nbsp;endpoint.</tt></dd></dl>
 
-<dl><dt><a name="Endpoint-getClosestMiss"><strong>getClosestMiss</strong></a>(self, endpoints, path, pixelDictionary, width)</dt><dd><tt>Get&nbsp;the&nbsp;closest&nbsp;endpoint&nbsp;which&nbsp;the&nbsp;segment&nbsp;to&nbsp;that&nbsp;endpoint&nbsp;misses&nbsp;the&nbsp;other&nbsp;extrusions.</tt></dd></dl>
+<dl><dt><a name="Endpoint-getClosestMiss"><strong>getClosestMiss</strong></a>(self, endpoints, path, pixelDictionary, sharpestProduct, width)</dt><dd><tt>Get&nbsp;the&nbsp;closest&nbsp;endpoint&nbsp;which&nbsp;the&nbsp;segment&nbsp;to&nbsp;that&nbsp;endpoint&nbsp;misses&nbsp;the&nbsp;other&nbsp;extrusions.</tt></dd></dl>
 
-<dl><dt><a name="Endpoint-getClosestMissCheckEndpointPath"><strong>getClosestMissCheckEndpointPath</strong></a>(self, endpoints, path, pixelDictionary, width)</dt><dd><tt>Get&nbsp;the&nbsp;closest&nbsp;endpoint&nbsp;which&nbsp;the&nbsp;segment&nbsp;to&nbsp;that&nbsp;endpoint&nbsp;misses&nbsp;the&nbsp;other&nbsp;extrusions,&nbsp;also&nbsp;checking&nbsp;the&nbsp;path&nbsp;of&nbsp;the&nbsp;endpoint.</tt></dd></dl>
+<dl><dt><a name="Endpoint-getClosestMissCheckEndpointPath"><strong>getClosestMissCheckEndpointPath</strong></a>(self, endpoints, path, pixelDictionary, sharpestProduct, width)</dt><dd><tt>Get&nbsp;the&nbsp;closest&nbsp;endpoint&nbsp;which&nbsp;the&nbsp;segment&nbsp;to&nbsp;that&nbsp;endpoint&nbsp;misses&nbsp;the&nbsp;other&nbsp;extrusions,&nbsp;also&nbsp;checking&nbsp;the&nbsp;path&nbsp;of&nbsp;the&nbsp;endpoint.</tt></dd></dl>
 
 <dl><dt><a name="Endpoint-getFromOtherPoint"><strong>getFromOtherPoint</strong></a>(self, otherEndpoint, point)</dt><dd><tt>Initialize&nbsp;from&nbsp;other&nbsp;endpoint.</tt></dd></dl>
 
@@ -124,13 +124,13 @@ Below are examples of euclidean use.<br>
 
 <dl><dt><a name="NestedBand-__repr__"><strong>__repr__</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;string&nbsp;representation&nbsp;of&nbsp;this&nbsp;nested&nbsp;ring.</tt></dd></dl>
 
-<dl><dt><a name="NestedBand-addPerimeterInner"><strong>addPerimeterInner</strong></a>(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;the&nbsp;perimeter&nbsp;and&nbsp;the&nbsp;inner&nbsp;island.</tt></dd></dl>
+<dl><dt><a name="NestedBand-addPerimeterInner"><strong>addPerimeterInner</strong></a>(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;the&nbsp;edge&nbsp;and&nbsp;the&nbsp;inner&nbsp;island.</tt></dd></dl>
 
 <dl><dt><a name="NestedBand-addToBoundary"><strong>addToBoundary</strong></a>(self, vector3)</dt><dd><tt>Add&nbsp;vector3&nbsp;to&nbsp;boundary.</tt></dd></dl>
 
 <dl><dt><a name="NestedBand-addToLoop"><strong>addToLoop</strong></a>(self, vector3)</dt><dd><tt>Add&nbsp;vector3&nbsp;to&nbsp;loop.</tt></dd></dl>
 
-<dl><dt><a name="NestedBand-addToThreads"><strong>addToThreads</strong></a>(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;paths&nbsp;from&nbsp;the&nbsp;last&nbsp;location.&nbsp;perimeter&gt;inner&nbsp;&gt;fill&gt;paths&nbsp;or&nbsp;fill&gt;&nbsp;perimeter&gt;inner&nbsp;&gt;paths</tt></dd></dl>
+<dl><dt><a name="NestedBand-addToThreads"><strong>addToThreads</strong></a>(self, extrusionHalfWidth, oldOrderedLocation, skein, threadSequence)</dt><dd><tt>Add&nbsp;to&nbsp;paths&nbsp;from&nbsp;the&nbsp;last&nbsp;location.</tt></dd></dl>
 
 <dl><dt><a name="NestedBand-getFillLoops"><strong>getFillLoops</strong></a>(self, penultimateFillLoops)</dt><dd><tt>Get&nbsp;last&nbsp;fill&nbsp;loops&nbsp;from&nbsp;the&nbsp;outside&nbsp;loop&nbsp;and&nbsp;the&nbsp;loops&nbsp;inside&nbsp;the&nbsp;inside&nbsp;loops.</tt></dd></dl>
 
@@ -280,7 +280,7 @@ Methods inherited from <a href="fabmetheus_utilities.euclidean.html#NestedRing">
  <dl><dt><a name="-addXIntersectionsFromLoops"><strong>addXIntersectionsFromLoops</strong></a>(loops, xIntersections, y)</dt><dd><tt>Add&nbsp;the&nbsp;x&nbsp;intersections&nbsp;for&nbsp;the&nbsp;loops.</tt></dd></dl>
  <dl><dt><a name="-addXIntersectionsFromLoopsForTable"><strong>addXIntersectionsFromLoopsForTable</strong></a>(loops, xIntersectionsTable, width)</dt><dd><tt>Add&nbsp;the&nbsp;x&nbsp;intersections&nbsp;for&nbsp;a&nbsp;loop&nbsp;into&nbsp;a&nbsp;table.</tt></dd></dl>
  <dl><dt><a name="-compareSegmentLength"><strong>compareSegmentLength</strong></a>(endpoint, otherEndpoint)</dt><dd><tt>Get&nbsp;comparison&nbsp;in&nbsp;order&nbsp;to&nbsp;sort&nbsp;endpoints&nbsp;in&nbsp;ascending&nbsp;order&nbsp;of&nbsp;segment&nbsp;length.</tt></dd></dl>
- <dl><dt><a name="-concatenateRemovePath"><strong>concatenateRemovePath</strong></a>(connectedPaths, pathIndex, paths, pixelDictionary, segments, width)</dt><dd><tt>Get&nbsp;connected&nbsp;paths&nbsp;from&nbsp;paths.</tt></dd></dl>
+ <dl><dt><a name="-concatenateRemovePath"><strong>concatenateRemovePath</strong></a>(connectedPaths, pathIndex, paths, pixelDictionary, segments, sharpestProduct, width)</dt><dd><tt>Get&nbsp;connected&nbsp;paths&nbsp;from&nbsp;paths.</tt></dd></dl>
  <dl><dt><a name="-getAngleAroundZAxisDifference"><strong>getAngleAroundZAxisDifference</strong></a>(subtractFromVec3, subtractVec3)</dt><dd><tt>Get&nbsp;the&nbsp;angle&nbsp;around&nbsp;the&nbsp;Z&nbsp;axis&nbsp;difference&nbsp;between&nbsp;a&nbsp;pair&nbsp;of&nbsp;Vector3s.</tt></dd></dl>
  <dl><dt><a name="-getAngleDifferenceByComplex"><strong>getAngleDifferenceByComplex</strong></a>(subtractFromComplex, subtractComplex)</dt><dd><tt>Get&nbsp;the&nbsp;angle&nbsp;between&nbsp;a&nbsp;pair&nbsp;of&nbsp;normalized&nbsp;complexes.</tt></dd></dl>
  <dl><dt><a name="-getAreaLoop"><strong>getAreaLoop</strong></a>(loop)</dt><dd><tt>Get&nbsp;the&nbsp;area&nbsp;of&nbsp;a&nbsp;complex&nbsp;polygon.</tt></dd></dl>
@@ -310,7 +310,7 @@ Methods inherited from <a href="fabmetheus_utilities.euclidean.html#NestedRing">
  <dl><dt><a name="-getComplexPolygonByComplexRadius"><strong>getComplexPolygonByComplexRadius</strong></a>(radius, sides, startAngle<font color="#909090">=0.0</font>)</dt><dd><tt>Get&nbsp;the&nbsp;complex&nbsp;polygon.</tt></dd></dl>
  <dl><dt><a name="-getComplexPolygonByStartEnd"><strong>getComplexPolygonByStartEnd</strong></a>(endAngle, radius, sides, startAngle<font color="#909090">=0.0</font>)</dt><dd><tt>Get&nbsp;the&nbsp;complex&nbsp;polygon&nbsp;by&nbsp;start&nbsp;and&nbsp;end&nbsp;angle.</tt></dd></dl>
  <dl><dt><a name="-getConcatenatedList"><strong>getConcatenatedList</strong></a>(originalLists)</dt><dd><tt>Get&nbsp;the&nbsp;lists&nbsp;as&nbsp;one&nbsp;concatenated&nbsp;list.</tt></dd></dl>
- <dl><dt><a name="-getConnectedPaths"><strong>getConnectedPaths</strong></a>(paths, pixelDictionary, width)</dt><dd><tt>Get&nbsp;connected&nbsp;paths&nbsp;from&nbsp;paths.</tt></dd></dl>
+ <dl><dt><a name="-getConnectedPaths"><strong>getConnectedPaths</strong></a>(paths, pixelDictionary, sharpestProduct, width)</dt><dd><tt>Get&nbsp;connected&nbsp;paths&nbsp;from&nbsp;paths.</tt></dd></dl>
  <dl><dt><a name="-getCrossProduct"><strong>getCrossProduct</strong></a>(firstComplex, secondComplex)</dt><dd><tt>Get&nbsp;z&nbsp;component&nbsp;cross&nbsp;product&nbsp;of&nbsp;a&nbsp;pair&nbsp;of&nbsp;complexes.</tt></dd></dl>
  <dl><dt><a name="-getDecimalPlacesCarried"><strong>getDecimalPlacesCarried</strong></a>(extraDecimalPlaces, value)</dt><dd><tt>Get&nbsp;decimal&nbsp;places&nbsp;carried&nbsp;by&nbsp;the&nbsp;decimal&nbsp;places&nbsp;of&nbsp;the&nbsp;value&nbsp;plus&nbsp;the&nbsp;extraDecimalPlaces.</tt></dd></dl>
  <dl><dt><a name="-getDiagonalFlippedLoop"><strong>getDiagonalFlippedLoop</strong></a>(loop)</dt><dd><tt>Get&nbsp;loop&nbsp;flipped&nbsp;over&nbsp;the&nbsp;dialogonal,&nbsp;in&nbsp;other&nbsp;words&nbsp;with&nbsp;the&nbsp;x&nbsp;and&nbsp;y&nbsp;swapped.</tt></dd></dl>
@@ -381,7 +381,7 @@ Methods inherited from <a href="fabmetheus_utilities.euclidean.html#NestedRing">
  <dl><dt><a name="-getOrderedNestedRings"><strong>getOrderedNestedRings</strong></a>(nestedRings)</dt><dd><tt>Get&nbsp;ordered&nbsp;nestedRings&nbsp;from&nbsp;nestedRings.</tt></dd></dl>
  <dl><dt><a name="-getPathCopy"><strong>getPathCopy</strong></a>(path)</dt><dd><tt>Get&nbsp;path&nbsp;copy.</tt></dd></dl>
  <dl><dt><a name="-getPathLength"><strong>getPathLength</strong></a>(path)</dt><dd><tt>Get&nbsp;the&nbsp;length&nbsp;of&nbsp;a&nbsp;path&nbsp;(&nbsp;an&nbsp;open&nbsp;polyline&nbsp;).</tt></dd></dl>
- <dl><dt><a name="-getPathsFromEndpoints"><strong>getPathsFromEndpoints</strong></a>(endpoints, maximumConnectionLength, pixelDictionary, width)</dt><dd><tt>Get&nbsp;paths&nbsp;from&nbsp;endpoints.</tt></dd></dl>
+ <dl><dt><a name="-getPathsFromEndpoints"><strong>getPathsFromEndpoints</strong></a>(endpoints, maximumConnectionLength, pixelDictionary, sharpestProduct, width)</dt><dd><tt>Get&nbsp;paths&nbsp;from&nbsp;endpoints.</tt></dd></dl>
  <dl><dt><a name="-getPlaneDot"><strong>getPlaneDot</strong></a>(vec3First, vec3Second)</dt><dd><tt>Get&nbsp;the&nbsp;dot&nbsp;product&nbsp;of&nbsp;the&nbsp;x&nbsp;and&nbsp;y&nbsp;components&nbsp;of&nbsp;a&nbsp;pair&nbsp;of&nbsp;Vector3s.</tt></dd></dl>
  <dl><dt><a name="-getPluralString"><strong>getPluralString</strong></a>(number, suffix)</dt><dd><tt>Get&nbsp;the&nbsp;plural&nbsp;string.</tt></dd></dl>
  <dl><dt><a name="-getPointPlusSegmentWithLength"><strong>getPointPlusSegmentWithLength</strong></a>(length, point, segment)</dt><dd><tt>Get&nbsp;point&nbsp;plus&nbsp;a&nbsp;segment&nbsp;scaled&nbsp;to&nbsp;a&nbsp;given&nbsp;length.</tt></dd></dl>

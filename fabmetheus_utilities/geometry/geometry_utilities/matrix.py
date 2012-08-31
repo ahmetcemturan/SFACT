@@ -42,13 +42,13 @@ def getBranchMatrix(elementNode):
 	'Get matrix starting from the object if it exists, otherwise get a matrix starting from stratch.'
 	branchMatrix = Matrix()
 	matrixChildElement = elementNode.getFirstChildByLocalName('matrix')
-	if matrixChildElement is not None:
+	if matrixChildElement != None:
 		branchMatrix = branchMatrix.getFromElementNode(matrixChildElement, '')
 	branchMatrix = branchMatrix.getFromElementNode(elementNode, 'matrix.')
-	if elementNode.xmlObject is None:
+	if elementNode.xmlObject == None:
 		return branchMatrix
 	elementNodeMatrix = elementNode.xmlObject.getMatrix4X4()
-	if elementNodeMatrix is None:
+	if elementNodeMatrix == None:
 		return branchMatrix
 	return elementNodeMatrix.getOtherTimesSelf(branchMatrix.tetragrid)
 
@@ -89,7 +89,7 @@ def getDiagonalSwitchedTetragridByRadians(angleRadians, diagonals):
 
 def getIdentityTetragrid(tetragrid=None):
 	'Get four by four matrix with diagonal elements set to one.'
-	if tetragrid is None:
+	if tetragrid == None:
 		return [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]]
 	return tetragrid
 
@@ -141,7 +141,7 @@ def getRemovedFloat(defaultFloat, elementNode, key, prefix):
 	prefixKey = prefix + key
 	if prefixKey in elementNode.attributes:
 		floatValue = evaluate.getEvaluatedFloat(None, elementNode, prefixKey)
-		if floatValue is None:
+		if floatValue == None:
 			print('Warning, evaluated value in getRemovedFloatByKeys in matrix is None for key:')
 			print(prefixKey)
 			print('for elementNode dictionary value:')
@@ -226,7 +226,7 @@ def getTetragridA(elementNode, prefix, tetragrid):
 			key = getKeyA(row, column, prefix)
 			if key in evaluatedDictionary:
 				value = evaluatedDictionary[key]
-				if value is None or value == 'None':
+				if value == None or value == 'None':
 					print('Warning, value in getTetragridA in matrix is None for key for dictionary:')
 					print(key)
 					print(evaluatedDictionary)
@@ -245,7 +245,7 @@ def getTetragridC(elementNode, prefix, tetragrid):
 	for columnKeyIndex, columnKey in enumerate(columnKeys):
 		if columnKey in evaluatedDictionary:
 			value = evaluatedDictionary[columnKey]
-			if value is None or value == 'None':
+			if value == None or value == 'None':
 				print('Warning, value in getTetragridC in matrix is None for columnKey for dictionary:')
 				print(columnKey)
 				print(evaluatedDictionary)
@@ -276,7 +276,7 @@ def getTetragridM(elementNode, prefix, tetragrid):
 			key = getKeyM(row, column, prefix)
 			if key in evaluatedDictionary:
 				value = evaluatedDictionary[key]
-				if value is None or value == 'None':
+				if value == None or value == 'None':
 					print('Warning, value in getTetragridM in matrix is None for key for dictionary:')
 					print(key)
 					print(evaluatedDictionary)
@@ -293,7 +293,7 @@ def getTetragridMatrix(elementNode, prefix, tetragrid):
 	if len(evaluatedDictionary.keys()) < 1:
 		return tetragrid
 	value = evaluatedDictionary[matrixKey]
-	if value is None or value == 'None':
+	if value == None or value == 'None':
 		print('Warning, value in getTetragridMatrix in matrix is None for matrixKey for dictionary:')
 		print(matrixKey)
 		print(evaluatedDictionary)
@@ -314,7 +314,7 @@ def getTetragridR(elementNode, prefix, tetragrid):
 	for rowKeyIndex, rowKey in enumerate(rowKeys):
 		if rowKey in evaluatedDictionary:
 			value = evaluatedDictionary[rowKey]
-			if value is None or value == 'None':
+			if value == None or value == 'None':
 				print('Warning, value in getTetragridR in matrix is None for rowKey for dictionary:')
 				print(rowKey)
 				print(evaluatedDictionary)
@@ -328,9 +328,9 @@ def getTetragridR(elementNode, prefix, tetragrid):
 def getTetragridTimesOther(firstTetragrid, otherTetragrid ):
 	'Get this matrix multiplied by the other matrix.'
 	#A down, B right from http://en.wikipedia.org/wiki/Matrix_multiplication
-	if firstTetragrid is None:
+	if firstTetragrid == None:
 		return otherTetragrid
-	if otherTetragrid is None:
+	if otherTetragrid == None:
 		return firstTetragrid
 	tetragridTimesOther = []
 	for row in xrange(4):
@@ -402,7 +402,7 @@ def setAttributesToMultipliedTetragrid(elementNode, tetragrid):
 
 def setElementNodeDictionaryMatrix(elementNode, matrix4X4):
 	'Set the element attribute dictionary or element matrix to the matrix.'
-	if elementNode.xmlObject is None:
+	if elementNode.xmlObject == None:
 		elementNode.attributes.update(matrix4X4.getAttributes('matrix.'))
 	else:
 		elementNode.xmlObject.matrix4X4 = matrix4X4
@@ -438,7 +438,7 @@ class Matrix:
 
 	def __eq__(self, other):
 		'Determine whether this matrix is identical to other one.'
-		if other is None:
+		if other == None:
 			return False
 		if other.__class__ != self.__class__:
 			return False
@@ -463,7 +463,7 @@ class Matrix:
 	def getAttributes(self, prefix=''):
 		'Get the attributes from row column attribute strings, counting from one.'
 		attributes = {}
-		if self.tetragrid is None:
+		if self.tetragrid == None:
 			return attributes
 		for row in xrange(4):
 			for column in xrange(4):
@@ -478,7 +478,7 @@ class Matrix:
 	def getFromElementNode(self, elementNode, prefix):
 		'Get the values from row column attribute strings, counting from one.'
 		attributes = elementNode.attributes
-		if attributes is None:
+		if attributes == None:
 			return self
 		self.tetragrid = getTetragridTimesOther(getTransformTetragrid(elementNode, prefix), self.tetragrid)
 		self.tetragrid = getTetragridTimesOther(getScaleTetragrid(elementNode, 'scale.'), self.tetragrid)

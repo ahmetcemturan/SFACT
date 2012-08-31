@@ -38,7 +38,7 @@ def getNewDerivation(elementNode):
 def getXMLFromCarvingFileName(fileName):
 	'Get xml text from xml text.'
 	carving = fabmetheus_interpret.getCarving(fileName)
-	if carving is None:
+	if carving == None:
 		return ''
 	output = xml_simple_writer.getBeginGeometryXMLOutput()
 	carving.addXML(0, output)
@@ -50,9 +50,9 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation is None:
+	if derivation == None:
 		derivation = ImportDerivation(elementNode)
-	if derivation.fileName is None:
+	if derivation.fileName == None:
 		return
 	parserFileName = elementNode.getOwnerDocument().fileName
 	absoluteFileName = archive.getAbsoluteFolderPath(parserFileName, derivation.fileName)
@@ -74,7 +74,7 @@ def processElementNodeByDerivation(derivation, elementNode):
 	if xmlText == '':
 		print('The file %s could not be found by processElementNode in import.' % derivation.fileName)
 		return
-	if derivation.importName is None:
+	if derivation.importName == None:
 		elementNode.attributes['_importName'] = archive.getUntilDot(derivation.fileName)
 		if derivation.basename:
 			elementNode.attributes['_importName'] = os.path.basename(elementNode.attributes['_importName'])

@@ -26,7 +26,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation is None:
+	if derivation == None:
 		derivation = DrillDerivation(elementNode)
 	negatives = []
 	teardrop.addNegativesByRadius(elementNode, derivation.end, negatives, derivation.radius, derivation.start)
@@ -55,5 +55,5 @@ class DrillDerivation:
 		self.start = evaluate.getVector3ByPrefix(Vector3(), elementNode, 'start')
 		self.radius = lineation.getFloatByPrefixBeginEnd(elementNode, 'radius', 'diameter', 1.0)
 		size = evaluate.getEvaluatedFloat(None, elementNode, 'size')
-		if size is not None:
+		if size != None:
 			self.radius = 0.5 * size

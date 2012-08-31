@@ -27,7 +27,7 @@ globalExecutionOrder = 400
 def bottomElementNode(derivation, target):
 	"Bottom target."
 	xmlObject = target.xmlObject
-	if xmlObject is None:
+	if xmlObject == None:
 		print('Warning, bottomTarget in bottom could not get xmlObject for:')
 		print(target)
 		print(derivation.elementNode)
@@ -80,7 +80,7 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation is None:
+	if derivation == None:
 		derivation = BottomDerivation(elementNode, '')
 	targets = evaluate.getElementNodesByKey(elementNode, 'target')
 	if len(targets) < 1:
@@ -101,4 +101,4 @@ class BottomDerivation:
 
 	def getAdditionalPathLift(self):
 		"Get path lift."
-		return 0.5 * setting.getLayerThickness(self.elementNode) * float(self.liftPath)
+		return 0.5 * setting.getLayerHeight(self.elementNode) * float(self.liftPath)

@@ -205,7 +205,7 @@ If support material is generated and if there is a file with the name of the "Na
 
 Default is 0.5.<br>
  <br>
-Defines the amount the nozzle is above the center of the operating extrusion divided by the layer thickness.<br>
+Defines the amount the nozzle is above the center of the operating extrusion divided by the layer height.<br>
  <br>
 <a name="Raft Size" id="Raft Size"></a><h3>Raft Size</h3>
 
@@ -241,7 +241,7 @@ Defines the ratio of the flow rate when the support is extruded over the operati
 
 Default: 0.5.<br>
  <br>
-Defines the gap between the support material and the object over the perimeter extrusion width.<br>
+Defines the gap between the support material and the object over the edge extrusion width.<br>
  <br>
 <a name="Support Material Choice" id="Support Material Choice"></a><h4>Support Material Choice</h4>
 
@@ -369,9 +369,9 @@ Screw Holder Bottom_raft.gcode</tt>
 
 <dl><dt><a name="RaftSkein-addRaft"><strong>addRaft</strong></a>(self)</dt><dd><tt>Add&nbsp;the&nbsp;raft.</tt></dd></dl>
 
-<dl><dt><a name="RaftSkein-addRaftPerimeters"><strong>addRaftPerimeters</strong></a>(self)</dt><dd><tt>Add&nbsp;raft&nbsp;perimeters&nbsp;if&nbsp;there&nbsp;is&nbsp;a&nbsp;raft.</tt></dd></dl>
+<dl><dt><a name="RaftSkein-addRaftPerimeters"><strong>addRaftPerimeters</strong></a>(self)</dt><dd><tt>Add&nbsp;raft&nbsp;edges&nbsp;if&nbsp;there&nbsp;is&nbsp;a&nbsp;raft.</tt></dd></dl>
 
-<dl><dt><a name="RaftSkein-addRaftPerimetersByLoops"><strong>addRaftPerimetersByLoops</strong></a>(self, loops, outset)</dt><dd><tt>Add&nbsp;raft&nbsp;perimeters&nbsp;to&nbsp;the&nbsp;gcode&nbsp;for&nbsp;loops.</tt></dd></dl>
+<dl><dt><a name="RaftSkein-addRaftPerimetersByLoops"><strong>addRaftPerimetersByLoops</strong></a>(self, loops, outset)</dt><dd><tt>Add&nbsp;raft&nbsp;edges&nbsp;to&nbsp;the&nbsp;gcode&nbsp;for&nbsp;loops.</tt></dd></dl>
 
 <dl><dt><a name="RaftSkein-addRaftedLine"><strong>addRaftedLine</strong></a>(self, splitLine)</dt><dd><tt>Add&nbsp;elevated&nbsp;gcode&nbsp;line&nbsp;with&nbsp;operating&nbsp;feed&nbsp;rate.</tt></dd></dl>
 

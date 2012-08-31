@@ -10,7 +10,7 @@
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/enrique/Desktop/backup/babbleold/script/reprap/fabmetheus/skeinforge_application/skeinforge_plugins/craft_plugins/export.py">/home/enrique/Desktop/backup/babbleold/script/reprap/fabmetheus/skeinforge_application/skeinforge_plugins/craft_plugins/export.py</a></font></td></tr></table>
     <p>
-<a href="skeinforge_application.skeinforge_plugins.craft_plugins.drill.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.export_plugins.binary_16_byte.html">Next</a> / <a href="contents.html">Contents</a>
+<a href="skeinforge_application.skeinforge_plugins.craft_plugins.dwindle.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.export_plugins.binary_16_byte.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
 Export is a craft tool to pick an export plugin, add information to the file name, and delete comments.<br>
@@ -54,9 +54,9 @@ test.04hx06w_03fill_2cx2r_33EL.gcode<br>
 would mean:<br>
  <br>
 * . (Carve section.)<br>
-* 04h = 'Layer Thickness (mm):' 0.4<br>
+* 04h = 'Layer Height (mm):' 0.4<br>
 * x<br>
-* 06w = 0.6 width i.e. 0.4 times 'Perimeter Width over Thickness (ratio):' 1.5<br>
+* 06w = 0.6 width i.e. 0.4 times 'Edge Width over Height (ratio):' 1.5<br>
 * _ (Fill section.)<br>
 * 03fill = 'Infill Solidity (ratio):' 0.3<br>
 * _ (Multiply section; if there is one column and one row then this section is not shown.)<br>
@@ -149,7 +149,7 @@ The export tool has created the file:<br>
 <br />
 <br />
 <p>
-<a href="skeinforge_application.skeinforge_plugins.craft_plugins.drill.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.export_plugins.binary_16_byte.html">Next</a> / <a href="contents.html">Contents</a>
+<a href="skeinforge_application.skeinforge_plugins.craft_plugins.dwindle.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.export_plugins.binary_16_byte.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <hr>
 </p>
@@ -233,7 +233,7 @@ The export tool has created the file:<br>
  <dl><dt><a name="-getDescriptionMultiply"><strong>getDescriptionMultiply</strong></a>(lines)</dt><dd><tt>Get&nbsp;the&nbsp;description&nbsp;for&nbsp;multiply.</tt></dd></dl>
  <dl><dt><a name="-getDescriptionSpeed"><strong>getDescriptionSpeed</strong></a>(lines)</dt><dd><tt>Get&nbsp;the&nbsp;description&nbsp;for&nbsp;speed.</tt></dd></dl>
  <dl><dt><a name="-getDescriptiveExtension"><strong>getDescriptiveExtension</strong></a>(gcodeText)</dt><dd><tt>Get&nbsp;the&nbsp;descriptive&nbsp;extension.</tt></dd></dl>
- <dl><dt><a name="-getDistanceGcode"><strong>getDistanceGcode</strong></a>(exportText)</dt><dd><tt>Get&nbsp;gcode&nbsp;lines&nbsp;with&nbsp;distance&nbsp;variable&nbsp;added.</tt></dd></dl>
+ <dl><dt><a name="-getDistanceGcode"><strong>getDistanceGcode</strong></a>(exportText)</dt><dd><tt>Get&nbsp;gcode&nbsp;lines&nbsp;with&nbsp;distance&nbsp;variable&nbsp;added,&nbsp;this&nbsp;is&nbsp;for&nbsp;if&nbsp;ever&nbsp;there&nbsp;is&nbsp;distance&nbsp;code.</tt></dd></dl>
  <dl><dt><a name="-getFirstValue"><strong>getFirstValue</strong></a>(gcodeText, word)</dt><dd><tt>Get&nbsp;the&nbsp;value&nbsp;from&nbsp;the&nbsp;first&nbsp;line&nbsp;which&nbsp;starts&nbsp;with&nbsp;the&nbsp;given&nbsp;word.</tt></dd></dl>
  <dl><dt><a name="-getNewRepository"><strong>getNewRepository</strong></a>()</dt><dd><tt>Get&nbsp;new&nbsp;repository.</tt></dd></dl>
  <dl><dt><a name="-getReplaceableExportGcode"><strong>getReplaceableExportGcode</strong></a>(nameOfReplaceFile, replaceableExportGcode)</dt><dd><tt>Get&nbsp;text&nbsp;with&nbsp;strings&nbsp;replaced&nbsp;according&nbsp;to&nbsp;replace.csv&nbsp;file.</tt></dd></dl>

@@ -28,7 +28,7 @@ def _getAccessibleAttribute(attributeName, elementNode):
 		print(elementNode)
 		return None
 	pluginModule = archive.getModuleWithPath(evaluate.globalCreationDictionary[functionName])
-	if pluginModule is None:
+	if pluginModule == None:
 		print('Warning, _getAccessibleAttribute in creation can not get a pluginModule for:')
 		print(functionName)
 		print(elementNode)

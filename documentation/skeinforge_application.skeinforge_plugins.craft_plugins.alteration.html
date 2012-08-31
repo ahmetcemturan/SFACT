@@ -26,6 +26,7 @@ The alteration manual page is at:<br>
 <a href="#Settings">Settings</a><br />
 &nbsp;&nbsp;<a href="#Name of End File">Name of End File</a><br />
 &nbsp;&nbsp;<a href="#Name of Start File">Name of Start File</a><br />
+&nbsp;&nbsp;<a href="#Remove Redundant Mcode">Remove Redundant Mcode</a><br />
 &nbsp;&nbsp;<a href="#Replace Variable with Setting">Replace Variable with Setting</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
@@ -50,6 +51,25 @@ If there is a file with the name of the "Name of End File" setting, it will be a
 Default is 'start.gcode'.<br>
  <br>
 If there is a file with the name of the "Name of Start File" setting, it will be added to the very beginning of the gcode.<br>
+ <br>
+<a name="Remove Redundant Mcode" id="Remove Redundant Mcode"></a><h3>Remove Redundant Mcode</h3>
+
+Default: True<br>
+ <br>
+If 'Remove Redundant Mcode' is selected then M104 and M108 lines which are followed by a different value before there is a movement will be removed.  For example, if there is something like:<br>
+M113 S1.0<br>
+M104 S60.0<br>
+(&lt;layer&gt; 0.72 )<br>
+M104 S200.0<br>
+(&lt;skirt&gt;)<br>
+ <br>
+with Remove Redundant Mcode selected, that snippet would become:<br>
+M113 S1.0<br>
+M104 S200.0<br>
+(&lt;layer&gt; 0.72 )<br>
+(&lt;skirt&gt;)<br>
+ <br>
+This is a relatively safe procedure, the only reason it is optional is because someone might make an alteration file which, for some unknown reason, requires the redundant mcode.<br>
  <br>
 <a name="Replace Variable with Setting" id="Replace Variable with Setting"></a><h3>Replace Variable with Setting</h3>
 
@@ -95,14 +115,15 @@ The alteration tool has created the file:<br>
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="__init__.html">__init__</a><br>
 <a href="fabmetheus_utilities.archive.html">fabmetheus_utilities.archive</a><br>
-<a href="fabmetheus_utilities.fabmetheus_tools.fabmetheus_interpret.html">fabmetheus_utilities.fabmetheus_tools.fabmetheus_interpret</a><br>
-</td><td width="25%" valign=top><a href="fabmetheus_utilities.gcodec.html">fabmetheus_utilities.gcodec</a><br>
+<a href="cStringIO.html">cStringIO</a><br>
+</td><td width="25%" valign=top><a href="fabmetheus_utilities.fabmetheus_tools.fabmetheus_interpret.html">fabmetheus_utilities.fabmetheus_tools.fabmetheus_interpret</a><br>
+<a href="fabmetheus_utilities.gcodec.html">fabmetheus_utilities.gcodec</a><br>
 <a href="fabmetheus_utilities.settings.html">fabmetheus_utilities.settings</a><br>
-<a href="skeinforge_application.skeinforge_utilities.skeinforge_craft.html">skeinforge_application.skeinforge_utilities.skeinforge_craft</a><br>
-</td><td width="25%" valign=top><a href="skeinforge_application.skeinforge_utilities.skeinforge_polyfile.html">skeinforge_application.skeinforge_utilities.skeinforge_polyfile</a><br>
+</td><td width="25%" valign=top><a href="skeinforge_application.skeinforge_utilities.skeinforge_craft.html">skeinforge_application.skeinforge_utilities.skeinforge_craft</a><br>
+<a href="skeinforge_application.skeinforge_utilities.skeinforge_polyfile.html">skeinforge_application.skeinforge_utilities.skeinforge_polyfile</a><br>
 <a href="skeinforge_application.skeinforge_utilities.skeinforge_profile.html">skeinforge_application.skeinforge_utilities.skeinforge_profile</a><br>
-<a href="sys.html">sys</a><br>
-</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+</td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -160,6 +181,8 @@ The alteration tool has created the file:<br>
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-getCraftedText"><strong>getCraftedText</strong></a>(fileName, text<font color="#909090">=''</font>, repository<font color="#909090">=None</font>)</dt><dd><tt>Alteration&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;text.</tt></dd></dl>
  <dl><dt><a name="-getCraftedTextFromText"><strong>getCraftedTextFromText</strong></a>(gcodeText, repository<font color="#909090">=None</font>)</dt><dd><tt>Alteration&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;text.</tt></dd></dl>
+ <dl><dt><a name="-getGcodeTextWithoutRedundantMcode"><strong>getGcodeTextWithoutRedundantMcode</strong></a>(gcodeText)</dt><dd><tt>Get&nbsp;gcode&nbsp;text&nbsp;without&nbsp;redundant&nbsp;M104&nbsp;and&nbsp;M108.</tt></dd></dl>
+ <dl><dt><a name="-getLinesWithoutRedundancy"><strong>getLinesWithoutRedundancy</strong></a>(duplicateWord, lines)</dt><dd><tt>Get&nbsp;gcode&nbsp;lines&nbsp;without&nbsp;redundant&nbsp;first&nbsp;words.</tt></dd></dl>
  <dl><dt><a name="-getNewRepository"><strong>getNewRepository</strong></a>()</dt><dd><tt>Get&nbsp;new&nbsp;repository.</tt></dd></dl>
  <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Display&nbsp;the&nbsp;alteration&nbsp;dialog.</tt></dd></dl>
  <dl><dt><a name="-writeOutput"><strong>writeOutput</strong></a>(fileName, shouldAnalyze<font color="#909090">=True</font>)</dt><dd><tt>Alteration&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;file.&nbsp;&nbsp;Chain&nbsp;alteration&nbsp;the&nbsp;gcode&nbsp;if&nbsp;the&nbsp;alteration&nbsp;procedure&nbsp;has&nbsp;not&nbsp;been&nbsp;done.</tt></dd></dl>

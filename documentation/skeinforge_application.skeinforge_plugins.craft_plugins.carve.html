@@ -15,27 +15,27 @@
 <p><tt><br>
 Carve is the most important plugin to define for your printer.<br>
  <br>
-It carves a shape into svg slice layers.  It also sets the layer thickness and perimeter width for the rest of the tool chain.<br>
+It carves a shape into svg slice layers.  It also sets the layer height and edge width for the rest of the tool chain.<br>
  <br>
 The carve manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Carve</a><br>
  <br>
-On the Arcol Blog a method of deriving the layer thickness is posted.  That article "Machine Calibrating" is at:<br>
+On the Arcol Blog a method of deriving the layer height is posted.  That article "Machine Calibrating" is at:<br>
 <a href="http://blog.arcol.hu/?p=157">http://blog.arcol.hu/?p=157</a><br>
  <br>
 <br />
 <a href="#Settings">Settings</a><br />
 &nbsp;&nbsp;<a href="#Add Layer Template to SVG">Add Layer Template to SVG</a><br />
+&nbsp;&nbsp;<a href="#Edge Width over Height">Edge Width over Height</a><br />
 &nbsp;&nbsp;<a href="#Extra Decimal Places">Extra Decimal Places</a><br />
 &nbsp;&nbsp;<a href="#Import Coarseness">Import Coarseness</a><br />
-&nbsp;&nbsp;<a href="#Layer Thickness">Layer Thickness</a><br />
+&nbsp;&nbsp;<a href="#Layer Height">Layer Height</a><br />
 &nbsp;&nbsp;<a href="#Layers">Layers</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layers From">Layers From</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layers To">Layers To</a><br />
 &nbsp;&nbsp;<a href="#Mesh Type">Mesh Type</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Correct Mesh">Correct Mesh</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Unproven Mesh">Unproven Mesh</a><br />
-&nbsp;&nbsp;<a href="#Perimeter Width over Thickness">Perimeter Width over Thickness</a><br />
 &nbsp;&nbsp;<a href="#SVG Viewer">SVG Viewer</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
@@ -50,23 +50,33 @@ When selected, the layer template will be added to the svg output, which adds ja
  <br>
 When off, no controls will be added, the svg output will only include the fabrication paths.  So 'Add Layer Template to SVG' should be deselected when the svg will be used by other software, like Inkscape.<br>
  <br>
+<a name="Edge Width over Height" id="Edge Width over Height"></a><h3>Edge Width over Height</h3>
+
+Default is 1.8.<br>
+ <br>
+Defines the ratio of the extrusion edge width to the layer height.  This parameter tells skeinforge how wide the edge wall is expected to be in relation to the layer height.  Default value of 1.8 for the default layer height of 0.4 states that a single filament edge wall should be 0.4 mm * 1.8 = 0.72 mm wide.  The higher the value the more the edge will be inset.  A ratio of one means the extrusion is a circle, the default ratio of 1.8 means the extrusion is a wide oval.<br>
+ <br>
+This is an important value because if you are calibrating your machine you need to ensure that the speed of the head and the extrusion rate in combination produce a wall that is 'Layer Height' * 'Edge Width over Height' wide. To start with 'Edge Width over Height' is probably best left at the default of 1.8 and the extrusion rate adjusted to give the correct calculated wall thickness.<br>
+ <br>
+Adjustment is in the 'Speed' section with 'Feed Rate' controlling speed of the head in X &amp; Y and 'Flow Rate' controlling the extrusion rate.  Initially it is probably easier to start adjusting the flow rate only a little at a time until you get a single filament of the correct width. If you change too many parameters at once you can get in a right mess.<br>
+ <br>
 <a name="Extra Decimal Places" id="Extra Decimal Places"></a><h3>Extra Decimal Places</h3>
 
 Default is two.<br>
  <br>
-Defines the number of extra decimal places export will output compared to the number of decimal places in the layer thickness.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.<br>
+Defines the number of extra decimal places export will output compared to the number of decimal places in the layer height.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.<br>
  <br>
 <a name="Import Coarseness" id="Import Coarseness"></a><h3>Import Coarseness</h3>
 
 Default is one.<br>
  <br>
-When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.<br>
+When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the edge width.<br>
  <br>
-<a name="Layer Thickness" id="Layer Thickness"></a><h3>Layer Thickness</h3>
+<a name="Layer Height" id="Layer Height"></a><h3>Layer Height</h3>
 
 Default is 0.4 mm.<br>
  <br>
-Defines the the thickness of the layers skeinforge will cut your object into, in the z direction.  This is the most important carve setting, many values in the toolchain are derived from the layer thickness.<br>
+Defines the the height of the layers skeinforge will cut your object into, in the z direction.  This is the most important carve setting, many values in the toolchain are derived from the layer height.<br>
  <br>
 For a 0.5 mm nozzle usable values are 0.3 mm to 0.5 mm.  Note; if you are using thinner layers make sure to adjust the extrusion speed as well.<br>
  <br>
@@ -101,16 +111,6 @@ When selected, the mesh will be accurately carved, and if a hole is found, carve
 <a name="Unproven Mesh" id="Unproven Mesh"></a><h4>Unproven Mesh</h4>
 
 When selected, carve will use the gap spanning algorithm from the start.  The problem with the gap spanning algothm is that it will span gaps, even if there is not actually a gap in the model.<br>
- <br>
-<a name="Perimeter Width over Thickness" id="Perimeter Width over Thickness"></a><h3>Perimeter Width over Thickness</h3>
-
-Default is 1.8.<br>
- <br>
-Defines the ratio of the extrusion perimeter width to the layer thickness.  This parameter tells skeinforge how wide the perimeter wall is expected to be in relation to the layer thickness.  Default value of 1.8 for the default layer thickness of 0.4 states that a single filament perimeter wall should be 0.4 mm * 1.8 = 0.72 mm wide.  The higher the value the more the perimeter will be inset.  A ratio of one means the extrusion is a circle, the default ratio of 1.8 means the extrusion is a wide oval.<br>
- <br>
-This is an important value because if you are calibrating your machine you need to ensure that the speed of the head and the extrusion rate in combination produce a wall that is 'Layer Thickness' * 'Perimeter Width over Thickness' wide. To start with 'Perimeter Width over Thickness' is probably best left at the default of 1.8 and the extrusion rate adjusted to give the correct calculated wall thickness.<br>
- <br>
-Adjustment is in the 'Speed' section with 'Feed Rate' controlling speed of the head in X &amp; Y and 'Flow Rate' controlling the extrusion rate.  Initially it is probably easier to start adjusting the flow rate only a little at a time until you get a single filament of the correct width. If you change too many parameters at once you can get in a right mess.<br>
  <br>
 <a name="SVG Viewer" id="SVG Viewer"></a><h3>SVG Viewer</h3>
 

@@ -69,7 +69,7 @@ def getCraftedTextFromText( gcodeText, towerRepository = None ):
 	"Tower a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'tower'):
 		return gcodeText
-	if towerRepository is None:
+	if towerRepository == None:
 		towerRepository = settings.getReadRepository( TowerRepository() )
 	if not towerRepository.activateTower.value:
 		return gcodeText
@@ -93,14 +93,14 @@ class Island:
 
 	def addToBoundary( self, splitLine ):
 		"Add to the boundary if it is not complete."
-		if self.boundingLoop is None:
+		if self.boundingLoop == None:
 			location = gcodec.getLocationFromSplitLine(None, splitLine)
 			self.boundary.append(location.dropAxis())
 			self.z = location.z
 
 	def createBoundingLoop(self):
 		"Create the bounding loop if it is not already created."
-		if self.boundingLoop is None:
+		if self.boundingLoop == None:
 			self.boundingLoop = intercircle.BoundingLoop().getFromLoop( self.boundary )
 
 
@@ -143,6 +143,7 @@ class TowerSkein:
 		self.afterExtrusionLines = []
 		self.beforeExtrusionLines = []
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
+		self.edgeWidth = 0.6
 		self.highestZ = - 987654321.0
 		self.island = None
 		self.layerIndex = 0
@@ -152,7 +153,6 @@ class TowerSkein:
 		self.oldLayerIndex = None
 		self.oldLocation = None
 		self.oldOrderedLocation = Vector3()
-		self.perimeterWidth = 0.6
 		self.shutdownLineIndex = sys.maxint
 		self.nestedRingCount = 0
 		self.threadLayer = None
@@ -168,7 +168,7 @@ class TowerSkein:
 
 	def addHighThread(self, location):
 		"Add thread with a high move if necessary to clear the previous extrusion."
-		if self.oldLocation is not None:
+		if self.oldLocation != None:
 			if self.oldLocation.z + self.minimumBelow < self.highestZ:
 				self.distanceFeedRate.addGcodeMovementZWithFeedRate( self.travelFeedRateMinute, self.oldLocation.dropAxis(), self.highestZ )
 		if location.z + self.minimumBelow < self.highestZ:
@@ -176,7 +176,7 @@ class TowerSkein:
 
 	def addThreadLayerIfNone(self):
 		"Add a thread layer if it is none."
-		if self.threadLayer is not None:
+		if self.threadLayer != None:
 			return
 		self.threadLayer = ThreadLayer()
 		self.threadLayers.append( self.threadLayer )
@@ -186,19 +186,19 @@ class TowerSkein:
 	def addTowers(self):
 		"Add towers."
 		bottomLayerIndex = self.getBottomLayerIndex()
-		if bottomLayerIndex is None:
+		if bottomLayerIndex == None:
 			return
 		removedIsland = self.getRemovedIslandAddLayerLinesIfDifferent( self.threadLayers[ bottomLayerIndex ].islands, bottomLayerIndex )
 		while 1:
 			self.climbTower( removedIsland )
 			bottomLayerIndex = self.getBottomLayerIndex()
-			if bottomLayerIndex is None:
+			if bottomLayerIndex == None:
 				return
 			removedIsland = self.getRemovedIslandAddLayerLinesIfDifferent( self.threadLayers[ bottomLayerIndex ].islands, bottomLayerIndex )
 
 	def climbTower( self, removedIsland ):
 		"Climb up the island to any islands directly above."
-		outsetDistance = 1.5 * self.perimeterWidth
+		outsetDistance = 1.5 * self.edgeWidth
 		for step in xrange( self.towerRepository.maximumTowerHeight.value ):
 			aboveIndex = self.oldLayerIndex + 1
 			if aboveIndex >= len( self.threadLayers ):
@@ -245,7 +245,7 @@ class TowerSkein:
 			threadLayer = self.threadLayers[layerIndex]
 			self.distanceFeedRate.addLines( threadLayer.beforeExtrusionLines )
 		removedIsland = self.getTransferClosestNestedRingLines( self.oldOrderedLocation, islands )
-		if threadLayer is not None:
+		if threadLayer != None:
 			self.distanceFeedRate.addLines( threadLayer.afterExtrusionLines )
 		return removedIsland
 
@@ -284,7 +284,7 @@ class TowerSkein:
 		coneAngleTangent = math.tan( math.radians( self.towerRepository.extruderPossibleCollisionConeAngle.value ) )
 		for layerIndex in xrange( bottomLayerIndex, untilLayerIndex ):
 			islands = self.threadLayers[layerIndex].islands
-			outsetDistance = self.perimeterWidth * ( untilLayerIndex - layerIndex ) * coneAngleTangent + 0.5 * self.perimeterWidth
+			outsetDistance = self.edgeWidth * ( untilLayerIndex - layerIndex ) * coneAngleTangent + 0.5 * self.edgeWidth
 			for belowIsland in self.threadLayers[layerIndex].islands:
 				outsetIslandLoop = belowIsland.boundingLoop.getOutsetBoundingLoop( outsetDistance )
 				if island.boundingLoop.isOverlappingAnother( outsetIslandLoop ):
@@ -314,10 +314,10 @@ class TowerSkein:
 				self.distanceFeedRate.addTagBracketedProcedure('tower')
 			elif firstWord == '(<layer>':
 				return
-			elif firstWord == '(<layerThickness>':
+			elif firstWord == '(<layerHeight>':
 				self.minimumBelow = 0.1 * float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
+			elif firstWord == '(<edgeWidth>':
+				self.edgeWidth = float(splitLine[1])
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
@@ -345,20 +345,20 @@ class TowerSkein:
 			self.threadLayer = None
 			return
 		elif firstWord == '(</layer>)':
-			if self.threadLayer is not None:
+			if self.threadLayer != None:
 				self.threadLayer.afterExtrusionLines = self.afterExtrusionLines
 			self.afterExtrusionLines = []
 		elif firstWord == '(</loop>)':
 			self.afterExtrusionLines = []
 		elif firstWord == '(<nestedRing>)':
 			self.nestedRingCount += 1
-			if self.island is None:
+			if self.island == None:
 				self.island = Island()
 				self.addThreadLayerIfNone()
 				self.threadLayer.islands.append( self.island )
-		elif firstWord == '(</perimeter>)':
+		elif firstWord == '(</edge>)':
 			self.afterExtrusionLines = []
-		if self.island is not None:
+		if self.island != None:
 			self.island.lines.append(line)
 		if firstWord == '(</nestedRing>)':
 			self.afterExtrusionLines = []

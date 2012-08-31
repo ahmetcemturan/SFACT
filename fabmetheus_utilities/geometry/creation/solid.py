@@ -1,5 +1,5 @@
 """
-Solid.
+Solid has functions for 3D shapes.
 
 Solid has some of the same functions as lineation, however you can not define geometry by dictionary string in the target because there is no getGeometryOutputByArguments function.  You would have to define a shape by making the shape element.  Also, you can not define geometry by 'get<Creation Name>, because the target only gets element.  Instead you would have the shape element, and set the target in solid to that element.
 
@@ -11,8 +11,10 @@ import __init__
 
 from fabmetheus_utilities.geometry.creation import lineation
 from fabmetheus_utilities.geometry.geometry_tools import path
+from fabmetheus_utilities.geometry.geometry_utilities import boolean_geometry
 from fabmetheus_utilities.geometry.geometry_utilities import evaluate
 from fabmetheus_utilities.geometry.geometry_utilities import matrix
+from fabmetheus_utilities.geometry.solids import triangle_mesh
 from fabmetheus_utilities.vector3 import Vector3
 from fabmetheus_utilities import euclidean
 import math
@@ -26,12 +28,12 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutputByFunction(elementNode, geometryFunction):
 	'Get geometry output by manipulationFunction.'
-	if elementNode.xmlObject is None:
+	if elementNode.xmlObject == None:
 		print('Warning, there is no object in getGeometryOutputByFunction in solid for:')
 		print(elementNode)
 		return None
 	geometryOutput = elementNode.xmlObject.getGeometryOutput()
-	if geometryOutput is None:
+	if geometryOutput == None:
 		print('Warning, there is no geometryOutput in getGeometryOutputByFunction in solid for:')
 		print(elementNode)
 		return None
@@ -46,6 +48,37 @@ def getGeometryOutputByManipulation(elementNode, geometryOutput):
 		prefix = matchingPlugin.__name__.replace('_', '') + '.'
 		geometryOutput = matchingPlugin.getManipulatedGeometryOutput(elementNode, geometryOutput, prefix)
 	return geometryOutput
+
+def getLoopLayersSetCopy(elementNode, geometryOutput, importRadius, radius):
+	'Get the loop layers and set the copyShallow.'
+	halfLayerHeight = 0.5 * radius
+	copyShallow = elementNode.getCopyShallow()
+	processElementNodeByGeometry(copyShallow, geometryOutput)
+	targetMatrix = matrix.getBranchMatrixSetElementNode(elementNode)
+	matrix.setElementNodeDictionaryMatrix(copyShallow, targetMatrix)
+	transformedVertexes = copyShallow.xmlObject.getTransformedVertexes()
+	minimumZ = boolean_geometry.getMinimumZ(copyShallow.xmlObject)
+	if minimumZ == None:
+		copyShallow.parentNode.xmlObject.archivableObjects.remove(copyShallow.xmlObject)
+		return []
+	maximumZ = euclidean.getTopPath(transformedVertexes)
+	copyShallow.attributes['visible'] = True
+	copyShallowObjects = [copyShallow.xmlObject]
+	bottomLoopLayer = euclidean.LoopLayer(minimumZ)
+	z = minimumZ + 0.1 * radius
+	zoneArrangement = triangle_mesh.ZoneArrangement(radius, transformedVertexes)
+	bottomLoopLayer.loops = boolean_geometry.getEmptyZLoops(copyShallowObjects, importRadius, False, z, zoneArrangement)
+	loopLayers = [bottomLoopLayer]
+	z = minimumZ + halfLayerHeight
+	loopLayers += boolean_geometry.getLoopLayers(copyShallowObjects, importRadius, halfLayerHeight, maximumZ, False, z, zoneArrangement)
+	copyShallow.parentNode.xmlObject.archivableObjects.remove(copyShallow.xmlObject)
+	return loopLayers
+
+def getLoopOrEmpty(loopIndex, loopLayers):
+	'Get the loop, or if the loopIndex is out of range, get an empty list.'
+	if loopIndex < 0 or loopIndex >= len(loopLayers):
+		return []
+	return loopLayers[loopIndex].loops[0]
 
 def getNewDerivation(elementNode):
 	'Get new derivation.'
@@ -126,7 +159,7 @@ def processTarget(target):
 
 def processTargetByFunctionPair(geometryFunction, pathFunction, target):
 	'Process the target by the manipulationFunction.'
-	if target.xmlObject is None:
+	if target.xmlObject == None:
 		print('Warning, there is no object in processTargetByFunctions in solid for:')
 		print(target)
 		return

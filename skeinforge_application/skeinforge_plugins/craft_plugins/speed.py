@@ -60,41 +60,41 @@ Default is 0.4.
 
 Defines the object first layer infill feed rate multiplier.  The greater the 'Object First Layer Feed Rate Infill Multiplier, the thinner the infill, the lower the 'Object First Layer Feed Rate Infill Multiplier', the thicker the infill.
 
-====Object First Layer Feed Rate Perimeter Multiplier====
+====Object First Layer Feed Rate Edge Multiplier====
 Default is 0.4.
 
-Defines the object first layer perimeter feed rate multiplier.  The greater the 'Object First Layer Feed Rate Perimeter Multiplier, the thinner the perimeter, the lower the 'Object First Layer Feed Rate Perimeter Multiplier', the thicker the perimeter.
+Defines the object first layer edge feed rate multiplier.  The greater the 'Object First Layer Feed Rate Edge Multiplier, the thinner the edge, the lower the 'Object First Layer Feed Rate Edge Multiplier', the thicker the edge.
 
 ====Object First Layer Flow Rate Infill Multiplier====
 Default is 0.4.
 
 Defines the object first layer infill flow rate multiplier.  The greater the 'Object First Layer Flow Rate Infill Multiplier', the thicker the infill, the lower the 'Object First Layer Flow Rate Infill Multiplier, the thinner the infill.
 
-====Object First Layer Flow Rate Perimeter Multiplier====
+====Object First Layer Flow Rate Edge Multiplier====
 Default is 0.4.
 
-Defines the object first layer perimeter flow rate multiplier.  The greater the 'Object First Layer Flow Rate Perimeter Multiplier', the thicker the perimeter, the lower the 'Object First Layer Flow Rate Perimeter Multiplier, the thinner the perimeter.
+Defines the object first layer edge flow rate multiplier.  The greater the 'Object First Layer Flow Rate Edge Multiplier', the thicker the edge, the lower the 'Object First Layer Flow Rate Edge Multiplier, the thinner the edge.
 
 ===Orbital Feed Rate over Operating Feed Rate===
 Default is 0.5.
 
 Defines the speed when the head is orbiting compared to the operating extruder speed.  If you want the orbit to be very short, set the "Orbital Feed Rate over Operating Feed Rate" setting to a low value like 0.1.
 
-===Perimeter===
-To have higher build quality on the outside at the expense of slower build speed, a typical setting for the 'Perimeter Feed Rate over Operating Feed Rate' would be 0.5.  To go along with that, if you are using a speed controlled extruder like a stepper extruder, the 'Perimeter Flow Rate over Operating Flow Rate' should also be 0.5.
+===Edge===
+To have higher build quality on the outside at the expense of slower build speed, a typical setting for the 'Edge Feed Rate over Operating Feed Rate' would be 0.5.  To go along with that, if you are using a speed controlled extruder like a stepper extruder, the 'Edge Flow Rate over Operating Flow Rate' should also be 0.5.
 
 A stepper motor is the best way of driving the extruder; however, if you are stuck with a DC motor extruder using Pulse Width Modulation to control the speed, then you'll probably need a slightly higher ratio because there is a minimum voltage 'Flow Rate PWM Setting' required for the extruder motor to turn.  The flow rate PWM ratio would be determined by trial and error, with the first trial being:
-Perimeter Flow Rate over Operating Flow Rate ~ Perimeter Feed Rate over Operating Feed Rate * (Flow Rate PWM Setting - Minimum Flow Rate PWM Setting) + Minimum Flow Rate PWM Setting
+Edge Flow Rate over Operating Flow Rate ~ Edge Feed Rate over Operating Feed Rate * (Flow Rate PWM Setting - Minimum Flow Rate PWM Setting) + Minimum Flow Rate PWM Setting
 
-====Perimeter Feed Rate Multiplier====
+====Edge Feed Rate Multiplier====
 Default: 1.0
 
-Defines the ratio of the feed rate of the perimeter (outside shell) over the feed rate of the infill.  If you for example set this to 0.8 you will have a "stronger" outside edge than inside extrusion as the outside edge will be printed slower hence better lamination will occur and more filament will be placed there.
+Defines the ratio of the feed rate of the edge (outside shell) over the feed rate of the infill.  If you for example set this to 0.8 you will have a "stronger" outside edge than inside extrusion as the outside edge will be printed slower hence better lamination will occur and more filament will be placed there.
 
-====Perimeter Flow Rate Multiplier====
+====Edge Flow Rate Multiplier====
 Default: 1.0
 
-Defines the ratio of the flow rate of the perimeter (outside shell) over the flow rate of the infill.  If you want the same thickness of the perimeter but better lamination you need to compensate for the slower feed rate by slowing down the flow rate, but all combinations are possible for different results.
+Defines the ratio of the flow rate of the edge (outside shell) over the flow rate of the infill.  If you want the same thickness of the edge but better lamination you need to compensate for the slower feed rate by slowing down the flow rate, but all combinations are possible for different results.
 
 ===Travel Feed Rate===
 Default is sixteen millimeters per second.
@@ -146,7 +146,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Speed a gcode linear move text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'speed'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( SpeedRepository() )
 	if not repository.activateSpeed.value:
 		return gcodeText
@@ -166,47 +166,43 @@ class SpeedRepository:
 	def __init__(self):
 		"Set the default settings, execute title & settings fileName."
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.speed.html', self )
-		self.baseNameSynonym = 'raft.csv'
+		self.baseNameSynonymDictionary = {
+			'Object First Layer Feed Rate Infill Multiplier (ratio):' : 'raft.csv',
+			'Object First Layer Feed Rate Perimeter Multiplier (ratio):' : 'raft.csv',
+			'Object First Layer Flow Rate Infill Multiplier (ratio):' : 'raft.csv',
+			'Object First Layer Flow Rate Perimeter Multiplier (ratio):' : 'raft.csv'}
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Speed', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Speed')
 		self.activateSpeed = settings.BooleanSetting().getFromValue('Activate Speed', self, True )
 		self.addFlowRate = settings.BooleanSetting().getFromValue('Add Flow Rate:', self, True )
-		self.addAccelerationRate = settings.BooleanSetting().getFromValue('Add Acceleration Rate:', self, False )
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- Main Feedrate Settings -', self )
+		settings.LabelDisplay().getFromName('- Bridge -', self )
+		self.bridgeFeedRateMultiplier = settings.FloatSpin().getFromValue( 0.5, 'Bridge Feed Rate (ratio to Perim.feed):', self, 1.5, 1.0 )
+		self.bridgeFlowRateMultiplier  = settings.FloatSpin().getFromValue( 0.5, 'Bridge Flow Rate (scaler):', self, 1.3, 1.05 )
+		settings.LabelSeparator().getFromRepository(self)
+		settings.LabelDisplay().getFromName('- Edge Printing -', self )
+		self.dutyCycleAtBeginning = settings.FloatSpin().getFromValue( 0.0, 'Duty Cyle at Beginning (portion):', self, 1.0, 1.0 )
+		self.dutyCycleAtEnding = settings.FloatSpin().getFromValue( 0.0, 'Duty Cyle at Ending (portion):', self, 1.0, 0.0 )
+		settings.LabelSeparator().getFromRepository(self)
 		self.feedRatePerSecond = settings.FloatSpin().getFromValue( 20, 'Main Feed Rate (mm/s):', self, 140, 60 )
 		self.flowRateSetting = settings.FloatSpin().getFromValue( 0.5, 'Main Flow Rate  (scaler):', self, 1.5, 1.0 )
-		self.accelerationRate = settings.FloatSpin().getFromValue( 500, 'Main Acceleration Rate for Extruder  (mm/s2):', self, 10000, 300 )
-		self.orbitalFeedRateOverOperatingFeedRate = settings.FloatSpin().getFromValue( 0.1, 'Feed Rate ratio for Orbiting move (ratio):', self, 0.9, 0.5 )
-
-
-		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- Perimeter Printing -', self )
-		self.perimeterFeedRateMultiplier =  settings.FloatSpin().getFromValue( 20, 'Perimeter Feed Rate (mm/s):', self, 80, 30 )
-		self.perimeterFlowRateMultiplier = settings.FloatSpin().getFromValue( 0.5, 'Perimeter Flow Rate (scaler):', self, 1.5, 1.0 )
-		self.perimeterAccelerationRate = settings.FloatSpin().getFromValue( 5, 'Perimeter Acceleration Rate for Extruder (mm/s2):', self, 10000, 50 )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Object First Layer -', self)
 		self.objectFirstLayerFeedRateInfillMultiplier = settings.FloatSpin().getFromValue(5, 'First Layer Main Feed Rate(mm/sec):', self, 100, 25)
-		self.objectFirstLayerFeedRatePerimeterMultiplier = settings.FloatSpin().getFromValue(5, 'First Layer Perimeter Feed Rate (mm/sec):', self, 50 , 15)
+		self.objectFirstLayerFeedRateEdgeMultiplier = settings.FloatSpin().getFromValue(5, 'First Layer Edge Feed Rate (mm/sec):', self, 50 , 15)
 		self.objectFirstLayerFlowRateInfillMultiplier = settings.FloatSpin().getFromValue(0.8, 'First Layer Main Flow Rate Infill Multiplier (ratio):', self, 2.0, 1.0)
-		self.objectFirstLayerFlowRatePerimeterMultiplier = settings.FloatSpin().getFromValue(0.8, 'First Layer Perimeter Flow Rate Multiplier (ratio):', self, 2.0, 1.0)
+		self.objectFirstLayerFlowRateEdgeMultiplier = settings.FloatSpin().getFromValue(0.8, 'First Layer Edge Flow Rate Multiplier (ratio):', self, 2.0, 1.0)
 		self.objectFirstLayerTravelSpeed = settings.FloatSpin().getFromValue(10, 'First Layer Travel Feedrate:', self, 100, 50)
 		settings.LabelSeparator().getFromRepository(self)
-		settings.LabelDisplay().getFromName('- Travel Moves -', self )
+		self.orbitalFeedRateOverOperatingFeedRate = settings.FloatSpin().getFromValue( 0.1, 'Feed Rate ratio for Orbiting move (ratio):', self, 0.9, 0.5 )
 		self.maximumZFeedRatePerSecond = settings.FloatSpin().getFromValue(0.5, 'Maximum Z Feed Rate (mm/s):', self, 10.0, 1.0)
 		settings.LabelSeparator().getFromRepository(self)
-		self.travelFeedRatePerSecond = settings.FloatSpin().getFromValue( 40, 'Travel Feed Rate (mm/s):', self, 300, 100 )
 		settings.LabelDisplay().getFromName('- Duty Cyle for DC extruders only -', self )
-		self.dutyCycleAtBeginning = settings.FloatSpin().getFromValue( 0.0, 'Duty Cyle at Beginning (portion):', self, 1.0, 1.0 )
-		self.dutyCycleAtEnding = settings.FloatSpin().getFromValue( 0.0, 'Duty Cyle at Ending (portion):', self, 1.0, 0.0 )
+		self.edgeFeedRateMultiplier =  settings.FloatSpin().getFromValue( 20, 'Edge Feed Rate (mm/s):', self, 80, 30 )
+		self.edgeFlowRateMultiplier = settings.FloatSpin().getFromValue( 0.5, 'Edge Flow Rate (scaler):', self, 1.5, 1.0 )
+		settings.LabelSeparator().getFromRepository(self)
+		self.travelFeedRatePerSecond = settings.FloatSpin().getFromValue( 40, 'Travel Feed Rate (mm/s):', self, 300, 100 )
 		self.executeTitle = 'Speed'
-		settings.LabelDisplay().getFromName('- Bridge Layers -', self )
-		self.bridgeFeedRateMultiplier = settings.FloatSpin().getFromValue( 0.5, 'Bridge Feed Rate (ratio to Perim.feed):', self, 1.5, 1.0 )
-		self.bridgeFlowRateMultiplier  = settings.FloatSpin().getFromValue( 0.5, 'Bridge Flow Rate (scaler):', self, 1.3, 1.05 )
-		self.bridgeAccelerationRate  = settings.FloatSpin().getFromValue( 10, 'Bridge Acceleration Rate for Extruder(mm/s2):', self, 10000, 50 )
-
-
 
 	def execute(self):
 		"Speed button has been clicked."
@@ -222,14 +218,12 @@ class SpeedSkein:
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.feedRatePerSecond = 16.0
 		self.isBridgeLayer = False
+		self.isEdgePath = False
 		self.isExtruderActive = False
-		self.isPerimeterPath = False
 		self.layerIndex = -1
 		self.lineIndex = 0
 		self.lines = None
 		self.oldFlowRate = None
-		self.oldAccelerationRate = None
-		
 
 	def addFlowRateLine(self):
 		"Add flow rate line."
@@ -237,34 +231,20 @@ class SpeedSkein:
 			return
 		flowRate = self.repository.flowRateSetting.value
 		self.nozzleXsection = (self.nozzleDiameter/2) ** 2 * math.pi
-		extrusionXsection = ((self.absolutePerimeterWidth + self.layerThickness)/4) ** 2 * math.pi#todo transfer to inset
+		extrusionXsection = ((self.absoluteEdgeWidth + self.layerHeight)/4) ** 2 * math.pi#todo transfer to inset
 		if self.isBridgeLayer:
-			flowRate = self.repository.bridgeFlowRateMultiplier.value * self.repository.perimeterFlowRateMultiplier.value
-#			flowRate = self.repository.bridgeFlowRateMultiplier.value * self.repository.perimeterFlowRateMultiplier.value * (self.nozzleXsection / extrusionXsection)
+			flowRate = self.repository.bridgeFlowRateMultiplier.value * self.repository.edgeFlowRateMultiplier.value
 
-		if self.isPerimeterPath:
-			flowRate = self.repository.perimeterFlowRateMultiplier.value
+		if self.isEdgePath:
+			flowRate = self.repository.edgeFlowRateMultiplier.value
 		if self.layerIndex == 0:
-			if self.isPerimeterPath:
-				flowRate *= self.repository.objectFirstLayerFlowRatePerimeterMultiplier.value
+			if self.isEdgePath:
+				flowRate *= self.repository.objectFirstLayerFlowRateEdgeMultiplier.value
 			else:
 				flowRate *= self.repository.objectFirstLayerFlowRateInfillMultiplier.value
 		if flowRate != self.oldFlowRate:
 			self.distanceFeedRate.addLine('M108 S' + euclidean.getFourSignificantFigures(flowRate))
 		self.oldFlowRate = flowRate
-
-	def addAccelerationRateLine(self):
-		"Add Accelerationrate line."
-		if not self.repository.addAccelerationRate.value:
-			return
-		accelerationRate = self.repository.accelerationRate.value
-		if self.isBridgeLayer:
-			accelerationRate = self.repository.bridgeAccelerationRate.value * self.repository.perimeterAccelerationRate.value
-		if self.isPerimeterPath:
-			accelerationRate = self.repository.perimeterAccelerationRate.value
-		if accelerationRate != self.oldAccelerationRate:
-			self.distanceFeedRate.addLine('M201 E' + euclidean.getFourSignificantFigures(accelerationRate))
-		self.oldAccelerationRate = accelerationRate
 
 	def addParameterString( self, firstWord, parameterWord ):
 		"Add parameter string."
@@ -293,23 +273,22 @@ class SpeedSkein:
 		travelFeedRateMinute = self.repository.travelFeedRatePerSecond.value * 60
 		if self.layerIndex <= 0:
 			travelFeedRateMinute = self.repository.objectFirstLayerTravelSpeed.value * 60
-			if self.isPerimeterPath:
-				tempfeedRateMinute = self.repository.objectFirstLayerFeedRatePerimeterMultiplier.value * 60
+			if self.isEdgePath:
+				tempfeedRateMinute = self.repository.objectFirstLayerFeedRateEdgeMultiplier.value * 60
 			else:
 				tempfeedRateMinute = self.repository.objectFirstLayerFeedRateInfillMultiplier.value * 60
 		elif self.layerIndex > 0:
 			travelFeedRateMinute = self.repository.travelFeedRatePerSecond.value * 60
-			if self.isPerimeterPath:
-				tempfeedRateMinute = self.repository.perimeterFeedRateMultiplier.value * 60
+			if self.isEdgePath:
+				tempfeedRateMinute = self.repository.edgeFeedRateMultiplier.value * 60
 			if self.isBridgeLayer:
-				tempfeedRateMinute = self.repository.bridgeFeedRateMultiplier.value * self.repository.perimeterFeedRateMultiplier.value * 60
+				tempfeedRateMinute = self.repository.bridgeFeedRateMultiplier.value * self.repository.edgeFeedRateMultiplier.value * 60
 		if self.isExtruderActive is True:
 			feedRateMinute = tempfeedRateMinute
-		if self.isExtruderActive is False:
-			feedRateMinute = travelFeedRateMinute
 		self.addFlowRateLine()
-		self.addAccelerationRateLine()
-		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line , splitLine)
+		if not self.isExtruderActive:
+			feedRateMinute = self.travelFeedRateMinute
+		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line, splitLine)
 
 	def parseInitialization(self):
 		'Parse gcode initialization and store the parameters.'
@@ -318,17 +297,17 @@ class SpeedSkein:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
-			if firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			if firstWord == '(<layerHeight>':
+				self.layerHeight = float(splitLine[1])
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('speed')
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.absolutePerimeterWidth = abs(float(splitLine[1]))
+			elif firstWord == '(<edgeWidth>':
+				self.absoluteEdgeWidth = abs(float(splitLine[1]))
 				self.distanceFeedRate.addTagBracketedLine('maximumZTravelFeedRatePerSecond', self.repository.maximumZFeedRatePerSecond.value )
 				self.distanceFeedRate.addTagBracketedLine('objectFirstLayerFeedRateInfillMultiplier', self.repository.objectFirstLayerFeedRateInfillMultiplier.value)
 				self.distanceFeedRate.addTagBracketedLine('operatingFeedRatePerSecond', self.feedRatePerSecond )
-				self.distanceFeedRate.addTagBracketedLine('perimeterFeedRatePerSecond', self.repository.perimeterFeedRateMultiplier.value )#todo comment?
+				self.distanceFeedRate.addTagBracketedLine('edgeFeedRatePerSecond', self.repository.edgeFeedRateMultiplier.value )#todo comment?
 				if self.repository.addFlowRate.value:
 					self.distanceFeedRate.addTagBracketedLine('objectFirstLayerFlowRateInfillMultiplier', self.repository.objectFirstLayerFlowRateInfillMultiplier.value)
 					self.distanceFeedRate.addTagBracketedLine('operatingFlowRate', self.repository.flowRateSetting.value )
@@ -360,19 +339,17 @@ class SpeedSkein:
 			self.isExtruderActive = True
 		elif firstWord == 'M103':
 			self.isExtruderActive = False
-
+		elif firstWord == '(<bridgeRotation>':
+			self.isBridgeLayer = True
 		elif firstWord == '(<layer>':
 			self.layerIndex += 1
 			settings.printProgress(self.layerIndex, 'speed')
 			self.isBridgeLayer = False
 			self.addFlowRateLine()
-			self.addAccelerationRateLine()
-
-
-		elif firstWord == '(<perimeter>' or firstWord == '(<perimeterPath>)':
-			self.isPerimeterPath = True
-		elif firstWord == '(</perimeter>)' or firstWord == '(</perimeterPath>)':
-			self.isPerimeterPath = False
+		elif firstWord == '(<edge>' or firstWord == '(<edgePath>)':
+			self.isEdgePath = True
+		elif firstWord == '(</edge>)' or firstWord == '(</edgePath>)':
+			self.isEdgePath = False
 		self.distanceFeedRate.addLine(line)
 
 

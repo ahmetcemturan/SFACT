@@ -26,17 +26,17 @@ When selected, there will be alternating horizontal and vertical milling paths, 
 ====Loop Inner Outset over Perimeter Width====
 Default is 0.5.
 
-Defines the ratio of the amount the inner milling loop will be outset over the perimeter width.
+Defines the ratio of the amount the inner milling loop will be outset over the edge width.
 
 ====Loop Outer Outset over Perimeter Width====
 Default is one.
 
-Defines the ratio of the amount the outer milling loop will be outset over the perimeter width.  The 'Loop Outer Outset over Perimeter Width' ratio should be greater than the 'Loop Inner Outset over Perimeter Width' ratio.
+Defines the ratio of the amount the outer milling loop will be outset over the edge width.  The 'Loop Outer Outset over Perimeter Width' ratio should be greater than the 'Loop Inner Outset over Perimeter Width' ratio.
 
 ===Mill Width over Perimeter Width===
 Default is one.
 
-Defines the ratio of the mill line width over the perimeter width.  If the ratio is one, all the material will be milled.  The greater the 'Mill Width over Perimeter Width' the farther apart the mill lines will be and so less of the material will be directly milled, the remaining material might still be removed in chips if the ratio is not much greater than one.
+Defines the ratio of the mill line width over the edge width.  If the ratio is one, all the material will be milled.  The greater the 'Mill Width over Perimeter Width' the farther apart the mill lines will be and so less of the material will be directly milled, the remaining material might still be removed in chips if the ratio is not much greater than one.
 
 ==Examples==
 The following examples mill the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and mill.py.
@@ -86,7 +86,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Mill a gcode linear move gcodeText.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'mill'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( MillRepository() )
 	if not repository.activateMill.value:
 		return gcodeText
@@ -154,9 +154,9 @@ class MillRepository:
 		self.addOuterLoops = settings.BooleanSetting().getFromValue('Add Outer Loops', self, True )
 		self.crossHatch = settings.BooleanSetting().getFromValue('Cross Hatch', self, True )
 		settings.LabelDisplay().getFromName('- Loop Outset -', self )
-		self.loopInnerOutsetOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.3, 'Loop Inner Outset over Perimeter Width (ratio):', self, 0.7, 0.5 )
-		self.loopOuterOutsetOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.8, 'Loop Outer Outset over Perimeter Width (ratio):', self, 1.4, 1.0 )
-		self.millWidthOverPerimeterWidth = settings.FloatSpin().getFromValue( 0.8, 'Mill Width over Perimeter Width (ratio):', self, 1.8, 1.0 )
+		self.loopInnerOutsetOverEdgeWidth = settings.FloatSpin().getFromValue( 0.3, 'Loop Inner Outset over Perimeter Width (ratio):', self, 0.7, 0.5 )
+		self.loopOuterOutsetOverEdgeWidth = settings.FloatSpin().getFromValue( 0.8, 'Loop Outer Outset over Perimeter Width (ratio):', self, 1.4, 1.0 )
+		self.millWidthOverEdgeWidth = settings.FloatSpin().getFromValue( 0.8, 'Mill Width over Edge Width (ratio):', self, 1.8, 1.0 )
 		self.executeTitle = 'Mill'
 
 	def execute(self):
@@ -174,21 +174,21 @@ class MillSkein:
 		self.average = Average()
 		self.boundaryLayers = []
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
+		self.edgeWidth = 0.6
 		self.isExtruderActive = False
 		self.layerIndex = 0
 		self.lineIndex = 0
 		self.lines = None
 		self.oldLocation = None
-		self.perimeterWidth = 0.6
 
 	def addGcodeFromLoops(self, loops, z):
 		'Add gcode from loops.'
-		if self.oldLocation is None:
+		if self.oldLocation == None:
 			self.oldLocation = Vector3()
 		self.oldLocation.z = z
 		for loop in loops:
 			self.distanceFeedRate.addGcodeFromThreadZ(loop, z)
-			euclidean.addToThreadsFromLoop(self.halfPerimeterWidth, 'loop', loop, self.oldLocation, self)
+			euclidean.addToThreadsFromLoop(self.halfEdgeWidth, 'loop', loop, self.oldLocation, self)
 
 	def addGcodeFromThreadZ( self, thread, z ):
 		'Add a thread to the output.'
@@ -200,7 +200,7 @@ class MillSkein:
 		endpoints = euclidean.getEndpointsFromSegmentTable( boundaryLayer.segmentTable )
 		if len(endpoints) < 1:
 			return
-		paths = euclidean.getPathsFromEndpoints(endpoints, 5.0 * self.millWidth, self.aroundPixelTable, self.aroundWidth)
+		paths = euclidean.getPathsFromEndpoints(endpoints, 5.0 * self.millWidth, self.aroundPixelTable, 1.0, self.aroundWidth)
 		averageZ = self.average.getAverage()
 		if self.repository.addInnerLoops.value:
 			self.addGcodeFromLoops( boundaryLayer.innerLoops, averageZ )
@@ -292,7 +292,7 @@ class MillSkein:
 				boundaryLoop = None
 			elif firstWord == '(<boundaryPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if boundaryLoop is None:
+				if boundaryLoop == None:
 					boundaryLoop = []
 					boundaryLayer.loops.append(boundaryLoop)
 				boundaryLoop.append(location.dropAxis())
@@ -331,13 +331,13 @@ class MillSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('mill')
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.aroundWidth = 0.1 * self.perimeterWidth
-				self.halfPerimeterWidth = 0.5 * self.perimeterWidth
-				self.millWidth = self.perimeterWidth * self.repository.millWidthOverPerimeterWidth.value
-				self.loopInnerOutset = self.halfPerimeterWidth + self.perimeterWidth * self.repository.loopInnerOutsetOverPerimeterWidth.value
-				self.loopOuterOutset = self.halfPerimeterWidth + self.perimeterWidth * self.repository.loopOuterOutsetOverPerimeterWidth.value
+			elif firstWord == '(<edgeWidth>':
+				self.edgeWidth = float(splitLine[1])
+				self.aroundWidth = 0.1 * self.edgeWidth
+				self.halfEdgeWidth = 0.5 * self.edgeWidth
+				self.millWidth = self.edgeWidth * self.repository.millWidthOverEdgeWidth.value
+				self.loopInnerOutset = self.halfEdgeWidth + self.edgeWidth * self.repository.loopInnerOutsetOverEdgeWidth.value
+				self.loopOuterOutset = self.halfEdgeWidth + self.edgeWidth * self.repository.loopOuterOutsetOverEdgeWidth.value
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
@@ -350,7 +350,7 @@ class MillSkein:
 			location = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 			if self.isExtruderActive:
 				self.average.addValue(location.z)
-				if self.oldLocation is not None:
+				if self.oldLocation != None:
 					euclidean.addValueSegmentToPixelTable( self.oldLocation.dropAxis(), location.dropAxis(), self.aroundPixelTable, None, self.aroundWidth )
 			self.oldLocation = location
 		elif firstWord == 'M101':

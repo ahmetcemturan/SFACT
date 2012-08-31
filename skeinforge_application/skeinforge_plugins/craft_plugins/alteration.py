@@ -25,15 +25,35 @@ Default is 'start.gcode'.
 
 If there is a file with the name of the "Name of Start File" setting, it will be added to the very beginning of the gcode.
 
+===Remove Redundant Mcode===
+Default: True
+
+If 'Remove Redundant Mcode' is selected then M104 and M108 lines which are followed by a different value before there is a movement will be removed.  For example, if there is something like:
+M113 S1.0
+M104 S60.0
+(<layer> 0.72 )
+M104 S200.0
+(<skirt>)
+
+with Remove Redundant Mcode selected, that snippet would become:
+M113 S1.0
+M104 S200.0
+(<layer> 0.72 )
+(<skirt>)
+
+This is a relatively safe procedure, the only reason it is optional is because someone might make an alteration file which, for some unknown reason, requires the redundant mcode.
+
 ===Replace Variable with Setting===
 Default: True
 
 If 'Replace Variable with Setting' is selected and there is an alteration line with a setting token, the token will be replaced by the value.
 
 For example, if there is an alteration line like:
+
 M140 S<setting.chamber.BedTemperature>
 
 the token would be replaced with the value and assuming the bed chamber was 60.0, the output would be:
+
 M140 S60.0
 
 ==Examples==
@@ -62,6 +82,7 @@ from fabmetheus_utilities import settings
 from skeinforge_application.skeinforge_utilities import skeinforge_craft
 from skeinforge_application.skeinforge_utilities import skeinforge_polyfile
 from skeinforge_application.skeinforge_utilities import skeinforge_profile
+import cStringIO
 import sys
 
 
@@ -78,11 +99,35 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Alteration a gcode linear move text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'alteration'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(AlterationRepository())
 	if not repository.activateAlteration.value:
 		return gcodeText
 	return AlterationSkein().getCraftedGcode(gcodeText, repository)
+
+def getGcodeTextWithoutRedundantMcode(gcodeText):
+	'Get gcode text without redundant M104 and M108.'
+	lines = archive.getTextLines(gcodeText)
+	lines = getLinesWithoutRedundancy('M104', lines)
+	lines = getLinesWithoutRedundancy('M108', lines)
+	output = cStringIO.StringIO()
+	gcodec.addLinesToCString(output, lines)
+	return output.getvalue()
+
+def getLinesWithoutRedundancy(duplicateWord, lines):
+	'Get gcode lines without redundant first words.'
+	oldDuplicationIndex = None
+	for lineIndex, line in enumerate(lines):
+		firstWord = gcodec.getFirstWordFromLine(line)
+		if firstWord == duplicateWord:
+			if oldDuplicationIndex == None:
+				oldDuplicationIndex = lineIndex
+			else:
+				lines[oldDuplicationIndex] = line
+				lines[lineIndex] = ''
+		elif firstWord.startswith('G') or firstWord == 'M101' or firstWord == 'M103':
+			oldDuplicationIndex = None
+	return lines
 
 def getNewRepository():
 	'Get new repository.'
@@ -102,8 +147,9 @@ class AlterationRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName(fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Alteration', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Alteration')
 		self.activateAlteration = settings.BooleanSetting().getFromValue('Activate Alteration', self, True)
-		self.nameOfEndFile = settings.StringSetting().getFromValue('Name of End File:', self, 'end.gmc')
-		self.nameOfStartFile = settings.StringSetting().getFromValue('Name of Start File:', self, 'start.gmc')
+		self.nameOfEndFile = settings.StringSetting().getFromValue('Name of End File:', self, 'end.gcode')
+		self.nameOfStartFile = settings.StringSetting().getFromValue('Name of Start File:', self, 'start.gcode')
+		self.removeRedundantMcode = settings.BooleanSetting().getFromValue('Remove Redundant Mcode', self, True)
 		self.replaceVariableWithSetting = settings.BooleanSetting().getFromValue('Replace Variable with Setting', self, True)
 		self.executeTitle = 'Alteration'
 
@@ -138,7 +184,10 @@ class AlterationSkein:
 			line = self.lines[self.lineIndex]
 			self.distanceFeedRate.addLine(line)
 		self.addFromUpperLowerFile(repository.nameOfEndFile.value) # Add an end file if it exists.
-		return self.getReplacedAlterationText()
+		gcodeText = self.getReplacedAlterationText()
+		if repository.removeRedundantMcode.value:
+			gcodeText = getGcodeTextWithoutRedundantMcode(gcodeText)
+		return gcodeText
 
 	def getReplacedAlterationLine(self, alterationFileLine, searchIndex=0):
 		'Get the alteration file line with variables replaced with the settings.'
@@ -159,7 +208,7 @@ class AlterationSkein:
 
 	def getReplacedAlterationText(self):
 		'Replace the alteration lines if there are settings.'
-		if self.settingDictionary is None:
+		if self.settingDictionary == None:
 			return self.distanceFeedRate.output.getvalue().replace('(<alterationDeleteThisPrefix/>)', '')
 		lines = archive.getTextLines(self.distanceFeedRate.output.getvalue())
  		distanceFeedRate = gcodec.DistanceFeedRate()
@@ -186,7 +235,7 @@ class AlterationSkein:
 		for line in self.lines:
 			splitLine = gcodec.getSplitLineBeforeBracketSemicolon(line)
 			firstWord = gcodec.getFirstWord(splitLine)
-			if firstWord == '(<setting>' and self.settingDictionary is not None:
+			if firstWord == '(<setting>' and self.settingDictionary != None:
 				if len(splitLine) > 4:
 					procedure = splitLine[1]
 					name = splitLine[2].replace('_', ' ').replace(' ', '')

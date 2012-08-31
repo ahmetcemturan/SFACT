@@ -33,7 +33,7 @@ globalOriginalTextString = '<!-- Original XML Text:\n'
 def getCarving(fileName):
 	'Get a carving for the file using an import plugin.'
 	pluginModule = fabmetheus_interpret.getInterpretPlugin(fileName)
-	if pluginModule is None:
+	if pluginModule == None:
 		return None
 	return pluginModule.getCarving(fileName)
 
@@ -68,20 +68,20 @@ def getSVGByLoopLayers(addLayerTemplateToSVG, carving, loopLayers):
 	'Get the svg text.'
 	if len(loopLayers) < 1:
 		return ''
-	decimalPlacesCarried = max(0, 2 - int(math.floor(math.log10(carving.layerThickness))))
+	decimalPlacesCarried = max(0, 2 - int(math.floor(math.log10(carving.layerHeight))))
 	svgWriter = SVGWriter(
 		addLayerTemplateToSVG,
 		carving.getCarveCornerMaximum(),
 		carving.getCarveCornerMinimum(),
 		decimalPlacesCarried,
-		carving.getCarveLayerThickness())
+		carving.getCarveLayerHeight())
 	return svgWriter.getReplacedSVGTemplate(carving.fileName, loopLayers, 'basic', carving.getFabmetheusXML())
 
 def getTruncatedRotatedBoundaryLayers(loopLayers, repository):
 	'Get the truncated rotated boundary layers.'
 	return loopLayers[repository.layersFrom.value : repository.layersTo.value]
 
-def setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, loopLayers):
+def setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerHeight, loopLayers):
 	'Parse SVG text and store the layers.'
 	for loopLayer in loopLayers:
 		for loop in loopLayer.loops:
@@ -89,7 +89,7 @@ def setSVGCarvingCorners(cornerMaximum, cornerMinimum, layerThickness, loopLayer
 				pointVector3 = Vector3(point.real, point.imag, loopLayer.z)
 				cornerMaximum.maximize(pointVector3)
 				cornerMinimum.minimize(pointVector3)
-	halfLayerThickness = 0.5 * layerThickness
+	halfLayerThickness = 0.5 * layerHeight
 	cornerMaximum.z += halfLayerThickness
 	cornerMinimum.z -= halfLayerThickness
 
@@ -101,15 +101,15 @@ class SVGWriter:
 			cornerMaximum,
 			cornerMinimum,
 			decimalPlacesCarried,
-			layerThickness,
-			perimeterWidth=None):
+			layerHeight,
+			edgeWidth=None):
 		'Initialize.'
 		self.addLayerTemplateToSVG = addLayerTemplateToSVG
 		self.cornerMaximum = cornerMaximum
 		self.cornerMinimum = cornerMinimum
 		self.decimalPlacesCarried = decimalPlacesCarried
-		self.layerThickness = layerThickness
-		self.perimeterWidth = perimeterWidth
+		self.edgeWidth = edgeWidth
+		self.layerHeight = layerHeight
 		self.textHeight = 22.5
 		self.unitScale = 3.7
 
@@ -146,7 +146,7 @@ class SVGWriter:
 
 	def addOriginalAsComment(self, elementNode):
 		'Add original elementNode as a comment.'
-		if elementNode is None:
+		if elementNode == None:
 			return
 		if elementNode.getNodeName() == '#comment':
 			elementNode.setParentAddToChildNodes(self.svgElement)
@@ -189,7 +189,7 @@ class SVGWriter:
 		self.graphicsElementNode = self.svgElement.getElementNodeByID('sliceElementTemplate')
 		self.graphicsElementNode.attributes['id'] = 'z:'
 		self.addLoopLayersToOutput(loopLayers)
-		self.setMetadataNoscriptElement('layerThickness', 'Layer Thickness: ', self.layerThickness)
+		self.setMetadataNoscriptElement('layerHeight', 'Layer Height: ', self.layerHeight)
 		self.setMetadataNoscriptElement('maxX', 'X: ', self.cornerMaximum.x)
 		self.setMetadataNoscriptElement('minX', 'X: ', self.cornerMinimum.x)
 		self.setMetadataNoscriptElement('maxY', 'Y: ', self.cornerMaximum.y)
@@ -203,8 +203,8 @@ class SVGWriter:
 		width = max(self.extent.x * self.unitScale, svgMinWidth)
 		svgElementDictionary['width'] = '%spx' % self.getRounded( width )
 		self.sliceDictionary['decimalPlacesCarried'] = str( self.decimalPlacesCarried )
-		if self.perimeterWidth is not None:
-			self.sliceDictionary['perimeterWidth'] = self.getRounded( self.perimeterWidth )
+		if self.edgeWidth != None:
+			self.sliceDictionary['edgeWidth'] = self.getRounded( self.edgeWidth )
 		self.sliceDictionary['yAxisPointingUpward'] = 'true'
 		self.sliceDictionary['procedureName'] = procedureName
 		self.setDimensionTexts('dimX', 'X: ' + self.getRounded(self.extent.x))
@@ -214,13 +214,11 @@ class SVGWriter:
 		volume = 0.0
 		for loopLayer in loopLayers:
 			volume += euclidean.getAreaLoops(loopLayer.loops)
-		volume *= 0.001 * self.layerThickness
+		volume *= 0.001 * self.layerHeight
 		self.setTexts('volume', 'Volume: %s cm3' % self.getRounded(volume))
 		if not self.addLayerTemplateToSVG:
 			self.svgElement.getFirstChildByLocalName('script').removeFromIDNameParent()
-			self.svgElement.getElementNodeByID('isoControlBox').removeFromIDNameParent()
-			self.svgElement.getElementNodeByID('layerControlBox').removeFromIDNameParent()
-			self.svgElement.getElementNodeByID('scrollControlBox').removeFromIDNameParent()
+			self.svgElement.getElementNodeByID('controls').removeFromIDNameParent()
 		self.graphicsElementNode.removeFromIDNameParent()
 		self.addOriginalAsComment(elementNode)
 		return documentNode.__repr__()

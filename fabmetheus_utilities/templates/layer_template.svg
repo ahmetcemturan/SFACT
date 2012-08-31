@@ -11,7 +11,7 @@
 	xmlns:slice='http://www.reprap.org/slice'
 	xmlns:xlink='http://www.w3.org/1999/xlink'>
 	<metadata>
-		<slice:layers id='sliceData' controlBoxWidth='240' layerThickness='0.2' minX='0' maxX='61' minY='-5' maxY='50' minZ='0' maxZ='1' margin='20' marginTop='60' controlBoxHeight='720' svgMinWidth='516' template='svg_layer' textHeight='22.5' unitScale='3.7' version='0.1'/>
+		<slice:layers id='sliceData' controlBoxWidth='240' layerHeight='0.2' minX='0' maxX='61' minY='-5' maxY='50' minZ='0' maxZ='1' margin='20' marginTop='60' controlBoxHeight='720' svgMinWidth='516' template='svg_layer' textHeight='22.5' unitScale='3.7' version='0.1'/>
 	</metadata>
 	<script type='text/ecmascript'><![CDATA[
 globalMetadata = document.getElementsByTagNameNS('http://www.reprap.org/slice', 'layers')[0];
@@ -426,7 +426,7 @@ function viewScroll() {
 			</g>
 			<g transform='translate(20, 640)'>
 				<text>Statistics</text>
-				<text y='20' id='layerThicknessIso' ></text>
+				<text y='20' id='layerHeightIso' ></text>
 				<text y='40' id='numberOfLayersIso' ></text>
 				<text y='60' id='volumeIso' ></text>
 			</g>
@@ -469,7 +469,7 @@ function viewScroll() {
 			</g>
 			<g transform='translate(20, 640)'>
 				<text>Statistics</text>
-				<text y='20' id='layerThicknessLayer' ></text>
+				<text y='20' id='layerHeightLayer' ></text>
 				<text y='40' id='numberOfLayersLayer' ></text>
 				<text y='60' id='volumeLayer' ></text>
 			</g>
@@ -504,7 +504,7 @@ function viewScroll() {
 			</g>
 			<g transform='translate(20, 640)'>
 				<text>Statistics</text>
-				<text y='20' id='layerThicknessScroll' ></text>
+				<text y='20' id='layerHeightScroll' ></text>
 				<text y='40' id='numberOfLayersScroll' ></text>
 				<text y='60' id='volumeScroll' ></text>
 			</g>

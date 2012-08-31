@@ -13,12 +13,10 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.coil.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.cool.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Comb is a craft tool to comb the extrusion hair of a gcode file.<br>
+Comb is a craft plugin to bend the extruder travel paths around holes in the slices, to avoid stringers.<br>
  <br>
 The comb manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Comb">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Comb</a><br>
- <br>
-Comb bends the extruder travel paths around holes in the slices, to avoid stringers.  It moves the extruder to the inside of perimeters before turning the extruder on so any start up ooze will be inside the shape.<br>
  <br>
 <br />
 <a href="#Operation">Operation</a><br />
@@ -29,14 +27,16 @@ Comb bends the extruder travel paths around holes in the slices, to avoid string
 <a name="Operation" id="Operation"></a><h2>Operation</h2>
 <hr>
 
-The default 'Activate Comb' checkbox is off.  When it is on, the functions described below will work, when it is off, the functions will not be called.<br>
+The default 'Activate Comb' checkbox is off.  When it is on, the functions described below will work, when it is off, nothing will be done.<br>
  <br>
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
 <hr>
 
 <a name="Running Jump Space" id="Running Jump Space"></a><h3>Running Jump Space</h3>
 
-Placeholder.<br>
+Default: 2 mm<br>
+ <br>
+Defines the running jump space that is added before going from one island to another.  If the running jump space is greater than zero, the departure from the island will also be brought closer to the arrival point on the next island so that the stringer between islands will be shorter.  For an extruder with acceleration code, an extra space before leaving the island means that it will be going at high speed as it exits the island, which means the stringer between islands will be thinner.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>
@@ -86,10 +86,26 @@ The comb tool has created the file:<br>
     
 <tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl>
-<dt><font face="helvetica, arial"><a href="skeinforge_application.skeinforge_plugins.craft_plugins.comb.html#CombRepository">CombRepository</a>
+<dt><font face="helvetica, arial"><a href="skeinforge_application.skeinforge_plugins.craft_plugins.comb.html#BoundarySegment">BoundarySegment</a>
+</font></dt><dt><font face="helvetica, arial"><a href="skeinforge_application.skeinforge_plugins.craft_plugins.comb.html#CombRepository">CombRepository</a>
 </font></dt><dt><font face="helvetica, arial"><a href="skeinforge_application.skeinforge_plugins.craft_plugins.comb.html#CombSkein">CombSkein</a>
+</font></dt><dt><font face="helvetica, arial"><a href="skeinforge_application.skeinforge_plugins.craft_plugins.comb.html#DistancePoint">DistancePoint</a>
 </font></dt></dl>
  <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BoundarySegment">class <strong>BoundarySegment</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;boundary&nbsp;and&nbsp;segment.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BoundarySegment-__init__"><strong>__init__</strong></a>(self, begin)</dt><dd><tt>Initialize</tt></dd></dl>
+
+<dl><dt><a name="BoundarySegment-getSegment"><strong>getSegment</strong></a>(self, boundarySegmentIndex, boundarySegments, edgeWidth, runningJumpSpace)</dt><dd><tt>Get&nbsp;both&nbsp;paths&nbsp;along&nbsp;the&nbsp;loop&nbsp;from&nbsp;the&nbsp;point&nbsp;closest&nbsp;to&nbsp;the&nbsp;begin&nbsp;to&nbsp;the&nbsp;point&nbsp;closest&nbsp;to&nbsp;the&nbsp;end.</tt></dd></dl>
+
+</td></tr></table> <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
@@ -121,31 +137,41 @@ The comb tool has created the file:<br>
 
 <dl><dt><a name="CombSkein-addToLoop"><strong>addToLoop</strong></a>(self, location)</dt><dd><tt>Add&nbsp;a&nbsp;location&nbsp;to&nbsp;loop.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getBetweens"><strong>getBetweens</strong></a>(self)</dt><dd><tt>Set&nbsp;betweens&nbsp;for&nbsp;the&nbsp;layer.</tt></dd></dl>
+<dl><dt><a name="CombSkein-getAroundBetweenLineSegment"><strong>getAroundBetweenLineSegment</strong></a>(self, begin, boundaries, end)</dt><dd><tt>Get&nbsp;the&nbsp;path&nbsp;around&nbsp;the&nbsp;loops&nbsp;in&nbsp;the&nbsp;way&nbsp;of&nbsp;the&nbsp;original&nbsp;line&nbsp;segment.</tt></dd></dl>
+
+<dl><dt><a name="CombSkein-getAroundBetweenPath"><strong>getAroundBetweenPath</strong></a>(self, begin, end)</dt><dd><tt>Get&nbsp;the&nbsp;path&nbsp;around&nbsp;the&nbsp;loops&nbsp;in&nbsp;the&nbsp;way&nbsp;of&nbsp;the&nbsp;original&nbsp;line&nbsp;segment.</tt></dd></dl>
 
 <dl><dt><a name="CombSkein-getBoundaries"><strong>getBoundaries</strong></a>(self)</dt><dd><tt>Get&nbsp;boundaries&nbsp;for&nbsp;the&nbsp;layer.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getCraftedGcode"><strong>getCraftedGcode</strong></a>(self, combRepository, gcodeText)</dt><dd><tt>Parse&nbsp;gcode&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;comb&nbsp;gcode.</tt></dd></dl>
+<dl><dt><a name="CombSkein-getBoundaryIndexes"><strong>getBoundaryIndexes</strong></a>(self, begin, boundaries, end, points)</dt><dd><tt>Get&nbsp;boundary&nbsp;indexes&nbsp;and&nbsp;set&nbsp;the&nbsp;points&nbsp;in&nbsp;the&nbsp;way&nbsp;of&nbsp;the&nbsp;original&nbsp;line&nbsp;segment.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getIsAsFarAndNotIntersecting"><strong>getIsAsFarAndNotIntersecting</strong></a>(self, begin, end)</dt><dd><tt>Determine&nbsp;if&nbsp;the&nbsp;point&nbsp;on&nbsp;the&nbsp;line&nbsp;is&nbsp;at&nbsp;least&nbsp;as&nbsp;far&nbsp;from&nbsp;the&nbsp;loop&nbsp;as&nbsp;the&nbsp;center&nbsp;point.</tt></dd></dl>
+<dl><dt><a name="CombSkein-getBoundarySegments"><strong>getBoundarySegments</strong></a>(self, begin, boundaries, end)</dt><dd><tt>Get&nbsp;the&nbsp;path&nbsp;broken&nbsp;into&nbsp;boundary&nbsp;segments&nbsp;whenever&nbsp;a&nbsp;different&nbsp;boundary&nbsp;is&nbsp;crossed.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getIsRunningJumpPathAdded"><strong>getIsRunningJumpPathAdded</strong></a>(self, betweens, end, lastPoint, closestEndMinusLastSegment, pathAround, penultimatePoint, runningJumpSpace)</dt><dd><tt>Add&nbsp;a&nbsp;running&nbsp;jump&nbsp;path&nbsp;if&nbsp;possible,&nbsp;and&nbsp;return&nbsp;if&nbsp;it&nbsp;was&nbsp;added.</tt></dd></dl>
+<dl><dt><a name="CombSkein-getCraftedGcode"><strong>getCraftedGcode</strong></a>(self, gcodeText, repository)</dt><dd><tt>Parse&nbsp;gcode&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;comb&nbsp;gcode.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getPathBetween"><strong>getPathBetween</strong></a>(self, loop, points)</dt><dd><tt>Add&nbsp;a&nbsp;path&nbsp;between&nbsp;the&nbsp;perimeter&nbsp;and&nbsp;the&nbsp;fill.</tt></dd></dl>
+<dl><dt><a name="CombSkein-getInsidePointsAlong"><strong>getInsidePointsAlong</strong></a>(self, begin, end, points)</dt><dd><tt>Get&nbsp;the&nbsp;points&nbsp;along&nbsp;the&nbsp;segment&nbsp;if&nbsp;it&nbsp;is&nbsp;required&nbsp;to&nbsp;keep&nbsp;the&nbsp;path&nbsp;inside&nbsp;the&nbsp;widdershin&nbsp;boundaries.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getPathsBetween"><strong>getPathsBetween</strong></a>(self, begin, end)</dt><dd><tt>Insert&nbsp;paths&nbsp;between&nbsp;the&nbsp;perimeter&nbsp;and&nbsp;the&nbsp;fill.</tt></dd></dl>
+<dl><dt><a name="CombSkein-getPathBetween"><strong>getPathBetween</strong></a>(self, loop, points)</dt><dd><tt>Add&nbsp;a&nbsp;path&nbsp;between&nbsp;the&nbsp;edge&nbsp;and&nbsp;the&nbsp;fill.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getSimplifiedAroundPath"><strong>getSimplifiedAroundPath</strong></a>(self, begin, end, loop, pathAround)</dt><dd><tt>Get&nbsp;the&nbsp;simplified&nbsp;path&nbsp;between&nbsp;the&nbsp;perimeter&nbsp;and&nbsp;the&nbsp;fill.</tt></dd></dl>
+<dl><dt><a name="CombSkein-getWiddershins"><strong>getWiddershins</strong></a>(self)</dt><dd><tt>Get&nbsp;widdershins&nbsp;for&nbsp;the&nbsp;layer.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getSimplifiedBeginPath"><strong>getSimplifiedBeginPath</strong></a>(self, begin, loop, pathAround)</dt><dd><tt>Get&nbsp;the&nbsp;simplified&nbsp;begin&nbsp;path&nbsp;between&nbsp;the&nbsp;perimeter&nbsp;and&nbsp;the&nbsp;fill.</tt></dd></dl>
+<dl><dt><a name="CombSkein-parseBoundariesLayers"><strong>parseBoundariesLayers</strong></a>(self, line)</dt><dd><tt>Parse&nbsp;a&nbsp;gcode&nbsp;line.</tt></dd></dl>
 
-<dl><dt><a name="CombSkein-getSimplifiedEndPath"><strong>getSimplifiedEndPath</strong></a>(self, end, loop, pathAround)</dt><dd><tt>Get&nbsp;the&nbsp;simplified&nbsp;end&nbsp;path&nbsp;between&nbsp;the&nbsp;perimeter&nbsp;and&nbsp;the&nbsp;fill.</tt></dd></dl>
-
-<dl><dt><a name="CombSkein-parseBoundariesLayers"><strong>parseBoundariesLayers</strong></a>(self, combRepository, line)</dt><dd><tt>Parse&nbsp;a&nbsp;gcode&nbsp;line.</tt></dd></dl>
-
-<dl><dt><a name="CombSkein-parseInitialization"><strong>parseInitialization</strong></a>(self, combRepository)</dt><dd><tt>Parse&nbsp;gcode&nbsp;initialization&nbsp;and&nbsp;store&nbsp;the&nbsp;parameters.</tt></dd></dl>
+<dl><dt><a name="CombSkein-parseInitialization"><strong>parseInitialization</strong></a>(self)</dt><dd><tt>Parse&nbsp;gcode&nbsp;initialization&nbsp;and&nbsp;store&nbsp;the&nbsp;parameters.</tt></dd></dl>
 
 <dl><dt><a name="CombSkein-parseLine"><strong>parseLine</strong></a>(self, line)</dt><dd><tt>Parse&nbsp;a&nbsp;gcode&nbsp;line&nbsp;and&nbsp;add&nbsp;it&nbsp;to&nbsp;the&nbsp;comb&nbsp;skein.</tt></dd></dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="DistancePoint">class <strong>DistancePoint</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;class&nbsp;to&nbsp;get&nbsp;the&nbsp;distance&nbsp;of&nbsp;the&nbsp;point&nbsp;along&nbsp;a&nbsp;segment&nbsp;inside&nbsp;a&nbsp;loop.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="DistancePoint-__init__"><strong>__init__</strong></a>(self, begin, loop, runningJumpSpace, segment)</dt><dd><tt>Initialize</tt></dd></dl>
 
 </td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -154,9 +180,10 @@ The comb tool has created the file:<br>
 <font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
     
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
-<td width="100%"><dl><dt><a name="-getCraftedText"><strong>getCraftedText</strong></a>(fileName, text, combRepository<font color="#909090">=None</font>)</dt><dd><tt>Comb&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;text.</tt></dd></dl>
- <dl><dt><a name="-getCraftedTextFromText"><strong>getCraftedTextFromText</strong></a>(gcodeText, combRepository<font color="#909090">=None</font>)</dt><dd><tt>Comb&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;text.</tt></dd></dl>
- <dl><dt><a name="-getInsideness"><strong>getInsideness</strong></a>(path, loop)</dt><dd><tt>Get&nbsp;portion&nbsp;of&nbsp;the&nbsp;path&nbsp;which&nbsp;is&nbsp;inside&nbsp;the&nbsp;loop.</tt></dd></dl>
+<td width="100%"><dl><dt><a name="-getCraftedText"><strong>getCraftedText</strong></a>(fileName, text, repository<font color="#909090">=None</font>)</dt><dd><tt>Comb&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;text.</tt></dd></dl>
+ <dl><dt><a name="-getCraftedTextFromText"><strong>getCraftedTextFromText</strong></a>(gcodeText, repository<font color="#909090">=None</font>)</dt><dd><tt>Comb&nbsp;a&nbsp;gcode&nbsp;linear&nbsp;move&nbsp;text.</tt></dd></dl>
+ <dl><dt><a name="-getJumpPoint"><strong>getJumpPoint</strong></a>(begin, end, loop, runningJumpSpace)</dt><dd><tt>Get&nbsp;running&nbsp;jump&nbsp;point&nbsp;inside&nbsp;loop.</tt></dd></dl>
+ <dl><dt><a name="-getJumpPointIfInside"><strong>getJumpPointIfInside</strong></a>(boundary, otherPoint, edgeWidth, runningJumpSpace)</dt><dd><tt>Get&nbsp;the&nbsp;jump&nbsp;point&nbsp;if&nbsp;it&nbsp;is&nbsp;inside&nbsp;the&nbsp;boundary,&nbsp;otherwise&nbsp;return&nbsp;None.</tt></dd></dl>
  <dl><dt><a name="-getNewRepository"><strong>getNewRepository</strong></a>()</dt><dd><tt>Get&nbsp;new&nbsp;repository.</tt></dd></dl>
  <dl><dt><a name="-getPathsByIntersectedLoop"><strong>getPathsByIntersectedLoop</strong></a>(begin, end, loop)</dt><dd><tt>Get&nbsp;both&nbsp;paths&nbsp;along&nbsp;the&nbsp;loop&nbsp;from&nbsp;the&nbsp;point&nbsp;closest&nbsp;to&nbsp;the&nbsp;begin&nbsp;to&nbsp;the&nbsp;point&nbsp;closest&nbsp;to&nbsp;the&nbsp;end.</tt></dd></dl>
  <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Display&nbsp;the&nbsp;comb&nbsp;dialog.</tt></dd></dl>

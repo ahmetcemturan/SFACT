@@ -47,15 +47,15 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation is None:
+	if derivation == None:
 		derivation = CarveDerivation(elementNode)
 	targetElementNode = derivation.targetElementNode
-	if targetElementNode is None:
+	if targetElementNode == None:
 		print('Warning, carve could not get target for:')
 		print(elementNode)
 		return
 	xmlObject = targetElementNode.xmlObject
-	if xmlObject is None:
+	if xmlObject == None:
 		print('Warning, processElementNodeByDerivation in carve could not get xmlObject for:')
 		print(targetElementNode)
 		print(derivation.elementNode)
@@ -72,11 +72,11 @@ def processElementNodeByDerivation(derivation, elementNode):
 	elementNode.getXMLProcessor().processElementNode(elementNode)
 	minimumZ = boolean_geometry.getMinimumZ(xmlObject)
 	maximumZ = euclidean.getTopPath(transformedVertexes)
-	zoneArrangement = triangle_mesh.ZoneArrangement(derivation.layerThickness, transformedVertexes)
+	zoneArrangement = triangle_mesh.ZoneArrangement(derivation.layerHeight, transformedVertexes)
 	oldVisibleString = targetElementNode.attributes['visible']
 	targetElementNode.attributes['visible'] = True
-	z = minimumZ + 0.5 * derivation.layerThickness
-	loopLayers = boolean_geometry.getLoopLayers([xmlObject], derivation.importRadius, derivation.layerThickness, maximumZ, False, z, zoneArrangement)
+	z = minimumZ + 0.5 * derivation.layerHeight
+	loopLayers = boolean_geometry.getLoopLayers([xmlObject], derivation.importRadius, derivation.layerHeight, maximumZ, False, z, zoneArrangement)
 	targetElementNode.attributes['visible'] = oldVisibleString
 	for loopLayerIndex, loopLayer in enumerate(loopLayers):
 		if len(loopLayer.loops) > 0:
@@ -91,5 +91,5 @@ class CarveDerivation:
 		'Set defaults.'
 		self.elementNode = elementNode
 		self.importRadius = setting.getImportRadius(elementNode)
-		self.layerThickness = setting.getLayerThickness(elementNode)
+		self.layerHeight = setting.getLayerHeight(elementNode)
 		self.targetElementNode = evaluate.getElementNodeByKey(elementNode, 'target')

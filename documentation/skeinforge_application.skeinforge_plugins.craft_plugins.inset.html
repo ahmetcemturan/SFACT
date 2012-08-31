@@ -13,7 +13,7 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.hop.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.jitter.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Inset will inset the outside outlines by half the perimeter width, and outset the inside outlines by the same amount.<br>
+Inset will inset the outside outlines by half the edge width, and outset the inside outlines by the same amount.<br>
  <br>
 The inset manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Inset">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Inset</a><br>
@@ -27,6 +27,7 @@ The inset manual page is at:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Descending Area">Descending Area</a><br />
 &nbsp;&nbsp;<a href="#Overlap Removal Width over Perimeter Width">Overlap Removal Width over Perimeter Width</a><br />
 &nbsp;&nbsp;<a href="#Turn Extruder Heater Off at Shut Down">Turn Extruder Heater Off at Shut Down</a><br />
+&nbsp;&nbsp;<a href="#Volume Fraction">Volume Fraction</a><br />
 <a href="#Examples">Examples</a><br />
 <br />
 <a name="Settings" id="Settings"></a><h2>Settings</h2>
@@ -62,13 +63,19 @@ When selected, the loops will be ordered in descending area.  With thin walled p
 
 Default is 0.6.<br>
  <br>
-Defines the ratio of the overlap removal width over the perimeter width.  Any part of the extrusion that comes within the overlap removal width of another is removed.  This is to prevent the extruder from depositing two extrusions right beside each other.  If the 'Overlap Removal Width over Perimeter Width' is less than 0.2, the overlap will not be removed.<br>
+Defines the ratio of the overlap removal width over the edge width.  Any part of the extrusion that comes within the overlap removal width of another is removed.  This is to prevent the extruder from depositing two extrusions right beside each other.  If the 'Overlap Removal Width over Perimeter Width' is less than 0.2, the overlap will not be removed.<br>
  <br>
 <a name="Turn Extruder Heater Off at Shut Down" id="Turn Extruder Heater Off at Shut Down"></a><h3>Turn Extruder Heater Off at Shut Down</h3>
 
 Default is on.<br>
  <br>
 When selected, the M104 S0 gcode line will be added to the end of the file to turn the extruder heater off by setting the extruder heater temperature to 0.<br>
+ <br>
+<a name="Volume Fraction" id="Volume Fraction"></a><h3>Volume Fraction</h3>
+
+Default: 0.93<br>
+ <br>
+The 'Volume Fraction' is the estimated volume of the thread compared to the box defined by the layer height and infill width. This is used in dwindle, splodge, and statistic. It is in inset because inset is a required extrusion tool, earlier in the chain than dwindle and splodge. In dwindle and splodge it is used to determine the filament volume, in statistic it is used to determine the extrusion diameter.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>
@@ -150,7 +157,7 @@ The inset tool has created the file:<br>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="InsetSkein-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize.</tt></dd></dl>
 
-<dl><dt><a name="InsetSkein-addGcodeFromPerimeterPaths"><strong>addGcodeFromPerimeterPaths</strong></a>(self, isIntersectingSelf, loop, loopLayer, loopLists, radius)</dt><dd><tt>Add&nbsp;the&nbsp;perimeter&nbsp;paths&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
+<dl><dt><a name="InsetSkein-addGcodeFromPerimeterPaths"><strong>addGcodeFromPerimeterPaths</strong></a>(self, isIntersectingSelf, loop, loopLayer, loopLists, radius)</dt><dd><tt>Add&nbsp;the&nbsp;edge&nbsp;paths&nbsp;to&nbsp;the&nbsp;output.</tt></dd></dl>
 
 <dl><dt><a name="InsetSkein-addGcodeFromRemainingLoop"><strong>addGcodeFromRemainingLoop</strong></a>(self, loop, loopLayer, loopLists, radius)</dt><dd><tt>Add&nbsp;the&nbsp;remainder&nbsp;of&nbsp;the&nbsp;loop&nbsp;which&nbsp;does&nbsp;not&nbsp;overlap&nbsp;the&nbsp;alreadyFilledArounds&nbsp;loops.</tt></dd></dl>
 
@@ -175,7 +182,7 @@ The inset tool has created the file:<br>
 <tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><dl><dt><a name="-addAlreadyFilledArounds"><strong>addAlreadyFilledArounds</strong></a>(alreadyFilledArounds, loop, radius)</dt><dd><tt>Add&nbsp;already&nbsp;filled&nbsp;loops&nbsp;around&nbsp;loop&nbsp;to&nbsp;alreadyFilledArounds.</tt></dd></dl>
  <dl><dt><a name="-addSegmentOutline"><strong>addSegmentOutline</strong></a>(isThick, outlines, pointBegin, pointEnd, width)</dt><dd><tt>Add&nbsp;a&nbsp;diamond&nbsp;or&nbsp;hexagonal&nbsp;outline&nbsp;for&nbsp;a&nbsp;line&nbsp;segment.</tt></dd></dl>
- <dl><dt><a name="-getBridgeDirection"><strong>getBridgeDirection</strong></a>(belowLoops, layerLoops, radius)</dt><dd><tt>Get&nbsp;span&nbsp;direction&nbsp;for&nbsp;the&nbsp;majority&nbsp;of&nbsp;the&nbsp;overhanging&nbsp;extrusion&nbsp;perimeter,&nbsp;if&nbsp;any.</tt></dd></dl>
+ <dl><dt><a name="-getBridgeDirection"><strong>getBridgeDirection</strong></a>(belowLoops, layerLoops, radius)</dt><dd><tt>Get&nbsp;span&nbsp;direction&nbsp;for&nbsp;the&nbsp;majority&nbsp;of&nbsp;the&nbsp;overhanging&nbsp;extrusion&nbsp;edge,&nbsp;if&nbsp;any.</tt></dd></dl>
  <dl><dt><a name="-getCraftedText"><strong>getCraftedText</strong></a>(fileName, text<font color="#909090">=''</font>, repository<font color="#909090">=None</font>)</dt><dd><tt>Inset&nbsp;the&nbsp;preface&nbsp;file&nbsp;or&nbsp;text.</tt></dd></dl>
  <dl><dt><a name="-getCraftedTextFromText"><strong>getCraftedTextFromText</strong></a>(gcodeText, repository<font color="#909090">=None</font>)</dt><dd><tt>Inset&nbsp;the&nbsp;preface&nbsp;gcode&nbsp;text.</tt></dd></dl>
  <dl><dt><a name="-getDoubledRoundZ"><strong>getDoubledRoundZ</strong></a>(overhangingSegment, segmentRoundZ)</dt><dd><tt>Get&nbsp;doubled&nbsp;plane&nbsp;angle&nbsp;around&nbsp;z&nbsp;of&nbsp;the&nbsp;overhanging&nbsp;segment.</tt></dd></dl>

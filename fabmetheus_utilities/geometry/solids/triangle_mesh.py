@@ -210,6 +210,16 @@ def addSymmetricYPaths(outputs, paths, y):
 	for path in paths:
 		addSymmetricYPath(outputs, path, y)
 
+def addVector3Loop(loop, loops, vertexes, z):
+	'Add vector3Loop to loops if there is something in it, for inset and outset.'
+	vector3Loop = []
+	for point in loop:
+		vector3Index = Vector3Index(len(vertexes), point.real, point.imag, z)
+		vector3Loop.append(vector3Index)
+		vertexes.append(vector3Index)
+	if len(vector3Loop) > 0:
+		loops.append(vector3Loop)
+
 def addWithLeastLength(importRadius, loops, point):
 	'Insert a point into a loop, at the index at which the loop would be shortest.'
 	close = 1.65 * importRadius # a bit over the experimental minimum additional loop length to restore a right angle
@@ -301,7 +311,7 @@ def getDescendingAreaLoops(allPoints, corners, importRadius):
 	sortLoopsInOrderOfArea(True, loops)
 	pointDictionary = {}
 	for loop in loops:
-		if len(loop) > 2 and getOverlapRatio(loop, pointDictionary) < 0.3:
+		if len(loop) > 2 and getOverlapRatio(loop, pointDictionary) < 0.3 and intercircle.getIsLarge(loop, importRadius):
 			intercircle.directLoop(not euclidean.getIsInFilledRegion(descendingAreaLoops, loop[0]), loop)
 			descendingAreaLoops.append(loop)
 			addLoopToPointTable(loop, pointDictionary)
@@ -359,7 +369,7 @@ def getIndexedLoopFromIndexedGrid( indexedGrid ):
 		indexedLoop.append( row[0] )
 	return indexedLoop
 
-def getInfillDictionary(aroundInset, arounds, aroundWidth, infillInset, infillWidth, pixelTable, rotatedLoops, testLoops=None):
+def getInfillDictionary(arounds, aroundWidth, infillInset, infillWidth, pixelTable, rotatedLoops, testLoops=None):
 	'Get combined fill loops which include most of the points.'
 	slightlyGreaterThanInfillInset = intercircle.globalIntercircleMultiplier * infillInset
 	allPoints = intercircle.getPointsFromLoops(rotatedLoops, infillInset, 0.7)
@@ -369,7 +379,7 @@ def getInfillDictionary(aroundInset, arounds, aroundWidth, infillInset, infillWi
 		insetCenter = intercircle.getSimplifiedInsetFromClockwiseLoop(center, infillInset)
 		insetPoint = insetCenter[0]
 		if len(insetCenter) > 2 and intercircle.getIsLarge(insetCenter, infillInset) and euclidean.getIsInFilledRegion(rotatedLoops, insetPoint):
-			around = intercircle.getSimplifiedInsetFromClockwiseLoop(center, aroundInset)
+			around = euclidean.getSimplifiedLoop(center, infillInset)
 			euclidean.addLoopToPixelTable(around, pixelTable, aroundWidth)
 			arounds.append(around)
 			insetLoop = intercircle.getSimplifiedInsetFromClockwiseLoop(center, infillInset)
@@ -798,13 +808,13 @@ class TriangleMesh( group.Group ):
 		'Get the boundary layers.'
 		if self.getMinimumZ() == None:
 			return []
-		halfHeight = 0.5 * self.layerThickness
-		self.zoneArrangement = ZoneArrangement(self.layerThickness, self.getTransformedVertexes())
+		halfHeight = 0.5 * self.layerHeight
+		self.zoneArrangement = ZoneArrangement(self.layerHeight, self.getTransformedVertexes())
 		layerTop = self.cornerMaximum.z - halfHeight * 0.5
 		z = self.cornerMinimum.z + halfHeight
 		while z < layerTop:
 			getLoopLayerAppend(self.loopLayers, z).loops = self.getLoopsFromMesh(self.zoneArrangement.getEmptyZ(z))
-			z += self.layerThickness
+			z += self.layerHeight
 		return self.loopLayers
 
 	def getCarveCornerMaximum(self):
@@ -815,9 +825,9 @@ class TriangleMesh( group.Group ):
 		'Get the corner minimum of the vertexes.'
 		return self.cornerMinimum
 
-	def getCarveLayerThickness(self):
-		'Get the layer thickness.'
-		return self.layerThickness
+	def getCarveLayerHeight(self):
+		'Get the layer height.'
+		return self.layerHeight
 
 	def getFabmetheusXML(self):
 		'Return the fabmetheus XML.'
@@ -891,9 +901,9 @@ class TriangleMesh( group.Group ):
 		'Set the is correct mesh flag.'
 		self.isCorrectMesh = isCorrectMesh
 
-	def setCarveLayerThickness( self, layerThickness ):
-		'Set the layer thickness.'
-		self.layerThickness = layerThickness
+	def setCarveLayerHeight( self, layerHeight ):
+		'Set the layer height.'
+		self.layerHeight = layerHeight
 
 	def setEdgesForAllFaces(self):
 		'Set the face edges of all the faces.'
@@ -904,9 +914,9 @@ class TriangleMesh( group.Group ):
 
 class ZoneArrangement:
 	'A zone arrangement.'
-	def __init__(self, layerThickness, vertexes):
+	def __init__(self, layerHeight, vertexes):
 		'Initialize the zone interval and the zZone table.'
-		self.zoneInterval = layerThickness / math.sqrt(len(vertexes)) / 1000.0
+		self.zoneInterval = layerHeight / math.sqrt(len(vertexes)) / 1000.0
 		self.zZoneSet = set()
 		for point in vertexes:
 			zoneIndexFloat = point.z / self.zoneInterval

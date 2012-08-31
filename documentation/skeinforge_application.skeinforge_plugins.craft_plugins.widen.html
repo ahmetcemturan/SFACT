@@ -13,9 +13,9 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.whittle.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.wipe.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Widen will widen the outside perimeters away from the inside perimeters, so that the outsides will be at least two perimeter widths away from the insides and therefore the outside filaments will not overlap the inside filaments.<br>
+Widen will widen the outside edges away from the inside edges, so that the outsides will be at least two edge widths away from the insides and therefore the outside filaments will not overlap the inside filaments.<br>
  <br>
-For example, if a mug has a very thin wall, widen would widen the outside of the mug so that the wall of the mug would be two perimeter widths wide, and the outside wall filament would not overlap the inside filament.<br>
+For example, if a mug has a very thin wall, widen would widen the outside of the mug so that the wall of the mug would be two edge widths wide, and the outside wall filament would not overlap the inside filament.<br>
  <br>
 For another example, if the outside of the object runs right next to a hole, widen would widen the wall around the hole so that the wall would bulge out around the hole, and the outside filament would not overlap the hole filament.<br>
  <br>
@@ -131,7 +131,7 @@ The widen tool has created the file:<br>
  <dl><dt><a name="-getIsIntersectingWithinLoop"><strong>getIsIntersectingWithinLoop</strong></a>(loop, otherLoop, outsetLoop)</dt><dd><tt>Determine&nbsp;if&nbsp;the&nbsp;loop&nbsp;is&nbsp;intersecting&nbsp;or&nbsp;is&nbsp;within&nbsp;the&nbsp;other&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-getIsPointInsideALoop"><strong>getIsPointInsideALoop</strong></a>(loops, point)</dt><dd><tt>Determine&nbsp;if&nbsp;a&nbsp;point&nbsp;is&nbsp;inside&nbsp;a&nbsp;loop&nbsp;of&nbsp;a&nbsp;loop&nbsp;list.</tt></dd></dl>
  <dl><dt><a name="-getNewRepository"><strong>getNewRepository</strong></a>()</dt><dd><tt>Get&nbsp;new&nbsp;repository.</tt></dd></dl>
- <dl><dt><a name="-getWidenedLoop"><strong>getWidenedLoop</strong></a>(loop, loopList, outsetLoop, radius)</dt><dd><tt>Get&nbsp;the&nbsp;widened&nbsp;loop.</tt></dd></dl>
+ <dl><dt><a name="-getWidenedLoops"><strong>getWidenedLoops</strong></a>(loop, loopList, outsetLoop, radius)</dt><dd><tt>Get&nbsp;the&nbsp;widened&nbsp;loop.</tt></dd></dl>
  <dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Display&nbsp;the&nbsp;widen&nbsp;dialog.</tt></dd></dl>
  <dl><dt><a name="-writeOutput"><strong>writeOutput</strong></a>(fileName, shouldAnalyze<font color="#909090">=True</font>)</dt><dd><tt>Widen&nbsp;the&nbsp;carving&nbsp;of&nbsp;a&nbsp;gcode&nbsp;file.</tt></dd></dl>
 </td></tr></table><p>

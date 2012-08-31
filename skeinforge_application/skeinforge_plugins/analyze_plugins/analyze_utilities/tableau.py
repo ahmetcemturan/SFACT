@@ -98,7 +98,7 @@ class ExportCanvasDialog:
 				settings.liftRepositoryDialogs(settings.globalRepositoryDialogListTable[repositoryDialog])
 				return
 		pluginModule = archive.getModuleWithDirectoryPath(getPluginsDirectoryPath(), self.name)
-		if pluginModule is None:
+		if pluginModule == None:
 			return None
 		pluginRepository = pluginModule.getNewRepository()
 		pluginRepository.setCanvasFileNameSuffix(self.canvas, self.fileName, self.suffix)
@@ -124,7 +124,7 @@ class TableauRepository:
 		self.screenHorizontalInset = settings.IntSpin().getFromValue( 80, 'Screen Horizontal Inset (pixels):', self, 1000, 100 )
 		self.screenVerticalInset = settings.IntSpin().getFromValue( 120, 'Screen Vertical Inset (pixels):', self, 1000, 220 )
 		settings.LabelSeparator().getFromRepository(self)
-		self.showGcode = settings.BooleanSetting().getFromValue('Show Gcode', self, True )
+		self.showGcode = settings.BooleanSetting().getFromValue('Show Gcode', self, True)
 
 	def setToDisplaySave(self, event=None):
 		'Set the setting values to the display, save the new values.'
@@ -247,7 +247,7 @@ class TableauWindow:
 		self.gridPosition.master = self.root
 		for name in self.repository.frameList.value:
 			entity = self.getEntityFromName( name )
-			if entity is not None:
+			if entity != None:
 				self.gridPosition.incrementGivenNumberOfColumns(3)
 				entity.addToDialog( getGridHorizontalFrame( self.gridPosition ) )
 		for menuRadio in self.repository.mouseMode.menuRadios:
@@ -334,7 +334,7 @@ class TableauWindow:
 
 	def cancelTimer(self, event=None):
 		'Cancel the timer and set it to none.'
-		if self.timerID is not None:
+		if self.timerID != None:
 			self.canvas.after_cancel(self.timerID)
 			self.timerID = None
 
@@ -417,6 +417,8 @@ class TableauWindow:
 
 	def getDrawnLineText( self, location, tags, text ):
 		'Get the line text drawn on the canvas.'
+		if not self.repository.showGcode.value:
+			return
 		anchorTowardCenter = settings.Tkinter.N
 		if location.imag > float( self.canvasHeight ) * 0.1:
 			anchorTowardCenter = settings.Tkinter.S
@@ -439,7 +441,7 @@ class TableauWindow:
 		untilDotFileName = self.addPhotoImage( fileName, gridPosition )
 		photoImage = self.photoImages[ untilDotFileName ]
 		photoButton = settings.Tkinter.Button( gridPosition.master, activebackground = 'black', activeforeground = 'white', command = commandFunction, text = untilDotFileName )
-		if photoImage is not None:
+		if photoImage != None:
 			photoButton['image'] = photoImage
 		photoButton.grid( row = gridPosition.row, column = gridPosition.column, sticky = settings.Tkinter.W )
 		return photoButton
@@ -524,8 +526,8 @@ class TableauWindow:
 
 	def limitIndex(self):
 		'Limit the index so it is not below zero or above the top.'
-		self.repository.layer.value = max( 0, self.repository.layer.value )
-		self.repository.layer.value = min( len( self.skeinPanes ) - 1, self.repository.layer.value )
+		self.repository.layer.value = max(0, self.repository.layer.value)
+		self.repository.layer.value = min(len(self.skeinPanes) - 1, self.repository.layer.value)
 
 	def limitIndexSetArrowMouseDeleteCanvas(self):
 		'Limit the index, set the arrow type, and delete all the canvas items.'
@@ -643,7 +645,7 @@ class TableauWindow:
 	def setButtonImageText( self, button, text ):
 		'Set the text of the e periodic buttons.'
 		photoImage = self.photoImages[ text ]
-		if photoImage is not None:
+		if photoImage != None:
 			button['image'] = photoImage
 		button['text'] = text
 
@@ -764,7 +766,7 @@ class TableauWindow:
 
 	def updateMouseToolIfSelection(self):
 		'Update the mouse tool if it is a selection tool.'
-		if self.mouseTool is None:
+		if self.mouseTool == None:
 			return
 		if self.mouseTool.isSelectionTool():
 			self.mouseTool.update()

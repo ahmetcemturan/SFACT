@@ -23,7 +23,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	"Get vector3 vertexes from attribute dictionary."
-	if derivation is None:
+	if derivation == None:
 		derivation = PolygonDerivation(elementNode)
 	loop = []
 	spiral = lineation.Spiral(derivation.spiral, 0.5 * derivation.sideAngle / math.pi)

@@ -64,7 +64,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Limit a gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty(gcodeText, 'limit'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository(LimitRepository())
 	if not repository.activateLimit.value:
 		return gcodeText
@@ -111,30 +111,30 @@ class LimitSkein:
 		self.repository = repository
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization()
-		self.maximumZDrillFeedRatePerSecond = min(self.maximumZDrillFeedRatePerSecond, self.maximumZTravelFeedRatePerSecond)
-		self.maximumZFeedRatePerSecond = self.maximumZTravelFeedRatePerSecond
+		self.maximumZDrillFeedRatePerSecond = min(self.maximumZDrillFeedRatePerSecond, self.maximumZFeedRatePerSecond)
+		self.maximumZCurrentFeedRatePerSecond = self.maximumZFeedRatePerSecond
 		for lineIndex in xrange(self.lineIndex, len(self.lines)):
 			self.parseLine( lineIndex )
 		return self.distanceFeedRate.output.getvalue()
 
 	def getLimitedInitialMovement(self, line, splitLine):
 		'Get a limited linear movement.'
-		if self.oldLocation is None:
+		if self.oldLocation == None:
 			line = self.distanceFeedRate.getLineWithFeedRate(60.0 * self.repository.maximumInitialFeedRate.value, line, splitLine)
 		return line
 
 	def getZLimitedLine(self, deltaZ, distance, line, splitLine):
 		'Get a replaced z limited gcode movement line.'
 		zFeedRateSecond = self.feedRateMinute * deltaZ / distance / 60.0
-		if zFeedRateSecond <= self.maximumZFeedRatePerSecond:
+		if zFeedRateSecond <= self.maximumZCurrentFeedRatePerSecond:
 			return line
-		limitedFeedRateMinute = self.feedRateMinute * self.maximumZFeedRatePerSecond / zFeedRateSecond
+		limitedFeedRateMinute = self.feedRateMinute * self.maximumZCurrentFeedRatePerSecond / zFeedRateSecond
 		return self.distanceFeedRate.getLineWithFeedRate(limitedFeedRateMinute, line, splitLine)
 
 	def getZLimitedLineArc(self, line, splitLine):
 		'Get a replaced z limited gcode arc movement line.'
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
-		if self.feedRateMinute is None or self.oldLocation is None:
+		if self.feedRateMinute == None or self.oldLocation == None:
 			return line
 		relativeLocation = gcodec.getLocationFromSplitLine(self.oldLocation, splitLine)
 		self.oldLocation += relativeLocation
@@ -147,7 +147,7 @@ class LimitSkein:
 		self.feedRateMinute = gcodec.getFeedRateMinute(self.feedRateMinute, splitLine)
 		if location == self.oldLocation:
 			return ''
-		if self.feedRateMinute is None or self.oldLocation is None:
+		if self.feedRateMinute == None or self.oldLocation == None:
 			return line
 		deltaZ = abs(location.z - self.oldLocation.z)
 		distance = abs(location - self.oldLocation)
@@ -165,8 +165,8 @@ class LimitSkein:
 				return
 			elif firstWord == '(<maximumZDrillFeedRatePerSecond>':
 				self.maximumZDrillFeedRatePerSecond = float(splitLine[1])
-			elif firstWord == '(<maximumZTravelFeedRatePerSecond>':
-				self.maximumZTravelFeedRatePerSecond = float(splitLine[1])
+			elif firstWord == '(<maximumZFeedRatePerSecond>':
+				self.maximumZFeedRatePerSecond = float(splitLine[1])
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine( self, lineIndex ):
@@ -184,9 +184,9 @@ class LimitSkein:
 		elif firstWord == 'G2' or firstWord == 'G3':
 			line = self.getZLimitedLineArc(line, splitLine)
 		elif firstWord == 'M101':
-			self.maximumZFeedRatePerSecond = self.maximumZDrillFeedRatePerSecond
+			self.maximumZCurrentFeedRatePerSecond = self.maximumZDrillFeedRatePerSecond
 		elif firstWord == 'M103':
-			self.maximumZFeedRatePerSecond = self.maximumZTravelFeedRatePerSecond
+			self.maximumZCurrentFeedRatePerSecond = self.maximumZFeedRatePerSecond
 		self.distanceFeedRate.addLine(line)
 
 

@@ -18,8 +18,7 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-globalTemporarySettingsPath = os.path.join(os.getcwd(), 'sfact_profiles')#(os.path.expanduser('~'), '.skeinforge')
-#globalTemporarySettingsPath = os.path.join(os.path.expanduser('~'), '.skeinforge')
+globalTemporarySettingsPath = os.path.join(os.path.expanduser('~'), '.skeinforge')
 
 
 def addToNamePathDictionary(directoryPath, namePathDictionary):
@@ -369,7 +368,7 @@ def writeFileMessageEnd(end, fileName, fileText, message):
 	'Write to a fileName with a suffix and print a message.'
 	suffixFileName = getUntilDot(fileName) + end
 	writeFileText(suffixFileName, fileText)
-	print( message + getSummarizedFileName(suffixFileName) )
+	print(message + getSummarizedFileName(suffixFileName))
 
 def writeFileText(fileName, fileText, writeMode='w+'):
 	'Write a text to a file.'

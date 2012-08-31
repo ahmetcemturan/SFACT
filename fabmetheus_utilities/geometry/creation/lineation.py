@@ -69,13 +69,13 @@ def getComplexByMultiplierPrefixes(elementNode, multiplier, prefixes, valueCompl
 def getComplexByPrefix(elementNode, prefix, valueComplex):
 	'Get complex from prefix and xml element.'
 	value = evaluate.getEvaluatedValue(None, elementNode, prefix)
-	if value is not None:
+	if value != None:
 		valueComplex = getComplexByDictionaryListValue(value, valueComplex)
 	x = evaluate.getEvaluatedFloat(None, elementNode, prefix + '.x')
-	if x is not None:
+	if x != None:
 		valueComplex = complex( x, getComplexIfNone( valueComplex ).imag )
 	y = evaluate.getEvaluatedFloat(None, elementNode, prefix + '.y')
-	if y is not None:
+	if y != None:
 		valueComplex = complex( getComplexIfNone( valueComplex ).real, y )
 	return valueComplex
 
@@ -95,7 +95,7 @@ def getComplexByPrefixes(elementNode, prefixes, valueComplex):
 
 def getComplexIfNone( valueComplex ):
 	'Get new complex if the original complex is none.'
-	if valueComplex is None:
+	if valueComplex == None:
 		return complex()
 	return valueComplex
 
@@ -108,7 +108,7 @@ def getFloatByPrefixBeginEnd(elementNode, prefixBegin, prefixEnd, valueFloat):
 
 def getFloatByPrefixSide(defaultValue, elementNode, prefix, side):
 	'Get float by prefix and side.'
-	if elementNode is None:
+	if elementNode == None:
 		return defaultValue
 	if side != None:
 		key = prefix + 'OverSide'
@@ -118,7 +118,7 @@ def getFloatByPrefixSide(defaultValue, elementNode, prefix, side):
 
 def getGeometryOutput(derivation, elementNode):
 	'Get geometry output from paths.'
-	if derivation is None:
+	if derivation == None:
 		derivation = LineationDerivation(elementNode)
 	geometryOutput = []
 	for path in derivation.target:
@@ -144,9 +144,16 @@ def getInradius(defaultInradius, elementNode):
 	'Get inradius.'
 	defaultInradius = getComplexByPrefixes(elementNode, ['demisize', 'inradius'], defaultInradius)
 	return getComplexByMultiplierPrefix(elementNode, 2.0, 'size', defaultInradius)
-def getMinimumRadius( beginComplexSegmentLength, endComplexSegmentLength, radius ):
+
+def getInradiusFirstByHeightWidth(defaultInradius, elementNode):
+	'Get inradius, by first checking for the width and height.'
+	demiheight = getFloatByPrefixBeginEnd(elementNode, 'demiheight', 'height', defaultInradius.imag)
+	demiwidth = getFloatByPrefixBeginEnd(elementNode, 'demiwidth', 'width', defaultInradius.real)
+	return getInradius(complex(demiwidth, demiheight), elementNode)
+
+def getMinimumRadius(beginComplexSegmentLength, endComplexSegmentLength, radius):
 	'Get minimum radius.'
-	return min( abs(radius), 0.5 * min( beginComplexSegmentLength, endComplexSegmentLength ) )
+	return min(abs(radius), 0.5 * min(beginComplexSegmentLength, endComplexSegmentLength))
 
 def getNewDerivation(elementNode):
 	'Get new derivation.'
@@ -192,7 +199,7 @@ def processElementNodeByFunction(elementNode, manipulationFunction):
 
 def processTargetByFunction(manipulationFunction, target):
 	'Process the target by the manipulationFunction.'
-	if target.xmlObject is None:
+	if target.xmlObject == None:
 		print('Warning, there is no object in processTargetByFunction in lineation for:')
 		print(target)
 		return
@@ -213,8 +220,8 @@ def processTargetByFunction(manipulationFunction, target):
 def removeChildNodesFromElementObject(elementNode):
 	'Process the xml element by manipulationFunction.'
 	elementNode.removeChildNodesFromIDNameParent()
-	if elementNode.xmlObject is not None:
-		if elementNode.parentNode.xmlObject is not None:
+	if elementNode.xmlObject != None:
+		if elementNode.parentNode.xmlObject != None:
 			if elementNode.xmlObject in elementNode.parentNode.xmlObject.archivableObjects:
 				elementNode.parentNode.xmlObject.archivableObjects.remove(elementNode.xmlObject)
 
@@ -231,18 +238,17 @@ class LineationDerivation:
 		self.target = evaluate.getTransformedPathsByKey([], elementNode, 'target')
 
 
-
 class SideLoop:
 	'Class to handle loop, side angle and side length.'
 	def __init__(self, loop, sideAngle=None, sideLength=None):
 		'Initialize.'
-		if sideAngle is None:
+		if sideAngle == None:
 			if len(loop) > 0:
 				sideAngle = 2.0 * math.pi / float(len(loop))
 			else:
 				sideAngle = 1.0
 				print('Warning, loop has no sides in SideLoop in lineation.')
-		if sideLength is None:
+		if sideLength == None:
 			if len(loop) > 0:
 				sideLength = euclidean.getLoopLength(loop) / float(len(loop))
 			else:
@@ -290,7 +296,7 @@ class Spiral:
 	def __init__(self, spiral, stepRatio):
 		'Initialize.'
 		self.spiral = spiral
-		if self.spiral is None:
+		if self.spiral == None:
 			return
 		self.spiralIncrement = self.spiral * stepRatio
 		self.spiralTotal = Vector3()
@@ -301,7 +307,7 @@ class Spiral:
 
 	def getSpiralPoint(self, unitPolar, vector3):
 		'Add spiral to the vector.'
-		if self.spiral is None:
+		if self.spiral == None:
 			return vector3
 		vector3 += Vector3(unitPolar.real * self.spiralTotal.x, unitPolar.imag * self.spiralTotal.y, self.spiralTotal.z)
 		self.spiralTotal += self.spiralIncrement

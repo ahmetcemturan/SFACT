@@ -9,7 +9,7 @@ The default 'Activate Whittle' checkbox is on.  When it is on, the functions des
 ===Maximum Vertical Step'===
 Default is 0.1 mm.
 
-Defines the maximum distance that the helix will step down on each rotation.  The number of steps in the helix will be the layer thickness divided by the 'Maximum Vertical Step', rounded up.  The amount the helix will step down is the layer thickness divided by the number of steps.  The thinner the 'Maximum Vertical Step', the more times the cutting tool will circle around on its way to the bottom of the slab.
+Defines the maximum distance that the helix will step down on each rotation.  The number of steps in the helix will be the layer height divided by the 'Maximum Vertical Step', rounded up.  The amount the helix will step down is the layer height divided by the number of steps.  The thinner the 'Maximum Vertical Step', the more times the cutting tool will circle around on its way to the bottom of the slab.
 
 ==Examples==
 The following examples whittle the file Screw Holder Bottom.stl.  The examples are run in a terminal in the folder which contains Screw Holder Bottom.stl and whittle.py.
@@ -54,7 +54,7 @@ def getCraftedTextFromText( gcodeText, whittleRepository = None ):
 	"Whittle the preface gcode text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'whittle'):
 		return gcodeText
-	if whittleRepository is None:
+	if whittleRepository == None:
 		whittleRepository = settings.getReadRepository( WhittleRepository() )
 	if not whittleRepository.activateWhittle.value:
 		return gcodeText
@@ -90,7 +90,7 @@ class WhittleSkein:
 	"A class to whittle a skein of extrusions."
 	def __init__(self):
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
-		self.layerThickness = 0.3333333333
+		self.layerHeight = 0.3333333333
 		self.lineIndex = 0
 		self.movementLines = []
 		self.oldLocation = None
@@ -122,7 +122,7 @@ class WhittleSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('whittle')
 				return
-			elif firstWord == '(<layerThickness>':
+			elif firstWord == '(<layerHeight>':
 				self.setLayerThinknessVerticalDeltas(splitLine)
 				self.distanceFeedRate.addTagBracketedLine('layerStep', self.layerStep )
 			self.distanceFeedRate.addLine(line)
@@ -150,10 +150,10 @@ class WhittleSkein:
 		self.movementLines = []
 
 	def setLayerThinknessVerticalDeltas( self, splitLine ):
-		"Set the layer thickness and the vertical deltas."
-		self.layerThickness = float(splitLine[1])
-		numberOfSteps = int( math.ceil( self.layerThickness / self.whittleRepository.maximumVerticalStep.value ) )
-		self.layerStep = self.layerThickness / float( numberOfSteps )
+		"Set the layer height and the vertical deltas."
+		self.layerHeight = float(splitLine[1])
+		numberOfSteps = int( math.ceil( self.layerHeight / self.whittleRepository.maximumVerticalStep.value ) )
+		self.layerStep = self.layerHeight / float( numberOfSteps )
 		self.layerDeltas = []
 		halfDeltaMinusHalfTop = 0.5 * self.layerStep * ( 1.0 - numberOfSteps )
 		for layerDeltaIndex in xrange( numberOfSteps - 1, - 1, - 1 ):

@@ -20,7 +20,7 @@ Cleave is a script to cleave a shape into svg slice layers.<br>
 &nbsp;&nbsp;<a href="#Add Layer Template to SVG">Add Layer Template to SVG</a><br />
 &nbsp;&nbsp;<a href="#Extra Decimal Places">Extra Decimal Places</a><br />
 &nbsp;&nbsp;<a href="#Import Coarseness">Import Coarseness</a><br />
-&nbsp;&nbsp;<a href="#Layer Thickness">Layer Thickness</a><br />
+&nbsp;&nbsp;<a href="#Layer Height">Layer Height</a><br />
 &nbsp;&nbsp;<a href="#Layers">Layers</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layers From">Layers From</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layers To">Layers To</a><br />
@@ -46,19 +46,19 @@ When off, no controls will be added, the svg output will only include the fabric
 
 Default is two.<br>
  <br>
-Defines the number of extra decimal places export will output compared to the number of decimal places in the layer thickness.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.<br>
+Defines the number of extra decimal places export will output compared to the number of decimal places in the layer height.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.<br>
  <br>
 <a name="Import Coarseness" id="Import Coarseness"></a><h3>Import Coarseness</h3>
 
 Default is one.<br>
  <br>
-When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.<br>
+When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the edge width.<br>
  <br>
-<a name="Layer Thickness" id="Layer Thickness"></a><h3>Layer Thickness</h3>
+<a name="Layer Height" id="Layer Height"></a><h3>Layer Height</h3>
 
 Default is 0.4 mm.<br>
  <br>
-Defines the thickness of the layer, this is the most important cleave setting.<br>
+Defines the height of the layer, this is the most important cleave setting.<br>
  <br>
 <a name="Layers" id="Layers"></a><h3>Layers</h3>
 
@@ -92,7 +92,7 @@ When selected, cleave will use the gap spanning algorithm from the start.  The p
 
 Default is two millimeters.<br>
  <br>
-Defines the width of the perimeter.<br>
+Defines the width of the edge.<br>
  <br>
 <a name="SVG Viewer" id="SVG Viewer"></a><h3>SVG Viewer</h3>
 

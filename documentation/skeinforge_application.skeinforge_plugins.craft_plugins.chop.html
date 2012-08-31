@@ -21,7 +21,7 @@ Chop is a script to chop a shape into svg slice layers.<br>
 &nbsp;&nbsp;<a href="#Add Extra Top Layer if Necessary">Add Extra Top Layer if Necessary</a><br />
 &nbsp;&nbsp;<a href="#Extra Decimal Places">Extra Decimal Places</a><br />
 &nbsp;&nbsp;<a href="#Import Coarseness">Import Coarseness</a><br />
-&nbsp;&nbsp;<a href="#Layer Thickness">Layer Thickness</a><br />
+&nbsp;&nbsp;<a href="#Layer Height">Layer Height</a><br />
 &nbsp;&nbsp;<a href="#Layers">Layers</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layers From">Layers From</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Layers To">Layers To</a><br />
@@ -47,25 +47,25 @@ When off, no controls will be added, the svg output will only include the fabric
 
 Default is on.<br>
  <br>
-When selected, chop will add an extra layer at the very top of the object if the top of the object is more than half the layer thickness above the first slice.  This is so the cutting tool doesn't cut too deeply through the top of the object on its first pass.<br>
+When selected, chop will add an extra layer at the very top of the object if the top of the object is more than half the layer height above the first slice.  This is so the cutting tool doesn't cut too deeply through the top of the object on its first pass.<br>
  <br>
 <a name="Extra Decimal Places" id="Extra Decimal Places"></a><h3>Extra Decimal Places</h3>
 
 Default is two.<br>
  <br>
-Defines the number of extra decimal places export will output compared to the number of decimal places in the layer thickness.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.<br>
+Defines the number of extra decimal places export will output compared to the number of decimal places in the layer height.  The higher the 'Extra Decimal Places', the more significant figures the output numbers will have.<br>
  <br>
 <a name="Import Coarseness" id="Import Coarseness"></a><h3>Import Coarseness</h3>
 
 Default is one.<br>
  <br>
-When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the perimeter width.<br>
+When a triangle mesh has holes in it, the triangle mesh slicer switches over to a slow algorithm that spans gaps in the mesh.  The higher the 'Import Coarseness' setting, the wider the gaps in the mesh it will span.  An import coarseness of one means it will span gaps of the edge width.<br>
  <br>
-<a name="Layer Thickness" id="Layer Thickness"></a><h3>Layer Thickness</h3>
+<a name="Layer Height" id="Layer Height"></a><h3>Layer Height</h3>
 
 Default is 0.4 mm.<br>
  <br>
-Defines the thickness of the layer, this is the most important chop setting.<br>
+Defines the height of the layer, this is the most important chop setting.<br>
  <br>
 <a name="Layers" id="Layers"></a><h3>Layers</h3>
 
@@ -99,7 +99,7 @@ When selected, chop will use the gap spanning algorithm from the start.  The pro
 
 Default is 2 mm.<br>
  <br>
-Defines the width of the perimeter.<br>
+Defines the width of the edge.<br>
  <br>
 <a name="SVG Viewer" id="SVG Viewer"></a><h3>SVG Viewer</h3>
 
@@ -183,7 +183,7 @@ The chop tool has created the file:<br>
 <td colspan=2><tt>A&nbsp;class&nbsp;to&nbsp;chop&nbsp;a&nbsp;carving.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
-<dl><dt><a name="ChopSkein-addExtraTopLayerIfNecessary"><strong>addExtraTopLayerIfNecessary</strong></a>(self, carving, layerThickness, loopLayers)</dt><dd><tt>Add&nbsp;extra&nbsp;top&nbsp;layer&nbsp;if&nbsp;necessary.</tt></dd></dl>
+<dl><dt><a name="ChopSkein-addExtraTopLayerIfNecessary"><strong>addExtraTopLayerIfNecessary</strong></a>(self, carving, layerHeight, loopLayers)</dt><dd><tt>Add&nbsp;extra&nbsp;top&nbsp;layer&nbsp;if&nbsp;necessary.</tt></dd></dl>
 
 <dl><dt><a name="ChopSkein-getCarvedSVG"><strong>getCarvedSVG</strong></a>(self, carving, fileName, repository)</dt><dd><tt>Parse&nbsp;gnu&nbsp;triangulated&nbsp;surface&nbsp;text&nbsp;and&nbsp;store&nbsp;the&nbsp;chopped&nbsp;gcode.</tt></dd></dl>
 

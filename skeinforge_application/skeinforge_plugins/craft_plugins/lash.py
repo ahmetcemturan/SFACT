@@ -66,7 +66,7 @@ def getCraftedTextFromText( gcodeText, lashRepository = None ):
 	"Get a lashed gcode linear move text from text."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'lash'):
 		return gcodeText
-	if lashRepository is None:
+	if lashRepository == None:
 		lashRepository = settings.getReadRepository( LashRepository() )
 	if not lashRepository.activateLash.value:
 		return gcodeText
@@ -88,7 +88,7 @@ class LashRepository:
 		skeinforge_profile.addListsToCraftTypeRepository('skeinforge_application.skeinforge_plugins.craft_plugins.lash.html', self)
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Lash', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Lash')
-		self.activateLash = settings.BooleanSetting().getFromValue('Activate Lash if you have backlash in your axes', self, False )
+		self.activateLash = settings.BooleanSetting().getFromValue('Activate Lash', self, False )
 		self.xBacklash = settings.FloatSpin().getFromValue( 0.1, 'X Backlash (mm):', self, 0.5, 0.2 )
 		self.yBacklash = settings.FloatSpin().getFromValue( 0.1, 'Y Backlash (mm):', self, 0.5, 0.3 )
 		self.executeTitle = 'Lash'
@@ -123,7 +123,7 @@ class LashSkein:
 
 	def getLashedLine( self, line, location, splitLine ):
 		"Get lashed gcode line."
-		if self.oldLocation is None:
+		if self.oldLocation == None:
 			return line
 		if location.x > self.oldLocation.x:
 			line = self.distanceFeedRate.getLineWithX( line, splitLine, location.x + self.xBacklash )

@@ -164,7 +164,7 @@ class CellExistence:
 	def __init__(self, columns, rows, value):
 		'Initialize.'
 		self.existenceSet = None
-		if value is None:
+		if value == None:
 			return
 		self.existenceSet = set()
 		for element in value:
@@ -183,7 +183,7 @@ class CellExistence:
 
 	def getIsInExistence(self, columnIndex, rowIndex):
 		'Detremine if the cell at the column and row exists.'
-		if self.existenceSet is None:
+		if self.existenceSet == None:
 			return True
 		return (columnIndex, rowIndex) in self.existenceSet
 

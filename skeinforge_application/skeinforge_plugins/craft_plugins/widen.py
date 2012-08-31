@@ -1,9 +1,9 @@
 #! /usr/bin/env python
 """
 This page is in the table of contents.
-Widen will widen the outside perimeters away from the inside perimeters, so that the outsides will be at least two perimeter widths away from the insides and therefore the outside filaments will not overlap the inside filaments.
+Widen will widen the outside edges away from the inside edges, so that the outsides will be at least two edge widths away from the insides and therefore the outside filaments will not overlap the inside filaments.
 
-For example, if a mug has a very thin wall, widen would widen the outside of the mug so that the wall of the mug would be two perimeter widths wide, and the outside wall filament would not overlap the inside filament.
+For example, if a mug has a very thin wall, widen would widen the outside of the mug so that the wall of the mug would be two edge widths wide, and the outside wall filament would not overlap the inside filament.
 
 For another example, if the outside of the object runs right next to a hole, widen would widen the wall around the hole so that the wall would bulge out around the hole, and the outside filament would not overlap the hole filament.
 
@@ -65,7 +65,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	'Widen the preface gcode text.'
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'widen'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( WidenRepository() )
 	if not repository.activateWiden.value:
 		return gcodeText
@@ -96,15 +96,15 @@ def getNewRepository():
 	'Get new repository.'
 	return WidenRepository()
 
-def getWidenedLoop(loop, loopList, outsetLoop, radius):
+def getWidenedLoops(loop, loopList, outsetLoop, radius):
 	'Get the widened loop.'
 	intersectingWithinLoops = getIntersectingWithinLoops(loop, loopList, outsetLoop)
 	if len(intersectingWithinLoops) < 1:
-		return loop
-	loopsUnified = boolean_solid.getLoopsUnified(radius, [[loop], intersectingWithinLoops])
+		return [loop]
+	loopsUnified = boolean_solid.getLoopsUnion(radius, [[loop], intersectingWithinLoops])
 	if len(loopsUnified) < 1:
-		return loop
-	return euclidean.getLargestLoop(loopsUnified)
+		return [loop]
+	return loopsUnified
 
 def writeOutput(fileName, shouldAnalyze=True):
 	'Widen the carving of a gcode file.'
@@ -121,6 +121,7 @@ class WidenRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute(
 			'http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Widen')
 		self.activateWiden = settings.BooleanSetting().getFromValue('Activate Widen', self, False)
+		self.widenWidthOverEdgeWidth = settings.IntSpin().getFromValue(2, 'Widen Width over Edge Width (ratio):', self, 4, 2)
 		self.executeTitle = 'Widen'
 
 	def execute(self):
@@ -155,15 +156,15 @@ class WidenSkein:
 				else:
 					widdershinsLoops.append(loop)
 			else:
-#				clockwiseInsetLoop = intercircle.getLargestInsetLoopFromLoop(loop, self.doublePerimeterWidth)
+#				clockwiseInsetLoop = intercircle.getLargestInsetLoopFromLoop(loop, self.widenEdgeWidth)
 #				clockwiseInsetLoop.reverse()
 #				clockwiseInsetLoops.append(clockwiseInsetLoop)
-				clockwiseInsetLoops += intercircle.getInsetLoopsFromLoop(loop, self.doublePerimeterWidth)
+				clockwiseInsetLoops += intercircle.getInsetLoopsFromLoop(loop, self.widenEdgeWidth)
 				self.distanceFeedRate.addGcodeFromLoop(loop, loopLayer.z)
 		for widdershinsLoop in widdershinsLoops:
-			outsetLoop = intercircle.getLargestInsetLoopFromLoop(widdershinsLoop, -self.doublePerimeterWidth)
-			widenedLoop = getWidenedLoop(widdershinsLoop, clockwiseInsetLoops, outsetLoop, self.perimeterWidth)
-			self.distanceFeedRate.addGcodeFromLoop(widenedLoop, loopLayer.z)
+			outsetLoop = intercircle.getLargestInsetLoopFromLoop(widdershinsLoop, -self.widenEdgeWidth)
+			for widenedLoop in getWidenedLoops(widdershinsLoop, clockwiseInsetLoops, outsetLoop, self.lessThanHalfEdgeWidth):
+				self.distanceFeedRate.addGcodeFromLoop(widenedLoop, loopLayer.z)
 
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the widen gcode.'
@@ -186,9 +187,10 @@ class WidenSkein:
 			elif firstWord == '(<crafting>)':
 				self.distanceFeedRate.addLine(line)
 				return
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.doublePerimeterWidth = 2.0 * self.perimeterWidth
+			elif firstWord == '(<edgeWidth>':
+				self.edgeWidth = float(splitLine[1])
+				self.widenEdgeWidth = float(self.repository.widenWidthOverEdgeWidth.value) * self.edgeWidth
+				self.lessThanHalfEdgeWidth = 0.49 * self.edgeWidth
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
@@ -210,7 +212,7 @@ class WidenSkein:
 		elif firstWord == '(<nestedRing>)':
 			self.boundary = []
 			self.loopLayer.loops.append( self.boundary )
-		if self.loopLayer is None:
+		if self.loopLayer == None:
 			self.distanceFeedRate.addLine(line)
 
 

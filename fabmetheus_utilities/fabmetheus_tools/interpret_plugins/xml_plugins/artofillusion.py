@@ -69,7 +69,7 @@ def getTransformElementNode( coords, transformName ):
 
 def processAppendElementNode(archivableObjects, elementNode, parentNode):
 	"Add the object info if it is carvable."
-	if elementNode is None:
+	if elementNode == None:
 		return
 	object = elementNode.getFirstChildByLocalName('object')
 	if 'bf:type' not in object.attributes:

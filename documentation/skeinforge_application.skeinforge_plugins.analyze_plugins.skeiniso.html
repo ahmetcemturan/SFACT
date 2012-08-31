@@ -74,7 +74,7 @@ The skeiniso manual page is at:<br>
 
 The default 'Activate Skeiniso' checkbox is off.  When it is on, the functions described below will work when called from the skeinforge toolchain, when it is off, the functions will not be called from the toolchain.  The functions will still be called, whether or not the 'Activate Skeiniso' checkbox is on, when skeiniso is run directly.<br>
  <br>
-Skeiniso requires skeinforge comments in the gcode file to distinguish the loops and perimeters.  If the comments are deleted, all threads will be displayed as generic threads.  To get the penultimate file of the tool chain, just before export deletes the comments, select 'Save Penultimate Gcode' in export, and open the gcode file with the suffix '_penultimate.gcode' with skeiniso.<br>
+Skeiniso requires skeinforge comments in the gcode file to distinguish the loops and edges.  If the comments are deleted, all threads will be displayed as generic threads.  To get the penultimate file of the tool chain, just before export deletes the comments, select 'Save Penultimate Gcode' in export, and open the gcode file with the suffix '_penultimate.gcode' with skeiniso.<br>
  <br>
 The viewer is simple, the viewpoint can only be moved in a sphere around the center of the model by changing the viewpoint latitude and longitude.  Different regions of the model can be hidden by setting the width of the thread to zero.  The alternating bands act as contour bands and their brightness and width can be changed.<br>
  <br>
@@ -277,19 +277,19 @@ The "Width of Fill Top Thread" sets the width of the blue extrusion threads at t
 
 Default is three.<br>
  <br>
-The "Width of Loop Thread" sets the width of the yellow loop threads, which are not perimeters.<br>
+The "Width of Loop Thread" sets the width of the yellow loop threads, which are not edges.<br>
  <br>
 <a name="Width of Perimeter Inside Thread" id="Width of Perimeter Inside Thread"></a><h4>Width of Perimeter Inside Thread</h4>
 
 Default is eight.<br>
  <br>
-The "Width of Perimeter Inside Thread" sets the width of the orange inside perimeter threads.<br>
+The "Width of Perimeter Inside Thread" sets the width of the orange inside edge threads.<br>
  <br>
 <a name="Width of Perimeter Outside Thread" id="Width of Perimeter Outside Thread"></a><h4>Width of Perimeter Outside Thread</h4>
 
 Default is eight.<br>
  <br>
-The "Width of Perimeter Outside Thread" sets the width of the red outside perimeter threads.<br>
+The "Width of Perimeter Outside Thread" sets the width of the red outside edge threads.<br>
  <br>
 <a name="Width of Raft Thread" id="Width of Raft Thread"></a><h4>Width of Raft Thread</h4>
 

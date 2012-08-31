@@ -23,7 +23,7 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 def getGeometryOutput(derivation, elementNode):
 	'Get triangle mesh from attribute dictionary.'
-	if derivation is None:
+	if derivation == None:
 		derivation = ConcatenateDerivation(elementNode)
 	concatenatedList = euclidean.getConcatenatedList(derivation.target)[:]
 	if len(concatenatedList) == 0:

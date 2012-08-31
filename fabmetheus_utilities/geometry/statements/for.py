@@ -26,9 +26,9 @@ def processChildNodesByIndexValue( elementNode, function, index, indexValue, val
 
 def processElementNode(elementNode):
 	"Process the xml element."
-	if elementNode.xmlObject is None:
+	if elementNode.xmlObject == None:
 		elementNode.xmlObject = IndexValue(elementNode)
-	if elementNode.xmlObject.inSplitWords is None:
+	if elementNode.xmlObject.inSplitWords == None:
 		return
 	xmlProcessor = elementNode.getXMLProcessor()
 	if len( xmlProcessor.functions ) < 1:

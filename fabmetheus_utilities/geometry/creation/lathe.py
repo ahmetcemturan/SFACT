@@ -51,7 +51,7 @@ def addNegativesPositives(derivation, negatives, paths, positives):
 			endMultiplier = 1.000001
 		loopListsByPath = getLoopListsByPath(derivation, endMultiplier, path)
 		geometryOutput = triangle_mesh.getPillarsOutput(loopListsByPath)
-		if endMultiplier is None:
+		if endMultiplier == None:
 			positives.append(geometryOutput)
 		else:
 			negatives.append(geometryOutput)
@@ -71,7 +71,7 @@ def addPositives(derivation, paths, positives):
 
 def getGeometryOutput(derivation, elementNode):
 	"Get triangle mesh from attribute dictionary."
-	if derivation is None:
+	if derivation == None:
 		derivation = LatheDerivation(elementNode)
 	if len(euclidean.getConcatenatedList(derivation.target)) == 0:
 		print('Warning, in lathe there are no paths.')
@@ -100,7 +100,7 @@ def getLoopListsByPath(derivation, endMultiplier, path):
 	if len(derivation.loop) < 2:
 		return loopLists
 	for pointIndex, pointComplex in enumerate(derivation.loop):
-		if endMultiplier is not None and not derivation.isEndCloseToStart:
+		if endMultiplier != None and not derivation.isEndCloseToStart:
 			if pointIndex == 0:
 				nextPoint = derivation.loop[1]
 				pointComplex = endMultiplier * (pointComplex - nextPoint) + nextPoint
@@ -142,8 +142,8 @@ class LatheDerivation:
 			print(elementNode)
 			self.target = []
 			return
-		if self.axisStart is None:
-			if self.axisEnd is None:
+		if self.axisStart == None:
+			if self.axisEnd == None:
 				self.axisStart = firstPath[0]
 				self.axisEnd = firstPath[-1]
 			else:
@@ -165,7 +165,7 @@ class LatheDerivation:
 			return
 		firstVector3 /= firstVector3Length
 		self.axisProjectiveSpace = euclidean.ProjectiveSpace().getByBasisZFirst(self.axis, firstVector3)
-		if self.sides is None:
+		if self.sides == None:
 			distanceToLine = euclidean.getDistanceToLineByPaths(self.axisStart, self.axisEnd, self.target)
 			self.sides = evaluate.getSidesMinimumThreeBasedOnPrecisionSides(elementNode, distanceToLine)
 		endRadian = math.radians(self.end)

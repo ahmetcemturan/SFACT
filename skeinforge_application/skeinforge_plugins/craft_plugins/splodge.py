@@ -23,7 +23,7 @@ Defines the feed rate at which the initial extra extrusion will be added.  With 
 ====Initial Splodge Quantity Length====
 Default is thirty millimeters.
 
-Defines the quantity length of extra extrusion at the operating feed rate that will be added to the initial thread.  If a splodge quantity length is smaller than 0.1 times the perimeter width, no splodge of that type will be added.
+Defines the quantity length of extra extrusion at the operating feed rate that will be added to the initial thread.  If a splodge quantity length is smaller than 0.1 times the edge width, no splodge of that type will be added.
 
 ===Operating===
 ====Operating Lift over Extra Thickness====
@@ -170,7 +170,7 @@ class SplodgeSkein:
 		self.setRotations()
 		self.splodgeRepository = splodgeRepository
 		self.parseInitialization( splodgeRepository )
-		self.boundingRectangle = gcodec.BoundingRectangle().getFromGcodeLines( self.lines[self.lineIndex :], 0.5 * self.perimeterWidth )
+		self.boundingRectangle = gcodec.BoundingRectangle().getFromGcodeLines( self.lines[self.lineIndex :], 0.5 * self.edgeWidth )
 		self.initialSplodgeFeedRateMinute = 60.0 * splodgeRepository.initialSplodgeFeedRate.value
 		self.initialStartupDistance = splodgeRepository.initialSplodgeQuantityLength.value * splodgeRepository.initialSplodgeFeedRate.value / self.operatingFeedRatePerSecond
 		self.operatingSplodgeFeedRateMinute = 60.0 * splodgeRepository.operatingSplodgeFeedRate.value
@@ -234,8 +234,8 @@ class SplodgeSkein:
 		relativeStartComplex *= startupDistance / abs( relativeStartComplex )
 		startComplex = self.getStartInsideBoundingRectangle( locationComplex, relativeStartComplex )
 		feedRateMultiplier = feedRateMinute / self.operatingFeedRatePerSecond / 60.0
-		splodgeLayerThickness = self.layerThickness / math.sqrt( feedRateMultiplier )
-		extraLayerThickness = splodgeLayerThickness - self.layerThickness
+		splodgeLayerThickness = self.layerHeight / math.sqrt( feedRateMultiplier )
+		extraLayerThickness = splodgeLayerThickness - self.layerHeight
 		lift = extraLayerThickness * liftOverExtraThickness
 		startLine = self.distanceFeedRate.getLinearGcodeMovementWithFeedRate( self.feedRateMinute, startComplex, location.z + lift )
 		self.addLineUnlessIdenticalReactivate( startLine )
@@ -279,13 +279,13 @@ class SplodgeSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.addLineUnlessIdenticalReactivate(gcodec.getTagBracketedProcedure('splodge'))
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
+			elif firstWord == '(<layerHeight>':
+				self.layerHeight = float(splitLine[1])
 			elif firstWord == '(<operatingFeedRatePerSecond>':
 				self.operatingFeedRatePerSecond = float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.minimumQuantityLength = 0.1 * self.perimeterWidth
+			elif firstWord == '(<edgeWidth>':
+				self.edgeWidth = float(splitLine[1])
+				self.minimumQuantityLength = 0.1 * self.edgeWidth
 			self.addLineUnlessIdenticalReactivate(line)
 
 	def parseLine(self, line):

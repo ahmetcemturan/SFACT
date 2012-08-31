@@ -21,7 +21,7 @@ offset = 0.0
 while drillLocation.imag < safeTopRight.imag:
 	print('')
 	while drillLocation.real < safeTopRight.real:
-		print( drillLocation )
+		print(drillLocation)
 		drillLocation = complex( drillLocation.real + separation, drillLocation.imag )
 	offset = oddRowOffset - offset
 	drillLocation = complex( safeBottomLeft.real + offset, drillLocation.imag + horizontalSeparation )

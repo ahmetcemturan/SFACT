@@ -30,7 +30,7 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation is None:
+	if derivation == None:
 		derivation = WriteDerivation(elementNode)
 	if len(derivation.targets) < 1:
 		print('Warning, processElementNode in write could not get targets for:')
@@ -43,7 +43,7 @@ def processElementNodeByDerivation(derivation, elementNode):
 def writeElementNode(derivation, fileNames, target):
 	"Write a quantity of the target."
 	xmlObject = target.xmlObject
-	if xmlObject is None:
+	if xmlObject == None:
 		print('Warning, writeTarget in write could not get xmlObject for:')
 		print(target)
 		print(derivation.elementNode)

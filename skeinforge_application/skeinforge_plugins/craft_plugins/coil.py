@@ -58,7 +58,7 @@ def getCraftedTextFromText(gcodeText, repository=None):
 	"Coil a gcode linear move gcodeText."
 	if gcodec.isProcedureDoneOrFileIsEmpty( gcodeText, 'coil'):
 		return gcodeText
-	if repository is None:
+	if repository == None:
 		repository = settings.getReadRepository( CoilRepository() )
 	if not repository.activateCoil.value:
 		return gcodeText
@@ -96,10 +96,10 @@ class CoilSkein:
 	def __init__(self):
 		self.boundaryLayers = []
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
+		self.edgeWidth = 0.6
 		self.lineIndex = 0
 		self.lines = None
 		self.oldLocationComplex = complex()
-		self.perimeterWidth = 0.6
 		self.shutdownLines = []
 
 	def addCoilLayer( self, boundaryLayers, radius, z ):
@@ -120,9 +120,9 @@ class CoilSkein:
 
 	def addCoilLayers(self):
 		"Add the coil layers."
-		numberOfLayersFloat = round( self.perimeterWidth / self.layerThickness )
+		numberOfLayersFloat = round( self.edgeWidth / self.layerHeight )
 		numberOfLayers = int( numberOfLayersFloat )
-		halfLayerThickness = 0.5 * self.layerThickness
+		halfLayerThickness = 0.5 * self.layerHeight
 		startOutset = self.repository.minimumToolDistance.value + halfLayerThickness
 		startZ = self.boundaryLayers[0].z + halfLayerThickness
 		zRange = self.boundaryLayers[-1].z - self.boundaryLayers[0].z
@@ -134,7 +134,7 @@ class CoilSkein:
 			boundaryLayers = self.boundaryLayers
 			if layerIndex % 2 == 1:
 				boundaryLayers = self.boundaryReverseLayers
-			radius = startOutset + layerIndex * self.layerThickness
+			radius = startOutset + layerIndex * self.layerHeight
 			z = startZ + layerIndex * zIncrement
 			self.addCoilLayer( boundaryLayers, radius, z )
 
@@ -142,7 +142,7 @@ class CoilSkein:
 		"Add a coil to the thread."
 		if len(loop) < 1:
 			return
-		loop = euclidean.getLoopStartingClosest(self.halfPerimeterWidth, self.oldLocationComplex, loop)
+		loop = euclidean.getLoopStartingClosest(self.halfEdgeWidth, self.oldLocationComplex, loop)
 		length = euclidean.getLoopLength(loop)
 		if length <= 0.0:
 			return
@@ -163,9 +163,9 @@ class CoilSkein:
 			firstLocation = thread[0]
 			self.distanceFeedRate.addGcodeMovementZ( firstLocation.dropAxis(), firstLocation.z )
 		else:
-			print( "zero length vertex positions array which was skipped over, this should never happen" )
+			print("zero length vertex positions array which was skipped over, this should never happen")
 		if len(thread) < 2:
-			print( "thread of only one point in addGcodeFromThread in coil, this should never happen" )
+			print("thread of only one point in addGcodeFromThread in coil, this should never happen")
 			print(thread)
 			return
 		self.distanceFeedRate.addLine('M101') # Turn extruder on.
@@ -197,7 +197,7 @@ class CoilSkein:
 				boundaryLoop = None
 			elif firstWord == '(<boundaryPoint>':
 				location = gcodec.getLocationFromSplitLine(None, splitLine)
-				if boundaryLoop is None:
+				if boundaryLoop == None:
 					boundaryLoop = []
 					boundaryLayer.loops.append(boundaryLoop)
 				boundaryLoop.append(location.dropAxis())
@@ -222,11 +222,11 @@ class CoilSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('coil')
 				return
-			elif firstWord == '(<layerThickness>':
-				self.layerThickness = float(splitLine[1])
-			elif firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
-				self.halfPerimeterWidth = 0.5 * self.perimeterWidth
+			elif firstWord == '(<layerHeight>':
+				self.layerHeight = float(splitLine[1])
+			elif firstWord == '(<edgeWidth>':
+				self.edgeWidth = float(splitLine[1])
+				self.halfEdgeWidth = 0.5 * self.edgeWidth
 			self.distanceFeedRate.addLine(line)
 
 	def parseUntilLayer(self):

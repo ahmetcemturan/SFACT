@@ -30,9 +30,9 @@ def processElementNode(elementNode):
 
 def processElementNodeByDerivation(derivation, elementNode):
 	'Process the xml element by derivation.'
-	if derivation is None:
+	if derivation == None:
 		derivation = CopyDerivation(elementNode)
-	if derivation.target is None:
+	if derivation.target == None:
 		print('Warning, copy could not get target for:')
 		print(elementNode)
 		return
@@ -46,7 +46,7 @@ def processElementNodeByDerivation(derivation, elementNode):
 	elementNode.localName = derivation.target.localName
 	derivation.target.copyXMLChildNodes(elementNode.getIDSuffix(), elementNode)
 	elementNode.getXMLProcessor().processElementNode(elementNode)
-	if copyMatrix is not None and targetMatrix is not None:
+	if copyMatrix != None and targetMatrix != None:
 		elementNode.xmlObject.matrix4X4 = copyMatrix.getSelfTimesOther(targetMatrix.tetragrid)
 	if elementNode.xmlObject == None:
 		return

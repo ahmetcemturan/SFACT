@@ -13,7 +13,7 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.scale.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.skirt.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Skin is a plugin to smooth the surface skin of an object by replacing the perimeter surface with a surface printed at a fraction of the carve<br>
+Skin is a plugin to smooth the surface skin of an object by replacing the edge surface with a surface printed at a fraction of the carve<br>
 height.  This gives the impression that the object was carved at a much thinner height giving a high-quality finish, but still prints <br>
 in a relatively short time.  The latest process has some similarities with a description at:<br>
  <br>
@@ -54,13 +54,13 @@ Defines the number of times the skinned infill is divided horizontally.<br>
 
 Default: 1<br>
  <br>
-Defines the number of times the skinned perimeters are divided horizontally.<br>
+Defines the number of times the skinned edges are divided horizontally.<br>
  <br>
 <a name="Vertical Divisions" id="Vertical Divisions"></a><h4>Vertical Divisions</h4>
 
 Default: 2<br>
  <br>
-Defines the number of times the skinned infill and perimeters are divided vertically.<br>
+Defines the number of times the skinned infill and edges are divided vertically.<br>
  <br>
 <a name="Hop When Extruding Infill" id="Hop When Extruding Infill"></a><h3>Hop When Extruding Infill</h3>
 
@@ -72,14 +72,14 @@ When selected, the extruder will hop before and after extruding the lower infill
 
 Default: 1<br>
  <br>
-Defines which layer of the print the skinning process starts from. It is not wise to set this to zero, skinning the bottom layer is likely to cause the bottom perimeter not to adhere well to the print surface.<br>
+Defines which layer of the print the skinning process starts from. It is not wise to set this to zero, skinning the bottom layer is likely to cause the bottom edge not to adhere well to the print surface.<br>
  <br>
 <a name="Tips" id="Tips"></a><h2>Tips</h2>
 <hr>
 
-Due to the very small Z-axis moves skinning can generate as it prints the perimeter, it can cause the Z-axis speed to be limited by the Limit plug-in, if you have it enabled. This can cause some printers to pause excessively during each layer change. To overcome this, ensure that the Z-axis max speed in the Limit tool is set to an appropriate value for your printer, e.g. 10mm/s<br>
+Due to the very small Z-axis moves skinning can generate as it prints the edge, it can cause the Z-axis speed to be limited by the Limit plug-in, if you have it enabled. This can cause some printers to pause excessively during each layer change. To overcome this, ensure that the Z-axis max speed in the Limit tool is set to an appropriate value for your printer, e.g. 10mm/s<br>
  <br>
-Since Skin prints a number of fractional-height perimeter layers for each layer, printing the perimeter last causes the print head to travel down from the current print height. Depending on the shape of your extruder nozzle, you may get higher quality prints if you print the perimeters first, so the print head always travels up.  This is set via the Thread Sequence Choice setting in the Fill tool.<br>
+Since Skin prints a number of fractional-height edge layers for each layer, printing the edge last causes the print head to travel down from the current print height. Depending on the shape of your extruder nozzle, you may get higher quality prints if you print the edges first, so the print head always travels up.  This is set via the Thread Sequence Choice setting in the Fill tool.<br>
  <br>
 <a name="Examples" id="Examples"></a><h2>Examples</h2>
 <hr>
@@ -160,13 +160,13 @@ The skin tool has created the file:<br>
 
 <dl><dt><a name="SkinSkein-addFlowRateLine"><strong>addFlowRateLine</strong></a>(self, flowRate)</dt><dd><tt>Add&nbsp;a&nbsp;flow&nbsp;rate&nbsp;line.</tt></dd></dl>
 
-<dl><dt><a name="SkinSkein-addPerimeterLoop"><strong>addPerimeterLoop</strong></a>(self, thread, z)</dt><dd><tt>Add&nbsp;the&nbsp;perimeter&nbsp;loop&nbsp;to&nbsp;the&nbsp;gcode.</tt></dd></dl>
+<dl><dt><a name="SkinSkein-addPerimeterLoop"><strong>addPerimeterLoop</strong></a>(self, thread, z)</dt><dd><tt>Add&nbsp;the&nbsp;edge&nbsp;loop&nbsp;to&nbsp;the&nbsp;gcode.</tt></dd></dl>
 
 <dl><dt><a name="SkinSkein-addSkinnedInfill"><strong>addSkinnedInfill</strong></a>(self)</dt><dd><tt>Add&nbsp;skinned&nbsp;infill.</tt></dd></dl>
 
 <dl><dt><a name="SkinSkein-addSkinnedInfillBoundary"><strong>addSkinnedInfillBoundary</strong></a>(self, infillBoundaries, offsetY, upperZ, z)</dt><dd><tt>Add&nbsp;skinned&nbsp;infill&nbsp;boundary.</tt></dd></dl>
 
-<dl><dt><a name="SkinSkein-addSkinnedPerimeter"><strong>addSkinnedPerimeter</strong></a>(self)</dt><dd><tt>Add&nbsp;skinned&nbsp;perimeter.</tt></dd></dl>
+<dl><dt><a name="SkinSkein-addSkinnedPerimeter"><strong>addSkinnedPerimeter</strong></a>(self)</dt><dd><tt>Add&nbsp;skinned&nbsp;edge.</tt></dd></dl>
 
 <dl><dt><a name="SkinSkein-getClippedSimplifiedLoopPathByLoop"><strong>getClippedSimplifiedLoopPathByLoop</strong></a>(self, loop)</dt><dd><tt>Get&nbsp;clipped&nbsp;and&nbsp;simplified&nbsp;loop&nbsp;path&nbsp;from&nbsp;a&nbsp;loop.</tt></dd></dl>
 

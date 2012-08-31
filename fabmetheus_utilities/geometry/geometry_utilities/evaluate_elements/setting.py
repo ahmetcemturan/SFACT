@@ -29,24 +29,43 @@ def getCascadeFloatWithoutSelf(defaultFloat, elementNode, key):
 		value = elementNode.attributes[key]
 		functionName = 'get' + key[0].upper() + key[1 :]
 		if functionName in value:
-			if elementNode.parentNode is None:
+			if elementNode.parentNode == None:
 				return defaultFloat
 			else:
 				elementNode = elementNode.parentNode
 	return elementNode.getCascadeFloat(defaultFloat, key)
 
+def getEdgeWidth(elementNode):
+	'Get the edge width.'
+	if elementNode == None:
+		return 0.72
+	preferences = skeinforge_craft.getCraftPreferences('carve')
+	layerHeight = skeinforge_craft.getCraftValue('Layer Height', preferences)
+	layerHeight = getCascadeFloatWithoutSelf(layerHeight, elementNode, 'layerHeight')
+	edgeWidthOverHeight = skeinforge_craft.getCraftValue('Edge Width over Height', preferences)
+	edgeWidthOverHeight = getCascadeFloatWithoutSelf(edgeWidthOverHeight, elementNode, 'edgeWidthOverHeight')
+	return getCascadeFloatWithoutSelf(edgeWidthOverHeight * layerHeight, elementNode, 'edgeWidth')
+
+def getImportCoarseness(elementNode, preferences=None):
+	'Get the importCoarseness.'
+	if elementNode == None:
+		return 1.0
+	if preferences == None:
+		preferences = skeinforge_craft.getCraftPreferences('carve')
+	importCoarseness = skeinforge_craft.getCraftValue('Import Coarseness', preferences)
+	return getCascadeFloatWithoutSelf(importCoarseness, elementNode, 'importCoarseness')
+
 def getImportRadius(elementNode):
 	'Get the importRadius.'
-	if elementNode is None:
+	if elementNode == None:
 		return 0.36
 	preferences = skeinforge_craft.getCraftPreferences('carve')
-	importCoarseness = skeinforge_craft.getCraftValue('Import Coarseness', preferences)
-	importCoarseness = getCascadeFloatWithoutSelf(importCoarseness, elementNode, 'importCoarseness')
-	layerThickness = skeinforge_craft.getCraftValue('Layer Thickness', preferences)
-	layerThickness = getCascadeFloatWithoutSelf(layerThickness, elementNode, 'layerThickness')
-	perimeterWidthOverThickness = skeinforge_craft.getCraftValue('Perimeter Width over Thickness', preferences)
-	perimeterWidthOverThickness = getCascadeFloatWithoutSelf(perimeterWidthOverThickness, elementNode, 'perimeterWidthOverThickness')
-	return getCascadeFloatWithoutSelf(0.5 * importCoarseness * layerThickness * perimeterWidthOverThickness, elementNode, 'importRadius')
+	importCoarseness = getImportCoarseness(elementNode, preferences)
+	layerHeight = skeinforge_craft.getCraftValue('Layer Height', preferences)
+	layerHeight = getCascadeFloatWithoutSelf(layerHeight, elementNode, 'layerHeight')
+	edgeWidthOverHeight = skeinforge_craft.getCraftValue('Edge Width over Height', preferences)
+	edgeWidthOverHeight = getCascadeFloatWithoutSelf(edgeWidthOverHeight, elementNode, 'edgeWidthOverHeight')
+	return getCascadeFloatWithoutSelf(0.5 * importCoarseness * layerHeight * edgeWidthOverHeight, elementNode, 'importRadius')
 
 def getInteriorOverhangAngle(elementNode):
 	'Get the interior overhang support angle in degrees.'
@@ -56,12 +75,12 @@ def getInteriorOverhangRadians(elementNode):
 	'Get the interior overhang support angle in radians.'
 	return math.radians(getInteriorOverhangAngle(elementNode))
 
-def getLayerThickness(elementNode):
-	'Get the layer thickness.'
-	if elementNode is None:
+def getLayerHeight(elementNode):
+	'Get the layer height.'
+	if elementNode == None:
 		return 0.4
 	preferences = skeinforge_craft.getCraftPreferences('carve')
-	return getCascadeFloatWithoutSelf(skeinforge_craft.getCraftValue('Layer Thickness', preferences), elementNode, 'layerThickness')
+	return getCascadeFloatWithoutSelf(skeinforge_craft.getCraftValue('Layer Height', preferences), elementNode, 'layerHeight')
 
 def getOverhangAngle(elementNode):
 	'Get the overhang support angle in degrees.'
@@ -73,22 +92,11 @@ def getOverhangRadians(elementNode):
 
 def getOverhangSpan(elementNode):
 	'Get the overhang span.'
-	return getCascadeFloatWithoutSelf(2.0 * getLayerThickness(elementNode), elementNode, 'overhangSpan')
-
-def getPerimeterWidth(elementNode):
-	'Get the perimeter width.'
-	if elementNode is None:
-		return 0.72
-	preferences = skeinforge_craft.getCraftPreferences('carve')
-	layerThickness = skeinforge_craft.getCraftValue('Layer Thickness', preferences)
-	layerThickness = getCascadeFloatWithoutSelf(layerThickness, elementNode, 'layerThickness')
-	perimeterWidthOverThickness = skeinforge_craft.getCraftValue('Perimeter Width over Thickness', preferences)
-	perimeterWidthOverThickness = getCascadeFloatWithoutSelf(perimeterWidthOverThickness, elementNode, 'perimeterWidthOverThickness')
-	return getCascadeFloatWithoutSelf(perimeterWidthOverThickness, elementNode, 'perimeterWidth')
+	return getCascadeFloatWithoutSelf(2.0 * getLayerHeight(elementNode), elementNode, 'overhangSpan')
 
 def getPrecision(elementNode):
 	'Get the cascade precision.'
-	return getCascadeFloatWithoutSelf(0.2 * getLayerThickness(elementNode), elementNode, 'precision')
+	return getCascadeFloatWithoutSelf(0.2 * getLayerHeight(elementNode), elementNode, 'precision')
 
 def getSheetThickness(elementNode):
 	'Get the sheet thickness.'
@@ -113,6 +121,14 @@ class Setting:
 		'Get the string representation of this Setting.'
 		return self.elementNode
 
+	def getEdgeWidth(self):
+		'Get the edge width.'
+		return getEdgeWidth(self.elementNode)
+
+	def getImportCoarseness(self):
+		'Get the importCoarseness.'
+		return getImportCoarseness(self.elementNode)
+
 	def getImportRadius(self):
 		'Get the importRadius.'
 		return getImportRadius(self.elementNode)
@@ -125,9 +141,9 @@ class Setting:
 		'Get the interior overhang support angle in radians.'
 		return getInteriorOverhangRadians(self.elementNode)
 
-	def getLayerThickness(self):
-		'Get the layer thickness.'
-		return getLayerThickness(self.elementNode)
+	def getLayerHeight(self):
+		'Get the layer height.'
+		return getLayerHeight(self.elementNode)
 
 	def getOverhangAngle(self):
 		'Get the overhang support angle in degrees.'
@@ -140,10 +156,6 @@ class Setting:
 	def getOverhangSpan(self):
 		'Get the overhang span.'
 		return getOverhangSpan(self.elementNode)
-
-	def getPerimeterWidth(self):
-		'Get the perimeter width.'
-		return getPerimeterWidth(self.elementNode)
 
 	def getPrecision(self):
 		'Get the cascade precision.'
@@ -162,7 +174,7 @@ class Setting:
 		return getTwistPrecisionRadians(self.elementNode)
 
 
-globalAccessibleAttributeDictionary = 'getImportRadius getInteriorOverhangAngle getInteriorOverhangRadians'.split()
-globalAccessibleAttributeDictionary += 'getLayerThickness getOverhangSpan getOverhangAngle getOverhangRadians'.split()
-globalAccessibleAttributeDictionary += 'getPerimeterWidth getPrecision getSheetThickness getTwistPrecision getTwistPrecisionRadians'.split()
+globalAccessibleAttributeDictionary = 'getEdgeWidth getImportCoarseness getImportRadius getInteriorOverhangAngle getInteriorOverhangRadians'.split()
+globalAccessibleAttributeDictionary += 'getLayerHeight getOverhangSpan getOverhangAngle getOverhangRadians'.split()
+globalAccessibleAttributeDictionary += 'getPrecision getSheetThickness getTwistPrecision getTwistPrecisionRadians'.split()
 globalGetAccessibleAttributeSet = set(globalAccessibleAttributeDictionary)

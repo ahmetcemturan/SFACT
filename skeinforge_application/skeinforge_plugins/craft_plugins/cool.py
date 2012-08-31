@@ -201,7 +201,7 @@ class CoolSkein:
 		if len(self.boundaryLayer.loops) < 1:
 			return
 		insetBoundaryLoops = self.boundaryLayer.loops
-		if abs(self.repository.orbitalOutset.value) > 0.1 * abs(self.perimeterWidth):
+		if abs(self.repository.orbitalOutset.value) > 0.1 * abs(self.edgeWidth):
 			insetBoundaryLoops = intercircle.getInsetLoopsFromLoops(self.boundaryLayer.loops, -self.repository.orbitalOutset.value)
 		if len(insetBoundaryLoops) < 1:
 			insetBoundaryLoops = self.boundaryLayer.loops
@@ -219,7 +219,7 @@ class CoolSkein:
 			largestLoop = euclidean.getSquareLoopWiddershins(minimumCorner, maximumCorner)
 		pointComplex = euclidean.getXYComplexFromVector3(self.oldLocation)
 		if pointComplex is not None:
-			largestLoop = euclidean.getLoopStartingClosest(self.perimeterWidth, pointComplex, largestLoop)
+			largestLoop = euclidean.getLoopStartingClosest(self.edgeWidth, pointComplex, largestLoop)
 		intercircle.addOrbitsIfLarge(
 			self.distanceFeedRate, largestLoop, self.orbitalFeedRatePerSecond, remainingOrbitTime, self.highestZ)
 
@@ -269,8 +269,8 @@ class CoolSkein:
 		self.minimumArea = 4.0 * repository.minimumOrbitalRadius.value * repository.minimumOrbitalRadius.value
 		self.parseInitialization()
 		self.boundingRectangle = gcodec.BoundingRectangle().getFromGcodeLines(
-			self.lines[self.lineIndex :], 0.5 * self.perimeterWidth)
-		margin = 0.2 * self.perimeterWidth
+			self.lines[self.lineIndex :], 0.5 * self.edgeWidth)
+		margin = 0.2 * self.edgeWidth
 		halfCornerMargin = self.halfCorner + complex(margin, margin)
 		self.boundingRectangle.cornerMaximum -= halfCornerMargin
 		self.boundingRectangle.cornerMinimum += halfCornerMargin
@@ -339,8 +339,8 @@ class CoolSkein:
 			self.distanceFeedRate.parseSplitLine(firstWord, splitLine)
 #			if firstWord == 'M108':
 #               self.oldFlowRate = float(splitLine[1][1 :])
-			if firstWord == '(<perimeterWidth>':
-				self.perimeterWidth = float(splitLine[1])
+			if firstWord == '(<edgeWidth>':
+				self.edgeWidth = float(splitLine[1])
 				if self.repository.turnFanOnAtBeginning.value:
 					self.distanceFeedRate.addLine('M106')
 			elif firstWord == '(</extruderInitialization>)':

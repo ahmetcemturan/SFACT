@@ -13,7 +13,7 @@
 <a href="skeinforge_application.skeinforge_plugins.craft_plugins.feed.html">Previous</a> / <a href="skeinforge_application.skeinforge_plugins.craft_plugins.fillet.html">Next</a> / <a href="contents.html">Contents</a>
 </p>
 <p><tt><br>
-Fill is a script to fill the perimeters of a gcode file.<br>
+Fill is a script to fill the edges of a gcode file.<br>
  <br>
 The fill manual page is at:<br>
 <a href="http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Fill">http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Fill</a><br>
@@ -49,6 +49,7 @@ Allan Ecker aka The Masked Retriever has written the "Skeinforge Quicktip: Fill"
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Infill Perimeter Overlap">Infill Perimeter Overlap</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Infill Solidity">Infill Solidity</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Infill Width over Thickness">Infill Width over Thickness</a><br />
+&nbsp;&nbsp;<a href="#Sharpest Angle">Sharpest Angle</a><br />
 &nbsp;&nbsp;<a href="#Solid Surface Thickness">Solid Surface Thickness</a><br />
 &nbsp;&nbsp;<a href="#Start From Choice">Start From Choice</a><br />
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Lower Left">Lower Left</a><br />
@@ -89,7 +90,7 @@ Defines the number of layers the diaphram is composed of.<br>
  <br>
 <a name="Extra Shells" id="Extra Shells"></a><h3>Extra Shells</h3>
 
-The shells interior perimeter loops.  Adding extra shells makes the object stronger &amp; heavier.<br>
+The shells interior edge loops.  Adding extra shells makes the object stronger &amp; heavier.<br>
  <br>
 <a name="Extra Shells on Alternating Solid Layers" id="Extra Shells on Alternating Solid Layers"></a><h4>Extra Shells on Alternating Solid Layers</h4>
 
@@ -101,7 +102,7 @@ Defines the number of extra shells, on the alternating solid layers.<br>
 
 Default is one.<br>
  <br>
-Defines the number of extra shells on the bottom, base layer and every even solid layer after that.  Setting this to a different value than the "Extra Shells on Alternating Solid Layers" means the infill pattern will alternate, creating a strong interleaved bond even if the perimeter loop shrinks.<br>
+Defines the number of extra shells on the bottom, base layer and every even solid layer after that.  Setting this to a different value than the "Extra Shells on Alternating Solid Layers" means the infill pattern will alternate, creating a strong interleaved bond even if the edge loop shrinks.<br>
  <br>
 <a name="Extra Shells on Sparse Layer" id="Extra Shells on Sparse Layer"></a><h4>Extra Shells on Sparse Layer</h4>
 
@@ -115,7 +116,7 @@ Defines the number of extra shells on the sparse layers.  The solid layers are t
 
 Default is 0.2.<br>
  <br>
-Defines the ratio of the amount the grid circle is inset over the perimeter width, the default is zero.  With a value of zero the circles will touch, with a value of one two threads could be fitted between the circles.<br>
+Defines the ratio of the amount the grid circle is inset over the edge width, the default is zero.  With a value of zero the circles will touch, with a value of one two threads could be fitted between the circles.<br>
  <br>
 <a name="Grid Extra Overlap" id="Grid Extra Overlap"></a><h4>Grid Extra Overlap</h4>
 
@@ -187,7 +188,7 @@ Defines the number of layers that the infill begin rotation will repeat.  With a
 
 Default is 0.15.<br>
  <br>
-Defines the amount the infill overlaps the perimeter over the average of the perimeter and infill width.  The higher the value the more the infill will overlap the perimeter, and the thicker join between the infill and the perimeter.  If the value is too high, the join will be so thick that the nozzle will run plow through the join below making a mess, also when it is above 0.45 fill may not be able to create infill correctly.  If you want to stretch the infill a lot, set 'Path Stretch over Perimeter Width' in stretch to a high value.<br>
+Defines the amount the infill overlaps the edge over the average of the edge and infill width.  The higher the value the more the infill will overlap the edge, and the thicker join between the infill and the edge.  If the value is too high, the join will be so thick that the nozzle will run plow through the join below making a mess, also when it is above 0.45 fill may not be able to create infill correctly.  If you want to stretch the infill a lot, set 'Path Stretch over Perimeter Width' in stretch to a high value.<br>
  <br>
 <a name="Infill Solidity" id="Infill Solidity"></a><h4>Infill Solidity</h4>
 
@@ -199,7 +200,15 @@ Defines the solidity of the infill, this is the most important setting in fill. 
 
 Default is 1.5.<br>
  <br>
-Defines the ratio of the infill width over the layer thickness.  The higher the value the wider apart the infill will be and therefore the sparser the infill will be.<br>
+Defines the ratio of the infill width over the layer height.  The higher the value the wider apart the infill will be and therefore the sparser the infill will be.<br>
+ <br>
+<a name="Sharpest Angle" id="Sharpest Angle"></a><h3>Sharpest Angle</h3>
+
+Default: 63 degrees<br>
+ <br>
+Defines the sharpest angle that a thread is allowed to make before it is separated into two threads. If 'Sharpest Angle' is too low, the extruder will stop and start often, slowing printing and putting more wear and tear on the extruder. If 'Sharpest Angle' is too high, then threads will almost double back on themselves, leading to bumps in the fill, and sometimes filament being dragged by the nozzle.<br>
+ <br>
+This parameter is used in fill, raft and skin.<br>
  <br>
 <a name="Solid Surface Thickness" id="Solid Surface Thickness"></a><h3>Solid Surface Thickness</h3>
 
@@ -237,9 +246,9 @@ If you have an organic shape with gently sloping surfaces; if the surrounding an
  <br>
 <a name="Thread Sequence Choice" id="Thread Sequence Choice"></a><h3>Thread Sequence Choice</h3>
 
-The 'Thread Sequence Choice' is the sequence in which the threads will be extruded on the second and higher layers.  There are three kinds of thread, the perimeter threads on the outside of the object, the loop threads aka inner shell threads, and the interior infill threads.  The first layer thread sequence is 'Perimeter &gt; Loops &gt; Infill'.<br>
+The 'Thread Sequence Choice' is the sequence in which the threads will be extruded on the second and higher layers.  There are three kinds of thread, the edge threads on the outside of the object, the loop threads aka inner shell threads, and the interior infill threads.  The first layer thread sequence is 'Perimeter &gt; Loops &gt; Infill'.<br>
  <br>
-The default choice is 'Perimeter &gt; Loops &gt; Infill', which the default stretch parameters are based on.  If you change from the default sequence choice setting of perimeter, then loops, then infill, the optimal stretch thread parameters would also be different.  In general, if the infill is extruded first, the infill would have to be stretched more so that even after the filament shrinkage, it would still be long enough to connect to the loop or perimeter.  The six sequence combinations follow below.<br>
+The default choice is 'Perimeter &gt; Loops &gt; Infill', which the default stretch parameters are based on.  If you change from the default sequence choice setting of edge, then loops, then infill, the optimal stretch thread parameters would also be different.  In general, if the infill is extruded first, the infill would have to be stretched more so that even after the filament shrinkage, it would still be long enough to connect to the loop or edge.  The six sequence combinations follow below.<br>
  <br>
 <a name="Infill &gt; Loops &gt; Perimeter" id="Infill &gt; Loops &gt; Perimeter"></a><h4>Infill &gt; Loops &gt; Perimeter</h4>
 

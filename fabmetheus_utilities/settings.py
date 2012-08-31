@@ -17,7 +17,6 @@ import shutil
 import sys
 import traceback
 import webbrowser
-import platform
 try:
 	import Tkinter
 except:
@@ -32,7 +31,20 @@ __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agp
 
 globalRepositoryDialogListTable = {}
 globalProfileSaveListenerListTable = {}
-globalCloseListTables = [ globalRepositoryDialogListTable, globalProfileSaveListenerListTable ]
+globalCloseListTables = [globalRepositoryDialogListTable, globalProfileSaveListenerListTable]
+globalSettingReplacements = {
+	'Perimeter Width over Thickness (ratio):' : 'Edge Width over Height (ratio):',
+	'Layer Thickness (mm):' : 'Layer Height (mm):',
+	'Location Arrival X (mm):' : 'Arrival X (mm):',
+	'Location Arrival Y (mm):' : 'Arrival Y (mm):',
+	'Location Arrival Z (mm):' : 'Arrival Z (mm):',
+	'Location Departure X (mm):' : 'Departure X (mm):',
+	'Location Departure Y (mm):' : 'Departure Y (mm):',
+	'Location Departure Z (mm):' : 'Departure Z (mm):',
+	'Location Wipe X (mm):' : 'Wipe X (mm):',
+	'Location Wipe Y (mm):' : 'Wipe Y (mm):',
+	'Location Wipe Z (mm):' : 'Wipe Z (mm):'
+	}
 globalSpreadsheetSeparator = '\t'
 globalTemporaryOverrides = {}
 
@@ -68,6 +80,7 @@ def addListsToRepositoryByFunction(fileNameHelp, getProfileDirectory, repository
 	repository.lowerName = fileNameHelp.split('.')[-2]
 	repository.baseName = repository.lowerName + '.csv'
 	repository.baseNameSynonym = None
+	repository.baseNameSynonymDictionary = None
 	repository.capitalizedName = getEachWordCapitalized( repository.lowerName )
 	repository.getProfileDirectory = getProfileDirectory
 	repository.openLocalHelpPage = HelpPage().getOpenFromDocumentationSubName( repository.fileNameHelp )
@@ -120,7 +133,7 @@ def deleteMenuItems( menu ):
 	"Delete the menu items."
 	try:
 		lastMenuIndex = menu.index( Tkinter.END )
-		if lastMenuIndex is not None:
+		if lastMenuIndex != None:
 			menu.delete( 0, lastMenuIndex )
 	except:
 		print('this should never happen, the lastMenuIndex in deleteMenuItems in settings could not be determined.') 
@@ -187,7 +200,7 @@ def getDisplayedDialogFromConstructor(repository):
 def getDisplayedDialogFromPath(path):
 	"Display the repository dialog."
 	pluginModule = archive.getModuleWithPath(path)
-	if pluginModule is None:
+	if pluginModule == None:
 		return None
 	return getDisplayedDialogFromConstructor( pluginModule.getNewRepository() )
 
@@ -254,15 +267,7 @@ def getPathInFabmetheusFromFileNameHelp( fileNameHelp ):
 
 def getProfileBaseName(repository):
 	"Get the profile base file name."
-	if repository.getProfileDirectory is None:
-		return repository.baseName
-	return os.path.join(repository.getProfileDirectory(), repository.baseName)
-
-def getProfileBaseNameSynonym(repository):
-	"Get the profile base file name synonym."
-	if repository.getProfileDirectory is None:
-		return repository.baseNameSynonym
-	return os.path.join(repository.getProfileDirectory(), repository.baseNameSynonym)
+	return getProfileName(repository.baseName, repository)
 
 def getProfilesDirectoryInAboveDirectory(subName=''):
 	"Get the profiles directory path in the above directory."
@@ -270,6 +275,12 @@ def getProfilesDirectoryInAboveDirectory(subName=''):
 	if subName == '':
 		return aboveProfilesDirectory
 	return os.path.join( aboveProfilesDirectory, subName )
+
+def getProfileName(name, repository):
+	"Get the name, joined with the profile directory if there is one."
+	if repository.getProfileDirectory == None:
+		return name
+	return os.path.join(repository.getProfileDirectory(), name)
 
 def getRadioPluginsAddPluginFrame( directoryPath, importantFileNames, names, repository ):
 	"Get the radio plugins and add the plugin frame."
@@ -287,10 +298,10 @@ def getReadRepository(repository):
 	"Read and return settings from a file."
 	text = archive.getFileText(archive.getProfilesPath(getProfileBaseName(repository)), False)
 	if text == '':
-		if repository.baseNameSynonym is not None:
-			text = archive.getFileText(archive.getProfilesPath(getProfileBaseNameSynonym(repository)), False)
+		if repository.baseNameSynonym != None:
+			text = archive.getFileText(archive.getProfilesPath(getProfileName(repository.baseNameSynonym, repository)), False)
 	if text == '':
-		print('The default %s will be written in the sfact_profiles folder in the Application directory.' % repository.title.lower() )
+		print('The default %s will be written in the .skeinforge folder in the home directory.' % repository.title.lower() )
 		text = archive.getFileText(getProfilesDirectoryInAboveDirectory(getProfileBaseName(repository)), False)
 		if text != '':
 			readSettingsFromText(repository, text)
@@ -340,7 +351,7 @@ def getSelectedRadioPlugin( names, radioPlugins ):
 				radioPlugin.value = True
 				return radioPlugin
 	print('this should never happen, no getSelectedRadioPlugin in settings')
-	print( names )
+	print(names)
 	return radioPlugin[0]
 
 def getShortestUniqueSettingName(settingName, settings):
@@ -419,25 +430,22 @@ def openWebPage( webPagePath ):
 		webPagePath = archive.getDocumentationPath('redirect.html')
 		archive.writeFileText( webPagePath, redirectionText )
 	webPagePath = '"%s"' % webPagePath # " to get around space in url bug
-	if platform.system() == 'Darwin':
-		os.system('open ' + webPagePath) #workaround for Mac OS, webrowserController.name doesn't work
-	else:
-		try: # " to get around using gnome-open or internet explorer for webbrowser default
-			webbrowserController = webbrowser.get('firefox')
-		except:
-			webbrowserController = webbrowser.get()
-		webbrowserName = webbrowserController.name
-		if webbrowserName == '':
-			try:
-				os.startfile( webPagePath )#this is available on some python environments, but not all
-				return
-			except:
-				pass
-			print('Skeinforge was not able to open the file in a web browser.  To see the documentation, open the following file in a web browser:')
-			print( webPagePath )
+	try: # " to get around using gnome-open or internet explorer for webbrowser default
+		webbrowserController = webbrowser.get('firefox')
+	except:
+		webbrowserController = webbrowser.get()
+	webbrowserName = webbrowserController.name
+	if webbrowserName == '':
+		try:
+			os.startfile( webPagePath )#this is available on some python environments, but not all
 			return
-		else:
-			os.system(webbrowserName + ' ' + webPagePath)#used this instead of webbrowser.open() to workaround webbrowser open() bug
+		except:
+			pass
+		print('Skeinforge was not able to open the file in a web browser.  To see the documentation, open the following file in a web browser:')
+		print(webPagePath)
+		return
+	else:
+		os.system(webbrowserName + ' ' + webPagePath)#used this instead of webbrowser.open() to workaround webbrowser open() bug
 
 def printProgress(layerIndex, procedureName):
 	"Print layerIndex followed by a carriage return."
@@ -474,6 +482,21 @@ def readSettingsFromText(repository, text):
 	shortDictionary = {}
 	for setting in repository.preferences:
 		shortDictionary[getShortestUniqueSettingName(setting.name, repository.preferences)] = setting
+	if repository.baseNameSynonymDictionary != None:
+		synonymDictionaryCopy = repository.baseNameSynonymDictionary.copy()
+		for line in lines:
+			splitLine = line.split(globalSpreadsheetSeparator)
+			if len(splitLine) > 1:
+				if splitLine[0] in synonymDictionaryCopy:
+					del synonymDictionaryCopy[splitLine[0]]
+		for synonymDictionaryCopyKey in synonymDictionaryCopy.keys():
+			text = archive.getFileText(archive.getProfilesPath(getProfileName(synonymDictionaryCopy[synonymDictionaryCopyKey], repository)), False)
+			synonymLines = archive.getTextLines(text)
+			for synonymLine in synonymLines:
+				splitLine = synonymLine.split(globalSpreadsheetSeparator)
+				if len(splitLine) > 1:
+					if splitLine[0] == synonymDictionaryCopyKey:
+						lines.append(synonymLine)
 	for lineIndex in xrange(len(lines)):
 		setRepositoryToLine(lineIndex, lines, shortDictionary)
 
@@ -503,7 +526,7 @@ def setButtonFontWeightString( button, isBold ):
 
 def setEntryText(entry, value):
 	"Set the entry text."
-	if entry is None:
+	if entry == None:
 		return
 	entry.delete(0, Tkinter.END)
 	entry.insert(0, str(value))
@@ -524,12 +547,14 @@ def setIntegerValueToString( integerSetting, valueString ):
 		integerSetting.value = 1
 
 def setRepositoryToLine(lineIndex, lines, shortDictionary):
-	"Set setting dictionary to a setting line."
+	"Set setting dictionary to a setting line.globalSettingReplacements"
 	line = lines[lineIndex]
 	splitLine = line.split(globalSpreadsheetSeparator)
 	if len(splitLine) < 2:
 		return
 	fileSettingName = splitLine[0]
+	if fileSettingName in globalSettingReplacements:
+		fileSettingName = globalSettingReplacements[fileSettingName]
 	shortDictionaryKeys = shortDictionary.keys()
 	shortDictionaryKeys.sort(key=len, reverse=True) # so that a short word like fill is not overidden by a longer word like fillet
 	for shortDictionaryKey in shortDictionaryKeys:
@@ -539,9 +564,9 @@ def setRepositoryToLine(lineIndex, lines, shortDictionary):
 
 def setSpinColor( setting ):
 	"Set the spin box color to the value, yellow if it is lower than the default and blue if it is higher."
-	if setting.entry is None:
+	if setting.entry == None:
 		return
-	if setting.backgroundColor is None:
+	if setting.backgroundColor == None:
 		setting.backgroundColor = setting.entry['background']
 		if setting.backgroundColor[0] != '#':
 			setting.backgroundColor = '#ffffff'
@@ -566,16 +591,16 @@ def startMainLoopFromConstructor(repository):
 	except:
 		return
 	displayedDialogFromConstructor = getDisplayedDialogFromConstructor(repository)
-	if displayedDialogFromConstructor is None:
+	if displayedDialogFromConstructor == None:
 		print('Warning, displayedDialogFromConstructor in settings is none, so the window will not be displayed.')
 	else:
 		displayedDialogFromConstructor.root.mainloop()
 
 def startMainLoopFromWindow(window):
 	'Display the tableau window and start the main loop.'
-	if window is None:
+	if window == None:
 		return
-	if window.root is None:
+	if window.root == None:
 		print('Warning, window.root in startMainLoopFromWindow in settings is none, so the window will not be displayed.')
 		return
 	window.root.mainloop()
@@ -614,7 +639,7 @@ def writeSettings(repository):
 def writeSettingsPrintMessage(repository):
 	"Set the settings to the dialog then write them."
 	writeSettings(repository)
-	print( repository.title.lower().capitalize() + ' have been saved.')
+	print(repository.title.lower().capitalize() + ' have been saved.')
 
 def writeValueListToRepositoryWriter( repositoryWriter, setting ):
 	"Write tab separated name and list to the repository writer."
@@ -670,7 +695,7 @@ class StringSetting:
 
 	def bindEntry(self):
 		"Bind the entry to the update function."
-		if self.updateFunction is not None:
+		if self.updateFunction != None:
 			self.entry.bind('<Return>', self.updateFunction )
 
 	def createEntry( self, root ):
@@ -784,14 +809,14 @@ class BooleanSetting( StringSetting ):
 		"Workaround for Tkinter bug, toggle the value."
 		self.value = not self.value
 		self.setStateToValue()
-		if self.updateFunction is not None:
+		if self.updateFunction != None:
 			self.updateFunction()
 
 	def toggleMenuCheckbutton(self):
 		"Workaround for Tkinter bug, toggle the value."
 		if self.activateToggleMenuCheckbutton:
 			self.value = not self.value
-			if self.updateFunction is not None:
+			if self.updateFunction != None:
 				self.updateFunction()
 
 
@@ -817,7 +842,7 @@ class CloseListener:
 		for globalCloseListTable in globalCloseListTables:
 			if self.window in globalCloseListTable:
 				del globalCloseListTable[ self.window ]
-		if self.closeFunction is not None:
+		if self.closeFunction != None:
 			self.closeFunction()
 
 
@@ -869,7 +894,7 @@ class FileHelpMenuBar:
 	def addPluginToMenuBar( self, modulePath, repository, window ):
 		"Add a menu to the menu bar from a tool."
 		pluginModule = archive.getModuleWithPath( modulePath )
-		if pluginModule is None:
+		if pluginModule == None:
 			print('this should never happen, pluginModule in addMenuToMenuBar in settings is None.')
 			return None
 		repositoryMenu = Tkinter.Menu( self.menuBar, tearoff = 0 )
@@ -979,7 +1004,7 @@ class FloatSetting( StringSetting ):
 		try:
 			self.value = float( valueString )
 		except:
-			print('Oops, can not read float' + self.name + ' ' + valueString )
+			print('Oops, can not read float ' + self.name + ' ' + valueString )
 
 
 class FloatSpin( FloatSetting ):
@@ -1017,7 +1042,7 @@ class FloatSpin( FloatSetting ):
 	def entryUpdated(self, event=None):
 		"Create the entry."
 		self.setColorToDisplay()
-		if self.updateFunction is not None:
+		if self.updateFunction != None:
 			self.updateFunction(event)
 
 	def getFromValue(self, from_, name, repository, to, value):
@@ -1052,7 +1077,7 @@ class FloatSpin( FloatSetting ):
 	def setStateUpdateColor(self):
 		"Set the state to the value, call the update function, then set the color."
 		self.setStateToValue()
-		if self.updateFunction is not None:
+		if self.updateFunction != None:
 			self.updateFunction()
 
 
@@ -1259,7 +1284,7 @@ class HelpPageRepository:
 
 	def openPage(self, event=None):
 		"Open the browser to the repository help page."
-		if self.repository.openWikiManualHelpPage is None:
+		if self.repository.openWikiManualHelpPage == None:
 			self.repository.openLocalHelpPage()
 			return
 		from skeinforge_application.skeinforge_utilities import skeinforge_help
@@ -1400,7 +1425,7 @@ class LatentStringVar:
 
 	def getVar(self):
 		"Get the string var."
-		if self.stringVar is None:
+		if self.stringVar == None:
 			self.stringVar = Tkinter.StringVar()
 		return self.stringVar
 
@@ -1436,7 +1461,7 @@ class MenuButtonDisplay:
 		"Add this to the repository menu."
 		if len( self.menuRadios ) < 1:
 			print('The MenuButtonDisplay in settings should have menu items.')
-			print( self.name )
+			print(self.name)
 			return
 		self.menu = Tkinter.Menu( repositoryMenu, tearoff = 0 )
 		repositoryMenu.add_cascade( label = getTitleFromName( self.name ), menu = self.menu )
@@ -1472,7 +1497,7 @@ class MenuButtonDisplay:
 
 	def setToNameAddToDialog( self, name, gridPosition ):
 		"Get the menu button."
-		if self.radioVar is not None:
+		if self.radioVar != None:
 			return
 		gridPosition.increment()
 		self.setRadioVarToName( name )
@@ -1517,7 +1542,7 @@ class MenuRadio( BooleanSetting ):
 		if not self.activate:
 			return
 		self.menuButtonDisplay.radioVar.set( self.name )
-		if self.updateFunction is not None:
+		if self.updateFunction != None:
 			self.updateFunction()
 
 	def getFromMenuButtonDisplay( self, menuButtonDisplay, name, repository, value ):
@@ -1541,7 +1566,7 @@ class MenuRadio( BooleanSetting ):
 
 	def setToDisplay(self):
 		"Set the boolean to the checkbutton."
-		if self.menuButtonDisplay.radioVar is not None:
+		if self.menuButtonDisplay.radioVar != None:
 			self.value = ( self.menuButtonDisplay.radioVar.get() == self.name )
 
 
@@ -1572,7 +1597,7 @@ class PluginFrame:
 		self.gridTable[ self.latentStringVar.getString() ] = gridVertical
 		path = os.path.join( self.directoryPath, self.latentStringVar.getString() )
 		pluginModule = archive.getModuleWithPath(path)
-		if pluginModule is None:
+		if pluginModule == None:
 			print('this should never happen, pluginModule in addToDialog in PluginFrame in settings is None')
 			print(path)
 			return
@@ -1580,7 +1605,7 @@ class PluginFrame:
 		gridVertical.frameGridVertical = GridVertical( 0, 0 )
 		gridVertical.frameGridVertical.setExecutablesRepository( gridVertical.repository )
 		executeTitle = gridVertical.repository.executeTitle
-		if executeTitle is not None:
+		if executeTitle != None:
 			executeButton = Tkinter.Button( gridVertical.master, activebackground = 'black', activeforeground = 'blue', text = executeTitle, command = gridVertical.frameGridVertical.execute )
 			executeButton.grid( row = gridVertical.row, column = gridVertical.column, sticky = Tkinter.W )
 			gridVertical.column += 1
@@ -1681,14 +1706,14 @@ class PluginGroupFrame( PluginFrame ):
 		self.gridTable[ self.latentStringVar.getString() ] = gridVertical
 		path = os.path.join( self.directoryPath, self.latentStringVar.getString() )
 		pluginModule = archive.getModuleWithPath(path)
-		if pluginModule is None:
+		if pluginModule == None:
 			print('this should never happen, pluginModule in addToDialog in PluginFrame in settings is None')
 			print(path)
 			return
 		gridVertical.repository = getReadRepository( pluginModule.getNewRepository() )
 		gridVertical.setExecutablesRepository( gridVertical.repository )
 		executeTitle = gridVertical.repository.executeTitle
-		if executeTitle is not None:
+		if executeTitle != None:
 			executeButton = Tkinter.Button( gridVertical.master, activebackground = 'black', activeforeground = 'blue', text = executeTitle, command = gridVertical.execute )
 			executeButton.grid( row = gridVertical.row, column = gridVertical.column, sticky = Tkinter.W )
 			gridVertical.column += 1
@@ -1719,7 +1744,7 @@ class Radio( BooleanSetting ):
 	def clickRadio(self):
 		"Workaround for Tkinter bug, set the value."
 		self.latentStringVar.setString( self.radiobutton['value'] )
-		if self.updateFunction is not None:
+		if self.updateFunction != None:
 			self.updateFunction()
 
 	def createRadioButton( self, gridPosition ):
@@ -1750,7 +1775,7 @@ class Radio( BooleanSetting ):
 		"Set the checkbutton to the boolean."
 		if self.value:
 			if self.setSelect():
-				if self.updateFunction is not None:
+				if self.updateFunction != None:
 					self.updateFunction()
 
 	def setToDisplay(self):
@@ -1955,7 +1980,7 @@ class RepositoryDialog:
 		repository.repositoryDialog = self
 		root.withdraw()
 		title = repository.title
-		if repository.fileNameInput is not None:
+		if repository.fileNameInput != None:
 			title = os.path.basename( repository.fileNameInput.value ) + ' - ' + title
 		root.title( title )
 		fileHelpMenuBar = FileHelpMenuBar( root )
@@ -1984,7 +2009,7 @@ class RepositoryDialog:
 		if self.isFirst:
 			saveCommand = saveAll
 			saveText = 'Save All'
-		if repository.executeTitle is not None:
+		if repository.executeTitle != None:
 			executeButton = Tkinter.Button( root, activebackground = 'black', activeforeground = 'blue', text = repository.executeTitle, command = self.gridPosition.execute )
 			executeButton.grid( row = self.gridPosition.row, column = columnIndex, columnspan = 2, sticky = Tkinter.W )
 			columnIndex += 2

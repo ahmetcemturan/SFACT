@@ -41,7 +41,7 @@ def addPegOutput(bevel, endZ, outputs, radiusArealized, sides, start, topOverBot
 
 def getGeometryOutput(derivation, elementNode):
 	'Get vector3 vertexes from attribute dictionary.'
-	if derivation is None:
+	if derivation == None:
 		derivation = PegDerivation(elementNode)
 	positives = []
 	radiusArealized = complex(derivation.radiusArealized, derivation.radiusArealized)
@@ -80,7 +80,7 @@ def processElementNode(elementNode):
 def setTopOverBottomByRadius(derivation, endZ, radius, startZ):
 	'Set the derivation topOverBottom by the angle of the elementNode, the endZ, float radius and startZ.'
 	angleDegrees = evaluate.getEvaluatedFloat(None, derivation.elementNode, 'angle')
-	if angleDegrees is not None:
+	if angleDegrees != None:
 		derivation.topOverBottom = cylinder.getTopOverBottom(math.radians(angleDegrees), endZ, complex(radius, radius), startZ)
 
 
