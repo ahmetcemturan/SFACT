@@ -18,7 +18,8 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-globalTemporarySettingsPath = os.path.join(os.path.expanduser('~'), '.skeinforge')
+globalTemporarySettingsPath = os.path.join(os.getcwd(), 'sfact_profiles')#(os.path.expanduser('~'), '.skeinforge')
+#globalTemporarySettingsPath = os.path.join(os.path.expanduser('~'), '.skeinforge')
 
 
 def addToNamePathDictionary(directoryPath, namePathDictionary):
