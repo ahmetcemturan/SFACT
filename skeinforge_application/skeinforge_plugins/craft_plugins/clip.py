@@ -259,7 +259,7 @@ class ClipSkein:
 				self.distanceFeedRate.addTagBracketedLine('clipOverEdgeWidth', self.repository.clipOverEdgeWidth.value)
 				self.edgeWidth = float(splitLine[1])
 				absoluteEdgeWidth = abs(self.edgeWidth)
-				self.clipLength = self.repository.clipOverEdgeWidth.value* self.edgeWidth * (euclidean.globalQuarterPi/2)
+				self.clipLength = self.repository.clipOverEdgeWidth.value* self.edgeWidth * (euclidean.globalQuarterPi/4)
 				self.connectingStepLength = 0.5 * absoluteEdgeWidth
 				self.layerPixelWidth = 0.34321 * absoluteEdgeWidth
 				self.maximumConnectionDistance = self.repository.maximumConnectionDistanceOverEdgeWidth.value * absoluteEdgeWidth

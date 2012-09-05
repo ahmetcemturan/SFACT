@@ -208,10 +208,12 @@ class BevelSkein:
 			elif firstWord == '(<edgeWidth>':
 				edgeWidth = abs(float(splitLine[1]))
 				self.curveSection = 0.7 * edgeWidth
-				self.filletRadius = edgeWidth * repository.filletRadiusOverEdgeWidth.value
+				self.filletRadius = edgeWidth/2
 				self.minimumRadius = 0.1 * edgeWidth
 				self.reversalSlowdownDistance = edgeWidth * repository.reversalSlowdownDistanceOverEdgeWidth.value
 			self.distanceFeedRate.addLine(line)
+
+
 
 	def parseLine(self, line):
 		"Parse a gcode line and add it to the bevel gcode."
@@ -370,7 +372,7 @@ class FilletRepository:
 		self.arcSegment = settings.Radio().getFromRadio( filletLatentStringVar, 'Arc Segment', self, False )
 		self.bevel = settings.Radio().getFromRadio( filletLatentStringVar, 'Bevel', self, True )
 		self.cornerFeedRateMultiplier = settings.FloatSpin().getFromValue(0.8, 'Corner Feed Rate Multiplier (ratio):', self, 1.2, 1.0)
-		self.filletRadiusOverEdgeWidth = settings.FloatSpin().getFromValue( 0.25, 'Fillet Radius over Perimeter Width (ratio):', self, 0.65, 0.35 )
+#		self.filletRadiusOverEdgeWidth = settings.FloatSpin().getFromValue( 0.25, 'Fillet Radius over Perimeter Width (ratio):', self, 0.65, 0.35 )
 		self.reversalSlowdownDistanceOverEdgeWidth = settings.FloatSpin().getFromValue( 0.3, 'Reversal Slowdown Distance over Perimeter Width (ratio):', self, 0.7, 0.5 )
 		self.useIntermediateFeedRateInCorners = settings.BooleanSetting().getFromValue('Use Intermediate Feed Rate in Corners', self, True )
 		self.executeTitle = 'Fillet'
@@ -380,6 +382,7 @@ class FilletRepository:
 		fileNames = skeinforge_polyfile.getFileOrDirectoryTypesUnmodifiedGcode(self.fileNameInput.value, fabmetheus_interpret.getImportPluginFileNames(), self.fileNameInput.wasCancelled)
 		for fileName in fileNames:
 			writeOutput(fileName)
+
 
 
 def main():

@@ -301,7 +301,7 @@ class InsetRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Inset')
 		self.addCustomCodeForTemperatureReading = settings.BooleanSetting().getFromValue('Add Custom Code for Temperature Reading', self, True)
 		self.infillInDirectionOfBridge = settings.BooleanSetting().getFromValue('Infill in Direction of Bridge', self, True)
-		self.infillWidthOverThickness = settings.FloatSpin().getFromValue(1.3, 'Infill Width over Thickness (ratio):', self, 1.7, 1.5)
+#		self.infillWidthOverThickness = settings.FloatSpin().getFromValue(1.3, 'Infill Width over Thickness (ratio):', self, 1.7, 1.5)
 		self.bridgeWidthMultiplier = settings.FloatSpin().getFromValue( 0.7, 'Bridge Width Multiplier (ratio):', self, 2.0, 1.0  )
 		self.nozzleDiameter = settings.FloatSpin().getFromValue( 0.1, 'Nozzle Diameter(mm):', self, 1.0, 0.50 )
 		self.loopOrderChoice = settings.MenuButtonDisplay().getFromName('In case of Conflict Solve:', self )
@@ -402,7 +402,7 @@ class InsetSkein:
 		alreadyFilledArounds = []
 		extrudateLoops = intercircle.getInsetLoopsFromLoops(loopLayer.loops, self.halfEdgeWidth)
 		if self.repository.infillInDirectionOfBridge.value:
-			self.halfBridgeWidth = self.repository.bridgeWidthMultiplier.value * self.halfEdgeWidth #* (self.nozzleXsection / self.extrusionXsection)
+			self.halfBridgeWidth = self.repository.bridgeWidthMultiplier.value * self.halfEdgeWidth
 			bridgeRotation = getBridgeDirection(self.belowLoops, extrudateLoops, self.halfBridgeWidth )
 			if bridgeRotation != None:
 				self.distanceFeedRate.addTagBracketedLine('bridgeRotation', bridgeRotation)
@@ -436,17 +436,19 @@ class InsetSkein:
 				return
 			elif firstWord == '(<layerHeight>':
 				self.layerHeight = float(splitLine[1])
-				self.infillWidth = self.repository.infillWidthOverThickness.value * self.layerHeight
-				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)
+#				self.infillWidth = self.repository.infillWidthOverThickness.value * self.layerHeight #moved dow so it is defined by edgeWidth
+#				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)#moved dow so it is defined by edgeWidth
 				self.distanceFeedRate.addTagRoundedLine('volumeFraction', self.repository.volumeFraction.value)
 			elif firstWord == '(<edgeWidth>':
 				self.edgeWidth = float(splitLine[1])
+				self.infillWidth = self.edgeWidth
 				self.halfEdgeWidth = 0.5 * self.edgeWidth
 				self.overlapRemovalWidth = self.edgeWidth * self.repository.overlapRemovalWidthOverEdgeWidth.value
 				self.distanceFeedRate.addTagBracketedLine('nozzleDiameter', self.repository.nozzleDiameter.value )
 				self.nozzleXsection = (self.repository.nozzleDiameter.value/2) ** 2 * math.pi
 				self.extrusionXsection = ((self.edgeWidth + self.layerHeight)/4) ** 2 * math.pi
 				self.distanceFeedRate.addTagBracketedLine('nozzleXsection', self.nozzleXsection)
+				self.distanceFeedRate.addTagRoundedLine('infillWidth', self.infillWidth)
 			self.distanceFeedRate.addLine(line)
 
 	def parseLine(self, line):
