@@ -31,13 +31,13 @@ class SkFrontend (tk.Tk):
 	tk.Tk.__init__(self, *args, **kwargs)
 	self.geometry (c.windowWidth + "x" + c.windowHeight)
 	self.protocol ('WM_DELETE_WINDOW', self.quitApplication)
-	self.lastFrametopOffset = 111
+#	self.lastFrametopOffset = 111
 	# we quit if no valid path to extrusion profile
 	if not (os.path.exists (c.skProfileDirectory)):
 		tkMessageBox.showerror (c.titleErrorMsgBox, c.noExtrusionProfileErrorMsg)
 		self.destroy ()
 
-	self.resizable (width=False, height=False)
+	self.resizable (width=False, height=True)
 	# finding used profile name
 	(self.path, self.profileName) =  os.path.split (c.skProfileDirectory)
 	self.title ("skFrontend :: " + self.profileName)
@@ -95,7 +95,7 @@ class SkFrontend (tk.Tk):
 	self.edgeWidths.pack ()
 	self.edgeWidths.place (y=c.menuMarginTop)
 
-	self.firstEdgewidth = self.edgeWidth.get ()
+	self.firstEdgeWidth = self.edgeWidth.get ()
 	self.newEdgeWidth = self.edgeWidth.get ()
 
 	#-----------------------------------------------------
@@ -252,8 +252,8 @@ class SkFrontend (tk.Tk):
 	self.searchTrueFalseRegex = "\\t(True|False)"
 	self.searchTextStringRegex = "\\t(.+)"
 	self.layerHeightRE = re.compile (self.skCarveSearchString + self.searchNumberRegex)
+	self.edgeWidthRE = re.compile (self.skCarveSearchString + self.searchNumberRegex)
 	self.feedRateRE = re.compile (self.skFeedRateSearchString + self.searchNumberRegex)
-	self.flowRateRE = re.compile (self.skFlowRateSearchString + self.searchNumberRegex)
 	self.infillSolidityRE = re.compile (self.skInfillSoliditySearchString + self.searchNumberRegex)
 	self.multiplyRowRE = re.compile (self.skMultiplyRowSearchString + self.searchNumberRegex)
 	self.multiplyColRE = re.compile (self.skMultiplyColSearchString + self.searchNumberRegex)
@@ -285,7 +285,6 @@ class SkFrontend (tk.Tk):
 
   def refreshSpinBox (self):
 	self.newFeedRate = self.feedRate.get ()
-	self.newFlowRate = self.flowRate.get ()
 	self.newInfillSolidity = self.infillSolidity.get ()
 	self.setSaveModificationButtonState ()
 	return True
@@ -293,7 +292,7 @@ class SkFrontend (tk.Tk):
   def setSaveModificationButtonState (self):
 	if (
 	 self.firstLayerHeight != self.newLayerHeight
-	 or self.firstEdgewidth != self.newEdgeWidth
+	 or self.firstEdgeWidth != self.newEdgeWidth
 	 or self.firstFeedRate != self.newFeedRate
 	 or self.firstFlowRate != self.newFlowRate
 	 or self.firstInfillSolidity != self.newInfillSolidity
@@ -386,18 +385,13 @@ class SkFrontend (tk.Tk):
 
 	if self.firstEdgeWidth != self.newEdgeWidth:
 	  self.saveIntoFile (os.path.join (c.skProfileDirectory, c.skCarveFile), self.edgeWidthRE, self.newEdgeWidth)
-	  self.firstEdgewidth = self.newEdgeWidth
+	  self.firstEdgeWidth = self.newEdgeWidth
+
 	# speed.csv file: feed rate
 	self.newFeedRate = self.feedRate.get ()
 	if self.firstFeedRate != self.newFeedRate:
 	  self.saveIntoFile (os.path.join (c.skProfileDirectory, c.skSpeedFile), self.feedRateRE, self.newFeedRate)
 	  self.firstFeedRate = self.newFeedRate
-
-	# speed.csv file: flow rate
-	self.newFlowRate = self.flowRate.get ()
-	if self.firstFlowRate != self.newFlowRate:
-	  self.saveIntoFile (os.path.join (c.skProfileDirectory, c.skSpeedFile), self.flowRateRE, self.newFlowRate)
-	  self.firstFlowRate = self.newFlowRate
 
 	# fill.csv file: infill solidity
 	self.newInfillSolidity = self.infillSolidity.get ()
@@ -471,4 +465,3 @@ if __name__ == "__main__":
   app = SkFrontend ()
   app.mainloop ()
 
-  

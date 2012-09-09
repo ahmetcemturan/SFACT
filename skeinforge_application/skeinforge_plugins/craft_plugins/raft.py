@@ -955,7 +955,7 @@ class RaftSkein:
 				self.supportedLayersTemperature = float(splitLine[1])
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRateMinute = 60.0 * float(splitLine[1])
-			elif firstWord == '(<firstLayertravelFeedRatePerSecond>':
+			elif firstWord == '(<FirstLayerTravelSpeed>':
 				self.firstLayertravelFeedRateMinute = 60.0 * float(splitLine[1])
 			elif firstWord == '(<nozzleDiameter>':
 				self.nozzleDiameter = float(splitLine[1])

@@ -314,7 +314,7 @@ class SpeedSkein:
 				orbitalFeedRatePerSecond = self.feedRatePerSecond * self.repository.orbitalFeedRateOverOperatingFeedRate.value
 				self.distanceFeedRate.addTagBracketedLine('orbitalFeedRatePerSecond', orbitalFeedRatePerSecond )
 				self.distanceFeedRate.addTagBracketedLine('travelFeedRatePerSecond', self.repository.travelFeedRatePerSecond.value )
-				self.distanceFeedRate.addTagBracketedLine('firstLayertravelFeedRatePerSecond', self.repository.objectFirstLayerTravelSpeed.value )
+				self.distanceFeedRate.addTagBracketedLine('FirstLayerTravelSpeed', self.repository.objectFirstLayerTravelSpeed.value )
 			elif firstWord == '(<nozzleDiameter>':
 				self.nozzleDiameter = float(splitLine[1])
 			elif firstWord == '(<nozzleXsection>':

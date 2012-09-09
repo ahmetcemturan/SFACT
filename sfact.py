@@ -1,5 +1,6 @@
 #!/usr/bin/python
 """
+
 This page is in the table of contents.
 ==Overview==
 ===Introduction===
@@ -514,6 +515,7 @@ Art of Illusion <http://www.artofillusion.org/>"""
 __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
+#Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 
 def addToProfileMenu(profileSelection, profileType, repository):
 	'Add a profile menu.'
@@ -585,9 +587,13 @@ class SkeinforgeRepository:
 			for fileName in fileNames:
 				os.getcwd()
 				CommandOutput=os.popen('C:\pypy-1.9\pypy.exe %s%s %s'  % (os.getcwd(),'\skeinforge_application\skeinforge_utilities\skeinforge_craft.py', fileName)).read() #for pypy slicing
+#				print fileName
 				print CommandOutput #for pypy slicing
-				print os.getcwd()
-#				skeinlayer.writeOutput(fileName) #for Skeinlayer output
+#				print "Slicing finished....."
+#				skeinlayer.writeOutput('', '', fileNamePenultimate,)
+				fileNameSkeinLayer = fileName[: fileName.rfind('.')] + '_penultimate.gcode'
+				skeinlayer.writeOutput('', '', fileNameSkeinLayer, '')
+#	fileNamePenultimate = fileName[: fileName.rfind('.')] + '_penultimate.gcode'
 		else:
 			for fileName in fileNames:
 				skeinforge_craft.writeOutput(fileName) #use this line instead of the below two for regular python slicing

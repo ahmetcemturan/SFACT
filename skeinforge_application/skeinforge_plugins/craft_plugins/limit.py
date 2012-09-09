@@ -104,6 +104,7 @@ class LimitSkein:
 		self.feedRateMinute = None
 		self.lineIndex = 0
 		self.maximumZDrillFeedRatePerSecond = 987654321.0
+		self.maximumZFeedRatePerSecond = 2.0
 		self.oldLocation = None
 
 	def getCraftedGcode(self, gcodeText, repository):

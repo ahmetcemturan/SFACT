@@ -4,7 +4,7 @@
 # config.py is imported by skFrontend.py
 #
 # German text strings translation thanks to Markus Hitter
-import skFrontend
+import skFrontend as SFront
 import os
 #-----------------------------------------------------
 ''' two mandatory parameters to be adapted
@@ -30,10 +30,10 @@ skCraftPath = ("%s\\skeinforge_application\\skeinforge_plugins\\craft.py" % os.g
 # Windows: better to double backslashes
 # Windows sample: "C:\\Users\\userName\\.skeinforge\\profiles\\extrusion\\profileName"
 # Windows sample: "C:\\Documents and Settings\\userName\\.skeinforge\\profiles\\extrusion\\profileName"
-
+#globalTemporarySettingsPath = os.path.join(os.path.expanduser('~'), '.skeinforge')
 #skProfileDirectory = os.path.join(os.getcwd(), '\\sfact_profiles\\profiles\\\extrusion\\Default\\')
 skProfileDirectory =  ("%s\\sfact_profiles\\profiles\\extrusion\\Default" % os.getcwdu())
-
+#skProfileDirectory =  ("%s \\.skeinforge\\profiles\\extrusion\\PLA" % os.path.join(os.path.expanduser('~'))
 
 #-----------------------------------------------------
 ''' controls configuration to be adapted to your usage '''
@@ -57,11 +57,6 @@ edgeWidthList = ("0.2", "0.25", "0.33", "0.4", "0.45", "0.5", "0.55", "0.6", "0.
 feedRateMinimumValue = 2
 feedRateMaximumValue = 50
 
-# speed plugin: flow rate min & max values into spinboxes:
-# Skeinforge defaults to 50 & 250
-flowRateMinimumValue = 1.0
-flowRateMaximumValue = 250.0
-
 #  multiply plugin: numbers of rows and columns into drop-down menus:
 multiplyRowList = range (1,6)
 multiplyColList = range (1,6)
@@ -76,7 +71,6 @@ skirtLayersList = range (21)
 if interfaceLanguage == "fr":
   thicknessListLabel = "Hauteur des couches"
   infillFeedRateListLabel = "Vitesse (mm/s)"
-  flowRateListLabel = "Débit"
   InfillSolidityListLabel = "Remplissage (%)"
   multiplyRowListLabel = "Nb de lignes"
   multiplyColListLabel = "Nb de colonnes"
@@ -130,7 +124,6 @@ if interfaceLanguage == "en":
 if interfaceLanguage == "de":
   thicknessListLabel = "Layerdicke"
   infillFeedRateListLabel = "Geschwindigkeit"
-  flowRateListLabel = "Materialfluss"
   InfillSolidityListLabel = "Füllgrad (%)"
   multiplyRowListLabel = "Zeilen"
   multiplyColListLabel = "Spalten"
@@ -188,9 +181,8 @@ skSkirtActivateSearchString = "Activate Skirt"
 skDefaultLayerHeight = "0.4"
 # default edge Width for carve plugin:
 skDefaultEdgeWidth = "0.45"
-# default feed & flow rates for speed plugin:
+# default feed rates for speed plugin:
 skDefaultFeedRate = "16.0"
-skDefaultFlowRate = "16.0"
 
 # default infill solidity for fill plugin:
 skDefaultInfillSolidity = "0.35"

@@ -406,8 +406,8 @@ class DimensionSkein:
 			elif firstWord == '(<travelFeedRatePerSecond>':
 				self.travelFeedRatePerSecond = float(splitLine[1])
 				self.XtravelFeedRatePerSecond = self.travelFeedRatePerSecond
-			elif firstWord == '(<firstLayertravelFeedRatePerSecond>':
-				self.firstLayertravelFeedRatePerSecond = float(splitLine[1])
+			elif firstWord == '(<FirstLayerTravelSpeed>':
+				self.FirstLayerTravelSpeed = float(splitLine[1])
 			elif firstWord == '(<nozzleDiameter>':
 				self.nozzleDiameter = float(splitLine[1])
 				self.nozzleXsection = (self.nozzleDiameter/2)**2*math.pi
