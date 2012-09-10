@@ -1,0 +1,11 @@
+if isActive:
+					if not self.repository.retractWithinIsland.value:
+						locationEnclosureIndex = self.getSmallestEnclosureIndex(location.dropAxis())
+						if locationEnclosureIndex != self.getSmallestEnclosureIndex(self.oldLocation.dropAxis()):
+							return None
+					locationMinusOld = location - self.oldLocation
+					xyTravel = abs(locationMinusOld.dropAxis())
+					zTravelMultiplied = locationMinusOld.z * self.zDistanceRatio
+					return math.sqrt(xyTravel * xyTravel + zTravelMultiplied * zTravelMultiplied)
+				else:
+					location = gcodec.getLocationFromSplitLine(location, splitLine)
