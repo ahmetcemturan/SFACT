@@ -881,7 +881,9 @@ class FillSkein:
 				extraShells = self.repository.extraShellsBase.value
 		if rotatedLayer.rotation != None:
 			extraShells = extraShellsBridgeLayer
-			self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value * 0.9 #*euclidean.globalQuarterPi #  self.scaledBridgeWidthMultiplier * self.repository.infillPerimeterOverlap.value # self.bridgeWidthMultiplier
+#			self.fillInset = self.infillWidth * self.repository.infillPerimeterOverlap.value * 0.9 #*euclidean.globalQuarterPi #  self.scaledBridgeWidthMultiplier * self.repository.infillPerimeterOverlap.value # self.bridgeWidthMultiplier
+#			self.fillInset = self.layerHeight * self.repository.infillPerimeterOverlap.value * euclidean.globalQuarterPi #*euclidean.globalQuarterPi #  self.scaledBridgeWidthMultiplier * self.repository.infillPerimeterOverlap.value # self.bridgeWidthMultiplier
+			self.fillInset = self.repository.infillPerimeterOverlap.value * (self.layerHeight * euclidean.globalQuarterPi + (self.edgeWidth-self.layerHeight))
 			self.distanceFeedRate.addLine('(<bridgeRotation> %s )' % layerRotation)
 		self.distanceFeedRate.addLine('(<rotation> %s )' % layerRotation)
 #		aroundInset = 0.24321 * self.infillWidth
@@ -1263,8 +1265,8 @@ class FillSkein:
 			elif firstWord == '(<crafting>)':
 				self.distanceFeedRate.addLine(line)
 				return
-			elif firstWord == '(<infillWidth>':
-				self.infillWidth = float(splitLine[1])
+#			elif firstWord == '(<infillWidth>':
+#				self.infillWidth = float(splitLine[1])
 #				self.infillWidth = self.repository.infillWidthOverThickness.value  * euclidean.globalQuarterPi * self.edgeWidth
 			elif firstWord == '(<layerHeight>':
 				self.layerHeight = float(splitLine[1])
@@ -1285,7 +1287,7 @@ class FillSkein:
 			elif firstWord == '(<edgeWidth>':
 				self.edgeWidth = float(splitLine[1])
 				threadSequenceString = ' '.join( self.threadSequence )
-				self.infillWidth = self.repository.infillWidthOverThickness.value * self.edgeWidth * euclidean.globalQuarterPi
+				self.infillWidth = self.repository.infillWidthOverThickness.value * (self.layerHeight * euclidean.globalQuarterPi + (self.edgeWidth-self.layerHeight))
 				self.distanceFeedRate.addTagBracketedLine('threadSequenceString', threadSequenceString )
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('fill')
