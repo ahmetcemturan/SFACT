@@ -721,7 +721,9 @@ class RaftSkein:
 			euclidean.addLoopToPixelTable(aroundBoundaryLoop, aroundPixelTable, aroundWidth)
 		paths = euclidean.getPathsFromEndpoints(endpoints, 1.5 * self.interfaceStep, aroundPixelTable, self.sharpestProduct, aroundWidth)
 		feedRateMinuteMultiplied = self.repository.supportFeedRate.value * 60
+#		supportFlowRateMultiplied = self.repository.supportFlowRateOverOperatingFlowRate.value*(self.extrusionXsection/self.layerHeight-(euclidean.globalQuarterPi*self.layerHeight)+self.layerHeight)
 		supportFlowRateMultiplied = self.repository.supportFlowRateOverOperatingFlowRate.value*(self.nozzleXsection / self.extrusionXsection)
+#		print supportFlowRateMultiplied
 		if self.layerIndex == 0:
 			feedRateMinuteMultiplied = self.objectFirstLayerFeedRateInfillMultiplier * 60
 			if supportFlowRateMultiplied != None:

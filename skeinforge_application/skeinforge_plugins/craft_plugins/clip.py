@@ -255,12 +255,14 @@ class ClipSkein:
 			if firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('clip')
 				return
+			elif firstWord == '(<layerHeight>':
+				self.layerHeight = float(splitLine[1])
 			elif firstWord == '(<edgeWidth>':
 				self.distanceFeedRate.addTagBracketedLine('clipOverEdgeWidth', self.repository.clipOverEdgeWidth.value)
 				self.edgeWidth = float(splitLine[1])
 				absoluteEdgeWidth = abs(self.edgeWidth)
-				self.clipLength = self.repository.clipOverEdgeWidth.value* self.edgeWidth * (euclidean.globalQuarterPi/4)
-				self.connectingStepLength = 0.5 * absoluteEdgeWidth
+				self.clipLength = self.repository.clipOverEdgeWidth.value* ((self.layerHeight * euclidean.globalQuarterPi + (self.edgeWidth-self.layerHeight))/2)
+#				self.connectingStepLength = 0.5 * absoluteEdgeWidth
 				self.layerPixelWidth = 0.34321 * absoluteEdgeWidth
 				self.maximumConnectionDistance = self.repository.maximumConnectionDistanceOverEdgeWidth.value * absoluteEdgeWidth
 			elif firstWord == '(<travelFeedRatePerSecond>':

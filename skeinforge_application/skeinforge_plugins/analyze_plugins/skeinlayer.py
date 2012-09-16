@@ -559,7 +559,6 @@ class SkeinWindow( tableau.TableauWindow ):
 		self.limitIndexSetArrowMouseDeleteCanvas()
 		for coloredLines in self.getUpdateSkeinPanes():
 			for coloredLine in coloredLines:
-#				self.scaledWidthofExtrusion = self.repository.widthOfExtrusionThread.value*repository.scale.value
 				if coloredLine.isExtrusionThread:
 					self.getDrawnColoredLineIfThick( coloredLine, self.repository.widthOfExtrusionThread.value )
 				else:
