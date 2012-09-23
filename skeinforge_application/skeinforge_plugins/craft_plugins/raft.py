@@ -349,11 +349,9 @@ class RaftRepository:
 		self.baseFeedRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Feed Rate Multiplier (ratio):', self, 2.0, 1.0)
 		self.baseFlowRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Flow Rate Multiplier (ratio):', self, 2.0, 1.0)
 		self.baseInfillDensity = settings.FloatSpin().getFromValue(0.2, 'Base Infill Density (ratio):', self, 1.0, 0.5)
-		self.baseLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(
-			1.0, 'Base Layer Thickness over Layer Thickness:', self, 3.0, 2.0)
+		self.baseLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(1.0, 'Base Layer Thickness over Layer Thickness:', self, 3.0, 2.0)
 		self.baseLayers = settings.IntSpin().getFromValue(0, 'Base Layers (integer):', self, 3, 0)
-		self.baseNozzleLiftOverBaseLayerThickness = settings.FloatSpin().getFromValue(
-			0.2, 'Base Nozzle Lift over Base Layer Thickness (ratio):', self, 0.8, 0.4)
+		self.baseNozzleLiftOverBaseLayerThickness = settings.FloatSpin().getFromValue(0.2, 'Base Nozzle Lift over Base Layer Thickness (ratio):', self, 0.8, 0.4)
 		settings.LabelSeparator().getFromRepository(self)
 		self.initialCircling = settings.BooleanSetting().getFromValue('Initial Circling:', self, False)
 		self.infillOverhangOverExtrusionWidth = settings.FloatSpin().getFromValue(0.0, 'Infill Overhang over Extrusion Width (ratio):', self, 5.0, 3.00)
@@ -373,12 +371,12 @@ class RaftRepository:
 		self.operatingNozzleLiftOverLayerThickness = settings.FloatSpin().getFromValue(	-0.1, 'Extra Nozzle clearance over Object(ratio):', self, 0.3, 0.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Raft Size -', self)
-		self.raftAdditionalMarginOverLengthPercent = settings.FloatSpin().getFromValue(	0.0, 'Raft/Support extension in (%):', self, 10.0, 5.0)
+		self.raftAdditionalMarginOverLengthPercent = settings.FloatSpin().getFromValue(	0.0, 'Raft/Support extension in (%):', self, 10.0, 3.0)
 		self.raftMargin = settings.FloatSpin().getFromValue(0.0, 'Raft/Support extension in(mm):', self, 5.0, 2.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Support -', self)
 		self.supportCrossHatch = settings.BooleanSetting().getFromValue('Cross Hatch instead of Lines', self, False)
-		self.supportFeedRate = settings.FloatSpin().getFromValue(10.0, 'Support Feed Rate mm/sec:', self, 50.0,30.0)#todo ACT
+		self.supportFeedRate = settings.FloatSpin().getFromValue(10.0, 'Support Feed Rate mm/sec:', self, 60.0,30.0)#todo ACT
 		self.supportFlowRateOverOperatingFlowRate = settings.FloatSpin().getFromValue(	0.5, 'Support Flow Rate (scaler):', self, 2.0, 1.0)
 		self.supportGapOverPerimeterExtrusionWidth = settings.FloatSpin().getFromValue(	0.5, 'Support Gap over Perimeter Extrusion Width (ratio):', self, 1.5, 1.0)
 		self.supportMaterialChoice = settings.MenuButtonDisplay().getFromName('Where to add support: ', self)
@@ -386,7 +384,7 @@ class RaftRepository:
 		self.supportChoiceEmptyLayersOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Empty Layers Only', self, False)
 		self.supportChoiceEverywhere = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Everywhere', self, False)
 		self.supportChoiceExteriorOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Exterior Only', self, False)
-		self.supportMinimumAngle = settings.FloatSpin().getFromValue(40.0, 'Add support if flatter than (degrees):', self, 80.0, 50.0)
+		self.supportMinimumAngle = settings.FloatSpin().getFromValue(40.0, 'Add support if flatter than (degrees):', self, 80.0, 45.0)
 		self.executeTitle = 'Raft'
 
 	def execute(self):
@@ -721,9 +719,7 @@ class RaftSkein:
 			euclidean.addLoopToPixelTable(aroundBoundaryLoop, aroundPixelTable, aroundWidth)
 		paths = euclidean.getPathsFromEndpoints(endpoints, 1.5 * self.interfaceStep, aroundPixelTable, self.sharpestProduct, aroundWidth)
 		feedRateMinuteMultiplied = self.repository.supportFeedRate.value * 60
-#		supportFlowRateMultiplied = self.repository.supportFlowRateOverOperatingFlowRate.value*(self.extrusionXsection/self.layerHeight-(euclidean.globalQuarterPi*self.layerHeight)+self.layerHeight)
 		supportFlowRateMultiplied = self.repository.supportFlowRateOverOperatingFlowRate.value*(self.nozzleXsection / self.extrusionXsection)
-#		print supportFlowRateMultiplied
 		if self.layerIndex == 0:
 			feedRateMinuteMultiplied = self.objectFirstLayerFeedRateInfillMultiplier * 60
 			if supportFlowRateMultiplied != None:

@@ -373,7 +373,7 @@ class FilletRepository:
 		self.bevel = settings.Radio().getFromRadio( filletLatentStringVar, 'Bevel', self, True )
 		self.cornerFeedRateMultiplier = settings.FloatSpin().getFromValue(0.8, 'Corner Feed Rate Multiplier (ratio):', self, 1.2, 1.0)
 #		self.filletRadiusOverEdgeWidth = settings.FloatSpin().getFromValue( 0.25, 'Fillet Radius over Perimeter Width (ratio):', self, 0.65, 0.35 )
-		self.reversalSlowdownDistanceOverEdgeWidth = settings.FloatSpin().getFromValue( 0.3, 'Reversal Slowdown Distance over Perimeter Width (ratio):', self, 0.7, 0.5 )
+		self.reversalSlowdownDistanceOverEdgeWidth = settings.FloatSpin().getFromValue( 0.3, 'Reversal Slowdown Distance over Perimeter Width (ratio):', self, 1.5, 1.0 )
 		self.useIntermediateFeedRateInCorners = settings.BooleanSetting().getFromValue('Use Intermediate Feed Rate in Corners', self, True )
 		self.executeTitle = 'Fillet'
 

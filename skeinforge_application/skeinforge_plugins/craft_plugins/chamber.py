@@ -216,7 +216,7 @@ class ChamberRepository:
 		self.bedTemperatureEndChangeHeight = settings.FloatSpin().getFromValue(-1.0, 'Bed Temperature End Change Height (mm):', self, 40.0, -1.0)
 		self.bedTemperatureEnd = settings.FloatSpin().getFromValue(20.0, 'Bed Temperature End (Celcius):', self, 90.0, 20.0)
 		settings.LabelSeparator().getFromRepository(self)
-		self.nozzleTemperature = settings.FloatSpin().getFromValue( 20.0, 'Initial Extruder Nozzle Temperature Forced (Celcius):', self, 270.0, 175.0 )
+		self.nozzleTemperature = settings.FloatSpin().getFromValue( 20.0, 'Initial Extruder Nozzle Temperature Forced (Celcius):', self, 270.0, 200.0 )
 		self.bedTemperatureForced = settings.FloatSpin().getFromValue( 20.0, 'PrintBed Temp. Forced (Set 0 to disable):', self, 130.0, 0.0 )
 		self.turnBedHeaterOffAtShutDown = settings.BooleanSetting().getFromValue('Turn print Bed Heater Off at Shut Down', self, True )
 		self.turnExtruderHeaterOffAtShutDown = settings.BooleanSetting().getFromValue('Turn Extruder Heater Off at Shut Down ', self, True )

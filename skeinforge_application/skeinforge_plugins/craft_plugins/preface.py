@@ -110,7 +110,7 @@ class PrefaceRepository:
 		self.meta = settings.StringSetting().getFromValue('Meta:', self, '')
 		self.setPositioningToAbsolute = settings.BooleanSetting().getFromValue('Set Positioning to Absolute', self, True )
 		self.setUnitsToMillimeters = settings.BooleanSetting().getFromValue('Set Units to Millimeters', self, True )
-		self.startAtHome = settings.BooleanSetting().getFromValue('Start at Home', self, False )
+		self.startAtHome = settings.BooleanSetting().getFromValue('Start at Home', self, True )
 		self.resetExtruder = settings.BooleanSetting().getFromValue('Reset Extruder before Print', self, True )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Turn Extruder Off -', self )

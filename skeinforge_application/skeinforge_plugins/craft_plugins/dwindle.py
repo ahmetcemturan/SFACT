@@ -98,10 +98,10 @@ class DwindleRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Dwindle')
 		self.activateDwindle = settings.BooleanSetting().getFromValue('Activate Dwindle', self, False)
 		settings.LabelSeparator().getFromRepository(self)
-		self.endRateMultiplier = settings.FloatSpin().getFromValue(0.4, 'End Rate Multiplier (ratio):', self, 0.8, 0.5)
-		self.pentUpVolume = settings.FloatSpin().getFromValue(0.1, 'Pent Up Volume (cubic millimeters):', self, 1.0, 0.4)
+		self.endRateMultiplier = settings.FloatSpin().getFromValue(0.4, 'End Rate Multiplier (ratio):', self, 1.5, 1.0)
+		self.pentUpVolume = settings.FloatSpin().getFromValue(0.1, 'Pent Up Volume (cubic millimeters):', self, 1.0, 0.2)
 		self.slowdownSteps = settings.IntSpin().getFromValue(2, 'Slowdown Steps (positive integer):', self, 10, 3)
-		self.slowdownVolume = settings.FloatSpin().getFromValue(1.0, 'Slowdown Volume (cubic millimeters):', self, 10.0, 5.0)
+		self.slowdownVolume = settings.FloatSpin().getFromValue(1.0, 'Slowdown Volume (cubic millimeters):', self, 10.0, 3.0)
 		self.executeTitle = 'Dwindle'
 
 	def execute(self):

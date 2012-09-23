@@ -115,15 +115,15 @@ class MultiplyRepository:
 		self.activateMultiply = settings.BooleanSetting().getFromValue('Activate Multiply: ', self, True )
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Center -', self )
-		self.centerX = settings.FloatSpin().getFromValue(-100.0, 'Center X (mm):', self, 100.0, 0.0)
-		self.centerY = settings.FloatSpin().getFromValue(-100.0, 'Center Y (mm):', self, 100.0, 0.0)
+		self.centerX = settings.FloatSpin().getFromValue(-100.0, 'Center X (mm):', self, 200.0, 100.0)
+		self.centerY = settings.FloatSpin().getFromValue(-100.0, 'Center Y (mm):', self, 200.0, 100.0)
 		settings.LabelSeparator().getFromRepository(self)
 		settings.LabelDisplay().getFromName('- Number of Cells -', self)
 		self.numberOfColumns = settings.IntSpin().getFromValue(1, 'Number of Columns (integer):', self, 10, 1)
 		self.numberOfRows = settings.IntSpin().getFromValue(1, 'Number of Rows (integer):', self, 10, 1)
 		settings.LabelSeparator().getFromRepository(self)
 		self.reverseSequenceEveryOddLayer = settings.BooleanSetting().getFromValue('Reverse Sequence every Odd Layer', self, False)
-		self.separationOverEdgeWidth = settings.FloatSpin().getFromValue(5.0, 'Separation over Perimeter Width (ratio):', self, 25.0, 15.0)
+		self.separationOverEdgeWidth = settings.FloatSpin().getFromValue(5.0, 'Separation over Perimeter Width (ratio):', self, 25.0, 5.0)
 		self.executeTitle = 'Multiply'
 
 	def execute(self):

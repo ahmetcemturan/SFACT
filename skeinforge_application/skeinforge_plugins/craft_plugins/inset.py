@@ -307,9 +307,9 @@ class InsetRepository:
 		self.loopOrderChoice = settings.MenuButtonDisplay().getFromName('In case of Conflict Solve:', self )
 		self.loopOrderAscendingArea = settings.MenuRadio().getFromMenuButtonDisplay( self.loopOrderChoice, 'Prefer Loops', self, True )
 		self.loopOrderDescendingArea = settings.MenuRadio().getFromMenuButtonDisplay( self.loopOrderChoice, 'Prefer Perimeter', self, False )
-		self.overlapRemovalWidthOverEdgeWidth = settings.FloatSpin().getFromValue(0.3, 'Overlap Removal Width over Perimeter Width (ratio):', self, 0.9, 0.6)
+		self.overlapRemovalWidthOverEdgeWidth = settings.FloatSpin().getFromValue(0.5, 'Overlap Removal Width over Perimeter Width (ratio):', self, 1.5, 1.0)
 		self.turnExtruderHeaterOffAtShutDown = settings.BooleanSetting().getFromValue('Turn Extruder Heater Off at Shut Down', self, True )
-		self.volumeFraction = settings.FloatSpin().getFromValue(0.7, 'Volume Fraction (ratio):', self, 1.0, 0.93)
+		self.volumeFraction = settings.FloatSpin().getFromValue(0.7, 'Volume Fraction (ratio):', self, 1.2, 1.0)
 		self.executeTitle = 'Inset'
 
 	def execute(self):
@@ -443,7 +443,7 @@ class InsetSkein:
 				self.edgeWidth = float(splitLine[1])
 				self.infillWidth = self.edgeWidth
 				self.halfEdgeWidth = 0.5 * self.edgeWidth
-				self.overlapRemovalWidth = self.edgeWidth * self.repository.overlapRemovalWidthOverEdgeWidth.value
+				self.overlapRemovalWidth = self.edgeWidth * euclidean.globalQuarterPi * self.repository.overlapRemovalWidthOverEdgeWidth.value
 				self.distanceFeedRate.addTagBracketedLine('nozzleDiameter', self.repository.nozzleDiameter.value )
 				self.nozzleXsection = (self.repository.nozzleDiameter.value/2) ** 2 * math.pi
 				self.extrusionXsection = ((self.edgeWidth + self.layerHeight)/4) ** 2 * math.pi

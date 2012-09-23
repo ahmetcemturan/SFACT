@@ -94,8 +94,8 @@ class ClipRepository:
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Clip')
 		self.activateClip = settings.BooleanSetting().getFromValue('Activate Clip..to clip the extrusion that overlaps when printing edges', self, True )
 		settings.LabelSeparator().getFromRepository(self)
-		self.clipOverEdgeWidth = settings.FloatSpin().getFromValue( 0.5, 'Clip Over Perimeter Width adjuster (increase for bigger gap):', self, 1.5, 1.0 )
-		self.maximumConnectionDistanceOverEdgeWidth = settings.FloatSpin().getFromValue( 1.0, 'Threshold for connecting inner loops (ratio):', self, 10.0, 2.5 )
+		self.clipOverEdgeWidth = settings.FloatSpin().getFromValue( 0.1, 'Clip Over Perimeter Width adjuster (increase for bigger gap):', self, 1.0, 0.33 )
+		self.maximumConnectionDistanceOverEdgeWidth = settings.FloatSpin().getFromValue( 1.0, 'Threshold for connecting inner loops (ratio):', self, 50.0, 25.0 )
 		self.executeTitle = 'Clip'
 
 	def execute(self):

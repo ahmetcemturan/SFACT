@@ -163,7 +163,7 @@ class CarveRepository:
 		settings.LabelDisplay().getFromName('- MAIN SETTINGS for Extrusion  -', self )
 		settings.LabelSeparator().getFromRepository(self)
 		self.addLayerTemplateToSVG = settings.BooleanSetting().getFromValue('Add Layer Template to SVG', self, True)
-		self.edgeWidthOverHeight = settings.FloatSpin().getFromValue( 1.4, 'Edge Width (mm):', self, 2.2, 1.8 )
+		self.edgeWidthOverHeight = settings.FloatSpin().getFromValue( 0.2, 'Edge Width (mm):', self, 1.0, 0.5 )
 		self.extraDecimalPlaces = settings.FloatSpin().getFromValue(0.0, 'Extra Decimal Places (float):', self, 3.0, 2.0)
 		self.importCoarseness = settings.FloatSpin().getFromValue( 0.5, 'Import Coarseness (ratio):', self, 2.0, 1.0 )
 		self.layerHeight = settings.FloatSpin().getFromValue( 0.1, 'Layer Height (mm):', self, 1.0, 0.4 )

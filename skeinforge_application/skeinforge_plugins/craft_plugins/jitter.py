@@ -117,7 +117,7 @@ class JitterRepository:
 		self.fileNameInput = settings.FileNameInput().getFromFileName( fabmetheus_interpret.getGNUTranslatorGcodeFileTypeTuples(), 'Open File for Jitter', self, '')
 		self.openWikiManualHelpPage = settings.HelpPage().getOpenFromAbsolute('http://fabmetheus.crsndoo.com/wiki/index.php/Skeinforge_Jitter')
 		self.activateJitter = settings.BooleanSetting().getFromValue('Activate Jitter', self, True)
-		self.jitterOverEdgeWidth = settings.FloatSpin().getFromValue(1.0, 'Jitter Over Perimeter Width (ratio):', self, 3.0, 2.0)
+		self.jitterOverEdgeWidth = settings.FloatSpin().getFromValue(1.0, 'Jitter Over Perimeter Width (ratio):', self, 6.0, 3.0)
 		self.executeTitle = 'Jitter'
 
 	def execute(self):
@@ -175,7 +175,7 @@ class JitterSkein:
 	def getCraftedGcode(self, jitterRepository, gcodeText):
 		'Parse gcode text and store the jitter gcode.'
 		if jitterRepository.jitterOverEdgeWidth.value == 0.0:
-			print('Warning, Jitter Over Perimeter Width is zero so thing will be done.')
+			print('Warning, Jitter Over Perimeter Width is zero so nothing will be done.')
 			return gcodeText
 		self.lines = archive.getTextLines(gcodeText)
 		self.parseInitialization(jitterRepository)
