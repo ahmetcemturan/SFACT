@@ -745,7 +745,7 @@ class RaftSkein:
 #		print (self.edgeWidth, self.layerHeight)
 #		print (self.supportXAngle)
 #		supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
-		self.minimumSupportRatio = math.tan( math.radians( self.supportXAngle ) ) / (self.repository.supportMinimumAngle.value+0.00001)
+		self.minimumSupportRatio = math.tan( math.radians( self.supportXAngle ) ) * self.repository.supportMinimumAngle.value
 
 		outsetSupportLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, -self.minimumSupportRatio * rise)
 		numberOfSubSteps = 4
@@ -926,7 +926,7 @@ class RaftSkein:
 				self.widthHeightRatio = self.edgeWidth / self.layerHeight
 #				supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
 #				self.supportXAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
-				self.supportXTempAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
+				self.supportXTempAngle = math.degrees(math.fabs( math.tan(self.layerHeight/(self.edgeWidth -self.layerHeight)/2)))
 #				print self.supportXTempAngle
 #				print self.widthHeightRatio
 				if self.widthHeightRatio >= 1:
@@ -964,7 +964,7 @@ class RaftSkein:
 			elif firstWord == '(<operatingFlowRate>':
 				self.operatingFlowRate = float(splitLine[1])
 				self.oldFlowRate = self.operatingFlowRate
-				self.supportFlowRate =  self.repository.supportFlowRateOverOperatingFlowRate.value * (self.nozzleXsection / self.extrusionXsection)
+				self.supportFlowRate =  self.repository.supportFlowRateOverOperatingFlowRate.value * self.operatingFlowRate #(self.nozzleXsection / self.extrusionXsection)
 			elif firstWord == '(<sharpestProduct>':
 				self.sharpestProduct = float(splitLine[1])
 			elif firstWord == '(<supportLayersTemperature>':

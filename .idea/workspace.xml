@@ -29,7 +29,7 @@
       <file leaf-file-name="raft.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1011" column="26" selection-start="52772" selection-end="52777" vertical-scroll-proportion="0.33278418">
+            <state line="969" column="124" selection-start="51128" selection-end="51128" vertical-scroll-proportion="1.0889621">
               <folding />
             </state>
           </provider>
@@ -94,7 +94,7 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Favorites" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -173,7 +173,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Favorites" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -293,16 +293,16 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1932" height="1056" extended-state="1" />
-    <editor active="false" />
+    <frame x="-8" y="-8" width="1932" height="1056" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32352942" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.08725542" sideWeight="0.36819172" order="1" side_tool="true" content_ui="tabs" x="583" y="196" width="274" height="468" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.08725542" sideWeight="0.46623093" order="1" side_tool="true" content_ui="tabs" x="583" y="196" width="274" height="468" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.08725542" sideWeight="0.3583878" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.08725542" sideWeight="0.2603486" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2647059" sideWeight="0.9991143" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2647059" sideWeight="0.9991143" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32897604" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -365,15 +365,243 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>721</line>
+          <line>723</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>749</line>
+          <line>752</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>831</line>
+          <line>834</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1015</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1014</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1013</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1017</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1018</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1019</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1021</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1024</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1026</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1028</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1029</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1027</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1025</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1023</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1022</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1020</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1016</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1012</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1030</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1031</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1033</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1032</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1034</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1035</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1036</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1037</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1038</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1039</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>1040</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>479</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>480</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>482</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>485</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>484</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>486</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>487</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>488</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>490</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>489</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>491</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>492</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>493</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>494</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>495</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>496</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>85</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>86</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>87</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>104</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>102</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>101</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>111</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>112</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>114</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>156</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>157</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>159</line>
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -456,7 +684,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1011" column="26" selection-start="52772" selection-end="52777" vertical-scroll-proportion="0.33278418">
+        <state line="969" column="124" selection-start="51128" selection-end="51128" vertical-scroll-proportion="1.0889621">
           <folding />
         </state>
       </provider>
