@@ -576,10 +576,10 @@ class RaftSkein:
 			return
 		self.baseLayerThicknessOverLayerThickness = self.repository.baseLayerThicknessOverLayerThickness.value
 		baseExtrusionWidth = self.edgeWidth * self.baseLayerThicknessOverLayerThickness
-		self.baseStep = baseExtrusionWidth / self.repository.baseInfillDensity.value
+		self.baseStep = baseExtrusionWidth / self.repository.baseInfillDensity.value * euclidean.globalQuarterPi
 		self.interfaceLayerThicknessOverLayerThickness = self.repository.interfaceLayerThicknessOverLayerThickness.value
 		interfaceExtrusionWidth = self.edgeWidth * self.interfaceLayerThicknessOverLayerThickness
-		self.interfaceStep = interfaceExtrusionWidth / self.repository.interfaceInfillDensity.value
+		self.interfaceStep = interfaceExtrusionWidth / self.repository.interfaceInfillDensity.value* euclidean.globalQuarterPi
 		self.setCornersZ()
 		self.cornerMinimumComplex = self.cornerMinimum.dropAxis()
 		originalExtent = self.cornerMaximumComplex - self.cornerMinimumComplex
@@ -827,10 +827,9 @@ class RaftSkein:
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the raft gcode.'
 		self.repository = repository
-#		print (self.edgeWidth , " " ,self.layerHeight)
+
 #		supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
 #		self.minimumSupportRatio = math.tan( math.radians( supportMinimumAngle ) )
-
 #		self.minimumSupportRatio = math.tan( math.radians( repository.supportMinimumAngle.value ) )
 		self.supportEndLines = settings.getAlterationFileLines(repository.nameOfSupportEndFile.value)
 		self.supportStartLines = settings.getAlterationFileLines(repository.nameOfSupportStartFile.value)
@@ -925,14 +924,17 @@ class RaftSkein:
 				self.extrusionXsection = ((self.edgeWidth + self.layerHeight)/4) ** 2 * math.pi
 				self.widthHeightRatio = self.edgeWidth / self.layerHeight
 #				supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
-#				self.supportXAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
-				self.supportXTempAngle = math.degrees(math.fabs( math.tan(self.layerHeight/(self.edgeWidth -self.layerHeight)/2)))
+
+#				self.supportXTempAngle = math.degrees(((self.edgeWidth-self.layerHeight)/self.layerHeight/2))
+				self.supportXAngle =90-math.degrees(((self.edgeWidth-self.layerHeight)/self.layerHeight/2))
+
+				print (self.edgeWidth , 'X' ,self.layerHeight, '=' , self.supportXAngle)
 #				print self.supportXTempAngle
 #				print self.widthHeightRatio
-				if self.widthHeightRatio >= 1:
-					self.supportXAngle = self.supportXTempAngle
-				else :
-					self.supportXAngle = 90
+#				if self.widthHeightRatio >= 1:
+#					self.supportXAngle = self.supportXTempAngle
+#				else :
+#					self.supportXAngle = 90
 #				print self.supportXAngle
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('raft')
