@@ -384,7 +384,7 @@ class RaftRepository:
 		self.supportChoiceEmptyLayersOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Empty Layers Only', self, False)
 		self.supportChoiceEverywhere = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Everywhere', self, False)
 		self.supportChoiceExteriorOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Exterior Only', self, False)
-		self.supportMinimumAngle = settings.FloatSpin().getFromValue(40.0, 'Add support if flatter than (degrees):', self, 80.0, 50.0)
+		self.supportMinimumAngle = settings.FloatSpin().getFromValue(0.25, 'Add more (>1) or less (<1) support:', self, 2.0, 1.0)
 		self.executeTitle = 'Raft'
 
 	def execute(self):
