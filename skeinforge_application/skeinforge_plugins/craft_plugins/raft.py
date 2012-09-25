@@ -384,7 +384,7 @@ class RaftRepository:
 		self.supportChoiceEmptyLayersOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Empty Layers Only', self, False)
 		self.supportChoiceEverywhere = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Everywhere', self, False)
 		self.supportChoiceExteriorOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Exterior Only', self, False)
-		self.supportMinimumAngle = settings.FloatSpin().getFromValue(0.25, 'Add more (>1) or less (<1) support:', self, 2.0, 1.0)
+		self.supportMinimumAngle = settings.FloatSpin().getFromValue(40.0, 'Add support if flatter than (degrees):', self, 80.0, 50.0)
 		self.executeTitle = 'Raft'
 
 	def execute(self):
@@ -745,7 +745,12 @@ class RaftSkein:
 #		print (self.edgeWidth, self.layerHeight)
 #		print (self.supportXAngle)
 #		supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
-		self.minimumSupportRatio = math.tan( math.radians( self.supportXAngle ) ) * self.repository.supportMinimumAngle.value
+#		self.minimumSupportRatio = 1/self.supportXAngle# )  * self.repository.supportMinimumAngle.value
+#		print ('min sup rat',self.minimumSupportRatio)
+#		self.minimumSupportRatiox =  self.supportXAngle * self.repository.supportMinimumAngle.value
+#		print ('min sup ratx',self.minimumSupportRatiox)
+		self.minimumSupportRatio = self.widthHeightRatio * self.repository.supportMinimumAngle.value
+#		print (self.minimumSupportRatio , self.widthHeightRatio , self.repository.supportMinimumAngle.value)
 
 		outsetSupportLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, -self.minimumSupportRatio * rise)
 		numberOfSubSteps = 4
@@ -827,9 +832,6 @@ class RaftSkein:
 	def getCraftedGcode(self, gcodeText, repository):
 		'Parse gcode text and store the raft gcode.'
 		self.repository = repository
-
-#		supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
-#		self.minimumSupportRatio = math.tan( math.radians( supportMinimumAngle ) )
 #		self.minimumSupportRatio = math.tan( math.radians( repository.supportMinimumAngle.value ) )
 		self.supportEndLines = settings.getAlterationFileLines(repository.nameOfSupportEndFile.value)
 		self.supportStartLines = settings.getAlterationFileLines(repository.nameOfSupportStartFile.value)
@@ -922,13 +924,13 @@ class RaftSkein:
 				self.quarterEdgeWidth = 0.25 * self.edgeWidth
 				self.supportOutset = self.edgeWidth + self.edgeWidth * self.repository.supportGapOverPerimeterExtrusionWidth.value
 				self.extrusionXsection = ((self.edgeWidth + self.layerHeight)/4) ** 2 * math.pi
-				self.widthHeightRatio = self.edgeWidth / self.layerHeight
+				self.widthHeightRatio = ((self.edgeWidth-self.layerHeight)/2) / self.layerHeight
 #				supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
 
 #				self.supportXTempAngle = math.degrees(((self.edgeWidth-self.layerHeight)/self.layerHeight/2))
-				self.supportXAngle =90-math.degrees(((self.edgeWidth-self.layerHeight)/self.layerHeight/2))
-
-				print (self.edgeWidth , 'X' ,self.layerHeight, '=' , self.supportXAngle)
+#				self.supportXAngle =90-math.degrees(((self.edgeWidth-self.layerHeight)/self.layerHeight/2))
+#				self.supportXAngle =+self.layerHeight/((self.edgeWidth-self.layerHeight)/2)
+#				print (self.edgeWidth , 'X' ,self.layerHeight, '=' , self.supportXAngle)
 #				print self.supportXTempAngle
 #				print self.widthHeightRatio
 #				if self.widthHeightRatio >= 1:
