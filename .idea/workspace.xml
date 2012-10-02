@@ -26,10 +26,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="feed.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/feed.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="raft.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="752" column="1" selection-start="39786" selection-end="39786" vertical-scroll-proportion="0.45043477">
+            <state line="754" column="93" selection-start="40013" selection-end="40013" vertical-scroll-proportion="0.6159292">
               <folding />
             </state>
           </provider>
@@ -94,6 +103,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -172,7 +182,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Favorites" />
     </panes>
   </component>
@@ -293,20 +302,20 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1" y="1" width="1678" height="1008" extended-state="1" />
-    <editor active="false" />
+    <frame x="91" y="12" width="1678" height="1008" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32352942" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.08674405" sideWeight="0.537931" order="1" side_tool="true" content_ui="tabs" x="583" y="196" width="274" height="468" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.08674405" sideWeight="0.7390805" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3298717" sideWeight="0.7275862" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26091954" sideWeight="0.9991143" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2724138" sideWeight="0.9991143" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32897604" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.49673203" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.49655172" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -369,7 +378,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>836</line>
+          <line>850</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
@@ -603,36 +612,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/sfact.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="55" column="0" selection-start="2942" selection-end="2942" vertical-scroll-proportion="0.58143324" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/fillet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="375" column="167" selection-start="18095" selection-end="18095" vertical-scroll-proportion="0.41530946" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/flow.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/jitter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="122" column="22" selection-start="5451" selection-end="5451" vertical-scroll-proportion="0.8121911" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/limit.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="89" column="127" selection-start="3565" selection-end="3565" vertical-scroll-proportion="0.7058824" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/multiply.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="125" column="134" selection-start="5771" selection-end="5771" vertical-scroll-proportion="0.37598735" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="244" column="0" selection-start="12703" selection-end="13213" vertical-scroll-proportion="0.0" />
@@ -675,14 +654,44 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_utilities/skeinforge_craft.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="0" selection-start="2251" selection-end="2251" vertical-scroll-proportion="0.0">
+        <state line="59" column="0" selection-start="2251" selection-end="2251" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runskeinforge.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="0" selection-start="674" selection-end="674" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/show_skeinforge.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="0" selection-start="195" selection-end="195" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/terminal.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="0" selection-start="598" selection-end="598" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/whittle.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="92" selection-start="1018" selection-end="1018" vertical-scroll-proportion="0.020531401" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skFrontend.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/feed.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="752" column="1" selection-start="39786" selection-end="39786" vertical-scroll-proportion="0.45043477">
+        <state line="754" column="93" selection-start="40013" selection-end="40013" vertical-scroll-proportion="0.6159292">
           <folding />
         </state>
       </provider>

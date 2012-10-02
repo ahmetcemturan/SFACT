@@ -440,7 +440,7 @@ class RaftSkein:
 
 	def addBaseLayer(self):
 		'Add a base layer.'
-		baseLayerThickness = self.layerHeight * self.baseLayerThicknessOverLayerThickness
+		baseLayerThickness = self.baseLayerThicknessOverLayerThickness
 		zCenter = self.extrusionTop + 0.5 * baseLayerThickness
 		z = zCenter + baseLayerThickness * self.repository.baseNozzleLiftOverBaseLayerThickness.value
 		if len(self.baseEndpoints) < 1:
@@ -479,7 +479,7 @@ class RaftSkein:
 
 	def addInterfaceLayer(self):
 		'Add an interface layer.'
-		interfaceLayerThickness = self.layerHeight * self.interfaceLayerThicknessOverLayerThickness
+		interfaceLayerThickness = self.interfaceLayerThicknessOverLayerThickness
 		zCenter = self.extrusionTop + 0.5 * interfaceLayerThickness
 		z = zCenter + interfaceLayerThickness * self.repository.interfaceNozzleLiftOverInterfaceLayerThickness.value
 		if len(self.interfaceEndpoints) < 1:
@@ -575,10 +575,10 @@ class RaftSkein:
 			print('this should never happen, there are no boundary layers in addRaft')
 			return
 		self.baseLayerThicknessOverLayerThickness = self.repository.baseLayerThicknessOverLayerThickness.value
-		baseExtrusionWidth = self.edgeWidth * self.baseLayerThicknessOverLayerThickness
+		baseExtrusionWidth = self.baseLayerThicknessOverLayerThickness
 		self.baseStep = baseExtrusionWidth / self.repository.baseInfillDensity.value * euclidean.globalQuarterPi
 		self.interfaceLayerThicknessOverLayerThickness = self.repository.interfaceLayerThicknessOverLayerThickness.value
-		interfaceExtrusionWidth = self.edgeWidth * self.interfaceLayerThicknessOverLayerThickness
+		interfaceExtrusionWidth = self.interfaceLayerThicknessOverLayerThickness
 		self.interfaceStep = interfaceExtrusionWidth / self.repository.interfaceInfillDensity.value* euclidean.globalQuarterPi
 		self.setCornersZ()
 		self.cornerMinimumComplex = self.cornerMinimum.dropAxis()
@@ -750,9 +750,9 @@ class RaftSkein:
 #		self.minimumSupportRatiox =  self.supportXAngle * self.repository.supportMinimumAngle.value
 #		print ('min sup ratx',self.minimumSupportRatiox)
 		self.minimumSupportRatio = self.widthHeightRatio * self.repository.supportMinimumAngle.value
-#		print (self.minimumSupportRatio , self.widthHeightRatio , self.repository.supportMinimumAngle.value)
-
-		outsetSupportLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, -self.minimumSupportRatio * rise)
+		print ('LH',self.layerHeight,'EW', self.edgeWidth, 'msr',self.minimumSupportRatio , 'whr',self.widthHeightRatio , 'sma',self.repository.supportMinimumAngle.value)
+		print ('MSR:', math.tan(self.minimumSupportRatio))
+		outsetSupportLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, self.minimumSupportRatio * rise)
 		numberOfSubSteps = 4
 		subStepSize = self.interfaceStep / float( numberOfSubSteps )
 		aboveIntersectionsTable = {}
@@ -924,7 +924,7 @@ class RaftSkein:
 				self.quarterEdgeWidth = 0.25 * self.edgeWidth
 				self.supportOutset = self.edgeWidth + self.edgeWidth * self.repository.supportGapOverPerimeterExtrusionWidth.value
 				self.extrusionXsection = ((self.edgeWidth + self.layerHeight)/4) ** 2 * math.pi
-				self.widthHeightRatio = ((self.edgeWidth-self.layerHeight)/2) / self.layerHeight
+				self.widthHeightRatio = (((self.edgeWidth-self.layerHeight)/2)/self.layerHeight)
 #				supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
 
 #				self.supportXTempAngle = math.degrees(((self.edgeWidth-self.layerHeight)/self.layerHeight/2))
