@@ -349,7 +349,7 @@ class RaftRepository:
 		self.baseFeedRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Feed Rate Multiplier (ratio):', self, 2.0, 1.0)
 		self.baseFlowRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Flow Rate Multiplier (ratio):', self, 2.0, 1.0)
 		self.baseInfillDensity = settings.FloatSpin().getFromValue(0.2, 'Base Infill Density (ratio):', self, 1.0, 0.5)
-		self.baseLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(1.0, 'Base Layer Thickness over Layer Thickness:', self, 3.0, 2.0)
+		self.baseLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(1.0, 'Base Layer Thickness:', self, 3.0, 2.0)
 		self.baseLayers = settings.IntSpin().getFromValue(0, 'Base Layers (integer):', self, 3, 0)
 		self.baseNozzleLiftOverBaseLayerThickness = settings.FloatSpin().getFromValue(0.2, 'Base Nozzle Lift over Base Layer Thickness (ratio):', self, 0.8, 0.4)
 		settings.LabelSeparator().getFromRepository(self)
@@ -360,7 +360,7 @@ class RaftRepository:
 		self.interfaceFeedRateMultiplier = settings.FloatSpin().getFromValue(0.7, 'Interface Feed Rate Multiplier (ratio):', self, 1.1, 1.0)
 		self.interfaceFlowRateMultiplier = settings.FloatSpin().getFromValue(0.7, 'Interface Flow Rate Multiplier (ratio):', self, 1.1, 1.0)
 		self.interfaceInfillDensity = settings.FloatSpin().getFromValue(0.1, 'Interface/Support Lines Density (ratio):', self, 0.5, 0.25)
-		self.interfaceLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(	0.8, 'Interface/Support Layer Thickness over Layer Thickness:', self, 1.5, 1.0)
+		self.interfaceLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(	0.8, 'Interface Layer Thickness:', self, 1.5, 1.0)
 		self.interfaceLayers = settings.IntSpin().getFromValue(	0, 'Interface Layers (integer):', self, 3, 0)
 		self.interfaceNozzleLiftOverInterfaceLayerThickness = settings.FloatSpin().getFromValue(0.25, 'Interface Nozzle Lift over Interface Layer Thickness (ratio):', self, 0.85, 0.45)
 		settings.LabelSeparator().getFromRepository(self)
@@ -384,7 +384,7 @@ class RaftRepository:
 		self.supportChoiceEmptyLayersOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Empty Layers Only', self, False)
 		self.supportChoiceEverywhere = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Everywhere', self, False)
 		self.supportChoiceExteriorOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Exterior Only', self, False)
-		self.supportMinimumAngle = settings.FloatSpin().getFromValue(0.25, 'Add more (>1) or less (<1) support:', self, 2.0, 1.0)
+		self.supportMinimumAngle = settings.FloatSpin().getFromValue(-20.0, 'Add mor or less support (Degrees):', self, 20.0, 0.0)
 		self.executeTitle = 'Raft'
 
 	def execute(self):
@@ -403,8 +403,7 @@ class RaftSkein:
 		self.boundaryLayers = []
 		self.coolingRate = None
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
-		self.edgeWidth = 0.9
-		self.layerHeight = 0.4
+		self.edgeWidth = 0.6
 		self.extrusionStart = True
 		self.extrusionTop = 0.0
 		self.feedRateMinute = 961.0
@@ -416,6 +415,7 @@ class RaftSkein:
 		self.isStartupEarly = False
 		self.layerIndex = - 1
 		self.layerStarted = False
+		self.layerHeight = 0.4
 		self.lineIndex = 0
 		self.lines = None
 		self.objectFirstLayerInfillTemperature = None
@@ -436,7 +436,7 @@ class RaftSkein:
 		self.supportLayersTemperature = None
 		self.supportedLayersTemperature = None
 		self.travelFeedRateMinute = None
-		self.extrusionXsection = 1
+		self.extrusionXsection = 10
 
 	def addBaseLayer(self):
 		'Add a base layer.'
@@ -742,17 +742,8 @@ class RaftSkein:
 			return
 		boundaryLayer = self.boundaryLayers[layerIndex]
 		rise = aboveLayer.z - boundaryLayer.z
-#		print (self.edgeWidth, self.layerHeight)
-#		print (self.supportXAngle)
-#		supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
-#		self.minimumSupportRatio = 1/self.supportXAngle# )  * self.repository.supportMinimumAngle.value
-#		print ('min sup rat',self.minimumSupportRatio)
-#		self.minimumSupportRatiox =  self.supportXAngle * self.repository.supportMinimumAngle.value
-#		print ('min sup ratx',self.minimumSupportRatiox)
-		self.minimumSupportRatio = self.widthHeightRatio * self.repository.supportMinimumAngle.value
-		print ('LH',self.layerHeight,'EW', self.edgeWidth, 'msr',self.minimumSupportRatio , 'whr',self.widthHeightRatio , 'sma',self.repository.supportMinimumAngle.value)
-		print ('MSR:', math.tan(self.minimumSupportRatio))
-		outsetSupportLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, self.minimumSupportRatio * rise)
+#		print self.minimumSupportRatio ,'for', self.supportAutoAngle
+		outsetSupportLoops = intercircle.getInsetSeparateLoopsFromLoops(boundaryLayer.loops, -self.minimumSupportRatio * rise)
 		numberOfSubSteps = 4
 		subStepSize = self.interfaceStep / float( numberOfSubSteps )
 		aboveIntersectionsTable = {}
@@ -833,6 +824,8 @@ class RaftSkein:
 		'Parse gcode text and store the raft gcode.'
 		self.repository = repository
 #		self.minimumSupportRatio = math.tan( math.radians( repository.supportMinimumAngle.value ) )
+#		print self.supportAutoAngle
+#		self.minimumSupportRatio = math.tan( math.radians( 56.91 ) )
 		self.supportEndLines = settings.getAlterationFileLines(repository.nameOfSupportEndFile.value)
 		self.supportStartLines = settings.getAlterationFileLines(repository.nameOfSupportStartFile.value)
 		self.lines = archive.getTextLines(gcodeText)
@@ -924,20 +917,9 @@ class RaftSkein:
 				self.quarterEdgeWidth = 0.25 * self.edgeWidth
 				self.supportOutset = self.edgeWidth + self.edgeWidth * self.repository.supportGapOverPerimeterExtrusionWidth.value
 				self.extrusionXsection = ((self.edgeWidth + self.layerHeight)/4) ** 2 * math.pi
-				self.widthHeightRatio = (((self.edgeWidth-self.layerHeight)/2)/self.layerHeight)
-#				supportMinimumAngle = 90 - math.degrees(math.fabs( math.tan((self.edgeWidth -self.layerHeight)/2/self.layerHeight)))
-
-#				self.supportXTempAngle = math.degrees(((self.edgeWidth-self.layerHeight)/self.layerHeight/2))
-#				self.supportXAngle =90-math.degrees(((self.edgeWidth-self.layerHeight)/self.layerHeight/2))
-#				self.supportXAngle =+self.layerHeight/((self.edgeWidth-self.layerHeight)/2)
-#				print (self.edgeWidth , 'X' ,self.layerHeight, '=' , self.supportXAngle)
-#				print self.supportXTempAngle
-#				print self.widthHeightRatio
-#				if self.widthHeightRatio >= 1:
-#					self.supportXAngle = self.supportXTempAngle
-#				else :
-#					self.supportXAngle = 90
-#				print self.supportXAngle
+				self.supportAutoAngle = math.degrees(math.atan(((self.edgeWidth-self.layerHeight)/2)/self.layerHeight))+self.repository.supportMinimumAngle.value
+				print 'supports generated for overhangs flatter than: ',self.supportAutoAngle
+				self.minimumSupportRatio = math.tan( math.radians( self.supportAutoAngle ) )
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('raft')
 			elif firstWord == '(<heatingRate>':
