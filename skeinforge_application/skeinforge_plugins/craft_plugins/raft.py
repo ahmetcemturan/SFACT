@@ -349,7 +349,7 @@ class RaftRepository:
 		self.baseFeedRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Feed Rate Multiplier (ratio):', self, 2.0, 1.0)
 		self.baseFlowRateMultiplier = settings.FloatSpin().getFromValue(0.1, 'Base Flow Rate Multiplier (ratio):', self, 2.0, 1.0)
 		self.baseInfillDensity = settings.FloatSpin().getFromValue(0.2, 'Base Infill Density (ratio):', self, 1.0, 0.5)
-		self.baseLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(1.0, 'Base Layer Thickness:', self, 3.0, 2.0)
+		self.baseLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(0.1, 'Base Layer Thickness:', self, 1.0, 0.5)
 		self.baseLayers = settings.IntSpin().getFromValue(0, 'Base Layers (integer):', self, 3, 0)
 		self.baseNozzleLiftOverBaseLayerThickness = settings.FloatSpin().getFromValue(0.2, 'Base Nozzle Lift over Base Layer Thickness (ratio):', self, 0.8, 0.4)
 		settings.LabelSeparator().getFromRepository(self)
@@ -360,7 +360,7 @@ class RaftRepository:
 		self.interfaceFeedRateMultiplier = settings.FloatSpin().getFromValue(0.7, 'Interface Feed Rate Multiplier (ratio):', self, 1.1, 1.0)
 		self.interfaceFlowRateMultiplier = settings.FloatSpin().getFromValue(0.7, 'Interface Flow Rate Multiplier (ratio):', self, 1.1, 1.0)
 		self.interfaceInfillDensity = settings.FloatSpin().getFromValue(0.1, 'Interface/Support Lines Density (ratio):', self, 0.5, 0.25)
-		self.interfaceLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(	0.8, 'Interface Layer Thickness:', self, 1.5, 1.0)
+		self.interfaceLayerThicknessOverLayerThickness = settings.FloatSpin().getFromValue(	0.1, 'Interface Layer Thickness:', self, 1.0, 0.5)
 		self.interfaceLayers = settings.IntSpin().getFromValue(	0, 'Interface Layers (integer):', self, 3, 0)
 		self.interfaceNozzleLiftOverInterfaceLayerThickness = settings.FloatSpin().getFromValue(0.25, 'Interface Nozzle Lift over Interface Layer Thickness (ratio):', self, 0.85, 0.45)
 		settings.LabelSeparator().getFromRepository(self)
@@ -436,7 +436,7 @@ class RaftSkein:
 		self.supportLayersTemperature = None
 		self.supportedLayersTemperature = None
 		self.travelFeedRateMinute = None
-		self.extrusionXsection = 10
+		self.extrusionXsection = 1
 
 	def addBaseLayer(self):
 		'Add a base layer.'
