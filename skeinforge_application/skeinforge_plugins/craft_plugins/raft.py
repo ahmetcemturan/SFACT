@@ -384,7 +384,7 @@ class RaftRepository:
 		self.supportChoiceEmptyLayersOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Empty Layers Only', self, False)
 		self.supportChoiceEverywhere = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Everywhere', self, False)
 		self.supportChoiceExteriorOnly = settings.MenuRadio().getFromMenuButtonDisplay(self.supportMaterialChoice, 'Exterior Only', self, False)
-		self.supportMinimumAngle = settings.FloatSpin().getFromValue(-20.0, 'Add mor or less support (Degrees):', self, 20.0, 0.0)
+		self.supportMinimumAngle = settings.FloatSpin().getFromValue(-20.0, 'Add more or less support (Degrees):', self, 20.0, 0.0)
 		self.executeTitle = 'Raft'
 
 	def execute(self):
@@ -446,14 +446,7 @@ class RaftSkein:
 		if len(self.baseEndpoints) < 1:
 			print('This should never happen, the base layer has a size of zero.')
 			return
-		self.addLayerFromEndpoints(
-			self.baseEndpoints,
-			self.repository.baseFeedRateMultiplier.value,
-			self.repository.baseFlowRateMultiplier.value,
-			baseLayerThickness,
-			self.baseLayerThicknessOverLayerThickness,
-			self.baseStep,
-			z)
+		self.addLayerFromEndpoints(	self.baseEndpoints,	self.repository.baseFeedRateMultiplier.value,self.repository.baseFlowRateMultiplier.value,baseLayerThickness,self.baseLayerThicknessOverLayerThickness,	self.baseStep,z)
 
 	def addBaseSegments(self, baseExtrusionWidth):
 		'Add the base segments.'
@@ -485,14 +478,7 @@ class RaftSkein:
 		if len(self.interfaceEndpoints) < 1:
 			print('This should never happen, the interface layer has a size of zero.')
 			return
-		self.addLayerFromEndpoints(
-			self.interfaceEndpoints,
-			self.repository.interfaceFeedRateMultiplier.value,
-			self.repository.interfaceFlowRateMultiplier.value,
-			interfaceLayerThickness,
-			self.interfaceLayerThicknessOverLayerThickness,
-			self.interfaceStep,
-			z)
+		self.addLayerFromEndpoints(	self.interfaceEndpoints,self.repository.interfaceFeedRateMultiplier.value,	self.repository.interfaceFlowRateMultiplier.value,	interfaceLayerThickness,self.interfaceLayerThicknessOverLayerThickness,	self.interfaceStep,	z)
 
 	def addInterfaceTables(self, interfaceExtrusionWidth):
 		'Add interface tables.'
@@ -520,15 +506,7 @@ class RaftSkein:
 			for joinedSegment in joinedSegments:
 				self.interfaceEndpoints += joinedSegment
 
-	def addLayerFromEndpoints(
-		self,
-		endpoints,
-		feedRateMultiplier,
-		flowRateMultiplier,
-		layerLayerThickness,
-		layerThicknessRatio,
-		step,
-		z):
+	def addLayerFromEndpoints(self,	endpoints,feedRateMultiplier,flowRateMultiplier,layerLayerThickness,layerThicknessRatio,step,z):
 		'Add a layer from endpoints and raise the extrusion top.'
 		layerThicknessRatioSquared = layerThicknessRatio * layerThicknessRatio
 		feedRateMinute = self.feedRateMinute * feedRateMultiplier / layerThicknessRatioSquared
@@ -918,7 +896,7 @@ class RaftSkein:
 				self.supportOutset = self.edgeWidth + self.edgeWidth * self.repository.supportGapOverPerimeterExtrusionWidth.value
 				self.extrusionXsection = ((self.edgeWidth + self.layerHeight)/4) ** 2 * math.pi
 				self.supportAutoAngle = math.degrees(math.atan(((self.edgeWidth-self.layerHeight)/2)/self.layerHeight))+self.repository.supportMinimumAngle.value
-				print 'supports generated for overhangs flatter than: ',self.supportAutoAngle
+				print '##### Supports generated for overhangs flatter than: ',self.supportAutoAngle ,'#####'
 				self.minimumSupportRatio = math.tan( math.radians( self.supportAutoAngle ) )
 			elif firstWord == '(</extruderInitialization>)':
 				self.distanceFeedRate.addTagBracketedProcedure('raft')

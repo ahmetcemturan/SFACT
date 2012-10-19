@@ -18,8 +18,9 @@ __date__ = '$Date: 2008/02/05 $'
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 
 
-globalTemporarySettingsPath = os.path.join(os.getcwd(), 'sfact_profiles')#(os.path.expanduser('~'), '.skeinforge')
-#globalTemporarySettingsPath = os.path.join(os.path.expanduser('~'), '.skeinforge')
+globalTemporarySettingsPath = os.path.join(os.getcwd(), 'sfact_profiles')#(os.path.expanduser('~'), '.skeinforge')#thats default sfact way in own dir
+#globalTemporarySettingsPath = os.path.join(os.path.expanduser('~'), '.skeinforge')#thats default sf way in home dir
+#globalTemporarySettingsPath = os.path.join(os.path.expanduser('~'), '.sfact')#thats repetier compatible way in home dir
 
 
 def addToNamePathDictionary(directoryPath, namePathDictionary):

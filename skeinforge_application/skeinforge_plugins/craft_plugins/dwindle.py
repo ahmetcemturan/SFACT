@@ -99,6 +99,7 @@ class DwindleRepository:
 		self.activateDwindle = settings.BooleanSetting().getFromValue('Activate Dwindle', self, False)
 		settings.LabelSeparator().getFromRepository(self)
 		self.endRateMultiplier = settings.FloatSpin().getFromValue(0.4, 'End Rate Multiplier (ratio):', self, 1.5, 1.0)
+		self.slowRateMultiplier = settings.FloatSpin().getFromValue(0.4, 'Slow Rate Multiplier (ratio):', self, 1.5, 1.0)
 		self.pentUpVolume = settings.FloatSpin().getFromValue(0.1, 'Pent Up Volume (cubic millimeters):', self, 1.0, 0.2)
 		self.slowdownSteps = settings.IntSpin().getFromValue(2, 'Slowdown Steps (positive integer):', self, 10, 3)
 		self.slowdownVolume = settings.FloatSpin().getFromValue(1.0, 'Slowdown Volume (cubic millimeters):', self, 10.0, 3.0)
@@ -115,7 +116,7 @@ class DwindleSkein:
 	'A class to dwindle a skein of extrusions.'
 	def __init__(self):
 		'Initialize.'
- 		self.distanceFeedRate = gcodec.DistanceFeedRate()
+		self.distanceFeedRate = gcodec.DistanceFeedRate()
 		self.feedRateMinute = 959.0
 		self.isActive = False
 		self.layerIndex = -1
@@ -216,19 +217,19 @@ class ThreadSection:
 	'A class to handle a volumetric section of a thread.'
 	def __init__(self, feedRateMinute, flowRate, location, oldLocation):
 		'Initialize.'
- 		self.feedRateMinute = feedRateMinute
- 		self.flowRate = flowRate
- 		self.location = location
- 		self.oldLocation = oldLocation
+		self.feedRateMinute = feedRateMinute
+		self.flowRate = flowRate
+		self.location = location
+		self.oldLocation = oldLocation
 
 	def addGcodeMovementByRate(self, distanceFeedRate, endRateMultiplier, location, rateMultiplier, slowdownFlowRateMultiplier):
 		'Add gcode movement by rate multiplier.'
- 		flowRate = self.flowRate
+		flowRate = self.flowRate
 		rateMultiplier = rateMultiplier + endRateMultiplier * (1.0 - rateMultiplier)
 		if rateMultiplier < 1.0:
 			flowRate *= slowdownFlowRateMultiplier
 		distanceFeedRate.addFlowRateLine(flowRate * rateMultiplier)
-		distanceFeedRate.addGcodeMovementZWithFeedRateVector3(self.feedRateMinute * rateMultiplier, location)
+		distanceFeedRate.addGcodeMovementZWithFeedRateVector3(self.feedRateMinute * 1, location)
 
 	def addGcodeThreadSection(self, distanceFeedRate, endRateMultiplier, halfOverSteps, oneOverSteps, slowdownFlowRateMultiplier):
 		'Add gcode thread section.'
@@ -267,10 +268,10 @@ class ThreadSection:
 
 	def getDwindlePortion(self, area, dwindlePortion, operatingFeedRateMinute, operatingFlowRate, slowdownVolume):
 		'Get cumulative dwindle portion.'
- 		self.dwindlePortionEnd = dwindlePortion
- 		distance = abs(self.oldLocation - self.location)
- 		volume = area * distance
- 		self.dwindlePortionBegin = dwindlePortion + volume / slowdownVolume
+		self.dwindlePortionEnd = dwindlePortion
+		distance = abs(self.oldLocation - self.location)
+		volume = area * distance
+		self.dwindlePortionBegin = dwindlePortion + volume / slowdownVolume
 		return self.dwindlePortionBegin
 
 	def getLocation(self, along):

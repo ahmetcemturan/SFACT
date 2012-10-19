@@ -174,6 +174,12 @@ class SkirtSkein:
 		self.travelFeedRateMinute = 957.0
 		self.unifiedLoop = LoopCrossDictionary()
 
+
+	def addFlowRate(self, flowRate):
+		'Add a line of temperature if different.'
+		if flowRate != None:
+			self.distanceFeedRate.addLine('M108 S' + euclidean.getFourSignificantFigures(flowRate))
+
 	def addBrim(self, z):
 		'Add brim at z to gcode output.'
 		self.setSkirtFeedFlowTemperature()
@@ -188,10 +194,6 @@ class SkirtSkein:
 		self.addTemperatureLineIfDifferent(oldTemperature)
 		self.distanceFeedRate.addLine('(</skirt>)')
 
-	def addFlowRate(self, flowRate):
-		'Add a line of temperature if different.'
-		if flowRate != None:
-			self.distanceFeedRate.addLine('M108 S' + euclidean.getFourSignificantFigures(flowRate))
 
 	def addSkirt(self, z):
 		'Add skirt at z to gcode output.'
@@ -245,8 +247,8 @@ class SkirtSkein:
 			outerLoops = getOuterLoops(loops)
 			outsetLoops = intercircle.getInsetSeparateLoopsFromLoops(outerLoops, -self.edgeWidth*0.5)
 			outsetLoops = getOuterLoops(outsetLoops)
-			if self.repository.convex.value:
-				outsetLoops = [euclidean.getLoopConvex(euclidean.getConcatenatedList(outsetLoops))]
+#			if self.repository.convex.value:
+#				outsetLoops = [euclidean.getLoopConvex(euclidean.getConcatenatedList(outsetLoops))]
 			self.outsetBrimLoops = outsetLoops
 
 		for self.brimLine in xrange(self.brimLine+1,self.repository.brimWidth.value):
@@ -256,8 +258,8 @@ class SkirtSkein:
 			outerLoops = getOuterLoops(loops)
 			outsetLoops = intercircle.getInsetSeparateLoopsFromLoops(outerLoops, -self.edgeWidth*(self.brimLine+0.5))
 			outsetLoops = getOuterLoops(outsetLoops)
-			if self.repository.convex.value:
-				outsetLoops = [euclidean.getLoopConvex(euclidean.getConcatenatedList(outsetLoops))]
+#			if self.repository.convex.value:
+#				outsetLoops = [euclidean.getLoopConvex(euclidean.getConcatenatedList(outsetLoops))]
 			self.outsetBrimLoops += outsetLoops
 
 	def getCraftedGcode(self, gcodeText, repository):
