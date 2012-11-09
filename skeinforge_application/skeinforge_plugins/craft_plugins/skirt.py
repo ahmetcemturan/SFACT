@@ -159,7 +159,7 @@ class SkirtSkein:
 	def __init__(self):
 		'Initialize variables.'
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
-		self.feedRateMinute = 961.0
+		self.feedRateMinute = None
 		self.isExtruderActive = False
 		self.isSupportLayer = False
 		self.layerIndex = -1
@@ -171,7 +171,7 @@ class SkirtSkein:
 		self.oldTemperatureInput = None
 		self.skirtFlowRate = None
 		self.skirtTemperature = None
-		self.travelFeedRateMinute = 957.0
+		self.travelFeedRateMinute = None
 		self.unifiedLoop = LoopCrossDictionary()
 
 

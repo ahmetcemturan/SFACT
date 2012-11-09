@@ -216,9 +216,10 @@ class SpeedSkein:
 	def __init__(self):
 		'Initialize.'
 		self.distanceFeedRate = gcodec.DistanceFeedRate()
-		self.feedRatePerSecond = 16.0
+		self.feedRatePerSecond = 11.0
 		self.isBridgeLayer = False
 		self.isEdgePath = False
+		self.isSupportPath = False
 		self.isExtruderActive = False
 		self.layerIndex = -1
 		self.lineIndex = 0
@@ -269,25 +270,31 @@ class SpeedSkein:
 		'Get gcode line with feed rate.'
 		if gcodec.getIndexOfStartingWithSecond('F', splitLine) > 0:
 			return line
-		tempfeedRateMinute = 60.0 * self.feedRatePerSecond
-		travelFeedRateMinute = self.repository.travelFeedRatePerSecond.value * 60
-		if self.layerIndex <= 0:
+		if self.layerIndex < 1:
 			travelFeedRateMinute = self.repository.objectFirstLayerTravelSpeed.value * 60
-			if self.isEdgePath:
+
+			if self.isSupportPath:
+				tempfeedRateMinute = self.repository.objectFirstLayerFeedRateEdgeMultiplier.value * 60
+
+			elif self.isEdgePath:
 				tempfeedRateMinute = self.repository.objectFirstLayerFeedRateEdgeMultiplier.value * 60
 			else:
 				tempfeedRateMinute = self.repository.objectFirstLayerFeedRateInfillMultiplier.value * 60
-		elif self.layerIndex > 0:
+		else:
 			travelFeedRateMinute = self.repository.travelFeedRatePerSecond.value * 60
-			if self.isEdgePath:
+			if self.isSupportPath:
 				tempfeedRateMinute = self.repository.edgeFeedRateMultiplier.value * 60
-			if self.isBridgeLayer:
+			elif self.isBridgeLayer:
 				tempfeedRateMinute = self.repository.bridgeFeedRateMultiplier.value * self.repository.edgeFeedRateMultiplier.value * 60
+			elif self.isEdgePath:
+				tempfeedRateMinute = self.repository.edgeFeedRateMultiplier.value * 60
+			else:
+				tempfeedRateMinute = 60.0 * self.feedRatePerSecond
 		if self.isExtruderActive is True:
 			feedRateMinute = tempfeedRateMinute
-		self.addFlowRateLine()
+			self.addFlowRateLine()
 		if not self.isExtruderActive:
-			feedRateMinute = self.travelFeedRateMinute
+			feedRateMinute = travelFeedRateMinute
 		return self.distanceFeedRate.getLineWithFeedRate(feedRateMinute, line, splitLine)
 
 	def parseInitialization(self):
@@ -350,6 +357,10 @@ class SpeedSkein:
 			self.isEdgePath = True
 		elif firstWord == '(</edge>)' or firstWord == '(</edgePath>)':
 			self.isEdgePath = False
+		elif firstWord == '(<supportLayer>' :
+			self.isSupportPath = True
+		elif firstWord == '(</supportLayer>)' :
+			self.isSupportPath = False
 		self.distanceFeedRate.addLine(line)
 
 

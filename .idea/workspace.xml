@@ -3,10 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="776eaf14-a295-457b-b16b-2e308ade59f0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fabmetheus_utilities/archive.py" afterPath="$PROJECT_DIR$/fabmetheus_utilities/archive.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dwindle.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dwindle.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skirt.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skirt.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/speed.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/speed.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/profile_plugins/extrusion.py" afterPath="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/profile_plugins/extrusion.py" />
     </list>
     <ignored path="SFACT.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,28 +30,37 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="xml_simple_writer.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fabmetheus_utilities/xml_simple_writer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="preface.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/preface.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="199" column="0" selection-start="9420" selection-end="9420" vertical-scroll-proportion="0.0">
+            <state line="205" column="103" selection-start="9895" selection-end="9895" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dwindle.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dwindle.py">
+      <file leaf-file-name="speed.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/speed.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="228" column="0" selection-start="11146" selection-end="11146" vertical-scroll-proportion="-10.461538">
+            <state line="291" column="31" selection-start="15304" selection-end="15304" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="raft.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="627" column="42" selection-start="33879" selection-end="33879" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="settings.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/fabmetheus_utilities/settings.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -59,7 +69,7 @@
       <file leaf-file-name="dimension.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="435" column="0" selection-start="21965" selection-end="21965" vertical-scroll-proportion="0.5477308">
+            <state line="231" column="78" selection-start="12583" selection-end="12605" vertical-scroll-proportion="0.33278957">
               <folding />
             </state>
           </provider>
@@ -79,22 +89,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/carve.py" />
-        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/chamber.py" />
-        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/clip.py" />
-        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/fill.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/fillet.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/inset.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/jitter.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/limit.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/multiply.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/preface.py" />
+        <option value="$PROJECT_DIR$/fabmetheus_utilities/archive.py" />
+        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dwindle.py" />
+        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/feed.py" />
+        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/profile_plugins/extrusion.py" />
+        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/splodge.py" />
+        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/hop.py" />
+        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skirt.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/speed.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py" />
-        <option value="$PROJECT_DIR$/fabmetheus_utilities/archive.py" />
-        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skirt.py" />
         <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py" />
-        <option value="$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dwindle.py" />
       </list>
     </option>
   </component>
@@ -210,6 +220,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="skeinforge_application" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="profiles" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SFACT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SFACT" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="sfact_profiles" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -230,13 +258,18 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Favorites" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="recentsLimit" value="5" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Ahmet\Documents\GitHub\SFACT\skeinforge_application\skeinforge_plugins\craft_plugins" />
+    </key>
   </component>
   <component name="RunManager" selected="Python.sfact">
     <configuration default="false" name="sfact" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -351,8 +384,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="1" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32352942" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -360,11 +393,11 @@
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2105541" sideWeight="0.74183005" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25816995" sideWeight="0.9991143" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25816995" sideWeight="0.9991143" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32897604" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4956427" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34640524" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -415,23 +448,15 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py</url>
-          <line>218</line>
+          <line>219</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py</url>
-          <line>242</line>
+          <line>246</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>701</line>
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>977</line>
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>976</line>
+          <line>702</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
@@ -439,11 +464,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>979</line>
+          <line>974</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>980</line>
+          <line>973</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>977</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>978</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>979</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
@@ -451,7 +488,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>983</line>
+          <line>984</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
@@ -460,14 +497,6 @@
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
           <line>988</line>
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>990</line>
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>991</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
@@ -483,7 +512,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>984</line>
+          <line>983</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
@@ -491,15 +520,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>978</line>
+          <line>980</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>974</line>
+          <line>976</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>992</line>
+          <line>972</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>990</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>991</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
@@ -507,11 +544,15 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>995</line>
+          <line>992</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
           <line>994</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>995</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
@@ -532,14 +573,6 @@
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
           <line>1000</line>
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>1001</line>
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
-          <line>1002</line>
         </line-breakpoint>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
@@ -645,98 +678,114 @@
           <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dwindle.py</url>
           <line>231</line>
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py</url>
+          <line>638</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/profile_plugins/extrusion.py</url>
+          <line>30</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py</url>
+          <line>226</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py</url>
+          <line>229</line>
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/fabmetheus_utilities/settings.py">
+    <entry file="file://$PROJECT_DIR$/sfact.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1172" column="0" selection-start="45165" selection-end="45165" vertical-scroll-proportion="0.33281735" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/runskeinforge.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="0" selection-start="674" selection-end="674" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/show_skeinforge.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="0" selection-start="195" selection-end="195" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/terminal.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="0" selection-start="598" selection-end="598" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/whittle.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="92" selection-start="1018" selection-end="1018" vertical-scroll-proportion="0.020531401" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skFrontend.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/feed.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+        <state line="12" column="58" selection-start="954" selection-end="954" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_utilities/skeinforge_craft.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="0" selection-start="2251" selection-end="2251" vertical-scroll-proportion="0.0" />
+        <state line="59" column="0" selection-start="2251" selection-end="2251" vertical-scroll-proportion="0.33282208" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fabmetheus_utilities/archive.py">
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/feed.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="0" selection-start="534" selection-end="534" vertical-scroll-proportion="0.0" />
+        <state line="118" column="37" selection-start="4718" selection-end="4718" vertical-scroll-proportion="0.24693252" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py">
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="897" column="118" selection-start="48209" selection-end="48269" vertical-scroll-proportion="0.019406393">
-          <folding />
-        </state>
+        <state line="18" column="0" selection-start="1434" selection-end="1434" vertical-scroll-proportion="-1.9953052" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/fill.py">
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="123" column="88" selection-start="6427" selection-end="6480" vertical-scroll-proportion="0.64041096" />
+        <state line="23" column="32" selection-start="868" selection-end="868" vertical-scroll-proportion="-1.0429448" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/splodge.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="134" column="0" selection-start="6319" selection-end="6319" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/hop.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="113" column="0" selection-start="4622" selection-end="4622" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/skirt.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="238" column="44" selection-start="10185" selection-end="10185" vertical-scroll-proportion="0.31294116">
+        <state line="172" column="36" selection-start="7136" selection-end="7136" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fabmetheus_utilities/xml_simple_writer.py">
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/profile_plugins/extrusion.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="31" column="65" selection-start="1700" selection-end="1700" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/preface.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="199" column="0" selection-start="9420" selection-end="9420" vertical-scroll-proportion="0.0">
+        <state line="205" column="103" selection-start="9895" selection-end="9895" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/speed.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="291" column="31" selection-start="15304" selection-end="15304" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/raft.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="627" column="42" selection-start="33879" selection-end="33879" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dwindle.py">
+    <entry file="file://$PROJECT_DIR$/fabmetheus_utilities/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="228" column="0" selection-start="11146" selection-end="11146" vertical-scroll-proportion="-10.461538">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/inset.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="445" column="136" selection-start="21406" selection-end="21438" vertical-scroll-proportion="3.2214613">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/skeinforge_application/profiles/dimension2.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="18" selection-start="395" selection-end="395" vertical-scroll-proportion="0.18622848">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/skeinforge_application/skeinforge_plugins/craft_plugins/dimension.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="435" column="0" selection-start="21965" selection-end="21965" vertical-scroll-proportion="0.5477308">
+        <state line="231" column="78" selection-start="12583" selection-end="12605" vertical-scroll-proportion="0.33278957">
           <folding />
         </state>
       </provider>
