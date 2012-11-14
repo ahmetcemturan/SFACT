@@ -1,0 +1,116 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>skFrontend</title>
+  <style type="text/css" media="screen">
+    html {line-height: 1.3em}
+    code {color: brown}
+    p {text-indent: 1.5em}
+   </style>
+</head>
+<body>
+<h1>skFrontend</h1>
+<p style="text-indent: 0; margin-left: 1.5em;">
+   A Skeinforge 50 Frontend for 3D Printing<br />
+   <a href="http://reprapide.fr/skfrontend-a-skeinforge-frontend">http://reprapide.fr/skfrontend-a-skeinforge-frontend</a><br />
+   Version 1.3 november 2012
+</p>
+<h2>Introduction</h2>
+<p>
+   Once good Skeinforge settings are found and good prints obtained, RepRap ordinary use only leads to modify a few Skeinforge settings.
+</p>
+<p>
+   Without running Skeinforge, skFrontend allows to modify those settings and to run G-code calculation, without being faced to a complex interface. Skeinforge common use becomes easier and, if basic settings are established by an expert, becomes possible for those who don't know this software.
+</p>
+<p>
+   As Skeinforge, skFrontend is written with Python and uses Tkinter, no additional software is needed. skFrontend reads and writes settings into it's dedicated profile configuration files. Once settings are saved and a file selected, skFrontend runs Skeinforge's toolchain by calling craft.py.
+</p>
+<p>
+   Known problem: Save Modifications button state, activated or deactivated, isn't updated if values are edited into the three spinboxes: Speed Rate, Flow Rate and Infill Solidity. It is updated when values are modified with spinboxes arrows. Workaround: first change values with arrows then edit.
+</p>
+<h2>Modifiable Settings</h2>
+<p>
+   Of course settings are those I often change, perhaps others could be added…
+</p>
+<ul>
+	<li><strong>Used Profile</strong><br />Picked among profiles into Skeinforge's extrusion directory.</li>
+	<li><strong>Layer height</strong><br />Layer Height into Carve plugin.</li>
+	<li><strong>Print velocity</strong><br />Feed Rate into Speed.</li>
+	<li><strong>Plastic output</strong><br />Flow Rate into Speed. When Feed Rate is changed Flow Rate is automatically modified to be equal to Feed Rate. It can also be changed independently.</li>
+	<li><strong>First layer speed</strong> (ratio)<br />
+	The for 1st layer parameters into Speed are set together at the same value. They concern feed and flow rates for infill and perimeter, which can be reduced by ratio.</li>
+	<li><strong>Plastic filling rate</strong><br />Infill Solidity into Infill. Unlike Skeinforge, this rate is expressed as a percentage, not as 0 to 1 value, which I found more easy to understand. skFrontend converts.</li>
+	<li><strong>Perimeter speed</strong> (ratio)<br />
+	The two perimeter parameters into Speed are set together at the same value. They concern feed and flow rates for perimeter, which can be reduced by ratio.</li>
+	<li><strong>Multiply plugin activation/deactivation</strong><br />
+	Multiply can be activated when printing only one part, to modify print location.</li>
+	<li><strong>Lines and columns numbers</strong><br />Number of Columns &amp; Number of Rows into Multiply. To print several parts at once.
+</li>
+	<li><strong>Surrounding layers number</strong><br />Layers To into Skirt.	A large layers number may avoid warping. Skirt is activated by skFrontend if number is greater than 0, deactivated if not.</li>
+</ul>
+
+<h2>Configuration</h2>
+<h3>1- Profile(s)</h3>
+<p>
+   Be sure to have at least one profile into Skeinforge's extrusion directory. Locations&nbsp;:   
+	<ul>
+		<li>Linux: <code>/home/userName/.skeinforge/profiles/extrusion</code></li>
+		<li>OS X: <code>/Users/userName/.skeinforge/profiles/extrusion</code></li>
+		<li>Windows: <code>C:\Users\userName\.skeinforge\profiles\extrusion</code></li>
+		<li>Windows: <code>C:\Documents and Settings\userName\.skeinforge\profiles\extrusion</code></li>
+	</ul>
+</p>
+<h3>2- Three mandatory settings</h3>
+<p>
+   All parameters are set into <strong>config.py</strong>, skFrontend's configuration file. It contains explanations. Three mandatory parameters must be set:
+</p>
+<ul>
+	<li><code>skDefaultProfileName</code>, name of the default profile, which must exist</li>
+	<li><code>skProfilesDirectory</code>, absolute path Skeinforge's extrusion profiles directory</li>
+	<li><code>skCraftPath</code>, absolute path to Skeinforge's Craft plugin</li>
+</ul>
+<p>
+   Windows: double backslashes into <code>skCraftPath</code> and <code>skProfilesDirectory</code>.
+</p>
+
+<h3>3- Optional settings</h3>
+<p>
+   The rest of the setup is optional and concerns user interface, especially values into interface controls:
+</p>
+<ul>
+	<li><code>layerThicknessList</code> layer thickness dropdown menu, model <code>("0.25", "0.30", "0.40")</code></li>
+	<li><code>feedRateMinimumValue</code> and <code>feedRateMaximumValue</code> minimum and maximum Feed Rate values spinboxes</li>
+	<li><code>flowRateMinimumValue</code> and <code>flowRateMaximumValue</code> minimum and maximum Flow Rate values spinboxes</li>
+	<li><code>multiplyRowList</code> and <code>multiplyColList</code> lines &amp; columns numbers dropdown menus</li>
+	<li><code>skirtLayersList</code> surrounding layers number dropdown menu</li>
+</ul>
+<p>
+   Interface langage can also be set…
+</p>
+<ul>
+	<li><code>interfaceLanguage</code>: <code>fr</code> french, <code>en</code> english, <code>de</code> german.</li>
+</ul>
+<p>
+   …and absolute acces path to default STLs directory may be set too:
+</p>
+<ul>
+	<li><code>STLFilesDefaultDirectory</code></li>
+</ul>
+<p>
+   Name of your Python interpreter:
+</p>
+<ul>
+	<li><code>pythonInterpreter</code>: <code>python</code> (default) or <code>pypy</code> or another</li>
+</ul>
+<h2>Running</h2>
+<p>
+   Linux and OS X terminal command:
+</p>
+<p>
+   <code>python /path/to/skFrontendDirectory/skFrontend.py</code>
+</p>
+<p>
+   Windows: skFronted or alias can be double-clicked. Path to your Python install directory (<span style="font-family:monospace">C:\Python27</span> for example) must be set into <span style="font-family:monospace">Path</span> environment variable.
+</p>
+</body>
+</html>

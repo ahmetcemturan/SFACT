@@ -1,0 +1,115 @@
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>skFrontend</title>
+  <style type="text/css" media="screen">
+    html {line-height: 1.3em}
+    code {color: brown}
+    p {text-indent: 1.5em}
+   </style>
+</head>
+<body>
+<h1>skFrontend</h1>
+<p style="text-indent: 0; margin-left: 1.5em;">
+   Un frontal pour Skeinforge 50 en impression 3D<br />
+   <a href="http://reprapide.fr/skfrontend-un-frontal-pour-skeinforge">http://reprapide.fr/skfrontend-un-frontal-pour-skeinforge</a><br />
+   Version 1.3 novembre 2012
+</p>
+<h2>Introduction</h2>
+<p>
+   Lorsqu’on a trouvé les bons réglages de Skeinforge et qu’on obtient de bonnes impressions, l’utilisation courante de la RepRap ne demande plus à modifier que peu de paramètres de Skeinforge.
+</p>
+<p>
+   Sans lancer Skeinforge, skFrontend permet de modifier ces paramètres et de lancer le calcul du G-code sans avoir à se confronter à une interface complexe. L’utilisation courante de Skeinforge devient plus facile et, pour peu que les paramètres de base soient établis par un connaisseur, devient possible pour ceux qui ne connaissent pas ce logiciel.
+</p>
+<p>
+   Comme Skeinforge, skFrontend est écrit en Python et utilise Tkinter, aucun autre logiciel n’est requis. skFrontend lit et écrit dans les fichiers de configuration de son profil dédié. Une fois les paramètres enregistrés et un fichier choisi, il lance Skeinforge en appelant craft.py.
+</p>
+<p>
+   Problème connu : l’état activé ou non du bouton d’enregistrement des modifications n’est pas mis à jour si les valeurs sont éditées dans les trois boîtes de saisie&nbsp;: Vitesse d’impression, Débit de plastique et Taux de remplissage. Il est bien mis à jour lors d’une modification par les flèches de ces boîtes de saisie. On contourne ce problème en modifiant ces valeurs par les flèches avant modification manuelle.
+</p>
+<h2>Paramètres modifiables par skFrontend</h2>
+<p>
+   Bien sûr il s’agit des paramètres que je modifie souvent, d’autres seraient peut-être à inclure…
+</p>
+<ul>
+	<li><strong>Le profil utilisé</strong><br />Choix parmi les profils du dossier des profils d’extrusion de Skeinforge.</li>
+	<li><strong>Épaisseur des couches</strong><br />Layer Height dans le plugin Carve.</li>
+	<li><strong>Vitesse d’impression</strong><br />Feed Rate dans Speed.</li>
+	<li><strong>Débit de plastique</strong><br />Flow Rate dans Speed. Quand le Feed Rate est modifié, le Flow Rate est automatiquement modifié pour lui être égal. Le Flow Rate peut aussi être modifié indépendamment.</li>
+	<li><strong>Vitesse d’impression de la 1<sup>re</sup> couche</strong> (rapport)<br />
+	Les quatre paramètres concernant cette couche dans Speed sont tous mis à la valeur choisie. Ils concernent la vitesse et le débit du périmètre et du remplissage, qui peuvent être diminués du rapport choisi.</li>
+	<li><strong>Taux de remplissage</strong><br />Infill Solidity dans Infill. À la différence de Skeinforge, ce taux est exprimé en pourcentage et non en valeurs de 0 à 1, ce qui me semblait plus compréhensible. skFrontend fait la conversion en lecture et écriture.</li>
+	<li><strong>Vitesse d’impression du périmètre</strong> (rapport)<br />
+	Les deux paramètres concernant le périmètre dans Speed sont tous mis à la valeur choisie. Ils concernent la vitesse et le débit pour le périmètre, qui peuvent être diminués du rapport choisi.</li>
+	<li><strong>Activation/désactivation du module Multiply</strong><br />
+	On peut choisir d’activer Multiply même en imprimant une seule pièce, pour modifier l’emplacement de l’impression.</li>
+	<li><strong>Nombres de lignes et de colonnes</strong><br />Number of Columns &amp; Number of Rows dans Multiply. Pour imprimer plusieurs exemplaires de la pièce.
+</li>
+	<li><strong>Nombre de couches d’entourage</strong><br />Layers To dans Skirt.	Un nombre élevé de couches peut diminuer ou empêcher la déformation par warping. skFrontend active Skirt si le nombre est supérieur à 0 et le désactive sinon. </li>
+</ul>
+
+<h2>Configuration</h2>
+<h3>1- Profil(s)</h3>
+<p>
+   Vérifier la présence d’au moins un profil dans le dossier des profils d’extrusion de Skeinforge. Localisations&nbsp;:   
+	<ul>
+		<li>Linux : <code>/home/userName/.skeinforge/profiles/extrusion</code></li>
+		<li>OS X : <code>/Users/userName/.skeinforge/profiles/extrusion</code></li>
+		<li>Windows : <code>C:\Users\userName\.skeinforge\profiles\extrusion</code></li>
+		<li>Windows : <code>C:\Documents and Settings\userName\.skeinforge\profiles\extrusion</code></li>
+	</ul>
+</p>
+<h3>2- Trois réglages obligatoires</h3>
+<p>
+   Tous les paramètres se règlent dans <strong>config.py</strong>, le fichier de configuration de skFrontend. Des explications sur les paramètres y figurent. Il est obligatoire d’y régler trois paramètres&nbsp;:
+</p>
+<ul>
+	<li><code>skDefaultProfileName</code>, le nom du profil par défaut, qui doit correspondre à un profil existant</li>
+	<li><code>skProfilesDirectory</code>, le chemin d'accès absolu au répertoire des profils d’extrusion de Skeinforge</li>
+	<li><code>skCraftPath</code>, le chemin d'accès absolu au plugin Craft de Skeinforge</li>
+</ul>
+<p>
+   Sous Windows, doubler les backslashs dans <code>skCraftPath</code> et <code>skProfilesDirectory</code>.
+</p>
+<h3>3- Réglages optionnels</h3>
+<p>
+   Le reste de la configuration est optionnel et concerne l’interface utilisateur, notamment les valeurs présentées dans les contrôles de l’interface&nbsp;:
+</p>
+<ul>
+	<li><code>layerThicknessList</code> menu déroulant des épaisseurs de couches, sur le modèle <code>("0.25", "0.30", "0.40")</code></li>
+	<li><code>feedRateMinimumValue</code> et <code>feedRateMaximumValue</code> boîtes de saisie, valeurs minimum et maximum de Feed Rate</li>
+	<li><code>flowRateMinimumValue</code> et <code>flowRateMaximumValue</code> boîtes de saisie, valeurs minimum et maximum de Flow Rate</li>
+	<li><code>multiplyRowList</code> et <code>multiplyColList</code> menu déroulant des nombres de lignes et colonnes</li>
+	<li><code>skirtLayersList</code> menu déroulant du nombre de couches d’entourage</li>
+</ul>
+<p>
+   La langue de l’interface peut aussi être choisie…
+</p>
+<ul>
+	<li><code>interfaceLanguage</code> : <code>fr</code> français, <code>en</code> anglais, <code>de</code> allemand.</li>
+</ul>
+<p>
+   … ainsi que le chemin d'accès absolu au répertoire par défaut des fichiers STL&nbsp;:
+</p>
+<ul>
+	<li><code>STLFilesDefaultDirectory</code></li>
+</ul>
+<p>
+   Le nom de l’interpréteur Python&nbsp;:
+</p>
+<ul>
+	<li><code>pythonInterpreter</code>: <code>python</code> (par defaut) ou <code>pypy</code> ou un autre</li>
+</ul>
+<h2>Lancement</h2>
+<p>
+   Commande dans un terminal pour Linux et OS X :
+</p>
+<p>
+   <code>python /chemin/vers/emplacement/skFrontend/skFrontend.py</code>
+</p>
+<p>
+   Windows : double-clic sur skFronted.py ou un alias. Le chemin vers votre installation de Python (<span style="font-family:monospace">C:\Python27</span> par exemple) doit figurer dans la variable d’environnement <span style="font-family:monospace">Path</span> de votre système.
+</p>
+</body>
+</html>

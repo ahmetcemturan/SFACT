@@ -224,22 +224,8 @@ class DimensionSkein:
 		self.parseInitialization()
 		if not self.repository.retractWithinIsland.value:
 			self.parseBoundaries()
-#		self.flowScaleSixty = (((self.layerHeight+self.edgeWidth)/4)*((self.layerHeight+self.edgeWidth)/4)) * math.pi
 		self.flowScaleSixty = ((self.edgeWidth-self.layerHeight)*self.layerHeight)+(self.layerHeight/2)**2* math.pi
-
-#		if repository.activateCalibration.value:
-#			self.calibrationFactor = (4 * (self.repository.MeasuredXSection.value - self.edgeWidth))/((math.pi-4)*self.layerHeight+ 4* self.edgeWidth  )+1
-#			self.newfilamentPackingDensity = repository.filamentPackingDensity.value * self.calibrationFactor
-#			print('***************E-Steps corrector Value (For Calibration)*********************:')
-#			print('****E-Steps corrector Value (For Calibration) STEPPER EXTRUDERS ONLY :*******', self.newfilamentPackingDensity )
-#			print('***************E-Steps corrector Value (For Calibration)*********************')
-#			print('**********this created G-CODE is only for calculating The Value**************')
-#			print('****Enter the Value into SFACT, uncheck the calibration box, RE-Skein********')
-#		else :
-#			self.calibrationFactor = repository.filamentPackingDensity.value
 		self.calibrationFactor = (4 * (-repository.filamentPackingDensityx.value))/((math.pi-4)*self.layerHeight+ 4* self.edgeWidth  )+1
-#		if self.calibrationFactor is None:
-#			print('Measured extrusion width cant be 0, either un-check calibration or set measured width to what you have measured!')
 		if self.operatingFlowRate is None:
 			print('There is no operatingFlowRate so dimension will do nothing.')
 			return gcodeText
@@ -319,7 +305,7 @@ class DimensionSkein:
 			print(distance)
 			print(splitLine)
 			return ''
-		scaledFlowRate = self.flowRate *  self.flowScaleSixty
+		scaledFlowRate =  self.flowScaleSixty # * self.flowRate 
 		return self.getExtrusionDistanceStringFromExtrusionDistance(scaledFlowRate/ self.extrusionReduction * distance)
 
 	def getExtrusionDistanceStringFromExtrusionDistance( self, extrusionDistance ):
